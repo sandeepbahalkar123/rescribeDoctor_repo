@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/home/riteshpandhurkar/riteshpandhurkar/Projects/Scorge_Projects/DrConnect/DrConnect/materialdrawer/build/intermediates/bundles/default/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="489751bc56206a02378fc8f90c9bd2f74313560f">
+        <dex dex="/home/riteshpandhurkar/riteshpandhurkar/Projects/Scorge_Projects/DrConnect/DrConnect/app/build/intermediates/transforms/dex/debug/folders/1000/4/classes_52e43a46c5c8374361c8486cf785ebc03af03839/classes.dex" />
+    </item>
+
+</items>
