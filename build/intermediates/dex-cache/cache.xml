@@ -3,12 +3,12 @@
 
     <item
         is-multidex="true"
-        jar="/home/riteshpandhurkar/riteshpandhurkar/Projects/Scorge_Projects/DrConnect/DrConnect/materialdrawer/build/intermediates/bundles/default/classes.jar"
+        jar="/home/riteshpandhurkar/riteshpandhurkar/Projects/Scorge_Projects/DrConnect/repos/rescribeDoctor_repo/materialdrawer/build/intermediates/bundles/default/classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
         sha1="489751bc56206a02378fc8f90c9bd2f74313560f">
-        <dex dex="/home/riteshpandhurkar/riteshpandhurkar/Projects/Scorge_Projects/DrConnect/DrConnect/app/build/intermediates/transforms/dex/debug/folders/1000/4/classes_52e43a46c5c8374361c8486cf785ebc03af03839/classes.dex" />
+        <dex dex="/home/riteshpandhurkar/riteshpandhurkar/Projects/Scorge_Projects/DrConnect/repos/rescribeDoctor_repo/app/build/intermediates/transforms/dex/debug/folders/1000/4/classes_c37bd9e5c1c668b90c3d60e16b51646c939a6360/classes.dex" />
     </item>
 
 </items>

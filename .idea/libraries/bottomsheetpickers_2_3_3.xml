@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="bottomsheetpickers-2.3.3">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/c9685cc5b5a38bcd61b9b12b70cd9f2c2dd0ca54/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/c9685cc5b5a38bcd61b9b12b70cd9f2c2dd0ca54/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.philliphsu/bottomsheetpickers/2.3.3/fe180f5b8494e459dc3705b75b5194279b07c139/bottomsheetpickers-2.3.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

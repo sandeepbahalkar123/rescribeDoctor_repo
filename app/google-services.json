@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "742461730620",
+    "project_id": "rescribedoctor"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742461730620:android:524b0f86f6ce2d7b",
+        "android_client_info": {
+          "package_name": "com.rescribe.doctor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "742461730620-vpa3pqqfr98qvu9h4bs2qa2heruvkh3v.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "742461730620-mn9tvomol2gun6t8avobu5vhbr5ocem5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rescribe.doctor",
+            "certificate_hash": "f99de037d0ba2a239c040ebc94c76a6bafc71d42"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGQuA6FEGHn-ghAAWr7k_SVMZGQogqgIQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
