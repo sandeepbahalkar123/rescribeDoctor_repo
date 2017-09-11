@@ -36,7 +36,7 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
     RelativeLayout emptyListView;
     Unbinder unbinder;
     private View mRootView;
-    private ArrayList<ConnectList> connectLists;
+    private ArrayList<ConnectList> mReceivedList;
     private DoctorSearchByNameAdapter doctorSearchByNameAdapter;
     private String mClickedSpecialityOfDoctor;
 
@@ -61,10 +61,8 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
         mRootView = inflater.inflate(R.layout.doctor_connect_recycle_view_layout, container, false);
         Bundle arguments = getArguments();
         if (arguments != null) {
-
             mClickedSpecialityOfDoctor = arguments.getString(getString(R.string.clicked_item_data));
-
-            connectLists = getArguments().getParcelableArrayList(RescribeConstants.CONNECT_REQUEST);
+            mReceivedList = getArguments().getParcelableArrayList(RescribeConstants.CONNECT_REQUEST);
         }
 
         unbinder = ButterKnife.bind(this, mRootView);
@@ -74,7 +72,7 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
 
     private void init() {
         mRecyclerView.setVisibility(View.VISIBLE);
-        doctorSearchByNameAdapter = new DoctorSearchByNameAdapter(getActivity(), connectLists);
+        doctorSearchByNameAdapter = new DoctorSearchByNameAdapter(getActivity(), filterDataOnDocSpeciality());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -82,8 +80,6 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
                 DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         mRecyclerView.setAdapter(doctorSearchByNameAdapter);
-
-
     }
 
     @Override
@@ -100,5 +96,17 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
     @Override
     public void setOnClickOfSearchBar(String searchText) {
         doctorSearchByNameAdapter.getFilter().filter(searchText);
+    }
+
+    private ArrayList<ConnectList> filterDataOnDocSpeciality() {
+        ArrayList<ConnectList> connectLists = this.mReceivedList;
+        ArrayList<ConnectList> dataList = new ArrayList<>();
+        for (ConnectList listObject :
+                connectLists) {
+            if (mClickedSpecialityOfDoctor.equalsIgnoreCase(listObject.getSpecialization())) {
+                dataList.add(listObject);
+            }
+        }
+        return dataList;
     }
 }
