@@ -150,5 +150,9 @@ public class EditTextWithDeleteButton extends LinearLayout {
         Editable text = editText.getText();
         return text;
     }
+
+    public void setText(String text) {
+        editText.setText(text);
+    }
 }
 
