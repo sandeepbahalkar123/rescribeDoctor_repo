@@ -381,199 +381,51 @@ public class CommonMethods {
         return time;
     }
 
-    public static Drawable getMedicalTypeIcon(String medicineTypeName, Context context) {
 
-        Drawable abbreviation = ContextCompat.getDrawable(context, R.mipmap.highlight);
-        if (medicineTypeName.equalsIgnoreCase("syrup"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.syrup_01);
-        else if (medicineTypeName.equalsIgnoreCase("Tablet"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.tablet_02);
-        else if (medicineTypeName.equalsIgnoreCase("Capsule"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.capsule_01);
-        else if (medicineTypeName.equalsIgnoreCase("injection"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.injection_01);
-        else if (medicineTypeName.equalsIgnoreCase("insulin"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.insulin_01);
-        else if (medicineTypeName.equalsIgnoreCase("Inhaler"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.inhaler_01);
-        else if (medicineTypeName.equalsIgnoreCase("liquid"))
-            abbreviation = ContextCompat.getDrawable(context, R.mipmap.highlight); // not found
-        else if (medicineTypeName.equalsIgnoreCase("tan"))
-            abbreviation = ContextCompat.getDrawable(context, R.mipmap.highlight);// not found
-        else if (medicineTypeName.equalsIgnoreCase("cream"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.cream_01);
-        else if (medicineTypeName.equalsIgnoreCase("jelly"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.jelly_02);
-        else if (medicineTypeName.equalsIgnoreCase("local application"))
-            abbreviation = ContextCompat.getDrawable(context, R.mipmap.highlight);// not found
-        else if (medicineTypeName.equalsIgnoreCase("ointment"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.ointment_01);
-        else if (medicineTypeName.equalsIgnoreCase("lotion"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.lotion_01);
-        else if (medicineTypeName.equalsIgnoreCase("drops"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.drop_01);
-        else if (medicineTypeName.equalsIgnoreCase("eye drops"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.eye_drops_02);
-        else if (medicineTypeName.equalsIgnoreCase("nasal drops"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.nasal_drop_01_01);
-        else if (medicineTypeName.equalsIgnoreCase("nasal spray"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.nasal_spray_01);
-        else if (medicineTypeName.equalsIgnoreCase("ointment/powder"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.ointment_powder_01);
-        else if (medicineTypeName.equalsIgnoreCase("respules"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.respules_01);
-        else if (medicineTypeName.equalsIgnoreCase("rotacaps"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.rotacaps_01);
-        else if (medicineTypeName.equalsIgnoreCase("sachet"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.sachet_01);
-
-        return abbreviation;
-    }
-
-    // Return medicine Icon's
-
-    public static Drawable getMedicineTypeImage(String medicineTypeName, Context context) {
-
-        Drawable abbreviation = ContextCompat.getDrawable(context, R.mipmap.highlight);
-        if (medicineTypeName.equalsIgnoreCase("syrup"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.syrup);
-        else if (medicineTypeName.equalsIgnoreCase("Tablet"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.tablet);
-        else if (medicineTypeName.equalsIgnoreCase("Capsule"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.capsule);
-        else if (medicineTypeName.equalsIgnoreCase("injection"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.injection);
-        else if (medicineTypeName.equalsIgnoreCase("insulin"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.insulin);
-        else if (medicineTypeName.equalsIgnoreCase("Inhaler"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.inhaler);
-        else if (medicineTypeName.equalsIgnoreCase("liquid"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.liquid); // not found
-        else if (medicineTypeName.equalsIgnoreCase("tan"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.tan);// not found
-        else if (medicineTypeName.equalsIgnoreCase("cream"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.cream);
-        else if (medicineTypeName.equalsIgnoreCase("jelly"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.jelly);
-        else if (medicineTypeName.equalsIgnoreCase("local application"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.tablet);// not found
-        else if (medicineTypeName.equalsIgnoreCase("ointment"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.ointment);
-        else if (medicineTypeName.equalsIgnoreCase("lotion"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.lotion);
-        else if (medicineTypeName.equalsIgnoreCase("drops"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.drop);
-        else if (medicineTypeName.equalsIgnoreCase("eye drops"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.eye_drops);
-        else if (medicineTypeName.equalsIgnoreCase("nasal drops"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.nasal_drop);
-        else if (medicineTypeName.equalsIgnoreCase("nasal spray"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.nasal_spray);
-        else if (medicineTypeName.equalsIgnoreCase("ointment/powder"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.ointment_powder);
-        else if (medicineTypeName.equalsIgnoreCase("respules"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.respules);
-        else if (medicineTypeName.equalsIgnoreCase("rotacaps"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.rotocaps);
-        else if (medicineTypeName.equalsIgnoreCase("sachet"))
-            abbreviation = ContextCompat.getDrawable(context, R.drawable.sachet);
-
-        return abbreviation;
-    }
-
-    public static int getCaseStudyIcons(String caseStudyName) {
+    public static int getDoctorSpecialistIcons(String caseStudyName,Context mContext) {
 
         // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
-        int abbreviation = R.drawable.common_icon;
-        if (caseStudyName.equalsIgnoreCase("complaints"))
-            abbreviation = R.drawable.complaints;
-        else if (caseStudyName.equalsIgnoreCase("vitals"))
-            abbreviation = R.drawable.vitals;
-        else if (caseStudyName.equalsIgnoreCase("remarks"))
-            abbreviation = R.drawable.remarks;
-        else if (caseStudyName.equalsIgnoreCase("diagnosis"))
-            abbreviation = R.drawable.diagnosis;
-        else if (caseStudyName.equalsIgnoreCase("prescription"))
-            abbreviation = R.drawable.prescription;
-        else if (caseStudyName.equalsIgnoreCase("investigations"))
-            abbreviation = R.drawable.investigations;
-        else if (caseStudyName.equalsIgnoreCase("advice"))
-            abbreviation = R.drawable.advice; // not found
-        else if (caseStudyName.equalsIgnoreCase("treatmentplan"))
-            abbreviation = R.drawable.treatment_plan; // not found
-        else if (caseStudyName.equalsIgnoreCase("surgery"))
-            abbreviation = R.drawable.surgery; // not found
-        else if (caseStudyName.equalsIgnoreCase("vaccination"))
-            abbreviation = R.drawable.vaccination; // not found
-        else if (caseStudyName.equalsIgnoreCase("generalprecautions"))
-            abbreviation = R.drawable.general_precautions; // not found
-        else if (caseStudyName.equalsIgnoreCase("preoperativeprecautions"))
-            abbreviation = R.drawable.pre_operative_precautions; // not found
-        else if (caseStudyName.equalsIgnoreCase("postoperativecare"))
-            abbreviation = R.drawable.post_operative_care; // not found
-        else if (caseStudyName.equalsIgnoreCase("painscore"))
-            abbreviation = R.drawable.pain_score; // not found
-        else if (caseStudyName.equalsIgnoreCase("exercise"))
-            abbreviation = R.drawable.exercise; // not found
-        else if (caseStudyName.equalsIgnoreCase("finding"))
-            abbreviation = R.drawable.finding; // not found
-        else if (caseStudyName.equalsIgnoreCase("allergy"))
-            abbreviation = R.drawable.allergy; // not found
+        int abbreviation = R.drawable.gynecologist;
+        if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.cardiologist)))
+            abbreviation = R.drawable.cardiologist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.ophthalmologist)))
+            abbreviation = R.drawable.ophthalmologist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.gastro)))
+            abbreviation = R.drawable.gastro;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.physiotherapist)))
+            abbreviation = R.drawable.physiotherapist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.orthopaedic)))
+            abbreviation = R.drawable.orthopaedic;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.ent)))
+            abbreviation = R.drawable.ent;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.dentist)))
+            abbreviation = R.drawable.dentist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.gynecologist)))
+            abbreviation = R.drawable.gynecologist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.paediatric)))
+            abbreviation = R.drawable.paediatric;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.dermatologist)))
+            abbreviation = R.drawable.dermatologist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.neurologist)))
+            abbreviation = R.drawable.neurologist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.physician)))
+            abbreviation = R.drawable.physician;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.psychiatrist)))
+            abbreviation = R.drawable.psychiatrist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.oncologist)))
+            abbreviation = R.drawable.oncologist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.urologist)))
+            abbreviation = R.drawable.urologist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.nephrologist)))
+            abbreviation = R.drawable.nephrologist;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.surgeon)))
+            abbreviation = R.drawable.surgeon;
+        else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.endocrinologist)))
+            abbreviation = R.drawable.endocrinologist;
 
         return abbreviation;
     }
 
-    public static int getVitalIcons(String vitalDetailName) {
-
-        // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
-        int abbreviation = R.drawable.ellipse_2;
-        if (vitalDetailName.equalsIgnoreCase("bp"))
-            abbreviation = R.drawable.bp;
-        else if (vitalDetailName.equalsIgnoreCase("weight"))
-            abbreviation = R.drawable.weight;
-        else if (vitalDetailName.equalsIgnoreCase("height"))
-            abbreviation = R.drawable.height;
-        else if (vitalDetailName.equalsIgnoreCase("bmi"))
-            abbreviation = R.drawable.bmi;
-        else if (vitalDetailName.equalsIgnoreCase("totalcholesterolhdlcholesterol"))
-            abbreviation = R.drawable.totalcholesterolhdlcholesterol;
-        else if (vitalDetailName.equalsIgnoreCase("ldlhdl"))
-            abbreviation = R.drawable.ldlhdl;
-        else if (vitalDetailName.equalsIgnoreCase("triglycerides"))
-            abbreviation = R.drawable.triglycerides;
-        else if (vitalDetailName.equalsIgnoreCase("hdlcholesterol"))
-            abbreviation = R.drawable.hdlcholesterol;
-        else if (vitalDetailName.equalsIgnoreCase("ldlcholesterol"))
-            abbreviation = R.drawable.ldlcholesterol;
-        else if (vitalDetailName.equalsIgnoreCase("totalcholesterol"))
-            abbreviation = R.drawable.totalcholesterol;
-        else if (vitalDetailName.equalsIgnoreCase("gfr"))
-            abbreviation = R.drawable.gfr;
-        else if (vitalDetailName.equalsIgnoreCase("bun"))
-            abbreviation = R.drawable.bun;
-        else if (vitalDetailName.equalsIgnoreCase("creatinine"))
-            abbreviation = R.drawable.creatinine;
-        else if (vitalDetailName.equalsIgnoreCase("respiratoryrate"))
-            abbreviation = R.drawable.respiratoryrate;
-        else if (vitalDetailName.equalsIgnoreCase("heartrate"))
-            abbreviation = R.drawable.heartrate;
-        else if (vitalDetailName.equalsIgnoreCase("temperature"))
-            abbreviation = R.drawable.temperature;
-        else if (vitalDetailName.equalsIgnoreCase("fbs"))
-            abbreviation = R.drawable.fbs;
-        else if (vitalDetailName.equalsIgnoreCase("ppbs"))
-            abbreviation = R.drawable.ppbs;
-        else if (vitalDetailName.equalsIgnoreCase("spo_2"))
-            abbreviation = R.drawable.spo_2;
-        else if (vitalDetailName.equalsIgnoreCase("platelet"))
-            abbreviation = R.drawable.platelet;
-        else if (vitalDetailName.equalsIgnoreCase("esr"))
-            abbreviation = R.drawable.esr;
-        else if (vitalDetailName.equalsIgnoreCase("hb"))
-            abbreviation = R.drawable.hb;
-
-        return abbreviation;
-    }
 
 
     public static Date convertStringToDate(String dateString, String dateFormat) {

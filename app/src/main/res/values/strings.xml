@@ -203,5 +203,23 @@
     <string name="clicked_item_data">clicked_item_data</string>
     <string name="pick_speciality">Pick Speciality</string>
     <string name="details_note"><![CDATA[Your details will remain 100% private & secure. If you think you have medical emergency, contact your doctor immediately.]]></string>
+    <string name="cardiologist">cardiologist</string>
+    <string name="ophthalmologist">ophthalmologist</string>
+    <string name="gastro">gastro</string>
+    <string name="physiotherapist">physiotherapist</string>
+    <string name="orthopaedic">orthopaedic</string>
+    <string name="ent">ent</string>
+    <string name="dentist">dentist</string>
+    <string name="gynecologist">gynecologist</string>
+    <string name="paediatric">paediatric</string>
+    <string name="dermatologist">dermatologist</string>
+    <string name="neurologist">neurologist</string>
+    <string name="physician">physician</string>
+    <string name="psychiatrist">psychiatrist</string>
+    <string name="oncologist">oncologist</string>
+    <string name="urologist">urologist</string>
+    <string name="nephrologist">nephrologist</string>
+    <string name="surgeon">surgeon</string>
+    <string name="endocrinologist">endocrinologist</string>
 
 </resources>

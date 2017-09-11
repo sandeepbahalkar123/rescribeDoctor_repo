@@ -17,8 +17,11 @@ import android.widget.ImageView;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectChatHelper;
 import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectHelper;
+import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectSearchHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
+import com.rescribe.doctor.model.doctor_connect_search.SearchDataModel;
 import com.rescribe.doctor.model.parceable_doctor_connect.DoctorConnectBaseModel;
 import com.rescribe.doctor.model.parceable_doctor_connect.DoctorConnectDataModel;
 import com.rescribe.doctor.model.parceable_doctor_connect_chat.Data;
@@ -65,6 +68,10 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
     private DoctorConnectHelper mDoctorConnectHelper;
     private DoctorConnectBaseModel doctorConnectBaseModel = new DoctorConnectBaseModel();
     private DoctorConnectDataModel mDoctorConnectDataModel = new DoctorConnectDataModel();
+    private DoctorConnectSearchHelper doctorConnectSearchHelper;
+    private DoctorConnectSearchBaseModel doctorConnectSearchBaseModel;
+    private ArrayList<SearchDataModel> doctorConnectSearchBaseModelList;
+    private SearchDataModel searchDataModel;
 
 
     @Override
@@ -140,7 +147,9 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
             public void afterTextChanged(Editable s) {
                 //search Bar Code
                 if (searchDoctorByNameFragment != null)
+
                     searchDoctorByNameFragment.setOnClickOfSearchBar(mSearchView.getText().toString());
+
             }
         };
     }
@@ -152,6 +161,9 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
         //Api call to get doctorConnectList
         mDoctorConnectHelper = new DoctorConnectHelper(this, this);
         mDoctorConnectHelper.doDoctorConnecList();
+        //Api call to get getDoctorSpeciality
+        doctorConnectSearchHelper = new DoctorConnectSearchHelper(this, this);
+        doctorConnectSearchHelper.getDoctorSpecialityList();
         //Doctor connect , chat and search fragment loaded here
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         DoctorConnectChatFragment doctorConnectChatFragment = DoctorConnectChatFragment.newInstance(mData.getChatList());
@@ -177,6 +189,9 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_CONNECT)) {
             doctorConnectBaseModel = (DoctorConnectBaseModel) customResponse;
             mDoctorConnectDataModel = doctorConnectBaseModel.getDoctorConnectDataModel();
+        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST)) {
+            doctorConnectSearchBaseModel = (DoctorConnectSearchBaseModel) customResponse;
+            searchDataModel = doctorConnectSearchBaseModel.getSearchDataModel();
         }
     }
 
@@ -232,9 +247,11 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
 
     //TODO: parceable has to be used to getSpecialityOFDoctorList
     @Override
+
     public void addSpecializationOfDoctorFragment(Bundle bundleData) {
         // Show speciality of Doctor fragment loaded
-        searchBySpecializationOfDoctorFragment = new SearchBySpecializationOfDoctorFragment();
+
+        searchBySpecializationOfDoctorFragment = SearchBySpecializationOfDoctorFragment.newInstance(searchDataModel.getDoctorSpecialities());
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, searchBySpecializationOfDoctorFragment);
@@ -244,7 +261,7 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
     @Override
     public void addSearchDoctorByNameFragment(Bundle bundleData) {
         // Filter doctor list by name fragment loaded
-        searchDoctorByNameFragment = SearchDoctorByNameFragment.newInstance(mDoctorConnectDataModel.getConnectList(),bundleData);
+        searchDoctorByNameFragment = SearchDoctorByNameFragment.newInstance(mDoctorConnectDataModel.getConnectList(), bundleData);
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.addToBackStack("SearchDoctorByNameFragment");
