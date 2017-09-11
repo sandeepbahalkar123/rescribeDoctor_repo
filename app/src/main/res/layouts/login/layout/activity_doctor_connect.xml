@@ -35,6 +35,7 @@
         android:visibility="gone"
         android:drawableLeft="@drawable/search"
         android:id="@+id/searchView"
+        android:inputType="text"
         android:drawablePadding="@dimen/dp4"
         android:hint="@string/search"
         android:layout_marginRight="@dimen/dp16"

@@ -73,6 +73,7 @@
             android:name=".ui.activities.DoctorConnectActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/doctor_connect"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>

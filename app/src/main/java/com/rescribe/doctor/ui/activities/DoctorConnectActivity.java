@@ -132,6 +132,7 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
             @Override
             public void afterTextChanged(Editable s) {
                 //search Bar Code
+                if(searchDoctorByNameFragment!=null)
                 searchDoctorByNameFragment.setOnClickOfSearchBar(searchView.getText().toString());
             }
         });

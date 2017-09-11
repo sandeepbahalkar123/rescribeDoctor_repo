@@ -15,20 +15,144 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5582d5a2-b58b-44fa-8730-1b5675acddf1" name="Default" comment="">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-11-54-23-350.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-11-58-07-622.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-12-03-34-690.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-12-04-23-806.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-12-05-47-673.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-12-05-58-145.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-12-07-12-748.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-12-21-30-380.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-12-40-05-158.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-13-18-54-274.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-14-46-32-834.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-14-47-36-851.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-14-52-14-615.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-14-55-10-269.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-14-57-32-831.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-15-01-40-818.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-15-02-14-902.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-15-08-08-437.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-15-21-32-718.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-15-38-47-698.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-15-39-13-313.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-15-41-03-170.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-15-41-40-484.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-15-42-48-007.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-16-39-34-954.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-16-40-32-075.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-16-44-39-682.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-16-53-38-718.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-17-02-02-897.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-17-31-21-014.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-17-32-13-371.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-17-37-27-623.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-17-42-12-827.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-17-54-28-036.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-18-39-08-077.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-18-39-28-574.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-18-50-47-900.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-18-51-51-639.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-19-05-08-372.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-19-08-17-568.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-19-09-12-885.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-19-12-49-459.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-19-18-15-088.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-19-20-52-437.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-19-24-39-728.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-19-41-35-085.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-07-19-43-57-150.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-11-22-30-688.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-11-32-53-264.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-12-06-17-119.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-12-10-35-095.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-12-13-11-331.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-12-15-53-104.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-12-18-50-869.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-12-24-25-207.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-12-32-04-228.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-12-49-02-505.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-12-57-35-475.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-13-20-44-595.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-13-22-41-137.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-13-29-08-984.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-16-28-57-232.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-16-29-44-795.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-07-35-297.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-09-51-576.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-10-26-454.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-11-29-395.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-13-54-703.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-14-50-620.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-16-21-886.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-18-54-845.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-20-50-391.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-21-55-053.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-23-59-202.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-25-16-650.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-27-45-138.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-28-54-120.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-30-03-456.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-31-10-130.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-31-51-451.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-17-57-16-562.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-18-04-07-056.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-18-07-18-999.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-18-09-13-853.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-08-18-13-02-844.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-11-25-28-872.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-11-39-56-862.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-11-46-41-857.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-11-48-58-711.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-11-51-36-896.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-11-56-15-073.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-12-00-52-318.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-12-01-25-851.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-12-02-29-240.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-12-19-09-386.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-12-20-06-110.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-12-23-46-200.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-12-24-52-776.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-12-26-20-002.rawproto" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-09-11-12-27-31-758.rawproto" afterPath="" />
+=======
+>>>>>>> jeetal
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileHashes.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileSnapshots.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.lock" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_materialdrawer_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_materialdrawer_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin" />
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_materialdrawer_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_materialdrawer_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_materialdrawer_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_materialdrawer_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_materialdrawer_compileReleaseJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_materialdrawer_compileReleaseJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_materialdrawer_compileReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_materialdrawer_compileReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/adapters/DoctorConnectAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/adapters/DoctorConnectAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/helpers/doctor_connect/DoctorConnectSearchHelper.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/helpers/doctor_connect/DoctorConnectSearchHelper.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/network/RequestManager.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/network/RequestManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchBySpecializationOfDoctorFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchBySpecializationOfDoctorFragment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/util/RescribeConstants.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/util/RescribeConstants.java" />
+=======
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_grid_search.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_grid_search.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/local.properties" afterPath="$PROJECT_DIR$/local.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/materialdrawer/materialdrawer.iml" afterPath="$PROJECT_DIR$/materialdrawer/materialdrawer.iml" />
+=======
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/activities/DoctorConnectActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/activities/DoctorConnectActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/activity_doctor_connect.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/activity_doctor_connect.xml" />
+>>>>>>> jeetal
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
     </list>
     <ignored path="rescribeDoctor_repo.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,11 +184,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="DoctorConnectActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="DoctorConnectActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/activities/DoctorConnectActivity.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="3186">
               <caret line="223" column="63" selection-start-line="223" selection-start-column="63" selection-end-line="223" selection-end-column="63" />
+=======
+            <state relative-caret-position="-124">
+              <caret line="134" column="51" selection-start-line="134" selection-start-column="51" selection-end-line="134" selection-end-column="51" />
+>>>>>>> jeetal
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -72,6 +201,7 @@
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="DoctorConnectChatFragment.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/DoctorConnectChatFragment.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -89,6 +219,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="270">
               <caret line="15" column="47" selection-start-line="15" selection-start-column="47" selection-end-line="15" selection-end-column="47" />
+=======
+      <file leaf-file-name="activity_doctor_connect.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layouts/login/layout/activity_doctor_connect.xml">
+          <provider editor-type-id="android-designer2">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="166">
+              <caret line="37" column="31" selection-start-line="37" selection-start-column="31" selection-end-line="37" selection-end-column="31" />
+>>>>>>> jeetal
               <folding />
             </state>
           </provider>
@@ -97,11 +237,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SearchBySpecializationOfDoctorFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchBySpecializationOfDoctorFragment.java">
+      <file leaf-file-name="SearchDoctorByNameFragment.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchDoctorByNameFragment.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="97">
               <caret line="87" column="44" selection-start-line="87" selection-start-column="44" selection-end-line="87" selection-end-column="44" />
+=======
+<<<<<<< HEAD
+            <state relative-caret-position="702">
+              <caret line="71" column="66" selection-start-line="71" selection-start-column="66" selection-end-line="71" selection-end-column="66" />
+=======
+            <state relative-caret-position="920">
+              <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+>>>>>>> jeetal
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -109,16 +259,33 @@
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="DoctorConnectSearchHelper.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/helpers/doctor_connect/DoctorConnectSearchHelper.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="164">
               <caret line="68" column="62" selection-start-line="68" selection-start-column="62" selection-end-line="68" selection-end-column="62" />
               <folding />
+=======
+      <file leaf-file-name="SearchBySpecializationOfDoctorFragment.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchBySpecializationOfDoctorFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="792">
+              <caret line="65" column="46" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
+=======
+            <state relative-caret-position="128">
+              <caret line="40" column="50" selection-start-line="40" selection-start-column="50" selection-end-line="40" selection-end-column="50" />
+>>>>>>> jeetal
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="RequestManager.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/network/RequestManager.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -135,6 +302,22 @@
             <state relative-caret-position="196">
               <caret line="116" column="72" selection-start-line="116" selection-start-column="31" selection-end-line="116" selection-end-column="72" />
               <folding />
+=======
+      <file leaf-file-name="AppGlobalContainerActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/activities/AppGlobalContainerActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="2520">
+              <caret line="142" column="65" selection-start-line="142" selection-start-column="65" selection-end-line="142" selection-end-column="65" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+=======
+            <state relative-caret-position="-240">
+              <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+              <folding />
+>>>>>>> jeetal
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
             </state>
           </provider>
         </entry>
@@ -145,8 +328,13 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="1008">
               <caret line="56" column="33" selection-start-line="56" selection-start-column="33" selection-end-line="56" selection-end-column="33" />
+=======
+            <state relative-caret-position="339">
+              <caret line="75" column="51" selection-start-line="75" selection-start-column="51" selection-end-line="75" selection-end-column="51" />
+>>>>>>> jeetal
               <folding />
             </state>
           </provider>
@@ -155,18 +343,53 @@
       <file leaf-file-name="DoctorConnectAdapter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/adapters/DoctorConnectAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="252">
               <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+              <folding />
+=======
+<<<<<<< HEAD
+            <state relative-caret-position="162">
+=======
+            <state relative-caret-position="-574">
+>>>>>>> jeetal
+              <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
+            </state>
+          </provider>
+        </entry>
+      </file>
+<<<<<<< HEAD
+      <file leaf-file-name="doctor_connect_grid_search.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_grid_search.xml">
+          <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="234">
+              <caret line="13" column="39" selection-start-line="13" selection-start-column="39" selection-end-line="13" selection-end-column="39" />
+=======
+            <state relative-caret-position="204">
+              <caret line="14" column="32" selection-start-line="14" selection-start-column="32" selection-end-line="14" selection-end-column="32" />
+=======
+      <file leaf-file-name="doctor_connect.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/assets/doctor_connect.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="6" column="1" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="10" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="doctor_connect_grid_search.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_grid_search.xml">
+      <file leaf-file-name="doctor_connect_chat.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/assets/doctor_connect_chat.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="13" column="39" selection-start-line="13" selection-start-column="39" selection-end-line="13" selection-end-column="39" />
+            <state relative-caret-position="90">
+              <caret line="6" column="11" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
+>>>>>>> jeetal
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
               <folding />
             </state>
           </provider>
@@ -175,6 +398,27 @@
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+      <file leaf-file-name="local.properties" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/local.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="216">
+              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+=======
+      <file leaf-file-name="doctor_connect_search.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/assets/doctor_connect_search.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="6" column="11" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
+>>>>>>> jeetal
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -3435,7 +3679,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/model/doctor_connect/DoctorConnectBaseModel.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/activity_doctor_connect.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/util/Config.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/activities/LoginSignUpActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/preference/RescribePreferencesManager.java" />
@@ -3457,12 +3700,20 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/model/parceable_doctor_connect/DoctorConnectBaseModel.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/DoctorConnectChatFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/DoctorConnectFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchDoctorByNameFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/adapters/DoctorConnectChatAdapter.java" />
+<<<<<<< HEAD
+=======
+        <option value="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_grid_search.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchBySpecializationOfDoctorFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_recycle_view_layout.xml" />
+>>>>>>> jeetal
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/adapters/DoctorSearchByNameAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchDoctorByNameFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/activity_doctor_connect.xml" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/activities/DoctorConnectActivity.java" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_recycle_view_layout.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_grid_search.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/adapters/DoctorConnectAdapter.java" />
@@ -3470,6 +3721,14 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/util/RescribeConstants.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/helpers/doctor_connect/DoctorConnectSearchHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/network/RequestManager.java" />
+=======
+<<<<<<< HEAD
+        <option value="$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchBySpecializationOfDoctorFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_recycle_view_layout.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_grid_search.xml" />
+=======
+>>>>>>> jeetal
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
       </list>
     </option>
   </component>
@@ -3514,6 +3773,7 @@
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="rescribeDoctor_repo" />
+<<<<<<< HEAD
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -3539,7 +3799,25 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="java" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+=======
+<<<<<<< HEAD
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+=======
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Gradle Scripts" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rescribeDoctor_repo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+<<<<<<< HEAD
+=======
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -3551,12 +3829,40 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rescribeDoctor_repo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+<<<<<<< HEAD
               <option name="myItemId" value="java" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="doctor" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+=======
+              <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+>>>>>>> jeetal
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rescribeDoctor_repo" />
+<<<<<<< HEAD
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -3589,6 +3895,65 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+<<<<<<< HEAD
+=======
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="AndroidView">
+        <subPane>
+=======
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rescribeDoctor_repo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="doctor" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rescribeDoctor_repo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="doctor" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="rescribeDoctor_repo" />
@@ -3611,18 +3976,60 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="activities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+>>>>>>> jeetal
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rescribeDoctor_repo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+<<<<<<< HEAD
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="doctor" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="fragments" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="doctor_connect" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+=======
+<<<<<<< HEAD
+              <option name="myItemId" value="Gradle Scripts" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="rescribeDoctor_repo" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+=======
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="manifests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidManifestsGroupNode" />
+>>>>>>> jeetal
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="app" />
@@ -3657,7 +4064,7 @@
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res" />
     <property name="SearchEverywhereHistoryKey" value="Config&#9;PSI&#9;JAVA://com.rescribe.doctor.util.Config&#10;string&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/res/values/strings.xml&#10;Doctor&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/DoctorConnectFragment.java&#10;RE&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/network/RequestManager.java&#10;Docto&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/adapters/DoctorConnectAdapter.java&#10;DoctorChat&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/adapters/DoctorConnectChatAdapter.java&#10;sea&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/DoctorConnectSearchFragment.java&#10;Logi&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/ui/activities/LoginSignUpActivity.java&#10;App&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/ui/activities/AppGlobalContainerActivity.java&#10;Do&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/DoctorConnectSearchFragment.java&#10;log&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/ui/activities/LoginSignUpActivity.java&#10;Req&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/network/RequestManager.java&#10;config&#9;PSI&#9;JAVA://com.rescribe.doctor.util.Config&#10;doctorConnect&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/adapters/DoctorConnectChatAdapter.java&#10;dimens&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/res/values/dimens.xml&#10;rescribe&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/java/com/rescribe/doctor/singleton/RescribeApplication.java&#10;color&#9;FILE&#9;file:///home/jeetal/jeetal_projects/rescribeDoctor_repo/app/src/main/res/values/colors.xml&#10;Const&#9;PSI&#9;JAVA://com.rescribe.doctor.util.RescribeConstants" />
     <property name="UI_DESIGNER_EDITOR_MODE.NlPaletteManager-NlPreviewForm.SHOW" value="false" />
-    <property name="DEBUGGABLE_DEVICE" value="unknown-custom_phone___5_0_0___api_21___768x1280-192.168.56.101:5555" />
+    <property name="DEBUGGABLE_DEVICE" value="motorola-xt1068-ZX1D64MG72" />
     <property name="DEBUGGABLE_PROCESS" value="com.rescribe.doctor" />
     <property name="SHOW_ALL_PROCESSES" value="false" />
     <property name="DEBUGGER_ID" value="Auto" />
@@ -3990,7 +4397,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
     <frame x="65" y="24" width="1301" height="744" extended-state="6" />
+=======
+    <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
+>>>>>>> jeetal
     <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -3998,12 +4409,23 @@
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24940239" sideWeight="0.51902175" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.46290323" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32988048" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32847896" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.48381877" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+=======
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32847896" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+=======
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32988048" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17096774" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+>>>>>>> jeetal
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -4043,12 +4465,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/adapters/DoctorSearchByNameAdapter.java</url>
-          <line>131</line>
-          <properties />
-          <option name="timeStamp" value="22" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/DoctorConnectChatFragment.java</url>
           <line>70</line>
           <properties />
@@ -4072,12 +4488,19 @@
           <properties />
           <option name="timeStamp" value="55" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/activities/DoctorConnectActivity.java</url>
+          <line>135</line>
+          <properties />
+          <option name="timeStamp" value="63" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="63" />
+      <option name="time" value="64" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+<<<<<<< HEAD
     <entry file="file://$USER_HOME$/Android/Sdk/sources/android-25/android/widget/Filter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="930">
@@ -4102,6 +4525,8 @@
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> jeetal
     <entry file="file://$USER_HOME$/Android/Sdk/sources/android-25/android/os/Trace.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="95">
@@ -4195,10 +4620,17 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/app/src/main/assets/doctor_connect.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="15" column="33" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
+=======
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/util/RescribeConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="115" column="46" selection-start-line="115" selection-start-column="46" selection-end-line="115" selection-end-column="46" />
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
         </state>
       </provider>
     </entry>
@@ -4227,13 +4659,26 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchDoctorByNameFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1200">
           <caret line="80" column="25" selection-start-line="80" selection-start-column="25" selection-end-line="80" selection-end-column="25" />
+<<<<<<< HEAD
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+=======
+        </state>
+      </provider>
+    </entry>
+=======
+>>>>>>> jeetal
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/helpers/doctor_connect/DoctorConnectSearchHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
         </state>
       </provider>
     </entry>
@@ -4319,9 +4764,18 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="62">
           <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+<<<<<<< HEAD
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+=======
+<<<<<<< HEAD
+=======
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+>>>>>>> jeetal
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
         </state>
       </provider>
     </entry>
@@ -4350,25 +4804,81 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/adapters/DoctorConnectSearchAdapter.java">
+<<<<<<< HEAD
+=======
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="162">
+          <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+=======
+        <state relative-caret-position="-57">
+          <caret line="65" column="46" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
+>>>>>>> jeetal
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/DoctorConnectChatFragment.java">
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="792">
           <caret line="65" column="46" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
+=======
+        <state relative-caret-position="116">
+          <caret line="42" column="44" selection-start-line="42" selection-start-column="44" selection-end-line="42" selection-end-column="44" />
+>>>>>>> jeetal
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_recycle_view_layout.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-95">
+          <caret line="15" column="47" selection-start-line="15" selection-start-column="47" selection-end-line="15" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_grid_search.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
+          <folding>
+            <element signature="e#263#275#0" expanded="true" />
+            <element signature="e#1142#1155#0" expanded="true" />
+            <element signature="e#1179#1203#0" expanded="true" />
+            <element signature="e#1228#1240#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/adapters/DoctorSearchByNameAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="2520">
           <caret line="142" column="65" selection-start-line="142" selection-start-column="65" selection-end-line="142" selection-end-column="65" />
+=======
+        <state relative-caret-position="-624">
+          <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
+>>>>>>> jeetal
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
       <provider editor-type-id="android-manifest">
         <state />
@@ -4379,31 +4889,102 @@
           <folding />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/DoctorConnectChatFragment.java">
+=======
+    <entry file="file://$PROJECT_DIR$/app/src/main/assets/doctor_connect.json">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="1" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/assets/doctor_connect_chat.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="11" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+>>>>>>> jeetal
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/assets/doctor_connect_search.json">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="756">
           <caret line="42" column="44" selection-start-line="42" selection-start-column="44" selection-end-line="42" selection-end-column="44" />
+=======
+        <state relative-caret-position="90">
+          <caret line="6" column="11" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/adapters/DoctorConnectAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-574">
+          <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+>>>>>>> jeetal
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/activities/DoctorConnectActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchDoctorByNameFragment.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="3186">
           <caret line="223" column="63" selection-start-line="223" selection-start-column="63" selection-end-line="223" selection-end-column="63" />
+=======
+        <state relative-caret-position="920">
+          <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+>>>>>>> jeetal
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+=======
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/fragments/doctor_connect/SearchBySpecializationOfDoctorFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="702">
+          <caret line="71" column="66" selection-start-line="71" selection-start-column="66" selection-end-line="71" selection-end-column="66" />
+=======
+        <state relative-caret-position="128">
+          <caret line="40" column="50" selection-start-line="40" selection-start-column="50" selection-end-line="40" selection-end-column="50" />
+>>>>>>> jeetal
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+<<<<<<< HEAD
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_recycle_view_layout.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="15" column="47" selection-start-line="15" selection-start-column="47" selection-end-line="15" selection-end-column="47" />
+=======
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/activities/AppGlobalContainerActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-240">
+          <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layouts/login/layout/activity_doctor_connect.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="37" column="31" selection-start-line="37" selection-start-column="31" selection-end-line="37" selection-end-column="31" />
+>>>>>>> jeetal
           <folding />
         </state>
       </provider>
@@ -4411,6 +4992,7 @@
         <state />
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/local.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
@@ -4419,6 +5001,9 @@
         </state>
       </provider>
     </entry>
+=======
+<<<<<<< HEAD
+>>>>>>> 6b44536077ea6892d83f8a046869b6ae3a6e3182
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layouts/login/layout/doctor_connect_grid_search.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
@@ -4469,6 +5054,27 @@
         <state relative-caret-position="239">
           <caret line="448" column="18" selection-start-line="448" selection-start-column="18" selection-end-line="448" selection-end-column="18" />
           <folding />
+=======
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="339">
+          <caret line="75" column="51" selection-start-line="75" selection-start-column="51" selection-end-line="75" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-manifest">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/rescribe/doctor/ui/activities/DoctorConnectActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-124">
+          <caret line="134" column="51" selection-start-line="134" selection-start-column="51" selection-end-line="134" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3390#3415#0" expanded="true" />
+          </folding>
+>>>>>>> jeetal
         </state>
       </provider>
     </entry>
