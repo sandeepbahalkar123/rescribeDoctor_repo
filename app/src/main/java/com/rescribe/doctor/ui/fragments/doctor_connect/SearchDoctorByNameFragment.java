@@ -42,7 +42,7 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
     public static SearchDoctorByNameFragment newInstance(ArrayList<ConnectList> connectLists) {
         SearchDoctorByNameFragment fragment = new SearchDoctorByNameFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(RescribeConstants.CHAT_REQUEST, connectLists);
+        args.putParcelableArrayList(RescribeConstants.CONNECT_REQUEST, connectLists);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,7 +52,7 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
         mRootView = inflater.inflate(R.layout.doctor_connect_recycle_view_layout, container, false);
         Bundle arguments = getArguments();
         if (arguments != null) {
-            connectLists = getArguments().getParcelableArrayList(RescribeConstants.CHAT_REQUEST);
+            connectLists = getArguments().getParcelableArrayList(RescribeConstants.CONNECT_REQUEST);
         }
 
         unbinder = ButterKnife.bind(this, mRootView);

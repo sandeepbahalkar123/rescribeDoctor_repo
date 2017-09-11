@@ -4,31 +4,26 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:orientation="vertical"
-    android:padding="@dimen/dp8">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/specialityOfDoctor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/specialityImage"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dp10"
-            android:src="@drawable/remarks" />
+            android:layout_height="wrap_content" />
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/specialityName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:gravity="center"
-            android:padding="@dimen/dp4"
             android:textColor="@color/black"
             android:textSize="@dimen/sp14"
             app:customFont="@string/roboto_regular" />

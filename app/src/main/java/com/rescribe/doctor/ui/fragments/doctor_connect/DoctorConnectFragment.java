@@ -48,7 +48,7 @@ public class DoctorConnectFragment extends Fragment {
     public static DoctorConnectFragment newInstance(ArrayList<ConnectList> connectLists) {
         DoctorConnectFragment fragment = new DoctorConnectFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(RescribeConstants.CHAT_REQUEST, connectLists);
+        args.putParcelableArrayList(RescribeConstants.CONNECT_REQUEST, connectLists);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,7 +61,7 @@ public class DoctorConnectFragment extends Fragment {
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            connectLists = getArguments().getParcelableArrayList(RescribeConstants.CHAT_REQUEST);
+            connectLists = getArguments().getParcelableArrayList(RescribeConstants.CONNECT_REQUEST);
         }
         unbinder = ButterKnife.bind(this, mRootView);
         init();

@@ -147,11 +147,8 @@ public class RescribeConstants {
     public static final String SENDERID = "EMROTP";
     public static final String IS_URL = "isUrl";
     public static final String CHAT_REQUEST = "chat_request";
-
-//    public static final String CANCEL_ALARM = "cancel_alarm";
-
-
-    //This is for bydefault textcolor,headercolor,buttoncolor etc.
+    public static final String SEARCH__REQUEST = "search_request";
+    public static final String CONNECT_REQUEST = "connect_request";
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";

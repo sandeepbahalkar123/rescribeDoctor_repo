@@ -5,30 +5,30 @@
     "statusMessage": "USER AUTHENTICATED"
   },
   "data": {
-    "doctorConnectSearch": [
+    "doctorSpecialities": [
       {
         "id": 1,
-        "specialization": "Gynecologist"
+        "speciality": "Obstetrics"
       },
       {
         "id": 2,
-        "specialization": "Cardiologist"
+        "speciality": "Gynecologist"
       },
       {
         "id": 3,
-        "specialization": "Gastro"
+        "speciality": "Immunology"
       },
       {
         "id": 4,
-        "specialization": "Orthopaedic"
+        "speciality": "Hepatology"
       },
       {
         "id": 5,
-        "specialization": "ENT"
+        "speciality": "Toxicology"
       },
       {
         "id": 6,
-        "specialization": "Pediatric"
+        "speciality": "general physician"
       }
     ]
   }

@@ -1,8 +1,6 @@
 package com.rescribe.doctor.adapters;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,17 +9,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchModel;
+import com.rescribe.doctor.model.doctor_connect_search.DoctorSpeciality;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
-import com.rescribe.doctor.ui.fragments.LoginFragment;
-import com.rescribe.doctor.ui.fragments.doctor_connect.DoctorConnectFragment;
+import com.rescribe.doctor.util.CommonMethods;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * Created by jeetal on 6/9/17.
@@ -30,7 +26,7 @@ import butterknife.Unbinder;
 public class DoctorConnectSearchAdapter extends RecyclerView.Adapter<DoctorConnectSearchAdapter.ListViewHolder> {
 
     private Context mContext;
-    private List<DoctorConnectSearchModel> doctorConnectSearchModels;
+    private List<DoctorSpeciality> doctorConnectSearchModels;
     private OnDoctorSpecialityClickListener mOnDoctorSpecialityClickListener;
 
 
@@ -52,12 +48,10 @@ public class DoctorConnectSearchAdapter extends RecyclerView.Adapter<DoctorConne
         }
     }
 
-
-    public DoctorConnectSearchAdapter(Context mContext,OnDoctorSpecialityClickListener mOnDoctorSpecialityClickListener, List<DoctorConnectSearchModel> appointmentsList) {
-        this.doctorConnectSearchModels = appointmentsList;
+    public DoctorConnectSearchAdapter(Context mContext, OnDoctorSpecialityClickListener mOnDoctorSpecialityClickListener, ArrayList<DoctorSpeciality> searchDataModels) {
+        this.doctorConnectSearchModels = searchDataModels;
         this.mContext = mContext;
-
-            this.mOnDoctorSpecialityClickListener = mOnDoctorSpecialityClickListener;
+        this.mOnDoctorSpecialityClickListener = mOnDoctorSpecialityClickListener;
     }
 
     @Override
@@ -70,8 +64,9 @@ public class DoctorConnectSearchAdapter extends RecyclerView.Adapter<DoctorConne
 
     @Override
     public void onBindViewHolder(ListViewHolder holder, int position) {
-        DoctorConnectSearchModel doctorConnectSearchModel = doctorConnectSearchModels.get(position);
+        DoctorSpeciality doctorConnectSearchModel = doctorConnectSearchModels.get(position);
         holder.specialityName.setText(doctorConnectSearchModel.getSpeciality());
+        holder.specialityImage.setImageResource(CommonMethods.getDoctorSpecialistIcons(doctorConnectSearchModel.getSpeciality(), mContext));
         holder.specialityOfDoctor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -17,8 +17,11 @@ import android.widget.ImageView;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectChatHelper;
 import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectHelper;
+import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectSearchHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
+import com.rescribe.doctor.model.doctor_connect_search.SearchDataModel;
 import com.rescribe.doctor.model.parceable_doctor_connect.DoctorConnectBaseModel;
 import com.rescribe.doctor.model.parceable_doctor_connect.DoctorConnectDataModel;
 import com.rescribe.doctor.model.parceable_doctor_connect_chat.Data;
@@ -43,7 +46,7 @@ import butterknife.OnClick;
  * Created by jeetal on 5/9/17.
  */
 
-public class DoctorConnectActivity extends AppCompatActivity implements DoctorConnectSearchContainerFragment.OnAddFragmentListener, SearchBySpecializationOfDoctorFragment.OnAddFragmentListener,HelperResponse {
+public class DoctorConnectActivity extends AppCompatActivity implements DoctorConnectSearchContainerFragment.OnAddFragmentListener, SearchBySpecializationOfDoctorFragment.OnAddFragmentListener, HelperResponse {
     @BindView(R.id.backButton)
     ImageView mBackButton;
     @BindView(R.id.tabsDoctorConnect)
@@ -59,11 +62,15 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
     private SearchBySpecializationOfDoctorFragment searchBySpecializationOfDoctorFragment;
     private SearchDoctorByNameFragment searchDoctorByNameFragment;
     private DoctorConnectChatHelper mDoctorConnectChatHelper;
-    private DoctorConnectChatBaseModel mDoctorConnectChatBaseModel =  new DoctorConnectChatBaseModel();
+    private DoctorConnectChatBaseModel mDoctorConnectChatBaseModel = new DoctorConnectChatBaseModel();
     private Data mData = new Data();
     private DoctorConnectHelper mDoctorConnectHelper;
     private DoctorConnectBaseModel doctorConnectBaseModel = new DoctorConnectBaseModel();
     private DoctorConnectDataModel mDoctorConnectDataModel = new DoctorConnectDataModel();
+    private DoctorConnectSearchHelper doctorConnectSearchHelper;
+    private DoctorConnectSearchBaseModel doctorConnectSearchBaseModel;
+    private ArrayList<SearchDataModel> doctorConnectSearchBaseModelList;
+    private SearchDataModel searchDataModel;
 
 
     @Override
@@ -132,23 +139,26 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
             @Override
             public void afterTextChanged(Editable s) {
                 //search Bar Code
-                if(searchDoctorByNameFragment!=null)
-                searchDoctorByNameFragment.setOnClickOfSearchBar(searchView.getText().toString());
+                if (searchDoctorByNameFragment != null)
+                    searchDoctorByNameFragment.setOnClickOfSearchBar(searchView.getText().toString());
             }
         });
     }
 
     private void setupViewPager() {
-     //Api call to get doctorChatList
+        //Api call to get doctorChatList
         mDoctorConnectChatHelper = new DoctorConnectChatHelper(this, this);
         mDoctorConnectChatHelper.doDoctorConnectChat();
         //Api call to get doctorConnectList
-        mDoctorConnectHelper = new DoctorConnectHelper(this,this);
+        mDoctorConnectHelper = new DoctorConnectHelper(this, this);
         mDoctorConnectHelper.doDoctorConnecList();
+        //Api call to get getDoctorSpeciality
+        doctorConnectSearchHelper = new DoctorConnectSearchHelper(this, this);
+        doctorConnectSearchHelper.getDoctorSpecialityList();
         //Doctor connect , chat and search fragment loaded here
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        DoctorConnectChatFragment doctorConnectChatFragment =  DoctorConnectChatFragment.newInstance(mData.getChatList());
-        DoctorConnectFragment doctorConnectFragment =  DoctorConnectFragment.newInstance(mDoctorConnectDataModel.getConnectList());
+        DoctorConnectChatFragment doctorConnectChatFragment = DoctorConnectChatFragment.newInstance(mData.getChatList());
+        DoctorConnectFragment doctorConnectFragment = DoctorConnectFragment.newInstance(mDoctorConnectDataModel.getConnectList());
         doctorConnectSearchContainerFragment = new DoctorConnectSearchContainerFragment();
         adapter.addFragment(doctorConnectChatFragment, getString(R.string.chats));
         adapter.addFragment(doctorConnectFragment, getString(R.string.connect));
@@ -163,13 +173,16 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if(mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_CONNECT_CHAT)){
-            mDoctorConnectChatBaseModel = (DoctorConnectChatBaseModel)customResponse;
+        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_CONNECT_CHAT)) {
+            mDoctorConnectChatBaseModel = (DoctorConnectChatBaseModel) customResponse;
             mData = mDoctorConnectChatBaseModel.getData();
 
-        }else if(mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_CONNECT)){
-            doctorConnectBaseModel = (DoctorConnectBaseModel)customResponse;
+        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_CONNECT)) {
+            doctorConnectBaseModel = (DoctorConnectBaseModel) customResponse;
             mDoctorConnectDataModel = doctorConnectBaseModel.getDoctorConnectDataModel();
+        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR__FILTER_DOCTOR_SPECIALITY_LIST)) {
+            doctorConnectSearchBaseModel = (DoctorConnectSearchBaseModel) customResponse;
+            searchDataModel = doctorConnectSearchBaseModel.getSearchDataModel();
         }
     }
 
@@ -222,11 +235,12 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
         void setOnClickOfSearchBar(String searchText);
 
     }
-  //TODO: parceable has to be used to getSpecialityOFDoctorList
+
+    //TODO: parceable has to be used to getSpecialityOFDoctorList
     @Override
     public void addSpecializationOfDoctorFragment() {
-     // Show speciality of Doctor fragment loaded
-        searchBySpecializationOfDoctorFragment = new SearchBySpecializationOfDoctorFragment();
+        // Show speciality of Doctor fragment loaded
+        searchBySpecializationOfDoctorFragment = SearchBySpecializationOfDoctorFragment.newInstance(searchDataModel.getDoctorSpecialities());
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, searchBySpecializationOfDoctorFragment);
