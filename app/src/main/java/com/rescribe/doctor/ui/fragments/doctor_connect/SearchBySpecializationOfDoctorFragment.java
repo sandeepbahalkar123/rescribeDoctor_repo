@@ -55,10 +55,15 @@ public class SearchBySpecializationOfDoctorFragment extends Fragment implements 
     public static SearchBySpecializationOfDoctorFragment newInstance(ArrayList<DoctorSpeciality> searchDataModels) {
         SearchBySpecializationOfDoctorFragment fragment = new SearchBySpecializationOfDoctorFragment();
         Bundle args = new Bundle();
+<<<<<<< HEAD
         args.putParcelableArrayList(RescribeConstants.SEARCH__REQUEST,searchDataModels);
+=======
+        args.putParcelableArrayList(RescribeConstants.CHAT_REQUEST, chatLists);
+>>>>>>> c171ee19aa097954839d329d04105b977e10e4ee
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

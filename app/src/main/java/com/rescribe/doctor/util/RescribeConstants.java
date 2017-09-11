@@ -114,7 +114,7 @@ public class RescribeConstants {
     public static final String TASK_LOGIN_WITH_OTP = RescribeConstants.BLANK + 24;
     public static final String TASK_DOCTOR_CONNECT_CHAT = RescribeConstants.BLANK + 25;
     public static final String TASK_DOCTOR_CONNECT = RescribeConstants.BLANK + 26;
-    public static final String TASK_DOCTOR__FILTER_DOCTOR_SPECIALITY_LIST = RescribeConstants.BLANK + 27;
+    public static final String TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST = RescribeConstants.BLANK + 27;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;

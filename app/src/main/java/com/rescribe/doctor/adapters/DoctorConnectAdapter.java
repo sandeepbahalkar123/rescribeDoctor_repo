@@ -12,14 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.parceable_doctor_connect.ConnectList;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -28,12 +31,12 @@ import butterknife.ButterKnife;
  * Created by jeetal on 6/9/17.
  */
 
-public class DoctorConnectAdapter extends RecyclerView.Adapter<DoctorConnectAdapter.ListViewHolder>{
+public class DoctorConnectAdapter extends RecyclerView.Adapter<DoctorConnectAdapter.ListViewHolder> {
 
     private Context mContext;
-    private ArrayList<ConnectList>  appointmentsList;
-    private ArrayList<ConnectList>  mArrayList;
-    String searchString="";
+    private ArrayList<ConnectList> appointmentsList;
+    private ArrayList<ConnectList> mArrayList;
+    String searchString = "";
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
 
@@ -77,7 +80,7 @@ public class DoctorConnectAdapter extends RecyclerView.Adapter<DoctorConnectAdap
     public void onBindViewHolder(ListViewHolder holder, int position) {
         ConnectList doctorConnectChatModel = appointmentsList.get(position);
 
-       // holder.doctorName.setText(doctorConnectChatModel.getDoctorName());
+        // holder.doctorName.setText(doctorConnectChatModel.getDoctorName());
         holder.doctorType.setText(doctorConnectChatModel.getSpecialization());
         if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase("Online")) {
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.green_light));
@@ -96,7 +99,7 @@ public class DoctorConnectAdapter extends RecyclerView.Adapter<DoctorConnectAdap
 
         SpannableString spannableStringSearch = null;
 
-        if ((searchString!= null) && (!searchString.isEmpty())) {
+        if ((searchString != null) && (!searchString.isEmpty())) {
             spannableStringSearch = new SpannableString(doctorConnectChatModel.getDoctorName());
             Pattern pattern = Pattern.compile(searchString, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(doctorConnectChatModel.getDoctorName());
@@ -107,10 +110,9 @@ public class DoctorConnectAdapter extends RecyclerView.Adapter<DoctorConnectAdap
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
-        if(spannableStringSearch !=null){
+        if (spannableStringSearch != null) {
             holder.doctorName.setText(spannableStringSearch);
-        }
-        else{
+        } else {
             holder.doctorName.setText(doctorConnectChatModel.getDoctorName());
         }
 
