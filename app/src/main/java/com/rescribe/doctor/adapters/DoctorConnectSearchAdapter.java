@@ -1,6 +1,7 @@
 package com.rescribe.doctor.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
@@ -53,11 +54,10 @@ public class DoctorConnectSearchAdapter extends RecyclerView.Adapter<DoctorConne
     }
 
 
-    public DoctorConnectSearchAdapter(Context mContext,OnDoctorSpecialityClickListener mOnDoctorSpecialityClickListener, List<DoctorConnectSearchModel> appointmentsList) {
+    public DoctorConnectSearchAdapter(Context mContext, OnDoctorSpecialityClickListener mOnDoctorSpecialityClickListener, List<DoctorConnectSearchModel> appointmentsList) {
         this.doctorConnectSearchModels = appointmentsList;
         this.mContext = mContext;
-
-            this.mOnDoctorSpecialityClickListener = mOnDoctorSpecialityClickListener;
+        this.mOnDoctorSpecialityClickListener = mOnDoctorSpecialityClickListener;
     }
 
     @Override
@@ -70,13 +70,14 @@ public class DoctorConnectSearchAdapter extends RecyclerView.Adapter<DoctorConne
 
     @Override
     public void onBindViewHolder(ListViewHolder holder, int position) {
-        DoctorConnectSearchModel doctorConnectSearchModel = doctorConnectSearchModels.get(position);
+        final DoctorConnectSearchModel doctorConnectSearchModel = doctorConnectSearchModels.get(position);
         holder.specialityName.setText(doctorConnectSearchModel.getSpeciality());
         holder.specialityOfDoctor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnDoctorSpecialityClickListener.setOnClickOfDoctorSpeciality();
-
+                Bundle b = new Bundle();
+                b.putString(mContext.getString(R.string.clicked_item_data), doctorConnectSearchModel.getSpeciality());
+                mOnDoctorSpecialityClickListener.setOnClickOfDoctorSpeciality(b);
             }
         });
     }
@@ -87,7 +88,7 @@ public class DoctorConnectSearchAdapter extends RecyclerView.Adapter<DoctorConne
     }
 
     public interface OnDoctorSpecialityClickListener {
-        void setOnClickOfDoctorSpeciality();
+        void setOnClickOfDoctorSpeciality(Bundle bundleData);
     }
 
 

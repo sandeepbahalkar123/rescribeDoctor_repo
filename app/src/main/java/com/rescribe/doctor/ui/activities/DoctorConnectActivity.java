@@ -24,6 +24,7 @@ import com.rescribe.doctor.model.parceable_doctor_connect.DoctorConnectDataModel
 import com.rescribe.doctor.model.parceable_doctor_connect_chat.Data;
 import com.rescribe.doctor.model.parceable_doctor_connect_chat.DoctorConnectChatBaseModel;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.fragments.doctor_connect.DoctorConnectChatFragment;
 import com.rescribe.doctor.ui.fragments.doctor_connect.DoctorConnectFragment;
 import com.rescribe.doctor.ui.fragments.doctor_connect.DoctorConnectSearchContainerFragment;
@@ -43,7 +44,7 @@ import butterknife.OnClick;
  * Created by jeetal on 5/9/17.
  */
 
-public class DoctorConnectActivity extends AppCompatActivity implements DoctorConnectSearchContainerFragment.OnAddFragmentListener, SearchBySpecializationOfDoctorFragment.OnAddFragmentListener,HelperResponse {
+public class DoctorConnectActivity extends AppCompatActivity implements DoctorConnectSearchContainerFragment.OnAddFragmentListener, SearchBySpecializationOfDoctorFragment.OnAddFragmentListener, HelperResponse {
     @BindView(R.id.backButton)
     ImageView mBackButton;
     @BindView(R.id.tabsDoctorConnect)
@@ -54,12 +55,12 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
     @BindView(R.id.title)
     CustomTextView title;
     @BindView(R.id.searchView)
-    EditText searchView;
+    EditTextWithDeleteButton mSearchView;
     private DoctorConnectSearchContainerFragment doctorConnectSearchContainerFragment;
     private SearchBySpecializationOfDoctorFragment searchBySpecializationOfDoctorFragment;
     private SearchDoctorByNameFragment searchDoctorByNameFragment;
     private DoctorConnectChatHelper mDoctorConnectChatHelper;
-    private DoctorConnectChatBaseModel mDoctorConnectChatBaseModel =  new DoctorConnectChatBaseModel();
+    private DoctorConnectChatBaseModel mDoctorConnectChatBaseModel = new DoctorConnectChatBaseModel();
     private Data mData = new Data();
     private DoctorConnectHelper mDoctorConnectHelper;
     private DoctorConnectBaseModel doctorConnectBaseModel = new DoctorConnectBaseModel();
@@ -85,10 +86,10 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
             public void onTabSelected(TabLayout.Tab tab) {
                 int tabPosition = mTabsDoctorConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
-                    searchView.setVisibility(View.VISIBLE);
+                    mSearchView.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
                 } else {
-                    searchView.setVisibility(View.GONE);
+                    mSearchView.setVisibility(View.GONE);
                     title.setVisibility(View.VISIBLE);
                 }
             }
@@ -98,9 +99,9 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
                 int tabPosition = mTabsDoctorConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
                     title.setVisibility(View.GONE);
-                    searchView.setVisibility(View.VISIBLE);
+                    mSearchView.setVisibility(View.VISIBLE);
                 } else {
-                    searchView.setVisibility(View.GONE);
+                    mSearchView.setVisibility(View.GONE);
                     title.setVisibility(View.VISIBLE);
                 }
             }
@@ -109,20 +110,20 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
             public void onTabReselected(TabLayout.Tab tab) {
                 int tabPosition = mTabsDoctorConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
-                    searchView.setVisibility(View.VISIBLE);
+                    mSearchView.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
                 } else {
-                    searchView.setVisibility(View.GONE);
+                    mSearchView.setVisibility(View.GONE);
                     title.setVisibility(View.VISIBLE);
                 }
             }
         });
 
-        searchView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        mSearchView.addTextChangedListener(editTextChanged());
+    }
 
-            }
+    private EditTextWithDeleteButton.TextChangedListener editTextChanged() {
+        return new EditTextWithDeleteButton.TextChangedListener() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -130,25 +131,31 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
             }
 
             @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            @Override
             public void afterTextChanged(Editable s) {
                 //search Bar Code
-                if(searchDoctorByNameFragment!=null)
-                searchDoctorByNameFragment.setOnClickOfSearchBar(searchView.getText().toString());
+                if (searchDoctorByNameFragment != null)
+                    searchDoctorByNameFragment.setOnClickOfSearchBar(mSearchView.getText().toString());
             }
-        });
+        };
     }
 
     private void setupViewPager() {
-     //Api call to get doctorChatList
+        //Api call to get doctorChatList
         mDoctorConnectChatHelper = new DoctorConnectChatHelper(this, this);
         mDoctorConnectChatHelper.doDoctorConnectChat();
         //Api call to get doctorConnectList
-        mDoctorConnectHelper = new DoctorConnectHelper(this,this);
+        mDoctorConnectHelper = new DoctorConnectHelper(this, this);
         mDoctorConnectHelper.doDoctorConnecList();
         //Doctor connect , chat and search fragment loaded here
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        DoctorConnectChatFragment doctorConnectChatFragment =  DoctorConnectChatFragment.newInstance(mData.getChatList());
-        DoctorConnectFragment doctorConnectFragment =  DoctorConnectFragment.newInstance(mDoctorConnectDataModel.getConnectList());
+        DoctorConnectChatFragment doctorConnectChatFragment = DoctorConnectChatFragment.newInstance(mData.getChatList());
+        DoctorConnectFragment doctorConnectFragment = DoctorConnectFragment.newInstance(mDoctorConnectDataModel.getConnectList());
         doctorConnectSearchContainerFragment = new DoctorConnectSearchContainerFragment();
         adapter.addFragment(doctorConnectChatFragment, getString(R.string.chats));
         adapter.addFragment(doctorConnectFragment, getString(R.string.connect));
@@ -163,12 +170,12 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if(mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_CONNECT_CHAT)){
-            mDoctorConnectChatBaseModel = (DoctorConnectChatBaseModel)customResponse;
+        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_CONNECT_CHAT)) {
+            mDoctorConnectChatBaseModel = (DoctorConnectChatBaseModel) customResponse;
             mData = mDoctorConnectChatBaseModel.getData();
 
-        }else if(mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_CONNECT)){
-            doctorConnectBaseModel = (DoctorConnectBaseModel)customResponse;
+        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_CONNECT)) {
+            doctorConnectBaseModel = (DoctorConnectBaseModel) customResponse;
             mDoctorConnectDataModel = doctorConnectBaseModel.getDoctorConnectDataModel();
         }
     }
@@ -222,10 +229,11 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
         void setOnClickOfSearchBar(String searchText);
 
     }
-  //TODO: parceable has to be used to getSpecialityOFDoctorList
+
+    //TODO: parceable has to be used to getSpecialityOFDoctorList
     @Override
-    public void addSpecializationOfDoctorFragment() {
-     // Show speciality of Doctor fragment loaded
+    public void addSpecializationOfDoctorFragment(Bundle bundleData) {
+        // Show speciality of Doctor fragment loaded
         searchBySpecializationOfDoctorFragment = new SearchBySpecializationOfDoctorFragment();
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
@@ -234,12 +242,13 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
     }
 
     @Override
-    public void addSearchDoctorByNameFragment() {
+    public void addSearchDoctorByNameFragment(Bundle bundleData) {
         // Filter doctor list by name fragment loaded
-        searchDoctorByNameFragment = SearchDoctorByNameFragment.newInstance(mDoctorConnectDataModel.getConnectList());
+        searchDoctorByNameFragment = SearchDoctorByNameFragment.newInstance(mDoctorConnectDataModel.getConnectList(),bundleData);
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.addToBackStack("SearchDoctorByNameFragment");
+        searchDoctorByNameFragment.setArguments(bundleData);
         fragmentTransaction.replace(R.id.container, searchDoctorByNameFragment);
         fragmentTransaction.commit();
     }

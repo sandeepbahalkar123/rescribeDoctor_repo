@@ -10,12 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.DoctorSearchByNameAdapter;
 import com.rescribe.doctor.model.parceable_doctor_connect.ConnectList;
 import com.rescribe.doctor.ui.activities.DoctorConnectActivity;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -35,24 +38,31 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
     private View mRootView;
     private ArrayList<ConnectList> connectLists;
     private DoctorSearchByNameAdapter doctorSearchByNameAdapter;
+    private String mClickedSpecialityOfDoctor;
 
 
     public SearchDoctorByNameFragment() {
     }
-    public static SearchDoctorByNameFragment newInstance(ArrayList<ConnectList> connectLists) {
+
+    public static SearchDoctorByNameFragment newInstance(ArrayList<ConnectList> connectLists, Bundle bundleData) {
         SearchDoctorByNameFragment fragment = new SearchDoctorByNameFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(RescribeConstants.CHAT_REQUEST, connectLists);
-        fragment.setArguments(args);
+
+        if (bundleData == null) {
+            bundleData = new Bundle();
+        }
+        bundleData.putParcelableArrayList(RescribeConstants.CHAT_REQUEST, connectLists);
+        fragment.setArguments(bundleData);
         return fragment;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.doctor_connect_recycle_view_layout, container, false);
         Bundle arguments = getArguments();
         if (arguments != null) {
-            connectLists = getArguments().getParcelableArrayList(RescribeConstants.CHAT_REQUEST);
+            connectLists = arguments.getParcelableArrayList(RescribeConstants.CHAT_REQUEST);
+            mClickedSpecialityOfDoctor = arguments.getString(getString(R.string.clicked_item_data));
         }
 
         unbinder = ButterKnife.bind(this, mRootView);
@@ -88,6 +98,5 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
     @Override
     public void setOnClickOfSearchBar(String searchText) {
         doctorSearchByNameAdapter.getFilter().filter(searchText);
-
     }
 }
