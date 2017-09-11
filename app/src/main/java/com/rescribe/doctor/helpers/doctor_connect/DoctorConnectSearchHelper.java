@@ -33,7 +33,7 @@ public class DoctorConnectSearchHelper implements ConnectionListener {
 
         switch (responseResult) {
             case ConnectionListener.RESPONSE_OK:
-                if (mOldDataTag == RescribeConstants.TASK_DOCTOR__FILTER_DOCTOR_SPECIALITY_LIST) {
+                if (mOldDataTag == RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST) {
                     mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 }
                 break;
@@ -63,10 +63,10 @@ public class DoctorConnectSearchHelper implements ConnectionListener {
 
 
     public void getDoctorSpecialityList() {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DOCTOR__FILTER_DOCTOR_SPECIALITY_LIST, Request.Method.GET, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST, Request.Method.GET, true);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.FILTER_DOCTOR_SPECIALIST_LIST);
-        mConnectionFactory.createConnection(RescribeConstants.TASK_DOCTOR__FILTER_DOCTOR_SPECIALITY_LIST);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST);
     }
 
 
