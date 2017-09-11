@@ -385,7 +385,7 @@ public class CommonMethods {
     public static int getDoctorSpecialistIcons(String caseStudyName,Context mContext) {
 
         // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
-        int abbreviation = R.drawable.common_icon;
+        int abbreviation = R.drawable.gynecologist;
         if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.cardiologist)))
             abbreviation = R.drawable.cardiologist;
         else if (caseStudyName.equalsIgnoreCase(mContext.getString(R.string.ophthalmologist)))

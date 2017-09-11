@@ -180,7 +180,7 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_CONNECT)) {
             doctorConnectBaseModel = (DoctorConnectBaseModel) customResponse;
             mDoctorConnectDataModel = doctorConnectBaseModel.getDoctorConnectDataModel();
-        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR__FILTER_DOCTOR_SPECIALITY_LIST)) {
+        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST)) {
             doctorConnectSearchBaseModel = (DoctorConnectSearchBaseModel) customResponse;
             searchDataModel = doctorConnectSearchBaseModel.getSearchDataModel();
         }
