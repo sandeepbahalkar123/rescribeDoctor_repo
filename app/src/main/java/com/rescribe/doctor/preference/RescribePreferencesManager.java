@@ -225,5 +225,6 @@ public class RescribePreferencesManager {
         String PASSWORD_GMAIL = "password_gmail";
         String MOBILE_NUMBER_FACEBOOK = "mobile_number_facebook";
         String PASSWORD_FACEBOOK = "password_facebook";
+        String IS_SEARCHABLE = "";
     }
 }

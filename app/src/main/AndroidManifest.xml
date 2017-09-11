@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name="com.rescribe.doctor.singleton.RescribeApplication"
+        android:name=".singleton.RescribeApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.rescribe.doctor.ui.activities.SplashScreenActivity"
+            android:name=".ui.activities.SplashScreenActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
@@ -35,11 +35,11 @@
         </activity>
 
         <activity
-            android:name="com.rescribe.doctor.ui.activities.HomePageActivity"
+            android:name=".ui.activities.HomePageActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.rescribe.doctor.ui.activities.LoginSignUpActivity"
+            android:name=".ui.activities.LoginSignUpActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -66,8 +66,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.rescribe.doctor.ui.activities.AppGlobalContainerActivity"
+            android:name=".ui.activities.AppGlobalContainerActivity"
             android:label="@string/app_name" />
+
+        <activity
+            android:name=".ui.activities.DoctorConnectActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/doctor_connect"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

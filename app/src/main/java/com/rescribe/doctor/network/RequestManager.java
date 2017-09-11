@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
@@ -31,8 +30,11 @@ import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.Connector;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
+import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
+import com.rescribe.doctor.model.parceable_doctor_connect.DoctorConnectBaseModel;
+import com.rescribe.doctor.model.parceable_doctor_connect_chat.DoctorConnectChatBaseModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
@@ -41,10 +43,8 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 import com.rescribe.doctor.util.NetworkUtil;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -418,19 +418,11 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                 // This success response is for respective api's
 
                 switch (this.mDataTag) {
-
                     // Need to add
-
                     case RescribeConstants.TASK_LOGIN: //This is for get archived list
                         LoginModel loginModel = gson.fromJson(data, LoginModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, loginModel, mOldDataTag);
                         break;
-
-                   /* case RescribeConstants.TASK_RESPOND_NOTIFICATION: //This is for get archived list
-                        ResponseLogNotificationModel responseLogNotificationModel = new Gson().fromJson(data, ResponseLogNotificationModel.class);
-                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, responseLogNotificationModel, mOldDataTag);
-                        break;*/
-
                     case RescribeConstants.TASK_LOGIN_WITH_PASSWORD: //This is for get archived list
                         LoginModel loginWithPasswordModel = new Gson().fromJson(data, LoginModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, loginWithPasswordModel, mOldDataTag);
@@ -444,6 +436,19 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         break;
                     case RescribeConstants.TASK_VERIFY_SIGN_UP_OTP: //This is for to verify sign-up otp
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, new Gson().fromJson(data, LoginModel.class), mOldDataTag);
+                        break;
+
+                    case RescribeConstants.TASK_DOCTOR_CONNECT_CHAT: //This is for get archived list
+                        DoctorConnectChatBaseModel doctorConnectChatBaseModel = new Gson().fromJson(data, DoctorConnectChatBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, doctorConnectChatBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_DOCTOR_CONNECT: //This is for get archived list
+                        DoctorConnectBaseModel doctorConnectBaseModel = new Gson().fromJson(data, DoctorConnectBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, doctorConnectBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_DOCTOR__FILTER_DOCTOR_SPECIALITY_LIST: //This is for get archived list
+                        DoctorConnectSearchBaseModel doctorConnectSearchBaseModel = new Gson().fromJson(data, DoctorConnectSearchBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, doctorConnectSearchBaseModel, mOldDataTag);
                         break;
 
                     default:
@@ -522,20 +527,6 @@ public class RequestManager extends ConnectRequest implements Connector, Request
 
     private void tokenRefreshRequest() {
         loginRequest();
-        // Commented as login API is not implemented yet.
-       /* String url = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SERVER_PATH, mContext) + Config.URL_LOGIN;
-        CommonMethods.Log(TAG, "Refersh token while sending refresh token api: " + RescribePreferencesManager.getString(RescribeConstants.REFRESH_TOKEN, mContext));
-        Map<String, String> headerParams = new HashMap<>();
-        headerParams.putAll(mHeaderParams);
-        headerParams.remove(RescribeConstants.CONTENT_TYPE);
-        headerParams.put(RescribeConstants.CONTENT_TYPE, RescribeConstants.APPLICATION_URL_ENCODED);
-
-        Map<String, String> postParams = new HashMap<>();
-        postParams.put(RescribeConstants.GRANT_TYPE_KEY, RescribeConstants.REFRESH_TOKEN);
-        postParams.put(RescribeConstants.REFRESH_TOKEN, RescribePreferencesManager.getString(RescribeConstants.REFRESH_TOKEN, mContext));
-        postParams.put(RescribeConstants.CLIENT_ID_KEY, RescribeConstants.CLIENT_ID_VALUE);
-
-        stringRequest(url, Request.Method.POST, headerParams, postParams, true);*/
     }
 
     private void loginRequest() {

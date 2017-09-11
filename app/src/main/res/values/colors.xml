@@ -31,4 +31,5 @@
     <color name="range_yellow">#ff9500</color>
     <color name="otp_background_layout">#EDF1F4</color>
     <color name="Gray">#736F6E</color>
+    <color name="green_light">#0fd20b</color>
 </resources>

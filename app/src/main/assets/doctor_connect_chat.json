@@ -1,0 +1,59 @@
+{
+  "common": {
+    "success": true,
+    "statusCode": 200,
+    "statusMessage": "USER AUTHENTICATED"
+  },
+  "data": {
+    "chatList": [
+      {
+        "id": 1,
+        "doctorName": "Dr. Abhay Kamat",
+        "specialization": "Gynecologist",
+        "onlineStatus": "Last seen today at 10:30 am",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Aundh,Pune"
+      },
+      {
+        "id": 2,
+        "doctorName": "Dr. Kumavat Kamat 08",
+        "specialization": "Gynecologist",
+        "onlineStatus": "Last seen today at 10:30 am",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Balewadi,Pune"
+      },
+      {
+        "id": 2,
+        "doctorName": "Dr. Niraj Kamat 19",
+        "specialization": "Gynecologist",
+        "onlineStatus": "Last seen today at 10:30 am",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Pimpale Gurav,Pune"
+      },
+      {
+        "id": 5,
+        "doctorName": "Dr. Swapnil Kamat 18",
+        "specialization": "Gynecologist",
+        "onlineStatus": "Online",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Baner,Pune"
+      },
+      {
+        "id": 6,
+        "doctorName": "Dr. Abhay Kamat 19T21",
+        "specialization": "Gynecologist",
+        "onlineStatus": "Online",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Pimpale Saudagar,Pune"
+      },
+      {
+        "id": 2,
+        "doctorName": "Dr. Abhay Kamat",
+        "specialization": "Gynecologist",
+        "onlineStatus": "Online",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Aundh,Pune"
+      }
+    ]
+  }
+}

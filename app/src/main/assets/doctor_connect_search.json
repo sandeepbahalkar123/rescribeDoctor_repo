@@ -1,0 +1,35 @@
+{
+  "common": {
+    "success": true,
+    "statusCode": 200,
+    "statusMessage": "USER AUTHENTICATED"
+  },
+  "data": {
+    "doctorConnectSearch": [
+      {
+        "id": 1,
+        "specialization": "Gynecologist"
+      },
+      {
+        "id": 2,
+        "specialization": "Cardiologist"
+      },
+      {
+        "id": 3,
+        "specialization": "Gastro"
+      },
+      {
+        "id": 4,
+        "specialization": "Orthopaedic"
+      },
+      {
+        "id": 5,
+        "specialization": "ENT"
+      },
+      {
+        "id": 6,
+        "specialization": "Pediatric"
+      }
+    ]
+  }
+}

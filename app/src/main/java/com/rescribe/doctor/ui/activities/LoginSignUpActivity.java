@@ -76,6 +76,8 @@ public class LoginSignUpActivity extends AppCompatActivity implements GoogleApiC
         googleInitialize();
         facebookInitialize();
         init();
+
+
     }
 
     private void init() {

@@ -1,0 +1,66 @@
+{
+  "common": {
+    "success": true,
+    "statusCode": 200,
+    "statusMessage": "USER AUTHENTICATED"
+  },
+  "data":{
+    "connectList": [
+      {
+        "id": 1,
+        "doctorName": "Dr. Abhay Kamat",
+        "specialization": "Gynecologist",
+        "onlineStatus":"Last seen today at 10:30 am",
+        "paidStatus":"Free",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Balewadi,Pune"
+      },
+      {
+        "id": 2,
+        "doctorName": "Dr. Gunjan Kamat 08",
+        "specialization": "Gynecologist",
+        "onlineStatus":"Last seen today at 10:30 am",
+        "paidStatus":"Rs. 400/-",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Baner,Pune"
+      },
+      {
+        "id": 2,
+        "doctorName": "Dr. Amruta Kamat 19",
+        "specialization": "Gynecologist",
+        "onlineStatus":"Last seen today at 10:30 am",
+        "paidStatus":"Rs. 400/-",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Kasaba Peth,Pune"
+      },
+      {
+        "id": 5,
+        "doctorName": "Dr. Hardik Kamat 18",
+        "specialization": "Gynecologist",
+        "onlineStatus":"Online",
+        "paidStatus":"Rs. 900/-",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"University Road,Pune"
+
+      },
+      {
+        "id": 6,
+        "doctorName": "Dr. Ganesh Kamat 19T21",
+        "specialization": "Gynecologist",
+        "onlineStatus":"Online",
+        "paidStatus":"Rs. 800/-",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Balewadi,Pune"
+      },
+      {
+        "id": 2,
+        "doctorName": "Dr. Ritesh Kamat",
+        "specialization": "Gynecologist",
+        "onlineStatus":"Online",
+        "paidStatus":"Rs. 500/-",
+        "imageUrl":"http://192.168.0.182/medsonit-be/assets/doc_profile/DR-avatar.png",
+        "address":"Aundh,Pune"
+      }
+    ]
+  }
+}

@@ -112,6 +112,9 @@ public class RescribeConstants {
 
     public static final String TASK_LOGIN_WITH_PASSWORD = RescribeConstants.BLANK + 23;
     public static final String TASK_LOGIN_WITH_OTP = RescribeConstants.BLANK + 24;
+    public static final String TASK_DOCTOR_CONNECT_CHAT = RescribeConstants.BLANK + 25;
+    public static final String TASK_DOCTOR_CONNECT = RescribeConstants.BLANK + 26;
+    public static final String TASK_DOCTOR__FILTER_DOCTOR_SPECIALITY_LIST = RescribeConstants.BLANK + 27;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -143,6 +146,7 @@ public class RescribeConstants {
     public static final String TYPE_OF_LOGIN = "";
     public static final String SENDERID = "EMROTP";
     public static final String IS_URL = "isUrl";
+    public static final String CHAT_REQUEST = "chat_request";
 
 //    public static final String CANCEL_ALARM = "cancel_alarm";
 

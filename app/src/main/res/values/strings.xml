@@ -47,10 +47,9 @@
     <string name="logout">Logout</string>
     <string name="customnotificationticker">Medicine Dose Notification</string>
     <string name="notification">Notification</string>
-   <!-- <string name="facebook_app_id">297092640737799</string>
-    <string name="fb_login_protocol_scheme">fb1879555372255897</string>-->
     <string name="roboto_bold">roboto_bold.ttf</string>
     <string name="roboto_medium">roboto_medium.ttf</string>
+    <string name="roboto_regular">roboto_regular.ttf</string>
     <string name="title_activity_preferences">Preferences</string>
     <string name="save">Save</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -196,5 +195,12 @@
     <string name="files">Files</string>
     <string name="doctor_image">Doctor Image</string>
     <string name="documents_uploaded_successfully">Documents Uploaded Successfully</string>
+    <string name="doctor_connect">Doctor Connect</string>
+    <string name="chats">Chats</string>
+    <string name="connect">Connect</string>
+    <string name="search">Search</string>
+    <string name="doctor_activity">Doctor Activity</string>
+    <string name="pick_speciality">Pick Speciality</string>
+    <string name="details_note"><![CDATA[Your details will remain 100% private & secure. If you think you have medical emergency, contact your doctor immediately.]]></string>
 
 </resources>
