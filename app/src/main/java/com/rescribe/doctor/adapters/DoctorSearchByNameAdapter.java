@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.model.parceable_doctor_connect.ConnectList;
+import com.rescribe.doctor.model.doctor_connect.ConnectList;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import java.util.ArrayList;
 import java.util.Random;

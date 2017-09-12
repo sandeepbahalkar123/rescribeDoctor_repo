@@ -13,9 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.DoctorConnectChatAdapter;
-import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectChatHelper;
-import com.rescribe.doctor.model.parceable_doctor_connect_chat.ChatList;
-import com.rescribe.doctor.ui.activities.DoctorConnectActivity;
+import com.rescribe.doctor.model.doctor_connect_chat.ChatList;
 import com.rescribe.doctor.util.RescribeConstants;
 import java.util.ArrayList;
 import butterknife.BindView;

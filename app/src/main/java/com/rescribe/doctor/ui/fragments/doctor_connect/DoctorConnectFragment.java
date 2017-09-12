@@ -13,10 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.DoctorConnectAdapter;
-import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectHelper;
-import com.rescribe.doctor.interfaces.CustomResponse;
-import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.parceable_doctor_connect.ConnectList;
+import com.rescribe.doctor.model.doctor_connect.ConnectList;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;

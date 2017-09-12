@@ -1,5 +1,5 @@
 
-package com.rescribe.doctor.model.parceable_doctor_connect_chat;
+package com.rescribe.doctor.model.doctor_connect_chat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
