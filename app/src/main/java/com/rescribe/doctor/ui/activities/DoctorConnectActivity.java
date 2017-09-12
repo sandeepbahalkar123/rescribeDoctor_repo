@@ -1,6 +1,7 @@
 package com.rescribe.doctor.ui.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -72,6 +73,7 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
     private DoctorConnectSearchBaseModel doctorConnectSearchBaseModel;
     private ArrayList<SearchDataModel> doctorConnectSearchBaseModelList;
     private SearchDataModel searchDataModel;
+    private String mFragmentLoaded;
 
 
     @Override
@@ -145,9 +147,21 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
 
             @Override
             public void afterTextChanged(Editable s) {
-                //search Bar Code
-                if (searchDoctorByNameFragment != null)
-                    searchDoctorByNameFragment.setOnClickOfSearchBar(mSearchView.getText().toString());
+                if (mFragmentLoaded.equalsIgnoreCase("SpecializationOfDoctorFragment") && mSearchView.getText().toString().trim().length() != 0) {
+                    addSearchDoctorByNameFragment(null);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            searchDoctorByNameFragment.setOnClickOfSearchBar(mSearchView.getText().toString());
+                        }
+                    }, 500);
+                } else {
+                    //search Bar Code
+                    if (searchDoctorByNameFragment != null) {
+                        searchDoctorByNameFragment.setOnClickOfSearchBar(mSearchView.getText().toString());
+                    }
+                }
             }
         };
     }
@@ -175,7 +189,13 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
 
     @OnClick(R.id.backButton)
     public void onViewClicked() {
+        if (mFragmentLoaded.equalsIgnoreCase("SpecializationOfDoctorFragment")) {
+            mFragmentLoaded = "SearchDoctorByNameFragment";
+        } else if (mFragmentLoaded.equalsIgnoreCase("SearchDoctorByNameFragment")) {
+            mFragmentLoaded = "SpecializationOfDoctorFragment";
+        }
         mSearchView.setText("");
+
         onBackPressed();
     }
 
@@ -249,29 +269,29 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
 
     public void addSpecializationOfDoctorFragment(Bundle bundleData) {
         // Show speciality of Doctor fragment loaded
-
+        mFragmentLoaded = "SpecializationOfDoctorFragment";
         searchBySpecializationOfDoctorFragment = SearchBySpecializationOfDoctorFragment.newInstance(searchDataModel.getDoctorSpecialities());
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, searchBySpecializationOfDoctorFragment);
         fragmentTransaction.commit();
+
     }
 
     @Override
     public void addSearchDoctorByNameFragment(Bundle bundleData) {
+        mFragmentLoaded = "SearchDoctorByNameFragment";
 
         if (bundleData != null) {
             mSearchView.setText("" + bundleData.getString(getString(R.string.clicked_item_data)));
         }
+
         // Filter doctor list by name fragment loaded
         searchDoctorByNameFragment = SearchDoctorByNameFragment.newInstance(mDoctorConnectDataModel.getConnectList(), bundleData);
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.addToBackStack("SearchDoctorByNameFragment");
-        searchDoctorByNameFragment.setArguments(bundleData);
         fragmentTransaction.replace(R.id.container, searchDoctorByNameFragment);
         fragmentTransaction.commit();
-
-
     }
 }

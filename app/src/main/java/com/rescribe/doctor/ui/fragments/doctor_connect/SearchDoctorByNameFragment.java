@@ -101,12 +101,17 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
     private ArrayList<ConnectList> filterDataOnDocSpeciality() {
         ArrayList<ConnectList> connectLists = this.mReceivedList;
         ArrayList<ConnectList> dataList = new ArrayList<>();
-        for (ConnectList listObject :
-                connectLists) {
-            if (mClickedSpecialityOfDoctor.equalsIgnoreCase(listObject.getSpecialization())) {
-                dataList.add(listObject);
+        if (mClickedSpecialityOfDoctor == null) {
+            return connectLists;
+        } else {
+            for (ConnectList listObject :
+                    connectLists) {
+                if (mClickedSpecialityOfDoctor.equalsIgnoreCase(listObject.getSpecialization())) {
+                    dataList.add(listObject);
+                }
             }
         }
+
         return dataList;
     }
 }
