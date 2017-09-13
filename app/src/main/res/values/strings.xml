@@ -221,5 +221,9 @@
     <string name="nephrologist">nephrologist</string>
     <string name="surgeon">surgeon</string>
     <string name="endocrinologist">endocrinologist</string>
+    <string name="action_reply">Reply</string>
+    <string name="title_activity_chat">ChatActivity</string>
+    <string name="type_a_message">Type a message</string>
+    <string name="chat">Chat</string>
 
 </resources>

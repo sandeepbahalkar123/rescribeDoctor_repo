@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="end"
+    android:padding="@dimen/dp5">
+
+    <RelativeLayout
+        android:id="@+id/senderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.rescribe.doctor.ui.customesViews.CustomTextView
+            android:id="@+id/senderMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/blue_1"
+            android:paddingBottom="@dimen/dp8"
+            android:paddingEnd="@dimen/dp16"
+            android:paddingLeft="@dimen/dp8"
+            android:paddingRight="@dimen/dp16"
+            android:paddingStart="@dimen/dp8"
+            android:paddingTop="@dimen/dp8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp12"
+            android:layout_toStartOf="@+id/senderProfilePhoto"
+            app:customFont="@string/roboto_regular"
+            tools:text="@string/dummy_normal"
+            android:layout_toLeftOf="@+id/senderProfilePhoto" />
+
+        <ImageView
+            android:id="@+id/senderProfilePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/welcome_copy_3"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/receiverLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/receiverProfilePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/welcome_copy_3" />
+
+        <com.rescribe.doctor.ui.customesViews.CustomTextView
+            android:id="@+id/receiverMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/receiverProfilePhoto"
+            android:layout_toRightOf="@+id/receiverProfilePhoto"
+            android:background="@drawable/lightblue_1_r"
+            android:paddingBottom="@dimen/dp8"
+            android:paddingEnd="@dimen/dp8"
+            android:paddingLeft="@dimen/dp16"
+            android:paddingRight="@dimen/dp8"
+            android:paddingStart="@dimen/dp16"
+            android:paddingTop="@dimen/dp8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp12"
+            app:customFont="@string/roboto_regular"
+            tools:text="Hi Hello" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
