@@ -17,7 +17,7 @@ import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
 import com.rescribe.doctor.helpers.patient_connect.PatientConnectHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
- import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
+import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -37,7 +37,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
     @BindView(R.id.emptyListView)
-    RelativeLayout emptyListView;
+    RelativeLayout mEmptyListView;
     Unbinder unbinder;
     private View mRootView;
     private PatientConnectHelper mPatientConnectHelper;
@@ -112,14 +112,34 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     }
 
     public void setAdapter() {
-        mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
-        mRecyclerView.setAdapter(mPatientConnectAdapter);
+        if (mReceivedPatientDataList != null) {
+            if (mReceivedPatientDataList.size() > 0) {
+                isDataListViewVisible(true);
+                mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList, this);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                        DividerItemDecoration.VERTICAL);
+                mRecyclerView.addItemDecoration(dividerItemDecoration);
+                mRecyclerView.setAdapter(mPatientConnectAdapter);
+            } else {
+                isDataListViewVisible(false);
+            }
+        } else {
+            isDataListViewVisible(false);
+        }
+    }
+
+
+    public void isDataListViewVisible(boolean flag) {
+        if (flag) {
+            mEmptyListView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyListView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
     }
 
 }

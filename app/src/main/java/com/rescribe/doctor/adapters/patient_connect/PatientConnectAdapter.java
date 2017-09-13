@@ -2,6 +2,7 @@ package com.rescribe.doctor.adapters.patient_connect;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -10,13 +11,17 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
 import com.rescribe.doctor.util.CommonMethods;
 
 import java.util.ArrayList;
@@ -32,11 +37,16 @@ import butterknife.ButterKnife;
  * Created by jeetal on 6/9/17.
  */
 
-public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAdapter.ListViewHolder> {
+public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAdapter.ListViewHolder> implements Filterable {
 
+    private final ArrayList<PatientData> mArrayList;
+    private final ColorGenerator mColorGenerator;
+    private Fragment mCalledParentFragment;
+    private String mIdle, mOnline, mOffline;
     private Context mContext;
     private ArrayList<PatientData> dataList;
     String searchString = "";
+
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
 
@@ -60,9 +70,18 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         }
     }
 
-    public PatientConnectAdapter(Context mContext, ArrayList<PatientData> appointmentsList) {
+    public PatientConnectAdapter(Context mContext, ArrayList<PatientData> appointmentsList, Fragment parentFragment) {
         this.dataList = appointmentsList;
+        this.mCalledParentFragment = parentFragment;
+        mArrayList = appointmentsList;
+
+        mOnline = mContext.getString(R.string.online);
+        mOffline = mContext.getString(R.string.offline);
+        mIdle = mContext.getString(R.string.idle);
         this.mContext = mContext;
+        //--------------
+        mColorGenerator = ColorGenerator.MATERIAL;
+        //-----------------
     }
 
     @Override
@@ -77,24 +96,36 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
     public void onBindViewHolder(ListViewHolder holder, int position) {
         PatientData doctorConnectChatModel = dataList.get(position);
 
-        // holder.doctorName.setText(doctorConnectChatModel.getDoctorName());
-        holder.doctorType.setVisibility(View.GONE);
-        if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase("Online")) {
+        //-----------
+        if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(mOnline)) {
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.green_light));
+        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(mIdle)) {
+            holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.range_yellow));
+        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(mOffline)) {
+            holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.grey_500));
         } else {
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
         }
+        //-----------
+
         holder.onlineStatusTextView.setText(doctorConnectChatModel.getOnlineStatus());
         holder.paidStatusTextView.setVisibility(View.GONE);
-        String s = doctorConnectChatModel.getPatientName();
-        CommonMethods.Log("PatientConnectAdapter", " PatientConnectAdapter : " + s);
-        s = s.replace("Dr. ", "");
-        char first = s.charAt(0);
+        holder.doctorType.setVisibility(View.GONE);
 
-        TextDrawable drawable = TextDrawable.builder()
-                .buildRound(String.valueOf(first), getRandomColor());
-        holder.imageOfDoctor.setImageDrawable(drawable);
-
+        //---------
+        String patientName = doctorConnectChatModel.getPatientName();
+        patientName = patientName.replace("Dr. ", "");
+        if (patientName != null) {
+            int color2 = mColorGenerator.getColor(patientName);
+            TextDrawable drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .width(Math.round(mContext.getResources().getDimension(R.dimen.dp40)))  // width in px
+                    .height(Math.round(mContext.getResources().getDimension(R.dimen.dp40))) // height in px
+                    .endConfig()
+                    .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
+            holder.imageOfDoctor.setImageDrawable(drawable);
+        }
+        //---------
         SpannableString spannableStringSearch = null;
 
         if ((searchString != null) && (!searchString.isEmpty())) {
@@ -113,6 +144,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         } else {
             holder.doctorName.setText(doctorConnectChatModel.getPatientName());
         }
+        //---------
 
     }
 
@@ -121,11 +153,51 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         return dataList.size();
     }
 
+    @Override
+    public Filter getFilter() {
 
-    public int getRandomColor() {
-        Random rnd = new Random();
-        int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-        return color;
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+
+                String charString = charSequence.toString();
+                searchString = charString;
+                if (charString.isEmpty()) {
+
+                    dataList = mArrayList;
+                } else {
+
+                    ArrayList<PatientData> filteredList = new ArrayList<>();
+
+                    for (PatientData doctorConnectModel : mArrayList) {
+
+                        if (doctorConnectModel.getPatientName().toLowerCase().startsWith(charString.toLowerCase())) {
+
+                            filteredList.add(doctorConnectModel);
+                        }
+                    }
+
+                    dataList = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = dataList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                dataList = (ArrayList<PatientData>) filterResults.values;
+                if (dataList.size() == 0) {
+                    PatientSearchFragment temp = (PatientSearchFragment) mCalledParentFragment;
+                    temp.isDataListViewVisible(false);
+                } else {
+                    PatientSearchFragment temp = (PatientSearchFragment) mCalledParentFragment;
+                    temp.isDataListViewVisible(true);
+                }
+                notifyDataSetChanged();
+            }
+        };
     }
 
 }

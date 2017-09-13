@@ -175,6 +175,8 @@ public class HomePageActivity extends DrawerActivity {
             @Override
             public void onClick(DrawerItem item, long itemID, int position) {
                 //  selectItem(position);
+
+                closeDrawer();
                 String id = item.getTextPrimary();
               /*  if (id.equalsIgnoreCase(getString(R.string.doctor_details))) {
                     Intent intent = new Intent(mContext, DoctorListActivity.class);
@@ -189,8 +191,6 @@ public class HomePageActivity extends DrawerActivity {
                     Intent intent = new Intent(mContext, PatientConnectActivity.class);
                     startActivity(intent);
                 }
-
-                closeDrawer();
             }
         });
 

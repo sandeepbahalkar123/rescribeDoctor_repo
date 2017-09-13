@@ -223,5 +223,8 @@
     <string name="surgeon">surgeon</string>
     <string name="endocrinologist">endocrinologist</string>
     <string name="dr">Dr.</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
+    <string name="idle">Idle</string>
 
 </resources>
