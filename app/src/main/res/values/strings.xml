@@ -226,4 +226,7 @@
     <string name="type_a_message">Type a message</string>
     <string name="chat">Chat</string>
 
+    <string name="not_connected">Not Connected</string>
+    <string name="send">Send</string>
+
 </resources>

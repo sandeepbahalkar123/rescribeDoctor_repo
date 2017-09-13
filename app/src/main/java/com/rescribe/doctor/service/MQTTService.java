@@ -4,12 +4,14 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.adapters.ChatAdapter;
 import com.rescribe.doctor.model.message.MessageList;
 import com.rescribe.doctor.notification.MessageNotification;
+import com.rescribe.doctor.util.rxnetwork.RxNetwork;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -18,6 +20,12 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class MQTTService extends Service {
     private static final String TAG = "MQTTService";
@@ -34,10 +42,15 @@ public class MQTTService extends Service {
     private static final String broker = "tcp://broker.hivemq.com:1883";
     private Gson gson = new Gson();
 
+    private Subscription sendStateSubscription;
+    private int[] qos;
+    private MqttConnectOptions connOpts;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        initRxNetwork();
 
         //MQTT client id to use for the device. "" will generate a client id automatically
         String clientId = "rescribe";
@@ -50,6 +63,41 @@ public class MQTTService extends Service {
         }
 
         Log.d(TAG, "onCreate");
+    }
+
+    private void initRxNetwork() {
+        final Observable<InternetState> sendStateStream =
+                RxNetwork.stream(this).map(new Func1<Boolean, InternetState>() {
+                    @Override
+                    public InternetState call(Boolean hasInternet) {
+                        if (hasInternet)
+                            return new InternetState("Online", true);
+                        return new InternetState("Offline", false);
+                    }
+                });
+
+        sendStateSubscription =
+                sendStateStream.observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<InternetState>() {
+                            @Override
+                            public void call(InternetState internetState) {
+                                // do stuff here for UI
+
+                                try {
+                                    if (internetState.isEnabled) {
+                                        if (!mqttClient.isConnected()) {
+                                            mqttClient.connect();
+                                            mqttClient.subscribe(topic);
+                                        }
+                                    } else
+                                        mqttClient.disconnect();
+                                } catch (MqttException ignored) {
+
+                                }
+
+                                Toast.makeText(MQTTService.this, mqttClient.isConnected() + " " + internetState.state, Toast.LENGTH_SHORT).show();
+                            }
+                        });
     }
 
     @Override
@@ -67,11 +115,8 @@ public class MQTTService extends Service {
             if (message != null)
                 if (mqttClient.isConnected())
                     passMessage(message);
-                else try {
-                    mqttClient.connect();
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                }
+                else
+                    initMqttCallback();
         } else {
             if (topic != null) {
                 if (!mqttClient.isConnected())
@@ -84,7 +129,7 @@ public class MQTTService extends Service {
 
     void initMqttCallback() {
 
-        int qos[] = new int[this.topic.length];
+        qos = new int[this.topic.length];
         for (int index = 0; index < this.topic.length; index++)
             qos[index] = 1;
 
@@ -135,7 +180,7 @@ public class MQTTService extends Service {
                 }
             });
 
-            MqttConnectOptions connOpts = new MqttConnectOptions();
+            connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(false);
 //            connOpts.setUserName("kevpfvww");
 //            String password = "4nWoMhwCRlPi";
@@ -181,6 +226,20 @@ public class MQTTService extends Service {
                 }
             }
         }
+
+        sendStateSubscription.unsubscribe();
+        sendStateSubscription = null;
         Log.d(TAG, "onDestroy");
+    }
+
+
+    private static class InternetState {
+        final boolean isEnabled;
+        final String state;
+
+        InternetState(String state, boolean isEnabled) {
+            this.isEnabled = isEnabled;
+            this.state = state;
+        }
     }
 }

@@ -96,9 +96,9 @@ public class ChatActivity extends AppCompatActivity {
 
         // startService
 
-// use this to start and trigger a service
+        // use this to start and trigger a service
         serviceIntent = new Intent(this, MQTTService.class);
-// potentially add data to the serviceIntent
+        // potentially add data to the serviceIntent
         serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
         startService(serviceIntent);
 
