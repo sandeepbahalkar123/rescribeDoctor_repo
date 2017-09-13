@@ -14,7 +14,7 @@ public class Data implements Parcelable,CustomResponse {
 
     @SerializedName("chatList")
     @Expose
-    private ArrayList<ChatList> chatList = null;
+    private ArrayList<ChatList> chatList = new ArrayList<>();
     public final static Creator<Data> CREATOR = new Creator<Data>() {
 
 

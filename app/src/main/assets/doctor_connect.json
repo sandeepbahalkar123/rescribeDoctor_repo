@@ -8,7 +8,7 @@
     "connectList": [
       {
         "id": 1,
-        "doctorName": "Dr. Abhay Kamat",
+        "doctorName": "Abhay Kamat",
         "specialization": "Gynecologist",
         "onlineStatus":"Last seen today at 10:30 am",
         "paidStatus":"Free",
@@ -17,7 +17,7 @@
       },
       {
         "id": 2,
-        "doctorName": "Dr. Gunjan Kamat 08",
+        "doctorName": "Gunjan Kamat 08",
         "specialization": "Gynecologist",
         "onlineStatus":"Last seen today at 10:30 am",
         "paidStatus":"Rs. 400/-",
@@ -26,7 +26,7 @@
       },
       {
         "id": 2,
-        "doctorName": "Dr. Amruta Kamat 19",
+        "doctorName": "Amruta Kamat 19",
         "specialization": "Gynecologist",
         "onlineStatus":"Last seen today at 10:30 am",
         "paidStatus":"Rs. 400/-",

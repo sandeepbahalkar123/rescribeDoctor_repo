@@ -25,6 +25,7 @@ public class DoctorConnectSearchContainerFragment extends Fragment {
 
     public DoctorConnectSearchContainerFragment() {
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class DoctorConnectSearchContainerFragment extends Fragment {
 
 
         unbinder = ButterKnife.bind(this, mRootView);
-        mListener.addSpecializationOfDoctorFragment();
+        mListener.addSpecializationOfDoctorFragment(new Bundle());
         return mRootView;
     }
 
@@ -55,6 +56,6 @@ public class DoctorConnectSearchContainerFragment extends Fragment {
     }
 
     public interface OnAddFragmentListener {
-        void addSpecializationOfDoctorFragment();
+        void addSpecializationOfDoctorFragment(Bundle bundleData);
     }
 }

@@ -64,6 +64,15 @@ public class DoctorConnectChatFragment extends Fragment  {
     }
 
     private void init() {
+        for(int i =0;i<chatLists.size();i++){
+            String doctorName =  chatLists.get(i).getDoctorName();
+            if(doctorName.startsWith(getString(R.string.dr))){
+                chatLists.get(i).setDoctorName(doctorName);
+            }else {
+                String drName = getString(R.string.dr) + doctorName;
+                chatLists.get(i).setDoctorName(drName);
+            }
+        }
         mDoctorConnectChatAdapter = new DoctorConnectChatAdapter(getActivity(),chatLists );
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);

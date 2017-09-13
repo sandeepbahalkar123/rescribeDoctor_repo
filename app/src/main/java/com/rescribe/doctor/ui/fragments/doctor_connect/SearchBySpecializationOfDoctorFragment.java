@@ -104,8 +104,8 @@ public class SearchBySpecializationOfDoctorFragment extends Fragment implements 
 
 
     @Override
-    public void setOnClickOfDoctorSpeciality() {
-        mListener.addSearchDoctorByNameFragment();
+    public void setOnClickOfDoctorSpeciality(Bundle bundleData) {
+        mListener.addSearchDoctorByNameFragment(bundleData);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class SearchBySpecializationOfDoctorFragment extends Fragment implements 
     }
 
     public interface OnAddFragmentListener {
-        void addSearchDoctorByNameFragment();
+        void addSearchDoctorByNameFragment(Bundle bundleData);
     }
 
 }

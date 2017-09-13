@@ -85,17 +85,18 @@ public class DoctorSearchByNameAdapter extends RecyclerView.Adapter<DoctorSearch
         }
         holder.onlineStatusTextView.setText(connectList.getOnlineStatus());
         holder.paidStatusTextView.setText(connectList.getPaidStatus());
-        String s = connectList.getDoctorName();
-        s = s.replace("Dr. ", "");
-        char first = s.charAt(0);
+        String removeDr = connectList.getDoctorName();
+        removeDr = removeDr.replace("Dr. ", "");
+        char firstcharacterOfDoctorName = removeDr.charAt(0);
 
         TextDrawable drawable = TextDrawable.builder()
-                .buildRound(String.valueOf(first), getRandomColor());
+                .buildRound(String.valueOf(firstcharacterOfDoctorName), getRandomColor());
         holder.imageOfDoctor.setImageDrawable(drawable);
 
         SpannableString spannableStringSearch = null;
 
         if ((searchString!= null) && (!searchString.isEmpty())) {
+
             spannableStringSearch = new SpannableString(connectList.getDoctorName());
             Pattern pattern = Pattern.compile(searchString, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(connectList.getDoctorName());
@@ -138,7 +139,7 @@ public class DoctorSearchByNameAdapter extends RecyclerView.Adapter<DoctorSearch
 
                     for (ConnectList doctorConnectModel : mArrayList) {
 
-                        if (doctorConnectModel.getDoctorName().toLowerCase().contains(charString.toLowerCase())) {
+                        if (doctorConnectModel.getDoctorName().toLowerCase().startsWith(mContext.getString(R.string.dr).toLowerCase()+charString.toLowerCase())) {
 
                             filteredList.add(doctorConnectModel);
                         }

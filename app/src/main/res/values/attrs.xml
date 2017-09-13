@@ -43,5 +43,11 @@
             <enum name="trimModeLength" value="1" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="EditTextWithDeleteButton">
+        <attr name="hintText" format="string" />
+        <attr name="rightLabel" format="string" />
+        <attr name="deleteButtonRes" format="reference" />
+        <attr name="rightLabelStyle" format="reference" />
+    </declare-styleable>
 
 </resources>

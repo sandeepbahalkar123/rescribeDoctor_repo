@@ -1,6 +1,10 @@
 package com.rescribe.doctor.adapters;
 
 import android.content.Context;
+
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +54,7 @@ public class DoctorConnectSearchAdapter extends RecyclerView.Adapter<DoctorConne
 
     public DoctorConnectSearchAdapter(Context mContext, OnDoctorSpecialityClickListener mOnDoctorSpecialityClickListener, ArrayList<DoctorSpeciality> searchDataModels) {
         this.doctorConnectSearchModels = searchDataModels;
+
         this.mContext = mContext;
         this.mOnDoctorSpecialityClickListener = mOnDoctorSpecialityClickListener;
     }
@@ -64,14 +69,17 @@ public class DoctorConnectSearchAdapter extends RecyclerView.Adapter<DoctorConne
 
     @Override
     public void onBindViewHolder(ListViewHolder holder, int position) {
-        DoctorSpeciality doctorConnectSearchModel = doctorConnectSearchModels.get(position);
+
+        final DoctorSpeciality doctorConnectSearchModel = doctorConnectSearchModels.get(position);
+
         holder.specialityName.setText(doctorConnectSearchModel.getSpeciality());
         holder.specialityImage.setImageResource(CommonMethods.getDoctorSpecialistIcons(doctorConnectSearchModel.getSpeciality(), mContext));
         holder.specialityOfDoctor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnDoctorSpecialityClickListener.setOnClickOfDoctorSpeciality();
-
+                Bundle b = new Bundle();
+                b.putString(mContext.getString(R.string.clicked_item_data), doctorConnectSearchModel.getSpeciality());
+                mOnDoctorSpecialityClickListener.setOnClickOfDoctorSpeciality(b);
             }
         });
     }
@@ -82,7 +90,7 @@ public class DoctorConnectSearchAdapter extends RecyclerView.Adapter<DoctorConne
     }
 
     public interface OnDoctorSpecialityClickListener {
-        void setOnClickOfDoctorSpeciality();
+        void setOnClickOfDoctorSpeciality(Bundle bundleData);
     }
 
 

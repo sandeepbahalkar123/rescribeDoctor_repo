@@ -66,6 +66,15 @@ public class DoctorConnectFragment extends Fragment {
     }
 
     private void init() {
+        for(int i =0;i<connectLists.size();i++){
+            String doctorName =  connectLists.get(i).getDoctorName();
+            if(doctorName.startsWith(getString(R.string.dr))){
+                connectLists.get(i).setDoctorName(doctorName);
+            }else {
+                String drName = getString(R.string.dr) + doctorName;
+                connectLists.get(i).setDoctorName(drName);
+            }
+        }
         doctorConnectAdapter = new DoctorConnectAdapter(getActivity(), connectLists);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);

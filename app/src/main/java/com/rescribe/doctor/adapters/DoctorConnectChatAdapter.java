@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 public class DoctorConnectChatAdapter extends RecyclerView.Adapter<DoctorConnectChatAdapter.ListViewHolder> {
 
     private Context mContext;
-    private ArrayList<ChatList> appointmentsList;
+    private ArrayList<ChatList> chatLists;
 
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
@@ -48,8 +48,8 @@ public class DoctorConnectChatAdapter extends RecyclerView.Adapter<DoctorConnect
     }
 
 
-    public DoctorConnectChatAdapter(Context mContext, ArrayList<ChatList> appointmentsList) {
-        this.appointmentsList = appointmentsList;
+    public DoctorConnectChatAdapter(Context mContext, ArrayList<ChatList> chatList) {
+        this.chatLists = chatList;
         this.mContext = mContext;
 
     }
@@ -64,7 +64,7 @@ public class DoctorConnectChatAdapter extends RecyclerView.Adapter<DoctorConnect
 
     @Override
     public void onBindViewHolder(ListViewHolder holder, int position) {
-        ChatList doctorConnectChatModel = appointmentsList.get(position);
+        ChatList doctorConnectChatModel = chatLists.get(position);
 
         holder.doctorName.setText(doctorConnectChatModel.getDoctorName());
         holder.doctorType.setText(doctorConnectChatModel.getSpecialization());
@@ -92,7 +92,7 @@ public class DoctorConnectChatAdapter extends RecyclerView.Adapter<DoctorConnect
     }
     @Override
     public int getItemCount() {
-        return appointmentsList.size();
+        return chatLists.size();
     }
 
 

@@ -173,12 +173,12 @@
     <string name="please_select_at_least_one_document">Please select at least one Document.</string>
     <string name="gmail_application_not_found">Gmail application not found</string>
     <!-- <string name="google_maps_key">AIzaSyDxO-cLqGemArsUCSrn_uIUn5FzTkds4u0</string>-->
-<!--Key for Release-->
+    <!--Key for Release-->
     <string name="google_maps_key">AIzaSyCO8J2ASZDrJ4ARM1VVnZV7e5EQGryfeEE</string>
 
     <!--Key for Debug-->
 
-   <!-- <string name="google_maps_key">AIzaSyBtI5h1jCRJZFXQowkuglxMtNYPURtHX5M</string>-->
+    <!-- <string name="google_maps_key">AIzaSyBtI5h1jCRJZFXQowkuglxMtNYPURtHX5M</string>-->
     <string name="profile_exists">User\'s profile is already exist!!</string>
     <string name="enter_otp_no">Enter otp received on your mobile no.</string>
     <string name="address_not_found">Address not Found</string>
@@ -200,6 +200,7 @@
     <string name="connect">Connect</string>
     <string name="search">Search</string>
     <string name="doctor_activity">Doctor Activity</string>
+    <string name="clicked_item_data">clicked_item_data</string>
     <string name="pick_speciality">Pick Speciality</string>
     <string name="details_note"><![CDATA[Your details will remain 100% private & secure. If you think you have medical emergency, contact your doctor immediately.]]></string>
     <string name="cardiologist">cardiologist</string>
@@ -220,5 +221,6 @@
     <string name="nephrologist">nephrologist</string>
     <string name="surgeon">surgeon</string>
     <string name="endocrinologist">endocrinologist</string>
+    <string name="dr">Dr.</string>
 
 </resources>
