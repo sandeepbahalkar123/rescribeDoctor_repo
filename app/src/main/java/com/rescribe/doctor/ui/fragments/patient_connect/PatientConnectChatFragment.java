@@ -17,8 +17,7 @@ import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
 import com.rescribe.doctor.helpers.patient_connect.PatientConnectHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.parceable_doctor_connect_chat.ChatList;
-import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
+ import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.util.RescribeConstants;
 

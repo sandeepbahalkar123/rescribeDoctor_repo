@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.util.CommonMethods;
 
 public class EditTextWithDeleteButton extends LinearLayout {
     protected EditText editText;
@@ -29,10 +30,6 @@ public class EditTextWithDeleteButton extends LinearLayout {
 
     public void addTextChangedListener(TextChangedListener listener) {
         this.editTextListener = listener;
-    }
-
-    public void addClearTextButtonListener(OnClearButtonClickedInEditTextListener onClearButtonClickedInEditTextListener) {
-        this.mClearButtonClickedInEditTextListener = onClearButtonClickedInEditTextListener;
     }
 
     public EditTextWithDeleteButton(Context context) {
@@ -147,6 +144,7 @@ public class EditTextWithDeleteButton extends LinearLayout {
 
         params.gravity = Gravity.CENTER_VERTICAL;
         clearTextButton.setLayoutParams(params);
+        clearTextButton.setPadding(CommonMethods.convertDpToPixel(6), CommonMethods.convertDpToPixel(6), CommonMethods.convertDpToPixel(6), CommonMethods.convertDpToPixel(6));
         clearTextButton.setBackgroundResource(deleteButtonRes);
         clearTextButton.setVisibility(View.GONE);
         return clearTextButton;
@@ -164,5 +162,8 @@ public class EditTextWithDeleteButton extends LinearLayout {
     public interface OnClearButtonClickedInEditTextListener {
         void onClearButtonClicked();
     }
-}
 
+    public void addClearTextButtonListener(OnClearButtonClickedInEditTextListener onClearButtonClickedInEditTextListener) {
+        this.mClearButtonClickedInEditTextListener = onClearButtonClickedInEditTextListener;
+    }
+}

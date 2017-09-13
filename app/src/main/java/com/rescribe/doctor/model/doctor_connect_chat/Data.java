@@ -1,5 +1,5 @@
 
-package com.rescribe.doctor.model.parceable_doctor_connect_chat;
+package com.rescribe.doctor.model.doctor_connect_chat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,13 +9,12 @@ import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Data implements Parcelable,CustomResponse {
 
     @SerializedName("chatList")
     @Expose
-    private ArrayList<ChatList> chatList = null;
+    private ArrayList<ChatList> chatList = new ArrayList<>();
     public final static Creator<Data> CREATOR = new Creator<Data>() {
 
 

@@ -13,9 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.DoctorConnectChatAdapter;
-import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectChatHelper;
-import com.rescribe.doctor.model.parceable_doctor_connect_chat.ChatList;
-import com.rescribe.doctor.ui.activities.DoctorConnectActivity;
+import com.rescribe.doctor.model.doctor_connect_chat.ChatList;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -67,6 +65,15 @@ public class DoctorConnectChatFragment extends Fragment {
     }
 
     private void init() {
+        for (int i = 0; i < chatLists.size(); i++) {
+            String doctorName = chatLists.get(i).getDoctorName();
+            if (doctorName.startsWith(getString(R.string.dr))) {
+                chatLists.get(i).setDoctorName(doctorName);
+            } else {
+                String drName = getString(R.string.dr) + doctorName;
+                chatLists.get(i).setDoctorName(drName);
+            }
+        }
         mDoctorConnectChatAdapter = new DoctorConnectChatAdapter(getActivity(), chatLists);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -75,8 +82,6 @@ public class DoctorConnectChatFragment extends Fragment {
                 DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         mRecyclerView.setAdapter(mDoctorConnectChatAdapter);
-
-
     }
 
     @Override

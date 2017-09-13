@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.DoctorSearchByNameAdapter;
-import com.rescribe.doctor.model.parceable_doctor_connect.ConnectList;
 import com.rescribe.doctor.ui.activities.DoctorConnectActivity;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -36,7 +35,6 @@ public class PatientSearchFragment extends Fragment implements DoctorConnectActi
     RelativeLayout emptyListView;
     Unbinder unbinder;
     private View mRootView;
-    private ArrayList<ConnectList> mReceivedList;
     private DoctorSearchByNameAdapter doctorSearchByNameAdapter;
     private String mClickedSpecialityOfDoctor;
 
@@ -59,24 +57,11 @@ public class PatientSearchFragment extends Fragment implements DoctorConnectActi
         Bundle arguments = getArguments();
         if (arguments != null) {
             mClickedSpecialityOfDoctor = arguments.getString(getString(R.string.clicked_item_data));
-            mReceivedList = getArguments().getParcelableArrayList(RescribeConstants.CONNECT_REQUEST);
         }
 
         unbinder = ButterKnife.bind(this, mRootView);
         //   init();
         return mRootView;
-    }
-
-    private void init() {
-        mRecyclerView.setVisibility(View.VISIBLE);
-        doctorSearchByNameAdapter = new DoctorSearchByNameAdapter(getActivity(), filterDataOnDocSpeciality());
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
-        mRecyclerView.setAdapter(doctorSearchByNameAdapter);
     }
 
     @Override
@@ -95,20 +80,4 @@ public class PatientSearchFragment extends Fragment implements DoctorConnectActi
         doctorSearchByNameAdapter.getFilter().filter(searchText);
     }
 
-    private ArrayList<ConnectList> filterDataOnDocSpeciality() {
-        ArrayList<ConnectList> connectLists = this.mReceivedList;
-        ArrayList<ConnectList> dataList = new ArrayList<>();
-        if (mClickedSpecialityOfDoctor == null) {
-            return connectLists;
-        } else {
-            for (ConnectList listObject :
-                    connectLists) {
-                if (mClickedSpecialityOfDoctor.equalsIgnoreCase(listObject.getSpecialization())) {
-                    dataList.add(listObject);
-                }
-            }
-        }
-
-        return dataList;
-    }
 }

@@ -13,7 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.DoctorSearchByNameAdapter;
-import com.rescribe.doctor.model.parceable_doctor_connect.ConnectList;
+import com.rescribe.doctor.model.doctor_connect.ConnectList;
 import com.rescribe.doctor.ui.activities.DoctorConnectActivity;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -72,6 +72,15 @@ public class SearchDoctorByNameFragment extends Fragment implements DoctorConnec
 
     private void init() {
         mRecyclerView.setVisibility(View.VISIBLE);
+           for(int i =0;i<filterDataOnDocSpeciality().size();i++){
+              String doctorName =  filterDataOnDocSpeciality().get(i).getDoctorName();
+               if(doctorName.startsWith(getString(R.string.dr))){
+                   filterDataOnDocSpeciality().get(i).setDoctorName(doctorName);
+               }else {
+                   String drName = getString(R.string.dr) + doctorName;
+                   filterDataOnDocSpeciality().get(i).setDoctorName(drName);
+               }
+           }
         doctorSearchByNameAdapter = new DoctorSearchByNameAdapter(getActivity(), filterDataOnDocSpeciality());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);

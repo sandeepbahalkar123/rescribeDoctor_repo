@@ -190,7 +190,6 @@ public class HomePageActivity extends DrawerActivity {
                     startActivity(intent);
                 }
 
-
                 closeDrawer();
             }
         });

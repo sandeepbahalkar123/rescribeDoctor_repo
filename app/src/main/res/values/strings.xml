@@ -222,5 +222,6 @@
     <string name="nephrologist">nephrologist</string>
     <string name="surgeon">surgeon</string>
     <string name="endocrinologist">endocrinologist</string>
+    <string name="dr">Dr.</string>
 
 </resources>

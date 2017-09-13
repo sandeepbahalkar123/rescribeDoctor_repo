@@ -34,9 +34,10 @@ import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
-import com.rescribe.doctor.model.parceable_doctor_connect.DoctorConnectBaseModel;
-import com.rescribe.doctor.model.parceable_doctor_connect_chat.DoctorConnectChatBaseModel;
 import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
+
+import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
+import com.rescribe.doctor.model.doctor_connect_chat.DoctorConnectChatBaseModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
