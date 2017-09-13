@@ -20,6 +20,7 @@ import com.rescribe.doctor.R;
 public class EditTextWithDeleteButton extends LinearLayout {
     protected EditText editText;
     protected ImageButton clearTextButton;
+    private OnClearButtonClickedInEditTextListener mClearButtonClickedInEditTextListener;
 
     public interface TextChangedListener extends TextWatcher {
     }
@@ -28,6 +29,10 @@ public class EditTextWithDeleteButton extends LinearLayout {
 
     public void addTextChangedListener(TextChangedListener listener) {
         this.editTextListener = listener;
+    }
+
+    public void addClearTextButtonListener(OnClearButtonClickedInEditTextListener onClearButtonClickedInEditTextListener) {
+        this.mClearButtonClickedInEditTextListener = onClearButtonClickedInEditTextListener;
     }
 
     public EditTextWithDeleteButton(Context context) {
@@ -83,6 +88,7 @@ public class EditTextWithDeleteButton extends LinearLayout {
 
             @Override
             public void onClick(View v) {
+                mClearButtonClickedInEditTextListener.onClearButtonClicked();
                 editText.setText("");
             }
         });
@@ -153,6 +159,10 @@ public class EditTextWithDeleteButton extends LinearLayout {
 
     public void setText(String text) {
         editText.setText(text);
+    }
+
+    public interface OnClearButtonClickedInEditTextListener {
+        void onClearButtonClicked();
     }
 }
 

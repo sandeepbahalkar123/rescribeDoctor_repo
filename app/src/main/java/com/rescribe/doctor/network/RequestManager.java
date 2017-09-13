@@ -36,6 +36,7 @@ import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
 import com.rescribe.doctor.model.parceable_doctor_connect.DoctorConnectBaseModel;
 import com.rescribe.doctor.model.parceable_doctor_connect_chat.DoctorConnectChatBaseModel;
+import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
@@ -453,6 +454,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         DoctorConnectSearchBaseModel doctorConnectSearchBaseModel = new Gson().fromJson(data, DoctorConnectSearchBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, doctorConnectSearchBaseModel, mOldDataTag);
                         break;
+                    case RescribeConstants.TASK_GET_PATIENT_LIST: //This is for get archived list
+                        PatientConnectBaseModel patientConnectBaseModel = new Gson().fromJson(data, PatientConnectBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, patientConnectBaseModel, mOldDataTag);
+                        break;
 
                     default:
 
@@ -538,9 +543,9 @@ public class RequestManager extends ConnectRequest implements Connector, Request
 
         LoginRequestModel loginRequestModel = new LoginRequestModel();
 
-        loginRequestModel.setMobileNumber(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER, mContext));
+        loginRequestModel.setEmailId(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.EMAIL, mContext));
         loginRequestModel.setPassword(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, mContext));
-        if (!(RescribeConstants.BLANK.equalsIgnoreCase(loginRequestModel.getMobileNumber()) &&
+        if (!(RescribeConstants.BLANK.equalsIgnoreCase(loginRequestModel.getEmailId()) &&
                 RescribeConstants.BLANK.equalsIgnoreCase(loginRequestModel.getPassword()))) {
             Map<String, String> headerParams = new HashMap<>();
             headerParams.putAll(mHeaderParams);

@@ -165,6 +165,9 @@ public class HomePageActivity extends DrawerActivity {
                         .setTextPrimary(getString(R.string.doctor_connect))
                         .setImage(ContextCompat.getDrawable(this, R.drawable.menu_doctor_connect)),
                 new DrawerItem()
+                        .setTextPrimary(getString(R.string.patient_connect))
+                        .setImage(ContextCompat.getDrawable(this, R.drawable.menu_doctor_connect)),
+                new DrawerItem()
                         .setTextPrimary(getString(R.string.logout))
                         .setImage(ContextCompat.getDrawable(this, R.drawable.menu_logout))
         );
@@ -179,8 +182,11 @@ public class HomePageActivity extends DrawerActivity {
                 } */
                 if (id.equalsIgnoreCase(getString(R.string.logout))) {
                     logout();
-                }else if (id.equalsIgnoreCase(getString(R.string.doctor_connect))) {
+                } else if (id.equalsIgnoreCase(getString(R.string.doctor_connect))) {
                     Intent intent = new Intent(mContext, DoctorConnectActivity.class);
+                    startActivity(intent);
+                } else if (id.equalsIgnoreCase(getString(R.string.patient_connect))) {
+                    Intent intent = new Intent(mContext, PatientConnectActivity.class);
                     startActivity(intent);
                 }
 

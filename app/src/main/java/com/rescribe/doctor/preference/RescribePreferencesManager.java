@@ -211,6 +211,7 @@ public class RescribePreferencesManager {
 
     public interface RESCRIBE_PREFERENCES_KEY {
         String USER_GENDER = "user_gender";
+        String EMAIL = "email";
         String SERVER_CONNECTION_SUCCESS = "success";
         String IS_VALID_IP_CONFIG = "isvalidipconfig";
         String AUTHTOKEN = "authToken";

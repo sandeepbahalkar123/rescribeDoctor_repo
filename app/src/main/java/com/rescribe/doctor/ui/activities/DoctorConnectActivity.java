@@ -129,8 +129,15 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
         });
 
         mSearchView.addTextChangedListener(editTextChanged());
+        mSearchView.addClearTextButtonListener(new EditTextWithDeleteButton.OnClearButtonClickedInEditTextListener() {
+            @Override
+            public void onClearButtonClicked() {
+
+            }
+        });
     }
 
+     
     private EditTextWithDeleteButton.TextChangedListener editTextChanged() {
         return new EditTextWithDeleteButton.TextChangedListener() {
 
@@ -294,4 +301,6 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
         fragmentTransaction.replace(R.id.container, searchDoctorByNameFragment);
         fragmentTransaction.commit();
     }
+
+
 }

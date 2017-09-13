@@ -33,7 +33,7 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.requestmodel.login.SignUpRequestModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.ui.fragments.LoginFragment;
+import com.rescribe.doctor.ui.fragments.login.LoginFragment;
 import com.rescribe.doctor.ui.fragments.login.SignUpFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;

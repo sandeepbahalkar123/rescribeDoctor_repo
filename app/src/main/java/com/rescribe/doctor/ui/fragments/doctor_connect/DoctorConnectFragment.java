@@ -56,7 +56,7 @@ public class DoctorConnectFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.doctor_connect_recycle_view_layout, container, false);
+        mRootView = inflater.inflate(R.layout.global_connect_recycle_view_layout, container, false);
 
 
         Bundle arguments = getArguments();
