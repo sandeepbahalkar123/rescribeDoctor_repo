@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.DoctorSearchByNameAdapter;
 import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
+import com.rescribe.doctor.adapters.patient_connect.PatientConnectChatAdapter;
 import com.rescribe.doctor.helpers.patient_connect.PatientConnectHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -43,7 +44,7 @@ public class PatientSearchFragment extends Fragment implements PatientConnectAct
     Unbinder unbinder;
     private View mRootView;
     private ArrayList<PatientData> mReceivedPatientDataList;
-    private PatientConnectAdapter mPatientConnectAdapter;
+    private PatientConnectChatAdapter mPatientConnectAdapter;
 
     public PatientSearchFragment() {
     }
@@ -96,7 +97,7 @@ public class PatientSearchFragment extends Fragment implements PatientConnectAct
         if (mReceivedPatientDataList != null) {
             if (mReceivedPatientDataList.size() > 0) {
                 isDataListViewVisible(true);
-                mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList, this);
+                mPatientConnectAdapter = new PatientConnectChatAdapter(getActivity(), mReceivedPatientDataList, this);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -113,13 +114,16 @@ public class PatientSearchFragment extends Fragment implements PatientConnectAct
     }
 
     public void isDataListViewVisible(boolean flag) {
-        if (flag) {
-            mEmptyListView.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyListView.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
+        if (!getActivity().isFinishing()) {
+            if (flag) {
+                mEmptyListView.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyListView.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            }
         }
+
     }
 
 }
