@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.chat.ChatAdapter;
@@ -160,6 +162,20 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
         //------set values----
         receiverName.setText(patientData.getPatientName());
         mOnlineStatus.setText(patientData.getOnlineStatus());
+        //--- TODO, PROFILE SHOULD BE HERE, added temperately
+        String patientName = patientData.getPatientName();
+        patientName = patientName.replace("Dr. ", "");
+        if (patientName != null) {
+            int color2 = ColorGenerator.MATERIAL.getColor(patientName);
+            TextDrawable drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .width(Math.round(getResources().getDimension(R.dimen.dp40)))  // width in px
+                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                    .endConfig()
+                    .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
+            profilePhoto.setImageDrawable(drawable);
+        }
+        //---------
         //----------
     }
 
