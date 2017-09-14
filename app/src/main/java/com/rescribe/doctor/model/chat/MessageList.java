@@ -29,6 +29,7 @@ public class MessageList implements Parcelable {
     @SerializedName("who")
     @Expose
     private int who;
+
     public final static Parcelable.Creator<MessageList> CREATOR = new Creator<MessageList>() {
 
 

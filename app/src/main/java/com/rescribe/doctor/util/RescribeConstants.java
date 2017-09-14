@@ -85,6 +85,7 @@ public class RescribeConstants {
     public static final String TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST = RescribeConstants.BLANK + 8;
     public static final String TASK_GET_PATIENT_LIST = RescribeConstants.BLANK + 9;
     public static final String SEND_MESSAGE = RescribeConstants.BLANK + 10;
+    public static final String CHAT_HISTORY = RescribeConstants.BLANK + 11;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;

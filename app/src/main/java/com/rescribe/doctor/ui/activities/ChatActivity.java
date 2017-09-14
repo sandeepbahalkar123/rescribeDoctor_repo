@@ -19,15 +19,15 @@ import android.widget.RelativeLayout;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
-import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.chat.ChatAdapter;
 import com.rescribe.doctor.helpers.chat.ChatHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MessageList;
-import com.rescribe.doctor.model.chat.MessageModel;
 import com.rescribe.doctor.model.chat.SendMessageModel;
+import com.rescribe.doctor.model.chat.history.ChatHistory;
+import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.service.MQTTService;
@@ -36,6 +36,7 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -101,7 +102,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
     private static final String TAG = "ChatActivity";
     private ChatAdapter chatAdapter;
     private ArrayList<MessageList> messageList = new ArrayList<>();
-    private Gson gson = new Gson();
 
     private PatientData patientData;
     private String docId;
@@ -117,7 +117,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
 
         chatHelper = new ChatHelper(this, this);
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this);
-
+        chatHelper.getChatHistory(1, Integer.parseInt(docId), patientData.getPatientId());
+        // startService
 
         //------set values----
         receiverName.setText(patientData.getPatientName());
@@ -145,14 +146,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
         serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
         startService(serviceIntent);
 
-        // add history api
-        String data = "{ \"messageList\": [] }";
-
-        MessageModel messageModel = gson.fromJson(data, MessageModel.class);
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         chatList.setLayoutManager(mLayoutManager);
-        messageList.addAll(messageModel.getMessageList());
         chatAdapter = new ChatAdapter(messageList,mTextDrawable);
         chatList.setAdapter(chatAdapter);
         chatList.scrollToPosition(messageList.size() - 1);
@@ -261,6 +256,29 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
                     chatAdapter.notifyItemRemoved(messageList.size() - 1);
                 }
                 CommonMethods.showToast(ChatActivity.this, sendMessageModel.getCommon().getStatusMessage());
+            }
+        } else if (customResponse instanceof ChatHistoryModel) {
+            ChatHistoryModel chatHistoryModel = (ChatHistoryModel) customResponse;
+            if (chatHistoryModel.getCommon().getStatusCode().equals(RescribeConstants.SUCCESS)) {
+                List<ChatHistory> chatHistory = chatHistoryModel.getHistoryData().getChatHistory();
+
+                ArrayList<MessageList> messageListTemp = new ArrayList<>();
+
+                for (ChatHistory chatH : chatHistory) {
+                    MessageList messageL = new MessageList();
+                    messageL.setMsgId(chatH.getChatId());
+                    messageL.setMsg(chatH.getMsg());
+                    messageL.setDocId(chatH.getUser1Id());
+                    messageL.setPatId(chatH.getUser2Id());
+                    messageL.setWho(chatH.getSender().equals("user1") ? ChatAdapter.SENDER : ChatAdapter.RECEIVER);
+                    String msgTime = CommonMethods.getFormatedDate(chatH.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_hh_mm_ss);
+                    messageL.setMsgTime(msgTime);
+                    messageListTemp.add(messageL);
+                }
+
+                messageList.addAll(0, messageListTemp);
+                chatAdapter.notifyDataSetChanged();
+                chatList.scrollToPosition(messageList.size() - 1);
             }
         }
     }

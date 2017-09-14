@@ -26,6 +26,7 @@ public class Config {
     public static final String DOCTOR_LIST_FILTER_URL = "api/patient/searchDoctors";
 
     public static final String SEND_MSG_TO_PATIENT = "api/chat/sendMsgToPatient";
+    public static final String CHAT_HISTORY = "api/chat/getChatHistory?";
 
 }
 

@@ -3,6 +3,7 @@ package com.rescribe.doctor.model.chat;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.model.Common;
 
 public class SendMessageModel implements CustomResponse {
 
