@@ -9,7 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.model.message.MessageList;
+import com.rescribe.doctor.model.chat.MessageList;
 
 import java.util.ArrayList;
 

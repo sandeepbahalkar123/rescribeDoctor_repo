@@ -150,6 +150,7 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ChatActivity.class);
                 intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
+                mContext.startActivity(intent);
             }
         });
         //---------

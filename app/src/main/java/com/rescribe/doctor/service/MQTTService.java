@@ -8,8 +8,10 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.adapters.chat.ChatAdapter;
-import com.rescribe.doctor.model.message.MessageList;
+import com.rescribe.doctor.model.chat.MessageList;
 import com.rescribe.doctor.notification.MessageNotification;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.util.RescribeConstants;
 import com.rescribe.doctor.util.rxnetwork.RxNetwork;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -125,8 +127,8 @@ public class MQTTService extends Service {
 
     void initMqttCallback() {
 
-        qos = new int[this.TOPIC.length];
-        for (int index = 0; index < this.TOPIC.length; index++)
+        qos = new int[TOPIC.length];
+        for (int index = 0; index < TOPIC.length; index++)
             qos[index] = 1;
 
         try {
@@ -138,17 +140,24 @@ public class MQTTService extends Service {
                     try {
                         if (!msg.isDuplicate()) {
                             MessageList messageL = gson.fromJson(new String(msg.getPayload()), MessageList.class);
-                            messageL.setMsgId(msg.getId());
-                            messageL.setWho(ChatAdapter.RECEIVER);
-                            messageL.setTopic(topic);
+                            String myid = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, MQTTService.this);
+                            String userLogin = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, MQTTService.this);
 
-                            MessageNotification.notify(MQTTService.this, messageL.getTopic(), messageL.getMsg(), 0, messageL.getMsgId());
+                            if (userLogin.equals(RescribeConstants.YES)) {
+                                if (myid.equals(String.valueOf(messageL.getDocId())) && topic.equals(TOPIC[0])) {
+                                    messageL.setMsgId(msg.getId());
+                                    messageL.setWho(ChatAdapter.RECEIVER);
+                                    messageL.setTopic(topic);
 
-                            Intent intent = new Intent(NOTIFY);
-                            intent.putExtra(FAILED, false);
-                            intent.putExtra(MESSAGE, messageL);
-                            sendBroadcast(intent);
-                        }
+                                    MessageNotification.notify(MQTTService.this, messageL.getTopic(), messageL.getMsg(), 0, messageL.getMsgId());
+
+                                    Intent intent = new Intent(NOTIFY);
+                                    intent.putExtra(FAILED, false);
+                                    intent.putExtra(MESSAGE, messageL);
+                                    sendBroadcast(intent);
+                                } else Log.d(TAG + " OTHERS_MES", new String(msg.getPayload()));
+                            }
+                        } else Log.d(TAG + " LOGOUT_MES", new String(msg.getPayload()));
                     } catch (JsonSyntaxException e) {
                         Log.d(TAG + " MESSAGE", new String(msg.getPayload()));
                     }

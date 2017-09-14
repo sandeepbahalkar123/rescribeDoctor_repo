@@ -20,11 +20,17 @@ import android.widget.RelativeLayout;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.chat.ChatAdapter;
-import com.rescribe.doctor.model.message.MessageList;
-import com.rescribe.doctor.model.message.MessageModel;
+import com.rescribe.doctor.helpers.chat.ChatHelper;
+import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.chat.MessageList;
+import com.rescribe.doctor.model.chat.MessageModel;
+import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.patient_connect.PatientData;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.service.MQTTService;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -33,7 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements HelperResponse {
 
     @BindView(R.id.backButton)
     ImageView backButton;
@@ -64,14 +70,6 @@ public class ChatActivity extends AppCompatActivity {
     @BindView(R.id.messageTypeLayout)
     RelativeLayout messageTypeLayout;
 
-    private boolean isSend = false;
-    private Intent serviceIntent;
-
-    private static final String TAG = "ChatActivity";
-    private ChatAdapter chatAdapter;
-    private ArrayList<MessageList> messageList = new ArrayList<>();
-    private Gson gson = new Gson();
-
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
@@ -90,13 +88,28 @@ public class ChatActivity extends AppCompatActivity {
         }
     };
 
+    private ChatHelper chatHelper;
+    private boolean isSend = false;
+    private Intent serviceIntent;
+
+    private static final String TAG = "ChatActivity";
+    private ChatAdapter chatAdapter;
+    private ArrayList<MessageList> messageList = new ArrayList<>();
+    private Gson gson = new Gson();
+
+    private PatientData patientData;
+    private String docId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        PatientData patientData = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
+        patientData = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
+
+        chatHelper = new ChatHelper(this, this);
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this);
 
         // startService
 
@@ -106,7 +119,7 @@ public class ChatActivity extends AppCompatActivity {
         serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
         startService(serviceIntent);
 
-        String data = "{ \"messageList\": [ { \"msg\": \"Hi Doc I am not good okey\", \"docId\": 999, \"patId\": 12, \"who\": 1 }, { \"msg\": \"Hi Doc I am not good okey\", \"docId\": 999, \"patId\": 12, \"who\": 0 }, { \"msg\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book\", \"docId\": 999, \"patId\": 12, \"who\": 1 }, { \"msg\": \"Hi Doc I am not good okey\", \"docId\": 999, \"patId\": 12, \"who\": 1 }, { \"msg\": \"There are many variations of passages\", \"docId\": 999, \"patId\": 12, \"who\": 0 }, { \"msg\": \"Hi Doc I am not good okey\", \"docId\": 999, \"patId\": 12, \"who\": 0 }, { \"msg\": \"There are many variations of passages of Lorem Ipsum available\", \"docId\": 999, \"patId\": 12, \"who\": 1 }, { \"msg\": \"Hi Doc I am not good okey\", \"docId\": 999, \"patId\": 12, \"who\": 1 }, { \"msg\": \"Hi Doc I am \\nnot good okey\", \"docId\": 999, \"patId\": 12, \"who\": 0 }, { \"msg\": \"Hmm\", \"docId\": 999, \"patId\": 12, \"who\": 1 }, { \"msg\": \"There are many variations of passages of Lorem Ipsum available\", \"docId\": 999, \"patId\": 12, \"who\": 0 } ] }";
+        String data = "{ \"messageList\": [] }";
 
         MessageModel messageModel = gson.fromJson(data, MessageModel.class);
 
@@ -165,8 +178,8 @@ public class ChatActivity extends AppCompatActivity {
                         messageL.setWho(ChatAdapter.SENDER);
                         messageL.setMsg(message);
                         messageL.setMsgId(0);
-                        messageL.setDocId(123);
-                        messageL.setPatId(123);
+                        messageL.setDocId(Integer.parseInt(docId));
+                        messageL.setPatId(patientData.getPatientId());
 
                         if (chatAdapter != null) {
                             messageList.add(messageL);
@@ -174,11 +187,14 @@ public class ChatActivity extends AppCompatActivity {
                             chatList.smoothScrollToPosition(messageList.size() - 1);
                         }
 
-                        serviceIntent.putExtra(MQTTService.IS_MESSAGE, true);
+                        /*serviceIntent.putExtra(MQTTService.IS_MESSAGE, true);
                         serviceIntent.putExtra(MQTTService.MESSAGE, messageL);
                         startService(serviceIntent);
 
-                        messageType.setText("");
+                        messageType.setText("");*/
+
+                        chatHelper.sendMsgToPatient(messageL);
+
                     }
                 } else {
 
@@ -200,5 +216,46 @@ public class ChatActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        if (customResponse instanceof SendMessageModel) {
+            SendMessageModel sendMessageModel = (SendMessageModel) customResponse;
+            if (sendMessageModel.getCommon().getStatusCode().equals(RescribeConstants.SUCCESS)) {
+                // message sent
+                messageType.setText("");
+            } else {
+                if (chatAdapter != null) {
+                    messageList.remove(messageList.size() - 1);
+                    chatAdapter.notifyItemRemoved(messageList.size() - 1);
+                }
+                CommonMethods.showToast(ChatActivity.this, sendMessageModel.getCommon().getStatusMessage());
+            }
+        }
+    }
+
+    @Override
+    public void onParseError(String mOldDataTag, String errorMessage) {
+        if (chatAdapter != null) {
+            messageList.remove(messageList.size() - 1);
+            chatAdapter.notifyItemRemoved(messageList.size() - 1);
+        }
+    }
+
+    @Override
+    public void onServerError(String mOldDataTag, String serverErrorMessage) {
+        if (chatAdapter != null) {
+            messageList.remove(messageList.size() - 1);
+            chatAdapter.notifyItemRemoved(messageList.size() - 1);
+        }
+    }
+
+    @Override
+    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
+        if (chatAdapter != null) {
+            messageList.remove(messageList.size() - 1);
+            chatAdapter.notifyItemRemoved(messageList.size() - 1);
+        }
     }
 }
