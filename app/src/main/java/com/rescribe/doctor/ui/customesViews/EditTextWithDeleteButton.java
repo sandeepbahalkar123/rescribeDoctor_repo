@@ -129,9 +129,13 @@ public class EditTextWithDeleteButton extends LinearLayout {
         editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         editText.setLayoutParams(new TableLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
+
+        editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.search, 0, 0, 0);
+        editText.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dp4));
+
         editText.setHorizontallyScrolling(false);
         editText.setVerticalScrollBarEnabled(true);
-        editText.setGravity(Gravity.LEFT);
+        editText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         editText.setBackground(null);
         editText.setHint(hintText);
         return editText;

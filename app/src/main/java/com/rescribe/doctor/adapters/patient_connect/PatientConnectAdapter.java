@@ -130,14 +130,10 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
 
         if ((searchString != null) && (!searchString.isEmpty())) {
             spannableStringSearch = new SpannableString(doctorConnectChatModel.getPatientName());
-            Pattern pattern = Pattern.compile(searchString, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(doctorConnectChatModel.getPatientName());
-            while (matcher.find()) {
-                spannableStringSearch.setSpan(new ForegroundColorSpan(
-                                ContextCompat.getColor(mContext, R.color.tagColor)),
-                        matcher.start(), matcher.end(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+            spannableStringSearch.setSpan(new ForegroundColorSpan(
+                            ContextCompat.getColor(mContext, R.color.tagColor)),
+                    0, searchString.length(),
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         if (spannableStringSearch != null) {
             holder.doctorName.setText(spannableStringSearch);

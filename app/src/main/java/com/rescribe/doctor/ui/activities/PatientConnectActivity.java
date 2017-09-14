@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -48,6 +49,8 @@ public class PatientConnectActivity extends AppCompatActivity {
     CustomTextView title;
     @BindView(R.id.searchView)
     EditTextWithDeleteButton mSearchView;
+    @BindView(R.id.whiteUnderLine)
+    TextView whiteUnderLine;
 
     private ViewPagerAdapter mAdapter;
     //-----
@@ -60,7 +63,7 @@ public class PatientConnectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_doctor_connect);
+        setContentView(R.layout.activity_patient_connect);
         ButterKnife.bind(this);
         title.setText("" + getString(R.string.patient_connect));
         mFragmentTitleList[0] = getString(R.string.chats);
@@ -78,6 +81,7 @@ public class PatientConnectActivity extends AppCompatActivity {
                 int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
                     mSearchView.setVisibility(View.VISIBLE);
+                    whiteUnderLine.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
                 } else {
                     mSearchView.setVisibility(View.GONE);
@@ -89,6 +93,8 @@ public class PatientConnectActivity extends AppCompatActivity {
             public void onTabUnselected(TabLayout.Tab tab) {
                 int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
+                    whiteUnderLine.setVisibility(View.VISIBLE);
+
                     mSearchView.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
                 } else {
@@ -101,6 +107,8 @@ public class PatientConnectActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
                 int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
+                    whiteUnderLine.setVisibility(View.VISIBLE);
+
                     mSearchView.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
                 } else {
