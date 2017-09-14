@@ -13,11 +13,11 @@ import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.DoctorConnectChatAdapter;
-import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectChatHelper;
-import com.rescribe.doctor.model.parceable_doctor_connect_chat.ChatList;
-import com.rescribe.doctor.ui.activities.DoctorConnectActivity;
+import com.rescribe.doctor.model.doctor_connect_chat.ChatList;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -28,7 +28,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Created by jeetal on 6/9/17.
  */
 
-public class DoctorConnectChatFragment extends Fragment  {
+public class DoctorConnectChatFragment extends Fragment {
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
     @BindView(R.id.emptyListView)
@@ -39,11 +39,10 @@ public class DoctorConnectChatFragment extends Fragment  {
     private ArrayList<ChatList> chatLists;
 
 
-
     public static DoctorConnectChatFragment newInstance(ArrayList<ChatList> chatLists) {
         DoctorConnectChatFragment fragment = new DoctorConnectChatFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(RescribeConstants.CHAT_REQUEST,chatLists);
+        args.putParcelableArrayList(RescribeConstants.CHAT_REQUEST, chatLists);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,7 +53,7 @@ public class DoctorConnectChatFragment extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.doctor_connect_recycle_view_layout, container, false);
+        mRootView = inflater.inflate(R.layout.global_connect_recycle_view_layout, container, false);
         Bundle arguments = getArguments();
         if (arguments != null) {
             chatLists = getArguments().getParcelableArrayList(RescribeConstants.CHAT_REQUEST);
@@ -66,7 +65,16 @@ public class DoctorConnectChatFragment extends Fragment  {
     }
 
     private void init() {
-        mDoctorConnectChatAdapter = new DoctorConnectChatAdapter(getActivity(),chatLists );
+        for (int i = 0; i < chatLists.size(); i++) {
+            String doctorName = chatLists.get(i).getDoctorName();
+            if (doctorName.startsWith(getString(R.string.dr))) {
+                chatLists.get(i).setDoctorName(doctorName);
+            } else {
+                String drName = getString(R.string.dr) + doctorName;
+                chatLists.get(i).setDoctorName(drName);
+            }
+        }
+        mDoctorConnectChatAdapter = new DoctorConnectChatAdapter(getActivity(), chatLists);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -74,8 +82,6 @@ public class DoctorConnectChatFragment extends Fragment  {
                 DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         mRecyclerView.setAdapter(mDoctorConnectChatAdapter);
-
-
     }
 
     @Override

@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.rescribe.doctor.adapters.ChatAdapter;
+import com.rescribe.doctor.adapters.chat.ChatAdapter;
 import com.rescribe.doctor.model.message.MessageList;
 import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.util.rxnetwork.RxNetwork;

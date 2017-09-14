@@ -211,10 +211,11 @@ public class RescribePreferencesManager {
 
     public interface RESCRIBE_PREFERENCES_KEY {
         String USER_GENDER = "user_gender";
+        String EMAIL = "email";
         String SERVER_CONNECTION_SUCCESS = "success";
         String IS_VALID_IP_CONFIG = "isvalidipconfig";
         String AUTHTOKEN = "authToken";
-        String PATIENT_ID = "patientId";
+        String DOC_ID = "docId";
         String LOGIN_STATUS = "login_status";
         String MOBILE_NUMBER = "mobileNumber";
         String PASSWORD = "password";

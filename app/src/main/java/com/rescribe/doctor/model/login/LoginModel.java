@@ -10,20 +10,9 @@ public class LoginModel implements CustomResponse {
     @SerializedName("common")
     @Expose
     private Common common;
-    @SerializedName("authToken")
+    @SerializedName("data")
     @Expose
-    private String authToken;
-    @SerializedName("patientId")
-    @Expose
-    private String patientId;
-
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
+    private LoginInfo loginInfo;
 
     public Common getCommon() {
         return common;
@@ -33,34 +22,36 @@ public class LoginModel implements CustomResponse {
         this.common = common;
     }
 
-    public String getAuthToken() {
-        return authToken;
+    public LoginInfo getLoginInfo() {
+        return loginInfo;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
-    }
-/*
-    public ArrayList<YearsMonthsDataList> getYearsMonthsDataList() {
-        return yearsMonthsDataList;
+    public void setLoginInfo(LoginInfo loginInfo) {
+        this.loginInfo = loginInfo;
     }
 
-    public ArrayList<Year> getYearList() {
-        ArrayList<YearsMonthsDataList> yearsMonthsDataList = getYearsMonthsDataList();
-        ArrayList<Year> yearList = new ArrayList<>();
-        for (YearsMonthsDataList yearObject :
-                yearsMonthsDataList) {
-            String[] months = yearObject.getMonths();
-            if (months.length > 0) {
-                for (int i = 0; i < months.length; i++) {
-                    Year year = new Year();
-                    year.setYear(yearObject.getYear());
-                    year.setMonthName(months[i]);
-                    yearList.add(year);
-                }
-            }
+    public class LoginInfo {
+        @SerializedName("authToken")
+        @Expose
+        private String authToken;
+        @SerializedName("docId")
+        @Expose
+        private String docId;
+
+        public String getDocId() {
+            return docId;
         }
-        return yearList;
-    }*/
 
+        public void setDocId(String docId) {
+            this.docId = docId;
+        }
+
+        public String getAuthToken() {
+            return authToken;
+        }
+
+        public void setAuthToken(String authToken) {
+            this.authToken = authToken;
+        }
+    }
 }

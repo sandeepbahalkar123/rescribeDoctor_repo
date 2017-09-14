@@ -19,11 +19,13 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.ChatAdapter;
+import com.rescribe.doctor.adapters.chat.ChatAdapter;
 import com.rescribe.doctor.model.message.MessageList;
 import com.rescribe.doctor.model.message.MessageModel;
+import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.service.MQTTService;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 
@@ -93,6 +95,8 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+
+        PatientData patientData = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
 
         // startService
 

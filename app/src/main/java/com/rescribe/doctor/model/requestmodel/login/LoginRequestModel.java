@@ -6,19 +6,19 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 
 public class LoginRequestModel implements CustomResponse {
 
-    @SerializedName("mobileNumber")
+    @SerializedName("emailId")
     @Expose
-    private String mobileNumber;
+    private String emailId;
     @SerializedName("password")
     @Expose
     private String password;
 
-    public String getMobileNumber() {
-        return mobileNumber;
+    public String getEmailId() {
+        return emailId;
     }
 
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
     }
 
     public String getPassword() {

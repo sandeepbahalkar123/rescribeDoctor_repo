@@ -173,7 +173,7 @@ public class HomePageActivity extends DrawerActivity {
                         .setTextPrimary(getString(R.string.doctor_connect))
                         .setImage(ContextCompat.getDrawable(this, R.drawable.menu_doctor_connect)),
                 new DrawerItem()
-                        .setTextPrimary(getString(R.string.chat))
+                        .setTextPrimary(getString(R.string.patient_connect))
                         .setImage(ContextCompat.getDrawable(this, R.drawable.menu_doctor_connect)),
                 new DrawerItem()
                         .setTextPrimary(getString(R.string.logout))
@@ -183,19 +183,21 @@ public class HomePageActivity extends DrawerActivity {
             @Override
             public void onClick(DrawerItem item, long itemID, int position) {
                 //  selectItem(position);
+
+                closeDrawer();
                 String id = item.getTextPrimary();
-                if (id.equalsIgnoreCase(getString(R.string.chat))) {
+                /*if (id.equalsIgnoreCase(getString(R.string.chat))) {
                     Intent intent = new Intent(mContext, ChatActivity.class);
                     startActivity(intent);
-                } else if (id.equalsIgnoreCase(getString(R.string.logout))) {
+                } else */if (id.equalsIgnoreCase(getString(R.string.logout))) {
                     logout();
                 } else if (id.equalsIgnoreCase(getString(R.string.doctor_connect))) {
                     Intent intent = new Intent(mContext, DoctorConnectActivity.class);
                     startActivity(intent);
+                } else if (id.equalsIgnoreCase(getString(R.string.patient_connect))) {
+                    Intent intent = new Intent(mContext, PatientConnectActivity.class);
+                    startActivity(intent);
                 }
-
-
-                closeDrawer();
             }
         });
 
