@@ -13,7 +13,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.ui.activities.DoctorConnectActivity;
+import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 
 /**
  * Helper class for showing and canceling new message
@@ -51,7 +51,8 @@ public class MessageNotification {
         // TODO: Remove this if your notification has no relevant thumbnail.
         final Bitmap picture = BitmapFactory.decodeResource(res, R.mipmap.ic_launcher);
 
-        Intent resultIntent = new Intent(context, DoctorConnectActivity.class);
+//        Intent resultIntent = new Intent(context, DoctorConnectActivity.class);
+        Intent resultIntent = new Intent(context, PatientConnectActivity.class);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         context,

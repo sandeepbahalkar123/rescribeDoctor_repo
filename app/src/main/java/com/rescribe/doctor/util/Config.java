@@ -25,6 +25,8 @@ public class Config {
     public static final String GET_PATIENT_CHAT_LIST = "api/patient/getChatPatientList?docId=";
     public static final String DOCTOR_LIST_FILTER_URL = "api/patient/searchDoctors";
 
+    public static final String SEND_MSG_TO_PATIENT = "api/chat/sendMsgToPatient";
+
 }
 
 

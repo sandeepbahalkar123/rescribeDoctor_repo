@@ -56,7 +56,7 @@
                     android:textSize="@dimen/sp18" />
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
-                    android:id="@+id/dateTime"
+                    android:id="@+id/onlineStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:customFont="@string/roboto_medium"
