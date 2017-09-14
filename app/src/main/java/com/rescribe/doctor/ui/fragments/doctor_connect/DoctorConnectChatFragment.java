@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.DoctorConnectChatAdapter;
+import com.rescribe.doctor.adapters.doctor_connect.DoctorConnectChatAdapter;
 import com.rescribe.doctor.model.doctor_connect_chat.ChatList;
 import com.rescribe.doctor.util.RescribeConstants;
 

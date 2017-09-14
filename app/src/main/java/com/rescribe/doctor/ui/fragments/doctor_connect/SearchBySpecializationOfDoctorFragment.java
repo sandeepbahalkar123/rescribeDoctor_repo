@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.DoctorConnectSearchAdapter;
+import com.rescribe.doctor.adapters.doctor_connect.DoctorConnectSearchAdapter;
 import com.rescribe.doctor.model.doctor_connect_search.DoctorSpeciality;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.GridSpacingItemDecoration;

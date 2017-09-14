@@ -12,16 +12,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.DoctorConnectAdapter;
+import com.rescribe.doctor.adapters.doctor_connect.DoctorConnectAdapter;
 import com.rescribe.doctor.model.doctor_connect.ConnectList;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**

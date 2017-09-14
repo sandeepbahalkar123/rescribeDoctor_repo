@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.DoctorSearchByNameAdapter;
+import com.rescribe.doctor.adapters.doctor_connect.DoctorSearchByNameAdapter;
 import com.rescribe.doctor.ui.activities.DoctorConnectActivity;
 import com.rescribe.doctor.util.RescribeConstants;
 

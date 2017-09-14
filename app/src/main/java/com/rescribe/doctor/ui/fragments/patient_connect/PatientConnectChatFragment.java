@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.DoctorConnectChatAdapter;
 import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
 import com.rescribe.doctor.helpers.patient_connect.PatientConnectHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;

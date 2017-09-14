@@ -1,4 +1,4 @@
-package com.rescribe.doctor.adapters;
+package com.rescribe.doctor.adapters.doctor_connect;
 
 import android.content.Context;
 
