@@ -78,10 +78,14 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
 
             if (!isFailed) {
                 MessageList message = intent.getParcelableExtra(MQTTService.MESSAGE);
-                if (chatAdapter != null) {
-                    messageList.add(message);
-                    chatAdapter.notifyItemInserted(messageList.size() - 1);
-                    chatList.smoothScrollToPosition(messageList.size() - 1);
+                if (message.getPatId() == patientData.getPatientId()) {
+                    if (chatAdapter != null) {
+                        messageList.add(message);
+                        chatAdapter.notifyItemInserted(messageList.size() - 1);
+                        chatList.smoothScrollToPosition(messageList.size() - 1);
+                    }
+                } else {
+                    // Other patient message
                 }
             }
 
