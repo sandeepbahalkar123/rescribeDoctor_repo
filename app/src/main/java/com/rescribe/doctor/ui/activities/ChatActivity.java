@@ -105,6 +105,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
 
     private PatientData patientData;
     private String docId;
+    private TextDrawable mTextDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +118,27 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
         chatHelper = new ChatHelper(this, this);
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this);
 
-        // startService
 
+        //------set values----
+        receiverName.setText(patientData.getPatientName());
+        mOnlineStatus.setText(patientData.getOnlineStatus());
+        //--- TODO, PROFILE SHOULD BE HERE, added temperately
+        String patientName = patientData.getPatientName();
+        patientName = patientName.replace("Dr. ", "");
+        if (patientName != null) {
+            int color2 = ColorGenerator.MATERIAL.getColor(patientName);
+            mTextDrawable = TextDrawable.builder()
+                    .beginConfig()
+                    .width(Math.round(getResources().getDimension(R.dimen.dp40)))  // width in px
+                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                    .endConfig()
+                    .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
+            profilePhoto.setImageDrawable(mTextDrawable);
+        }
+        //---------
+
+
+        // startService
         // use this to start and trigger a service
         serviceIntent = new Intent(this, MQTTService.class);
         // potentially add data to the serviceIntent
@@ -132,7 +152,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         chatList.setLayoutManager(mLayoutManager);
         messageList.addAll(messageModel.getMessageList());
-        chatAdapter = new ChatAdapter(messageList);
+        chatAdapter = new ChatAdapter(messageList,mTextDrawable);
         chatList.setAdapter(chatAdapter);
         chatList.scrollToPosition(messageList.size() - 1);
 
@@ -159,23 +179,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
             }
         });
 
-        //------set values----
-        receiverName.setText(patientData.getPatientName());
-        mOnlineStatus.setText(patientData.getOnlineStatus());
-        //--- TODO, PROFILE SHOULD BE HERE, added temperately
-        String patientName = patientData.getPatientName();
-        patientName = patientName.replace("Dr. ", "");
-        if (patientName != null) {
-            int color2 = ColorGenerator.MATERIAL.getColor(patientName);
-            TextDrawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .width(Math.round(getResources().getDimension(R.dimen.dp40)))  // width in px
-                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
-                    .endConfig()
-                    .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
-            profilePhoto.setImageDrawable(drawable);
-        }
-        //---------
+
         //----------
     }
 

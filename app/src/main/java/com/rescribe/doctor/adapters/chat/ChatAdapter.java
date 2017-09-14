@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MessageList;
 
@@ -18,12 +19,14 @@ import butterknife.ButterKnife;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder> {
 
+    private TextDrawable mReceiverTextDrawable;
     private ArrayList<MessageList> messageList;
     public static final int SENDER = 0;
     public static final int RECEIVER = 1;
 
-    public ChatAdapter(ArrayList<MessageList> messageList) {
+    public ChatAdapter(ArrayList<MessageList> messageList, TextDrawable mReceiverTextDrawable) {
         this.messageList = messageList;
+        this.mReceiverTextDrawable = mReceiverTextDrawable;
     }
 
     @Override
@@ -47,6 +50,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
             holder.senderLayout.setVisibility(View.GONE);
             holder.receiverMessage.setText(message.getMsg());
         }
+
+        //TODO, sendProfiile Image will set, added it for now
+        holder.senderProfilePhoto.setImageDrawable(mReceiverTextDrawable);
+
     }
 
     @Override
