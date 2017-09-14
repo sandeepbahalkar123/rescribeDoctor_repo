@@ -150,7 +150,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
         chatList.setLayoutManager(mLayoutManager);
         chatAdapter = new ChatAdapter(messageList,mTextDrawable);
         chatList.setAdapter(chatAdapter);
-        chatList.scrollToPosition(messageList.size() - 1);
 
         messageType.addTextChangedListener(new TextWatcher() {
             @Override
