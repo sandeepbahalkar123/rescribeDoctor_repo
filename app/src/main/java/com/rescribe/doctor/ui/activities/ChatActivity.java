@@ -123,6 +123,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
         serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
         startService(serviceIntent);
 
+        // add history api
         String data = "{ \"messageList\": [] }";
 
         MessageModel messageModel = gson.fromJson(data, MessageModel.class);
