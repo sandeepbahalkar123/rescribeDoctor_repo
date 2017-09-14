@@ -34,8 +34,10 @@ import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
-import com.rescribe.doctor.model.parceable_doctor_connect.DoctorConnectBaseModel;
-import com.rescribe.doctor.model.parceable_doctor_connect_chat.DoctorConnectChatBaseModel;
+import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
+
+import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
+import com.rescribe.doctor.model.doctor_connect_chat.DoctorConnectChatBaseModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
@@ -409,11 +411,11 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                 // This success response is for refresh token
                 // Need to Add
                 LoginModel loginModel = gson.fromJson(data, LoginModel.class);
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, loginModel.getAuthToken(), mContext);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, loginModel.getLoginInfo().getAuthToken(), mContext);
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, mContext);
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_ID, loginModel.getPatientId(), mContext);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, loginModel.getLoginInfo().getDocId(), mContext);
 
-                mHeaderParams.put(RescribeConstants.AUTHORIZATION_TOKEN, loginModel.getAuthToken());
+                mHeaderParams.put(RescribeConstants.AUTHORIZATION_TOKEN, loginModel.getLoginInfo().getAuthToken());
 
                 connect();
 
@@ -452,6 +454,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST: //This is for get archived list
                         DoctorConnectSearchBaseModel doctorConnectSearchBaseModel = new Gson().fromJson(data, DoctorConnectSearchBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, doctorConnectSearchBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_GET_PATIENT_LIST: //This is for get archived list
+                        PatientConnectBaseModel patientConnectBaseModel = new Gson().fromJson(data, PatientConnectBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, patientConnectBaseModel, mOldDataTag);
                         break;
 
                     default:
@@ -538,9 +544,9 @@ public class RequestManager extends ConnectRequest implements Connector, Request
 
         LoginRequestModel loginRequestModel = new LoginRequestModel();
 
-        loginRequestModel.setMobileNumber(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER, mContext));
+        loginRequestModel.setEmailId(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.EMAIL, mContext));
         loginRequestModel.setPassword(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, mContext));
-        if (!(RescribeConstants.BLANK.equalsIgnoreCase(loginRequestModel.getMobileNumber()) &&
+        if (!(RescribeConstants.BLANK.equalsIgnoreCase(loginRequestModel.getEmailId()) &&
                 RescribeConstants.BLANK.equalsIgnoreCase(loginRequestModel.getPassword()))) {
             Map<String, String> headerParams = new HashMap<>();
             headerParams.putAll(mHeaderParams);

@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.parceable_doctor_connect.DoctorConnectBaseModel;
+import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;

@@ -41,7 +41,10 @@ android {
                     [
                             'src/main/res',
                             'src/main/res/layouts',
-                            'src/main/res/layouts/login'
+                            'src/main/res/layouts/login',
+                            'src/main/res/layouts/global_ui_for_connect',
+                            'src/main/res/layouts/doctor',
+                            'src/main/res/layouts/patient'
                     ]
         }
     }

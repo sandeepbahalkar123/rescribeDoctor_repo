@@ -196,6 +196,7 @@
     <string name="doctor_image">Doctor Image</string>
     <string name="documents_uploaded_successfully">Documents Uploaded Successfully</string>
     <string name="doctor_connect">Doctor Connect</string>
+    <string name="patient_connect">Patient Connect</string>
     <string name="chats">Chats</string>
     <string name="connect">Connect</string>
     <string name="search">Search</string>
@@ -225,5 +226,9 @@
     <string name="title_activity_chat">ChatActivity</string>
     <string name="type_a_message">Type a message</string>
     <string name="chat">Chat</string>
+    <string name="dr">Dr.</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
+    <string name="idle">Idle</string>
 
 </resources>

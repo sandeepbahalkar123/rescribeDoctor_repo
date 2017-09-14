@@ -71,50 +71,19 @@ public class RescribeConstants {
     public static final String APPOINTMENT_MESSAGE = "appointment_message";
     public static final String BLANK = "";
     //Click codes
-    public static final String CLICK_DELETE = RescribeConstants.BLANK + 0;
-    public static final String CLICK_EXPAND_VIEW = RescribeConstants.BLANK + 1;
-    public static final String CLICK_EDIT = RescribeConstants.BLANK + 2;
-    public static final String TASK_PRESCRIPTION_LIST = RescribeConstants.BLANK + 1;
-    public static final String TASK_HISTORY = RescribeConstants.BLANK + 2;
-    public static final String TASK_DOCTOR_LIST = RescribeConstants.BLANK + 3;
-    public static final String TASK_LOGIN = RescribeConstants.BLANK + 4;
-    public static final String TASK_ONE_DAY_VISIT = RescribeConstants.BLANK + 5;
 
-    public static final String VITALS_LIST = RescribeConstants.BLANK + 6;
-    public static final String TASK_DOCTOR_APPOINTMENT = RescribeConstants.BLANK + 7;
+    public static final String TASK_LOGIN = RescribeConstants.BLANK + 1;
 
-    public static final String TASK_NOTIFICATION = RescribeConstants.BLANK + 8;
-    public static final String TASK_RESPOND_NOTIFICATION = RescribeConstants.BLANK + "notification";
-    public static final String TASK_RESPOND_NOTIFICATION_ADAPTER = RescribeConstants.BLANK + "adapternotification";
+    public static final String TASK_SIGN_UP = RescribeConstants.BLANK + 2;
+    public static final String TASK_VERIFY_SIGN_UP_OTP = RescribeConstants.BLANK + 3;
 
-    public static final String TASK_DOCTOR_LIST_FILTERING = RescribeConstants.BLANK + 10;
-    public static final String TASK_SIGN_UP = RescribeConstants.BLANK + 11;
-    public static final String TASK_VERIFY_SIGN_UP_OTP = RescribeConstants.BLANK + 12;
 
-    public static final String FILTER_DOCTOR_LIST = RescribeConstants.BLANK + 13;
-    public static final String FILTER_DOCTOR_SPECIALITY_LIST = RescribeConstants.BLANK + 14;
-    public static final String CASE_DETAILS_LIST = RescribeConstants.BLANK + 15;
-
-    public static final String APPOINTMENT_NOTIFICATION = RescribeConstants.BLANK + 16;
-    public static final String TASK_RESPOND_NOTIFICATION_FOR_HEADER = RescribeConstants.BLANK + "notify";
-    public static final String TASK_RESPOND_NOTIFICATION_FOR_HEADER_ADAPTER = RescribeConstants.BLANK + "adapternotify";
-
-    public static final String INVESTIGATION_LIST = RescribeConstants.BLANK + 17;
-    public static final String INVESTIGATION_UPLOAD_BY_GMAIL = RescribeConstants.BLANK + 18;
-
-    public static final String INVESTIGATION_UPLOAD_FROM_UPLOADED = RescribeConstants.BLANK + 19;
-
-    //--------
-    public static final String TASK_GET_ALL_MY_RECORDS = RescribeConstants.BLANK + 20;
-    //--------
-    public static final String MY_RECORDS_DOCTOR_LIST = RescribeConstants.BLANK + 21;
-    public static final String MY_RECORDS_ADD_DOCTOR = RescribeConstants.BLANK + 22;
-
-    public static final String TASK_LOGIN_WITH_PASSWORD = RescribeConstants.BLANK + 23;
-    public static final String TASK_LOGIN_WITH_OTP = RescribeConstants.BLANK + 24;
-    public static final String TASK_DOCTOR_CONNECT_CHAT = RescribeConstants.BLANK + 25;
-    public static final String TASK_DOCTOR_CONNECT = RescribeConstants.BLANK + 26;
-    public static final String TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST = RescribeConstants.BLANK + 27;
+    public static final String TASK_LOGIN_WITH_PASSWORD = RescribeConstants.BLANK + 4;
+    public static final String TASK_LOGIN_WITH_OTP = RescribeConstants.BLANK + 5;
+    public static final String TASK_DOCTOR_CONNECT_CHAT = RescribeConstants.BLANK + 6;
+    public static final String TASK_DOCTOR_CONNECT = RescribeConstants.BLANK + 7;
+    public static final String TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST = RescribeConstants.BLANK + 8;
+    public static final String TASK_GET_PATIENT_LIST = RescribeConstants.BLANK + 9;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -122,13 +91,8 @@ public class RescribeConstants {
     public static final String TAKEN_DATE = "takenDate";
 
     public static final String TITLE = "title";
-    public static final String DOCTORS_LIST = "doctors_list";
-    public static final String CASE_DETAILS = "case_details";
-    public static final String FILTER_REQUEST = "filter_request";
     public static final int MAX_RETRIES = 3;
-    public static final String PATIENT_ID = "patientId=";
-    public static final String VISIT_DATE = "visitDate";
-    public static final String DOCTORS_ID = "doctorId";
+
     public static final String GMAIL_LOGIN = "gmail_login";
     public static final String FACEBOOK_LOGIN = "facebook_login";
 
