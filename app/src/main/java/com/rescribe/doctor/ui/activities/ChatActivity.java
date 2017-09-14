@@ -188,7 +188,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backButton:
-                onBackPressed();
+               finish();
                 break;
             case R.id.attachmentButton:
                 break;
