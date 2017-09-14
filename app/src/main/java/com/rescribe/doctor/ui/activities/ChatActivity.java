@@ -101,7 +101,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
     private static final String TAG = "ChatActivity";
     private ChatAdapter chatAdapter;
     private ArrayList<MessageList> messageList = new ArrayList<>();
-    private Gson gson = new Gson();
 
     private PatientData patientData;
     private String docId;
@@ -125,14 +124,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
         serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
         startService(serviceIntent);
 
-        // add history api
-        String data = "{ \"messageList\": [] }";
-
-        MessageModel messageModel = gson.fromJson(data, MessageModel.class);
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         chatList.setLayoutManager(mLayoutManager);
-        messageList.addAll(messageModel.getMessageList());
         chatAdapter = new ChatAdapter(messageList);
         chatList.setAdapter(chatAdapter);
         chatList.scrollToPosition(messageList.size() - 1);
