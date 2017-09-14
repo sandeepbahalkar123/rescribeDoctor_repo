@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -30,16 +29,15 @@ import rx.functions.Func1;
 public class MQTTService extends Service {
     private static final String TAG = "MQTTService";
     public static final String MESSAGE = "message";
-    //    public static final String TOPIC = "topic";
     public static final String NOTIFY = "com.rescribe";
     public static final String IS_MESSAGE = "is_message";
     public static final String MESSAGE_ID = "message_id";
     public static final String FAILED = "delivery";
     public static final String DOCTOR_CONNECT = "doctorConnect";
-    private String topic[] = {"doctorConnect", "online"};
+    private static final String TOPIC[] = {"doctorConnect", "online"};
 
     private MqttClient mqttClient;
-    private static final String broker = "tcp://broker.hivemq.com:1883";
+    private static final String BROKER = "tcp://broker.hivemq.com:1883";
     private Gson gson = new Gson();
 
     private Subscription sendStateSubscription;
@@ -57,12 +55,10 @@ public class MQTTService extends Service {
         clientId = clientId + System.currentTimeMillis();
         MemoryPersistence persistence = new MemoryPersistence();
         try {
-            mqttClient = new MqttClient(broker, clientId, persistence);
+            mqttClient = new MqttClient(BROKER, clientId, persistence);
         } catch (MqttException e) {
             e.printStackTrace();
         }
-
-        Log.d(TAG, "onCreate");
     }
 
     private void initRxNetwork() {
@@ -87,7 +83,7 @@ public class MQTTService extends Service {
                                     if (internetState.isEnabled) {
                                         if (!mqttClient.isConnected()) {
                                             mqttClient.connect();
-                                            mqttClient.subscribe(topic);
+                                            mqttClient.subscribe(TOPIC);
                                         }
                                     } else
                                         mqttClient.disconnect();
@@ -95,7 +91,7 @@ public class MQTTService extends Service {
 
                                 }
 
-                                Toast.makeText(MQTTService.this, mqttClient.isConnected() + " " + internetState.state, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(MQTTService.this, mqttClient.isConnected() + " " + internetState.state, Toast.LENGTH_SHORT).show();
                             }
                         });
     }
@@ -118,7 +114,7 @@ public class MQTTService extends Service {
                 else
                     initMqttCallback();
         } else {
-            if (topic != null) {
+            if (TOPIC != null) {
                 if (!mqttClient.isConnected())
                     initMqttCallback();
             }
@@ -129,8 +125,8 @@ public class MQTTService extends Service {
 
     void initMqttCallback() {
 
-        qos = new int[this.topic.length];
-        for (int index = 0; index < this.topic.length; index++)
+        qos = new int[this.TOPIC.length];
+        for (int index = 0; index < this.TOPIC.length; index++)
             qos[index] = 1;
 
         try {
@@ -186,7 +182,7 @@ public class MQTTService extends Service {
 //            String password = "4nWoMhwCRlPi";
 //            connOpts.setPassword(password.toCharArray());
             mqttClient.connect(connOpts);
-            mqttClient.subscribe(this.topic, qos);
+            mqttClient.subscribe(this.TOPIC, qos);
 
         } catch (MqttException me) {
             Log.e(TAG + "reason ", "" + me.getReasonCode());
@@ -206,7 +202,6 @@ public class MQTTService extends Service {
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
-            System.out.println("Publish message: " + message);
             mqttClient.publish(DOCTOR_CONNECT, message);
         } catch (MqttException e) {
             e.printStackTrace();
@@ -229,7 +224,6 @@ public class MQTTService extends Service {
 
         sendStateSubscription.unsubscribe();
         sendStateSubscription = null;
-        Log.d(TAG, "onDestroy");
     }
 
 
