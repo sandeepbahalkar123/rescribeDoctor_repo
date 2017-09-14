@@ -32,6 +32,7 @@ import com.rescribe.doctor.interfaces.Connector;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.chat.SendMessageModel;
+import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
 import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
@@ -464,6 +465,11 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.SEND_MESSAGE: //This is for get archived list
                         SendMessageModel sendMessageModel = new Gson().fromJson(data, SendMessageModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, sendMessageModel, mOldDataTag);
+                        break;
+
+                    case RescribeConstants.CHAT_HISTORY: //This is for get archived list
+                        ChatHistoryModel chatHistoryModel = new Gson().fromJson(data, ChatHistoryModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, chatHistoryModel, mOldDataTag);
                         break;
 
                     default:
