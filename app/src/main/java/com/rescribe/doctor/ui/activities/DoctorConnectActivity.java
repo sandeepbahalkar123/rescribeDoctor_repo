@@ -277,7 +277,6 @@ public class DoctorConnectActivity extends AppCompatActivity implements DoctorCo
 
     public interface OnClickOfSearchBar {
         void setOnClickOfSearchBar(String searchText);
-
     }
 
     //TODO: parceable has to be used to getSpecialityOFDoctorList

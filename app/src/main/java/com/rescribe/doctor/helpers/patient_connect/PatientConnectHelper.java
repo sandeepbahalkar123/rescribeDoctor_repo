@@ -8,9 +8,10 @@ import com.google.gson.Gson;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
- import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
+import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.network.ConnectionFactory;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -75,12 +76,13 @@ public class PatientConnectHelper implements ConnectionListener {
     }
 
     public void doGetChatPatientList() {
-     /* ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_PATIENT_LIST, Request.Method.GET, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_PATIENT_LIST, Request.Method.GET, true);
         mConnectionFactory.setHeaderParams();
-        mConnectionFactory.setUrl(Config.GET_PATIENT_CHAT_LIST);
-        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_PATIENT_LIST);*/
+        String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+        mConnectionFactory.setUrl(Config.GET_PATIENT_CHAT_LIST + id);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_PATIENT_LIST);
 
-        try {
+       /* try {
             InputStream is = mContext.getAssets().open("patient_connect.json");
             int size = is.available();
             byte[] buffer = new byte[size];
@@ -94,6 +96,6 @@ public class PatientConnectHelper implements ConnectionListener {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-        }
+        }*/
     }
 }

@@ -22,7 +22,7 @@ public class Config {
     //Declared all URL used in app here
     public static final String LOGIN_WITH_PASSWORD_URL = "";
     public static final String LOGIN_WITH_OTP_URL = "authApi/authenticate/otpLogin";
-    public static final String GET_PATIENT_CHAT_LIST = "api/patient/getChatPatientList?docId=11";
+    public static final String GET_PATIENT_CHAT_LIST = "api/patient/getChatPatientList?docId=";
     public static final String DOCTOR_LIST_FILTER_URL = "api/patient/searchDoctors";
 
 }

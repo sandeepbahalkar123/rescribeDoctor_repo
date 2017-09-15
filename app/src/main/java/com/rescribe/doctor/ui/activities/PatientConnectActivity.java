@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientConnectChatFragment;
@@ -53,6 +54,7 @@ public class PatientConnectActivity extends AppCompatActivity {
     private PatientConnectChatFragment mPatientConnectChatFragment;
     private PatientConnectFragment mPatientConnectFragment;
     private PatientSearchFragment mPatientSearchFragment;
+    private ArrayList<PatientData> mReceivedConnectedPatientDataList;
     //-----
 
     @Override
@@ -87,8 +89,8 @@ public class PatientConnectActivity extends AppCompatActivity {
             public void onTabUnselected(TabLayout.Tab tab) {
                 int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
-                    title.setVisibility(View.GONE);
                     mSearchView.setVisibility(View.VISIBLE);
+                    title.setVisibility(View.GONE);
                 } else {
                     mSearchView.setVisibility(View.GONE);
                     title.setVisibility(View.VISIBLE);
@@ -134,7 +136,9 @@ public class PatientConnectActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if (mPatientSearchFragment != null) {
+                    mPatientSearchFragment.setOnClickOfSearchBar(mSearchView.getText().toString());
+                }
             }
         };
     }
@@ -186,4 +190,15 @@ public class PatientConnectActivity extends AppCompatActivity {
         }
     }
 
+    public interface OnClickOfSearchBar {
+        void setOnClickOfSearchBar(String searchText);
+    }
+
+    public ArrayList<PatientData> getReceivedConnectedPatientDataList() {
+        return mReceivedConnectedPatientDataList;
+    }
+
+    public void setReceivedConnectedPatientDataList(ArrayList<PatientData> mReceivedConnectedPatientDataList) {
+        this.mReceivedConnectedPatientDataList = mReceivedConnectedPatientDataList;
+    }
 }
