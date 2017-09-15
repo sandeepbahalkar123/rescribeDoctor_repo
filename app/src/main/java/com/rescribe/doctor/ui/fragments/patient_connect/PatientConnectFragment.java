@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
+import com.rescribe.doctor.adapters.patient_connect.PatientConnectChatAdapter;
 import com.rescribe.doctor.helpers.patient_connect.PatientConnectHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -42,7 +43,7 @@ public class PatientConnectFragment extends Fragment implements HelperResponse {
     RelativeLayout mEmptyListView;
     Unbinder unbinder;
     private View mRootView;
-    private PatientConnectAdapter mPatientConnectAdapter;
+    private PatientConnectChatAdapter mPatientConnectAdapter;
     private PatientConnectHelper mPatientConnectHelper;
     private ArrayList<PatientData> mReceivedPatientDataList;
 
@@ -67,6 +68,7 @@ public class PatientConnectFragment extends Fragment implements HelperResponse {
 
     private void initialize() {
         mPatientConnectHelper = new PatientConnectHelper(getActivity(), this);
+
     }
 
     @Override
@@ -118,7 +120,7 @@ public class PatientConnectFragment extends Fragment implements HelperResponse {
         if (mReceivedPatientDataList != null) {
             if (mReceivedPatientDataList.size() > 0) {
                 isDataListViewVisible(true);
-                mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList,this);
+                mPatientConnectAdapter = new PatientConnectChatAdapter(getActivity(), mReceivedPatientDataList,this);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setItemAnimator(new DefaultItemAnimator());

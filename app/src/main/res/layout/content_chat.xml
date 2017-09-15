@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.rescribe.doctor.ui.activities.ChatActivity"
+    tools:showIn="@layout/activity_chat">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chatList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/messageTypeLayout"
+        android:paddingEnd="@dimen/dp6"
+        android:background="@drawable/layer_3"
+        android:paddingStart="@dimen/dp6" />
+
+    <RelativeLayout
+        android:id="@+id/messageTypeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/tagColor"
+        android:padding="@dimen/dp8">
+
+        <RelativeLayout
+            android:id="@+id/messageTypeSubLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp4"
+            android:layout_toLeftOf="@+id/recorderOrSendButton"
+            android:layout_toStartOf="@+id/recorderOrSendButton"
+            android:background="@drawable/group_4_copy_2"
+            android:layout_marginLeft="@dimen/dp4">
+
+            <EditText
+                android:id="@+id/messageType"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp48"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/buttonLayout"
+                android:layout_toStartOf="@+id/buttonLayout"
+                android:background="@null"
+                android:hint="@string/type_a_message"
+                android:padding="@dimen/dp8"
+                android:textCursorDrawable="@drawable/cursor"
+                android:textSize="@dimen/sp16" />
+
+            <LinearLayout
+                android:id="@+id/buttonLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingEnd="@dimen/dp10"
+                android:paddingRight="@dimen/dp10">
+
+                <ImageButton
+                    android:id="@+id/attachmentButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/dp8"
+                    android:src="@drawable/attach" />
+
+                <ImageButton
+                    android:id="@+id/cameraButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/dp8"
+                    android:src="@drawable/photo_camera" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/recorderOrSendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/dp6"
+            android:src="@drawable/speak" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

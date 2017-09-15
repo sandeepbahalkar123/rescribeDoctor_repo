@@ -222,9 +222,16 @@
     <string name="nephrologist">nephrologist</string>
     <string name="surgeon">surgeon</string>
     <string name="endocrinologist">endocrinologist</string>
+    <string name="action_reply">Reply</string>
+    <string name="title_activity_chat">ChatActivity</string>
+    <string name="type_a_message">Type a message</string>
+    <string name="chat">Chat</string>
     <string name="dr">Dr.</string>
     <string name="online">Online</string>
     <string name="offline">Offline</string>
     <string name="idle">Idle</string>
+
+    <string name="not_connected">Not Connected</string>
+    <string name="send">Send</string>
 
 </resources>

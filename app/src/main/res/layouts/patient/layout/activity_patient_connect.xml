@@ -25,29 +25,45 @@
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:gravity="center|left"
                 android:text="@string/doctor_connect"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp16"
                 android:visibility="visible"
                 app:customFont="@string/roboto_bold" />
 
-            <com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton
-                android:id="@+id/searchView"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/dp16"
-                android:drawableLeft="@drawable/search"
-                android:drawablePadding="@dimen/dp4"
-                android:inputType="text"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp16"
-                android:visibility="gone"
-                app:deleteButtonRes="@drawable/icon_text_field_clear_btn"
-                app:hintText="@string/search" />
+                android:orientation="vertical">
+
+                <com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton
+                    android:id="@+id/searchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/search"
+                    android:drawablePadding="@dimen/dp4"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp16"
+                    android:visibility="gone"
+                    app:deleteButtonRes="@drawable/icon_text_field_clear_btn"
+                    app:hintText="@string/search" />
+
+                <TextView
+                    android:id="@+id/whiteUnderLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp1"
+                    android:background="@color/white" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <android.support.design.widget.TabLayout

@@ -15,8 +15,8 @@ public class Config {
     public static boolean DEV_BUILD = true;
     //Declared all URL used in app here
 
+//      public static String BASE_URL = "http://192.168.0.182:3003/";
     public static String BASE_URL = "http://drrescribe.com:3003/";
-    //  public static String BASE_URL = "http://192.168.0.182:3003/";
 
     public Context mContext;
     //Declared all URL used in app here
@@ -24,6 +24,9 @@ public class Config {
     public static final String LOGIN_WITH_OTP_URL = "authApi/authenticate/otpLogin";
     public static final String GET_PATIENT_CHAT_LIST = "api/patient/getChatPatientList?docId=";
     public static final String DOCTOR_LIST_FILTER_URL = "api/patient/searchDoctors";
+
+    public static final String SEND_MSG_TO_PATIENT = "api/chat/sendMsgToPatient";
+    public static final String CHAT_HISTORY = "api/chat/getChatHistory?";
 
 }
 

@@ -84,6 +84,8 @@ public class RescribeConstants {
     public static final String TASK_DOCTOR_CONNECT = RescribeConstants.BLANK + 7;
     public static final String TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST = RescribeConstants.BLANK + 8;
     public static final String TASK_GET_PATIENT_LIST = RescribeConstants.BLANK + 9;
+    public static final String SEND_MESSAGE = RescribeConstants.BLANK + 10;
+    public static final String CHAT_HISTORY = RescribeConstants.BLANK + 11;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -113,6 +115,7 @@ public class RescribeConstants {
     public static final String CHAT_REQUEST = "chat_request";
     public static final String SEARCH__REQUEST = "search_request";
     public static final String CONNECT_REQUEST = "connect_request";
+    public static final String PATIENT_INFO = "patient_info";
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
@@ -141,6 +144,7 @@ public class RescribeConstants {
         public static String HH_MM = "hh:mm";
         public static String MMM_YYYY = "MMM, yyyy";
         public static String DD_MM_YYYY_hh_mm_ss = "dd-MM-yyyy hh:mm:ss";
+        public static String YYYY_MM_DD_hh_mm_ss = "yyyy-MM-dd hh:mm:ss";
     }
 
     public static class TIME_STAMPS {

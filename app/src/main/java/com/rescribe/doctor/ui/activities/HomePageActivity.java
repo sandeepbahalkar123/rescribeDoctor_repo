@@ -17,6 +17,7 @@ import com.heinrichreimersoftware.materialdrawer.theme.DrawerTheme;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.service.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -54,6 +55,13 @@ public class HomePageActivity extends DrawerActivity {
                 notificationForMedicine();
         }
         drawerConfiguration();
+
+        // start mqtt Service
+        // use this to start and trigger a service
+        Intent serviceIntent = new Intent(this, MQTTService.class);
+        // potentially add data to the serviceIntent
+        serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
+        startService(serviceIntent);
     }
 
 
@@ -162,9 +170,6 @@ public class HomePageActivity extends DrawerActivity {
 
         addItems(
                 new DrawerItem()
-                        .setTextPrimary(getString(R.string.doctor_connect))
-                        .setImage(ContextCompat.getDrawable(this, R.drawable.menu_doctor_connect)),
-                new DrawerItem()
                         .setTextPrimary(getString(R.string.patient_connect))
                         .setImage(ContextCompat.getDrawable(this, R.drawable.menu_doctor_connect)),
                 new DrawerItem()
@@ -178,10 +183,10 @@ public class HomePageActivity extends DrawerActivity {
 
                 closeDrawer();
                 String id = item.getTextPrimary();
-              /*  if (id.equalsIgnoreCase(getString(R.string.doctor_details))) {
-                    Intent intent = new Intent(mContext, DoctorListActivity.class);
+                /*if (id.equalsIgnoreCase(getString(R.string.chat))) {
+                    Intent intent = new Intent(mContext, ChatActivity.class);
                     startActivity(intent);
-                } */
+                } else */
                 if (id.equalsIgnoreCase(getString(R.string.logout))) {
                     logout();
                 } else if (id.equalsIgnoreCase(getString(R.string.doctor_connect))) {
