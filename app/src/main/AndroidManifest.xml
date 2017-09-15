@@ -81,10 +81,7 @@
             android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <service
-            android:name=".service.MQTTService"
-            android:enabled="true"
-            android:exported="true" />
+        <service android:name=".service.MQTTService" />
 
         <activity
             android:name=".ui.activities.PatientConnectActivity"
