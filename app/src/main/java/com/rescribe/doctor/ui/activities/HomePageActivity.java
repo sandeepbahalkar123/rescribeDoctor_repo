@@ -55,13 +55,6 @@ public class HomePageActivity extends DrawerActivity {
                 notificationForMedicine();
         }
         drawerConfiguration();
-
-        // start mqtt Service
-        // use this to start and trigger a service
-        Intent serviceIntent = new Intent(this, MQTTService.class);
-        // potentially add data to the serviceIntent
-        serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
-        startService(serviceIntent);
     }
 
 

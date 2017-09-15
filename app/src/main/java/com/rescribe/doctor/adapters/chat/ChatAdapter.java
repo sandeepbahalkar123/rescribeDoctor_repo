@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MessageList;
+import com.rescribe.doctor.service.MQTTService;
 
 import java.util.ArrayList;
 
@@ -21,8 +22,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
 
     private TextDrawable mReceiverTextDrawable;
     private ArrayList<MessageList> messageList;
-    public static final int SENDER = 0;
-    public static final int RECEIVER = 1;
 
     public ChatAdapter(ArrayList<MessageList> messageList, TextDrawable mReceiverTextDrawable) {
         this.messageList = messageList;
@@ -41,7 +40,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
     public void onBindViewHolder(ListViewHolder holder, int position) {
         MessageList message = messageList.get(position);
 
-        if (messageList.get(position).getWho() == SENDER) {
+        if (messageList.get(position).getSender().equals(MQTTService.DOCTOR)) {
             holder.receiverLayout.setVisibility(View.GONE);
             holder.senderLayout.setVisibility(View.VISIBLE);
             holder.senderMessage.setText(message.getMsg());
@@ -52,7 +51,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
         }
 
         //TODO, sendProfiile Image will set, added it for now
-        holder.senderProfilePhoto.setImageDrawable(mReceiverTextDrawable);
+        holder.receiverProfilePhoto.setImageDrawable(mReceiverTextDrawable);
 
     }
 

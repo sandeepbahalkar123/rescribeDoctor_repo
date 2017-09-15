@@ -1,15 +1,20 @@
 package com.rescribe.doctor.ui.activities;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -73,13 +78,24 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
     @BindView(R.id.messageTypeLayout)
     RelativeLayout messageTypeLayout;
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    @BindView(R.id.swipeLayout)
+    SwipeRefreshLayout swipeLayout;
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean isFailed = intent.getBooleanExtra(MQTTService.FAILED, false);
 
-            if (!isFailed) {
+            boolean delivered = intent.getBooleanExtra(MQTTService.DELIVERED, false);
+            boolean isReceived = intent.getBooleanExtra(MQTTService.RECEIVED, false);
+
+            if (delivered) {
+
+                messageType.setText("");
+
+                Log.d(TAG, "Delivery Complete");
+                Log.d(TAG + " MESSAGE_ID", intent.getStringExtra(MQTTService.MESSAGE_ID));
+
+            } else if (isReceived) {
                 MessageList message = intent.getParcelableExtra(MQTTService.MESSAGE);
                 if (message.getPatId() == patientData.getPatientId()) {
                     if (chatAdapter != null) {
@@ -89,15 +105,14 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
                     }
                 } else {
                     // Other patient message
+
                 }
             }
-
         }
     };
 
     private ChatHelper chatHelper;
     private boolean isSend = false;
-    private Intent serviceIntent;
 
     private static final String TAG = "ChatActivity";
     private ChatAdapter chatAdapter;
@@ -105,7 +120,11 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
 
     private PatientData patientData;
     private String docId;
-    private TextDrawable mTextDrawable;
+    private TextDrawable patientTextDrawable;
+
+    // load more
+    int next = 1;
+//    private ArrayList<MessageList> messageListTemp = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +136,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
 
         chatHelper = new ChatHelper(this, this);
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this);
-        chatHelper.getChatHistory(1, Integer.parseInt(docId), patientData.getPatientId());
-        // startService
 
         //------set values----
         receiverName.setText(patientData.getPatientName());
@@ -128,28 +145,28 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
         patientName = patientName.replace("Dr. ", "");
         if (patientName != null) {
             int color2 = ColorGenerator.MATERIAL.getColor(patientName);
-            mTextDrawable = TextDrawable.builder()
+            patientTextDrawable = TextDrawable.builder()
                     .beginConfig()
                     .width(Math.round(getResources().getDimension(R.dimen.dp40)))  // width in px
                     .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
                     .endConfig()
                     .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
-            profilePhoto.setImageDrawable(mTextDrawable);
+            profilePhoto.setImageDrawable(patientTextDrawable);
         }
-        //---------
-
-
-        // startService
-        // use this to start and trigger a service
-        serviceIntent = new Intent(this, MQTTService.class);
-        // potentially add data to the serviceIntent
-        serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
-        startService(serviceIntent);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         chatList.setLayoutManager(mLayoutManager);
-        chatAdapter = new ChatAdapter(messageList,mTextDrawable);
+        chatAdapter = new ChatAdapter(messageList, patientTextDrawable);
         chatList.setAdapter(chatAdapter);
+
+        chatHelper.getChatHistory(next, Integer.parseInt(docId), patientData.getPatientId());
+
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                chatHelper.getChatHistory(next, Integer.parseInt(docId), patientData.getPatientId());
+            }
+        });
 
         messageType.addTextChangedListener(new TextWatcher() {
             @Override
@@ -182,7 +199,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backButton:
-               finish();
+                finish();
                 break;
             case R.id.attachmentButton:
                 break;
@@ -199,33 +216,70 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
 
                         MessageList messageL = new MessageList();
                         messageL.setTopic(MQTTService.DOCTOR_CONNECT);
-                        messageL.setWho(ChatAdapter.SENDER);
+                        messageL.setSender(MQTTService.DOCTOR);
                         messageL.setMsg(message);
+                        // hard coded
                         messageL.setMsgId(0);
                         messageL.setDocId(Integer.parseInt(docId));
                         messageL.setPatId(patientData.getPatientId());
 
-                        if (chatAdapter != null) {
-                            messageList.add(messageL);
-                            chatAdapter.notifyItemInserted(messageList.size() - 1);
-                            chatList.smoothScrollToPosition(messageList.size() - 1);
-                        }
+                        // send msg by http api
+//                        chatHelper.sendMsgToPatient(messageL);
 
-                        /*serviceIntent.putExtra(MQTTService.IS_MESSAGE, true);
-                        serviceIntent.putExtra(MQTTService.MESSAGE, messageL);
-                        startService(serviceIntent);
+                        // send msg by mqtt
+                        mqttService.passMessage(messageL);
 
-                        messageType.setText("");*/
-
-                        chatHelper.sendMsgToPatient(messageL);
-
+                        if (mqttService.getNetworkStatus()) {
+                            if (chatAdapter != null) {
+                                messageList.add(messageL);
+                                chatAdapter.notifyItemInserted(messageList.size() - 1);
+                                chatList.smoothScrollToPosition(messageList.size() - 1);
+                            }
+                        } else
+                            CommonMethods.showToast(ChatActivity.this, getResources().getString(R.string.internet));
                     }
                 } else {
 
-                    // Record Button
+                    // Record Button stuff here
 
                 }
                 break;
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent mIntent = new Intent(this, MQTTService.class);
+        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
+    }
+
+
+    boolean mBounded;
+    MQTTService mqttService;
+
+    ServiceConnection mConnection = new ServiceConnection() {
+
+        public void onServiceDisconnected(ComponentName name) {
+//            Toast.makeText(ChatActivity.this, "Service is disconnected", Toast.LENGTH_SHORT).show();
+            mBounded = false;
+            mqttService = null;
+        }
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+//            Toast.makeText(ChatActivity.this, "Service is connected", Toast.LENGTH_SHORT).show();
+            mBounded = true;
+            MQTTService.LocalBinder mLocalBinder = (MQTTService.LocalBinder) service;
+            mqttService = mLocalBinder.getServerInstance();
+        }
+    };
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mBounded) {
+            unbindService(mConnection);
+            mBounded = false;
         }
     }
 
@@ -259,9 +313,9 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
         } else if (customResponse instanceof ChatHistoryModel) {
             ChatHistoryModel chatHistoryModel = (ChatHistoryModel) customResponse;
             if (chatHistoryModel.getCommon().getStatusCode().equals(RescribeConstants.SUCCESS)) {
-                List<ChatHistory> chatHistory = chatHistoryModel.getHistoryData().getChatHistory();
+                final List<ChatHistory> chatHistory = chatHistoryModel.getHistoryData().getChatHistory();
 
-                ArrayList<MessageList> messageListTemp = new ArrayList<>();
+//                messageListTemp.clear();
 
                 for (ChatHistory chatH : chatHistory) {
                     MessageList messageL = new MessageList();
@@ -269,21 +323,37 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
                     messageL.setMsg(chatH.getMsg());
                     messageL.setDocId(chatH.getUser1Id());
                     messageL.setPatId(chatH.getUser2Id());
-                    messageL.setWho(chatH.getSender().equals("user1") ? ChatAdapter.SENDER : ChatAdapter.RECEIVER);
+                    messageL.setSender(chatH.getSender());
                     String msgTime = CommonMethods.getFormatedDate(chatH.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_hh_mm_ss);
                     messageL.setMsgTime(msgTime);
-                    messageListTemp.add(messageL);
+//                    messageListTemp.add(messageL);
+                    messageList.add(0, messageL);
                 }
 
-                messageList.addAll(0, messageListTemp);
-                chatAdapter.notifyDataSetChanged();
-                chatList.scrollToPosition(messageList.size() - 1);
+//                messageList.addAll(0, messageListTemp);
+                if (next == 1) {
+                    chatList.scrollToPosition(messageList.size() - 1);
+                    chatAdapter.notifyDataSetChanged();
+                } else {
+                    chatList.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Notify adapter with appropriate notify methods
+                            chatAdapter.notifyItemRangeInserted(0, chatHistory.size());
+                        }
+                    });
+                }
+
+                next += 1;
             }
+
+            swipeLayout.setRefreshing(false);
         }
     }
 
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
+        swipeLayout.setRefreshing(false);
         if (chatAdapter != null) {
             messageList.remove(messageList.size() - 1);
             chatAdapter.notifyItemRemoved(messageList.size() - 1);
@@ -292,6 +362,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
+        swipeLayout.setRefreshing(false);
         if (chatAdapter != null) {
             messageList.remove(messageList.size() - 1);
             chatAdapter.notifyItemRemoved(messageList.size() - 1);
@@ -300,6 +371,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse {
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
+        swipeLayout.setRefreshing(false);
         if (chatAdapter != null) {
             messageList.remove(messageList.size() - 1);
             chatAdapter.notifyItemRemoved(messageList.size() - 1);

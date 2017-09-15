@@ -8,14 +8,21 @@
     tools:context="com.rescribe.doctor.ui.activities.ChatActivity"
     tools:showIn="@layout/activity_chat">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/chatList"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/messageTypeLayout"
-        android:paddingEnd="@dimen/dp6"
-        android:background="@drawable/layer_3"
-        android:paddingStart="@dimen/dp6" />
+        android:layout_above="@+id/messageTypeLayout">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/chatList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/layer_3"
+            android:paddingEnd="@dimen/dp6"
+            android:paddingStart="@dimen/dp6" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <RelativeLayout
         android:id="@+id/messageTypeLayout"
@@ -29,11 +36,11 @@
             android:id="@+id/messageTypeSubLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp4"
             android:layout_marginStart="@dimen/dp4"
             android:layout_toLeftOf="@+id/recorderOrSendButton"
             android:layout_toStartOf="@+id/recorderOrSendButton"
-            android:background="@drawable/group_4_copy_2"
-            android:layout_marginLeft="@dimen/dp4">
+            android:background="@drawable/group_4_copy_2">
 
             <EditText
                 android:id="@+id/messageType"

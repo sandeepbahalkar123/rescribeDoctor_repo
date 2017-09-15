@@ -20,15 +20,15 @@ public class MessageList implements Parcelable {
     @SerializedName("msgTime")
     @Expose
     private String msgTime;
+    @SerializedName("sender")
+    @Expose
+    private String sender;
     @SerializedName("user2id")
     @Expose
-    private int docId;
+    private int patId;
     @SerializedName("user1id")
     @Expose
-    private int patId;
-    @SerializedName("who")
-    @Expose
-    private int who;
+    private int docId;
 
     public final static Parcelable.Creator<MessageList> CREATOR = new Creator<MessageList>() {
 
@@ -42,9 +42,9 @@ public class MessageList implements Parcelable {
             instance.topic = ((String) in.readValue((String.class.getClassLoader())));
             instance.msg = ((String) in.readValue((String.class.getClassLoader())));
             instance.msgTime = ((String) in.readValue((String.class.getClassLoader())));
+            instance.sender = ((String) in.readValue((String.class.getClassLoader())));
             instance.docId = ((int) in.readValue((int.class.getClassLoader())));
             instance.patId = ((int) in.readValue((int.class.getClassLoader())));
-            instance.who = ((int) in.readValue((int.class.getClassLoader())));
             return instance;
         }
 
@@ -94,14 +94,6 @@ public class MessageList implements Parcelable {
         this.patId = patId;
     }
 
-    public int getWho() {
-        return who;
-    }
-
-    public void setWho(int who) {
-        this.who = who;
-    }
-
     public String getMsgTime() {
         return msgTime;
     }
@@ -110,14 +102,22 @@ public class MessageList implements Parcelable {
         this.msgTime = msgTime;
     }
 
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(msgId);
         dest.writeValue(topic);
         dest.writeValue(msg);
         dest.writeValue(msgTime);
+        dest.writeValue(sender);
         dest.writeValue(docId);
         dest.writeValue(patId);
-        dest.writeValue(who);
     }
 
     public int describeContents() {

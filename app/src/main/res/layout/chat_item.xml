@@ -24,7 +24,7 @@
             android:paddingStart="@dimen/dp8"
             android:paddingTop="@dimen/dp8"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp12"
+            android:textSize="@dimen/sp14"
             android:layout_toStartOf="@+id/senderProfilePhoto"
             app:customFont="@string/roboto_regular"
             tools:text="@string/dummy_normal"
@@ -35,7 +35,7 @@
             android:layout_width="@dimen/dp40"
             android:layout_height="@dimen/dp40"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/welcome_copy_3"
+            android:src="@drawable/doctor_speciality"
             android:layout_alignParentRight="true" />
 
     </RelativeLayout>
@@ -49,7 +49,7 @@
             android:id="@+id/receiverProfilePhoto"
             android:layout_width="@dimen/dp40"
             android:layout_height="@dimen/dp40"
-            android:src="@drawable/welcome_copy_3" />
+            android:src="@drawable/exercise" />
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/receiverMessage"
@@ -65,7 +65,7 @@
             android:paddingStart="@dimen/dp16"
             android:paddingTop="@dimen/dp8"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp12"
+            android:textSize="@dimen/sp14"
             app:customFont="@string/roboto_regular"
             tools:text="Hi Hello" />
 
