@@ -21,7 +21,6 @@
         android:orientation="horizontal">
         <!--  ListRow Left sied Thumbnail image -->
         <LinearLayout
-            android:id="@+id/thumbnail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp5"
