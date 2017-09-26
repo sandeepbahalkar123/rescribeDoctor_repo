@@ -344,7 +344,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                         messageL.setDocId(Integer.parseInt(docId));
                         messageL.setPatId(chatList.getId());
                         messageL.setName(docName);
-                        messageL.setOnlineStatus(RescribeConstants.ONLINE);
+                        messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
                         messageL.setImageUrl(imageUrl);
                         messageL.setSpecialization(speciality);
                         messageL.setPaidStatus(FREE);
@@ -448,7 +448,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             messageL.setDocId(Integer.parseInt(docId));
             messageL.setPatId(chatList.getId());
             messageL.setName(docName);
-            messageL.setOnlineStatus(RescribeConstants.ONLINE);
+            messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
             messageL.setImageUrl(imageUrl);
             messageL.setSpecialization(speciality);
             messageL.setPaidStatus(FREE);
@@ -481,7 +481,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             messageL.setDocId(Integer.parseInt(docId));
             messageL.setPatId(chatList.getId());
             messageL.setName(docName);
-            messageL.setOnlineStatus(RescribeConstants.ONLINE);
+            messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
             messageL.setImageUrl(imageUrl);
             messageL.setSpecialization(speciality);
             messageL.setPaidStatus(FREE);

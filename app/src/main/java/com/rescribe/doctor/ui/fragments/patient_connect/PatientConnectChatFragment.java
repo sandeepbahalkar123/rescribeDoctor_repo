@@ -152,7 +152,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                 patientData.setPatientName(message.getName());
 //                patientData.setImageUrl(message.getImageUrl());
                 patientData.setUnreadMessages(1);
-                patientData.setOnlineStatus(RescribeConstants.ONLINE);
+                patientData.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
                 mReceivedPatientDataList.add(0, patientData);
                 mPatientConnectAdapter.notifyDataSetChanged();
             }

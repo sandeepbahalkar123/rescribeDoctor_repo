@@ -62,7 +62,7 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
 
             messageL.setName(doctorName);
             messageL.setImageUrl(imageUrl);
-            messageL.setOnlineStatus(RescribeConstants.ONLINE);
+            messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
 
             messageL.setFileUrl("");
             messageL.setSpecialization(speciality);
