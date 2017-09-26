@@ -11,9 +11,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.RemoteInput;
+import android.support.v4.content.ContextCompat;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.chat.MQTTMessage;
+import com.rescribe.doctor.service.MQTTService;
 import com.rescribe.doctor.ui.activities.PatientConnectActivity;
+
+import java.util.ArrayList;
 
 /**
  * Helper class for showing and canceling new message
@@ -26,32 +32,23 @@ public class MessageNotification {
     /**
      * The unique identifier for this type of notification.
      */
-    private static final String NOTIFICATION_TAG = "NewMessage";
+    private static final String NOTIFICATION_TAG = "RescribeMessage";
+    private static final String GROUP = "RescribeMessages";
 
-    /**
-     * Shows the notification, or updates a previously shown notification of
-     * this type, with the given parameters.
-     * <p>
-     * TODO: Customize this method's arguments to present relevant content in
-     * the notification.
-     * <p>
-     * TODO: Customize the contents of this method to tweak the behavior and
-     * presentation of new message notifications. Make
-     * sure to follow the
-     * <a href="https://developer.android.com/design/patterns/notifications.html">
-     * Notification design guidelines</a> when doing so.
-     *
-     * @see #cancel(Context, int)
-     */
-    public static void notify(final Context context,
-                              final String title, final String message, final int number, int notificationId) {
+    public static void notify(final Context context, final ArrayList<MQTTMessage> messageContent,
+                              final String userName, final int unread, PendingIntent replyPendingIntent, final int notificationId) {
         final Resources res = context.getResources();
 
         // This image is used as the notification's large icon (thumbnail).
         // TODO: Remove this if your notification has no relevant thumbnail.
         final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.exercise);
 
-//        Intent resultIntent = new Intent(context, DoctorConnectActivity.class);
+        final String content = messageContent.get(messageContent.size() - 1).getMsg();
+        String title;
+        if (unread > 1)
+            title = userName + " (" + unread + " messages)";
+        else title = userName;
+
         Intent resultIntent = new Intent(context, PatientConnectActivity.class);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
@@ -61,6 +58,24 @@ public class MessageNotification {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle()
+                .setBigContentTitle(title)
+                .setSummaryText("Patient Message");
+
+        for (MQTTMessage message : messageContent)
+            inboxStyle.addLine(message.getMsg());
+
+// Create the RemoteInput specifying above key
+        RemoteInput remoteInput = new RemoteInput.Builder(MQTTService.KEY_REPLY)
+                .setLabel("Replay")
+                .build();
+
+        // Add to your action, enabling Direct Reply
+        NotificationCompat.Action mAction =
+                new NotificationCompat.Action.Builder(R.drawable.ic_action_stat_reply, "Replay", replyPendingIntent)
+                        .addRemoteInput(remoteInput)
+                        .setAllowGeneratedReplies(true)
+                        .build();
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
 
@@ -68,17 +83,25 @@ public class MessageNotification {
                 // and vibration.
                 .setDefaults(Notification.DEFAULT_ALL)
 
+                // Bundle Notification
+
+                .setGroupSummary(true)
+                .setGroup(GROUP)
+
                 // Set required fields, including the small icon, the
                 // notification title, and text.
-                .setSmallIcon(R.drawable.ic_stat_new_message)
+                .setSmallIcon(R.drawable.logosmall)
                 .setContentTitle(title)
-                .setContentText(message)
+                .setContentText(content)
+
+                // Set Color
+                .setColor(ContextCompat.getColor(context, R.color.tagColor))
 
                 // All fields below this line are optional.
 
                 // Use a default priority (recognized on devices running Android
                 // 4.1 or later)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
 
                 // Provide a large icon, shown with the notification in the
                 // notification drawer on devices running Android 3.0 or later.
@@ -89,22 +112,14 @@ public class MessageNotification {
 
                 // Show a number. This is useful when stacking notifications of
                 // a single type.
-                .setNumber(number)
+                .setNumber(unread)
+
+                // Set Style and Action
+                .setStyle(inboxStyle)
+                .addAction(mAction)
 
                 // Click Event on notification
                 .setContentIntent(resultPendingIntent)
-
-
-        // Show expanded text content on devices running Android 4.1 or
-        // later.
-                .setStyle(new NotificationCompat.BigTextStyle()
-                .bigText(message)
-                .setBigContentTitle(title)
-                .setSummaryText(message))
-                /*.addAction(
-                        R.drawable.ic_action_stat_reply,
-                        res.getString(R.string.action_reply),
-                        null)*/
 
                 // Automatically dismiss the notification when it is touched.
                 .setAutoCancel(true);
@@ -119,10 +134,7 @@ public class MessageNotification {
         nm.notify(NOTIFICATION_TAG, notificationId, notification);
     }
 
-    /**
-     * Cancels any notifications of this type previously shown using
-     * {@link #notify(Context, String, String, int, int)}.
-     */
+
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     public static void cancel(final Context context, int notificationId) {
         final NotificationManager nm = (NotificationManager) context

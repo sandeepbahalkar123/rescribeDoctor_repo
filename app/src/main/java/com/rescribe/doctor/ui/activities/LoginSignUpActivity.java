@@ -30,6 +30,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.requestmodel.login.SignUpRequestModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -281,12 +282,21 @@ public class LoginSignUpActivity extends AppCompatActivity implements GoogleApiC
         // User can login through gmail or facebook
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_LOGIN)) {
 
-            LoginModel loginModel = (LoginModel) customResponse;
-            if (loginModel.getCommon().isSuccess()) {
-                CommonMethods.Log(TAG + " Token", loginModel.getLoginInfo().getAuthToken());
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, loginModel.getLoginInfo().getAuthToken(), mContext);
+            LoginModel receivedModel = (LoginModel) customResponse;
+            if (receivedModel.getCommon().isSuccess()) {
+
+                DocDetail docDetail = receivedModel.getDoctorLoginData().getDocDetail();
+                String authToken = receivedModel.getDoctorLoginData().getAuthToken();
+
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, authToken, mContext);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, String.valueOf(docDetail.getDocId()), mContext);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, docDetail.getDocName(), mContext);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, docDetail.getDocImgUrl(), mContext);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.EMAIL, docDetail.getDocEmail(), mContext);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY, docDetail.getDocSpaciality(), mContext);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADDRESS, docDetail.getDocAddress(), mContext);
+                
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, mContext);
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, loginModel.getLoginInfo().getDocId(), mContext);
                if (RescribePreferencesManager.getString(RescribeConstants.TYPE_OF_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_facebook))) {
                     RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER,RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_FACEBOOK,mContext), mContext);
                     RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK,mContext), mContext);
@@ -302,7 +312,7 @@ public class LoginSignUpActivity extends AppCompatActivity implements GoogleApiC
                 startActivity(intent);
                 finish();
             } else {
-                CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
+                CommonMethods.showToast(mContext, receivedModel.getCommon().getStatusMessage());
             }
         }
     }

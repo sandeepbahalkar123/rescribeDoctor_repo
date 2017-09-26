@@ -12,8 +12,8 @@ public class MessageModel implements Parcelable {
 
     @SerializedName("messageList")
     @Expose
-    private ArrayList<MessageList> messageList = new ArrayList<MessageList>();
-    public final static Parcelable.Creator<MessageModel> CREATOR = new Creator<MessageModel>() {
+    private ArrayList<MQTTMessage> MQTTMessage = new ArrayList<MQTTMessage>();
+    public final static Creator<MessageModel> CREATOR = new Creator<MessageModel>() {
 
 
         @SuppressWarnings({
@@ -21,7 +21,7 @@ public class MessageModel implements Parcelable {
         })
         public MessageModel createFromParcel(Parcel in) {
             MessageModel instance = new MessageModel();
-            in.readList(instance.messageList, (MessageList.class.getClassLoader()));
+            in.readList(instance.MQTTMessage, (MQTTMessage.class.getClassLoader()));
             return instance;
         }
 
@@ -31,16 +31,16 @@ public class MessageModel implements Parcelable {
 
     };
 
-    public ArrayList<MessageList> getMessageList() {
-        return messageList;
+    public ArrayList<MQTTMessage> getMQTTMessage() {
+        return MQTTMessage;
     }
 
-    public void setMessageList(ArrayList<MessageList> messageList) {
-        this.messageList = messageList;
+    public void setMQTTMessage(ArrayList<MQTTMessage> MQTTMessage) {
+        this.MQTTMessage = MQTTMessage;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(messageList);
+        dest.writeList(MQTTMessage);
     }
 
     public int describeContents() {

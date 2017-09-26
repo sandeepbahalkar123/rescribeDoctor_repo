@@ -36,6 +36,7 @@ import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
 import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
+import com.rescribe.doctor.model.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
 
 import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
@@ -413,11 +414,11 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                 // This success response is for refresh token
                 // Need to Add
                 LoginModel loginModel = gson.fromJson(data, LoginModel.class);
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, loginModel.getLoginInfo().getAuthToken(), mContext);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, loginModel.getDoctorLoginData().getAuthToken(), mContext);
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, mContext);
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, loginModel.getLoginInfo().getDocId(), mContext);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, String.valueOf(loginModel.getDoctorLoginData().getDocDetail().getDocId()), mContext);
 
-                mHeaderParams.put(RescribeConstants.AUTHORIZATION_TOKEN, loginModel.getLoginInfo().getAuthToken());
+                mHeaderParams.put(RescribeConstants.AUTHORIZATION_TOKEN, loginModel.getDoctorLoginData().getAuthToken());
 
                 connect();
 
@@ -460,6 +461,11 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_GET_PATIENT_LIST: //This is for get archived list
                         PatientConnectBaseModel patientConnectBaseModel = new Gson().fromJson(data, PatientConnectBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, patientConnectBaseModel, mOldDataTag);
+                        break;
+
+                    case RescribeConstants.GET_PATIENT_CHAT_LIST: //This is for get archived list
+                        ChatPatientConnectModel patientConnectModel = new Gson().fromJson(data, ChatPatientConnectModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, patientConnectModel, mOldDataTag);
                         break;
 
                     case RescribeConstants.SEND_MESSAGE: //This is for get archived list

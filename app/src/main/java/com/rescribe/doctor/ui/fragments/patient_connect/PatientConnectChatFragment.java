@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.DoctorConnectChatAdapter;
 import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
 import com.rescribe.doctor.helpers.patient_connect.PatientConnectHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
+import com.rescribe.doctor.model.chat.MQTTMessage;
+import com.rescribe.doctor.model.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -41,7 +41,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     Unbinder unbinder;
     private View mRootView;
     private PatientConnectHelper mPatientConnectHelper;
-    private ArrayList<PatientData> mReceivedPatientDataList;
+    private ArrayList<PatientData> mReceivedPatientDataList = new ArrayList<>();
     private PatientConnectAdapter mPatientConnectAdapter;
 
     public static PatientConnectChatFragment newInstance() {
@@ -67,6 +67,21 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
     private void initialize() {
         mPatientConnectHelper = new PatientConnectHelper(getActivity(), this);
+
+        mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList, this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
+        mRecyclerView.setAdapter(mPatientConnectAdapter);
+
+        if (mReceivedPatientDataList.isEmpty()) {
+            mPatientConnectHelper.doGetChatPatientList();
+        } else {
+            setData();
+        }
     }
 
     @Override
@@ -76,23 +91,12 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        //Api call to get doctorChatList
-        if (mReceivedPatientDataList == null) {
-            mPatientConnectHelper.doGetChatPatientList();
-        } else {
-            setAdapter();
-        }
-    }
-
-    @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_PATIENT_LIST)) {
-            PatientConnectBaseModel patientConnectBaseModel = (PatientConnectBaseModel) customResponse;
-            PatientConnectBaseModel.PatientListData patientListData = patientConnectBaseModel.getPatientListData();
-            mReceivedPatientDataList = patientListData.getPatientDataList();
-            setAdapter();
+        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.GET_PATIENT_CHAT_LIST)) {
+            ChatPatientConnectModel patientConnectBaseModel = (ChatPatientConnectModel) customResponse;
+            ChatPatientConnectModel.PatientListData patientListData = patientConnectBaseModel.getPatientListData();
+            mReceivedPatientDataList.addAll(patientListData.getPatientDataList());
+            setData();
         }
     }
 
@@ -111,24 +115,13 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
     }
 
-    public void setAdapter() {
-        if (mReceivedPatientDataList != null) {
-            if (mReceivedPatientDataList.size() > 0) {
+    public void setData() {
+        if (!mReceivedPatientDataList.isEmpty()) {
+            mPatientConnectAdapter.notifyDataSetChanged();
                 isDataListViewVisible(true);
-                mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList, this);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                mRecyclerView.setLayoutManager(mLayoutManager);
-                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                        DividerItemDecoration.VERTICAL);
-                mRecyclerView.addItemDecoration(dividerItemDecoration);
-                mRecyclerView.setAdapter(mPatientConnectAdapter);
             } else {
                 isDataListViewVisible(false);
             }
-        } else {
-            isDataListViewVisible(false);
-        }
     }
 
 
@@ -142,5 +135,43 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         }
     }
 
+    public void notifyCount(MQTTMessage message) {
+        boolean isThere = false;
+        if (mReceivedPatientDataList != null) {
+            for (int index = 0; index < mReceivedPatientDataList.size(); index++) {
+                if (mReceivedPatientDataList.get(index).getId() == message.getPatId()) {
+                    mPatientConnectAdapter.notifyItemChanged(index);
+                    isThere = true;
+                    break;
+                }
+            }
+
+            if (!isThere) {
+                PatientData patientData = new PatientData();
+                patientData.setId(message.getDocId());
+                patientData.setPatientName(message.getName());
+//                patientData.setImageUrl(message.getImageUrl());
+                patientData.setUnreadMessages(1);
+                patientData.setOnlineStatus(RescribeConstants.ONLINE);
+                mReceivedPatientDataList.add(0, patientData);
+                mPatientConnectAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    public void addItem(PatientData patientData) {
+
+        boolean isThere = false;
+        for (int index = 0; index < mReceivedPatientDataList.size(); index++) {
+            if (mReceivedPatientDataList.get(index).getId().equals(patientData.getId())) {
+                isThere = true;
+                break;
+            }
+        }
+        if (!isThere) {
+            mReceivedPatientDataList.add(0, patientData);
+            mPatientConnectAdapter.notifyDataSetChanged();
+        }
+    }
 }
 

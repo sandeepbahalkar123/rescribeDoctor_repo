@@ -1,1 +1,1 @@
-include ':app',':materialdrawer'
+include ':app',':materialdrawer', ':filepicker', ':uploadservice'

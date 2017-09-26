@@ -83,6 +83,24 @@
 
         <service android:name=".service.MQTTService" />
 
+        <receiver
+            android:name=".broadcast_receivers.ReplayBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".broadcast_receivers.FileUploadReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="net.gotev.uploadservice.broadcast.status" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".ui.activities.ZoomImageViewActivity"
+            android:label="@string/title_activity_zoomview"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ui.activities.PatientConnectActivity"
             android:configChanges="orientation|keyboard|screenSize"

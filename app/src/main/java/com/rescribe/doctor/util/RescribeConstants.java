@@ -86,6 +86,8 @@ public class RescribeConstants {
     public static final String TASK_GET_PATIENT_LIST = RescribeConstants.BLANK + 9;
     public static final String SEND_MESSAGE = RescribeConstants.BLANK + 10;
     public static final String CHAT_HISTORY = RescribeConstants.BLANK + 11;
+    public static final String CHAT_USERS = RescribeConstants.BLANK + 12;
+    public static final String GET_PATIENT_CHAT_LIST = RescribeConstants.BLANK + 13;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -116,6 +118,10 @@ public class RescribeConstants {
     public static final String SEARCH__REQUEST = "search_request";
     public static final String CONNECT_REQUEST = "connect_request";
     public static final String PATIENT_INFO = "patient_info";
+
+    public static final String ONLINE = "online";
+    public static final String STATUS_COLOR = "status_color";
+
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
@@ -153,6 +159,12 @@ public class RescribeConstants {
         public static int THREE_SECONDS = 3000;
     }
 
+    public static class FILE {
+        public static final String IMG = "img";
+        public static final String DOC = "doc";
+        public static final String VID = "vid";
+        public static final String AUD = "aud";
+    }
 
     public class INVESTIGATION_KEYS {
         public static final String INVESTIGATION_DATE = "investigation_date";

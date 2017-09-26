@@ -10,9 +10,9 @@ public class SendMessageModel implements CustomResponse {
     @SerializedName("common")
     @Expose
     private Common common;
-    @SerializedName("data")
+   /* @SerializedName("data")
     @Expose
-    private String data;
+    private String data;*/
 
     public Common getCommon() {
         return common;
@@ -22,12 +22,12 @@ public class SendMessageModel implements CustomResponse {
         this.common = common;
     }
 
-    public String getData() {
+    /*public String getData() {
         return data;
     }
 
     public void setData(String data) {
         this.data = data;
-    }
+    }*/
 
 }

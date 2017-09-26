@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="@dimen/dp16"
     android:layout_marginEnd="@dimen/dp6"
     android:layout_marginLeft="@dimen/dp16"
@@ -24,7 +24,6 @@
             android:id="@+id/thumbnail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_marginRight="@dimen/dp5"
             android:padding="3dip">
 
@@ -39,11 +38,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/dp10"
-            android:layout_toRightOf="@+id/thumbnail"
             android:layout_weight="1"
             android:gravity="center|left"
             android:orientation="vertical">
@@ -53,7 +51,6 @@
                 android:id="@+id/doctorType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/thumbnail"
                 android:layout_marginTop="1dip"
                 android:textColor="@color/vitals_name"
                 android:textSize="@dimen/sp15"
@@ -64,8 +61,6 @@
                 android:id="@+id/doctorName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/doctorType"
-                android:layout_toRightOf="@+id/thumbnail"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp17"
                 app:customFont="@string/roboto_bold" />
@@ -75,37 +70,45 @@
                 android:id="@+id/onlineStatusTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/doctorName"
-                android:layout_toRightOf="@+id/thumbnail"
                 android:gravity="right"
                 android:textSize="@dimen/sp12"
                 app:customFont="@string/roboto_medium" />
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_gravity="bottom"
-            android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="@dimen/dp50"
+            android:layout_height="@dimen/dp56"
+            android:layout_marginEnd="@dimen/dp16"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/dp16">
+
+            <TextView
+                android:id="@+id/badgeView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="1"
+                android:gravity="center"
+                android:textSize="@dimen/sp12"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/badge"
+                android:layout_alignParentRight="true" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/paidStatusTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:customFont="@string/roboto_bold"
-                android:textSize="@dimen/sp11"
+                android:layout_alignParentBottom="true"
                 android:textColor="@color/green_light"
-                android:layout_marginRight="@dimen/dp16"
-
-              />
-        </LinearLayout>
+                android:textSize="@dimen/sp11"
+                app:customFont="@string/roboto_bold"
+                tools:text="Rs 200/-" />
+        </RelativeLayout>
 
     </LinearLayout>
 
-
-    <!--   <View
-           android:layout_width="match_parent"
-           android:layout_height="@dimen/dp1"
-           android:layout_marginTop="@dimen/dp16"
-           android:background="@color/divider"/>-->
 </LinearLayout>

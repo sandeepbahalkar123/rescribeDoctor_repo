@@ -1,6 +1,7 @@
 package com.rescribe.doctor.adapters.patient_connect;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -19,10 +20,15 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.patient_connect.PatientData;
+import com.rescribe.doctor.ui.activities.ChatActivity;
+import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -47,6 +53,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
     private ArrayList<PatientData> dataList;
     String searchString = "";
 
+    private final AppDBHelper appDBHelper;
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
 
@@ -60,6 +67,8 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         TextView paidStatusTextView;
         @BindView(R.id.imageOfDoctor)
         ImageView imageOfDoctor;
+        @BindView(R.id.badgeView)
+        TextView badgeView;
 
         View view;
 
@@ -71,6 +80,9 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
     }
 
     public PatientConnectAdapter(Context mContext, ArrayList<PatientData> appointmentsList, Fragment parentFragment) {
+
+        appDBHelper = new AppDBHelper(mContext);
+
         this.dataList = appointmentsList;
         this.mCalledParentFragment = parentFragment;
         mArrayList = appointmentsList;
@@ -93,8 +105,8 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
     }
 
     @Override
-    public void onBindViewHolder(ListViewHolder holder, int position) {
-        PatientData doctorConnectChatModel = dataList.get(position);
+    public void onBindViewHolder(final ListViewHolder holder, int position) {
+        final PatientData doctorConnectChatModel = dataList.get(position);
 
         //-----------
         if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(mOnline)) {
@@ -115,7 +127,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         //---------
         String patientName = doctorConnectChatModel.getPatientName();
         patientName = patientName.replace("Dr. ", "");
-        if (patientName != null) {
+        if (patientName != null && patientName.length() > 0) {
             int color2 = mColorGenerator.getColor(patientName);
             TextDrawable drawable = TextDrawable.builder()
                     .beginConfig()
@@ -140,6 +152,29 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         } else {
             holder.doctorName.setText(doctorConnectChatModel.getPatientName());
         }
+
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, ChatActivity.class);
+                intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
+                intent.putExtra(RescribeConstants.STATUS_COLOR, holder.onlineStatusTextView.getCurrentTextColor());
+                mContext.startActivity(intent);
+            }
+        });
+
+        holder.paidStatusTextView.setVisibility(View.GONE);
+
+        int count = appDBHelper.unreadMessageCountById(doctorConnectChatModel.getId());
+        doctorConnectChatModel.setUnreadMessages(count);
+
+        if (doctorConnectChatModel.getUnreadMessages() > 0) {
+            holder.badgeView.setVisibility(View.VISIBLE);
+            holder.badgeView.setText(String.valueOf(doctorConnectChatModel.getUnreadMessages()));
+        } else {
+            holder.badgeView.setVisibility(View.GONE);
+        }
+
         //---------
 
     }

@@ -21,6 +21,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
+import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -93,7 +94,7 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
     }
 
     @Override
-    public void onBindViewHolder(ListViewHolder holder, int position) {
+    public void onBindViewHolder(final ListViewHolder holder, int position) {
         final PatientData doctorConnectChatModel = dataList.get(position);
 
         //-----------
@@ -115,7 +116,7 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
         //---------
         String patientName = doctorConnectChatModel.getPatientName();
         patientName = patientName.replace("Dr. ", "");
-        if (patientName != null) {
+        if (patientName != null && patientName.length() > 0) {
             int color2 = mColorGenerator.getColor(patientName);
             TextDrawable drawable = TextDrawable.builder()
                     .beginConfig()
@@ -146,7 +147,8 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ChatActivity.class);
                 intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
-                mContext.startActivity(intent);
+                intent.putExtra(RescribeConstants.STATUS_COLOR, holder.onlineStatusTextView.getCurrentTextColor());
+                ((PatientConnectActivity) mContext).startActivityForResult(intent, 1111);
             }
         });
         //---------
