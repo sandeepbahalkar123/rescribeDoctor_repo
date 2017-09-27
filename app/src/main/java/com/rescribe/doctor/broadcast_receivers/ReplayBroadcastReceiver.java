@@ -46,7 +46,7 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
             this.context = context;
 
             MQTTMessage messageL = new MQTTMessage();
-            messageL.setTopic(MQTTService.DOCTOR_CONNECT);
+            messageL.setTopic(MQTTService.TOPIC[0]);
             messageL.setSender(MQTTService.DOCTOR);
             messageL.setMsg(message.toString());
 
