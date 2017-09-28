@@ -65,6 +65,7 @@ dependencies {
     compile project(':materialdrawer') // For drawer layout
     compile project(':filepicker')
     compile project(':uploadservice')
+    compile project(':slideview')
 
     compile "com.android.support:gridlayout-v7:${project.ANDROID_SUPPORT_LIBRARY_VERSION}"
     compile "com.android.support:appcompat-v7:${project.ANDROID_SUPPORT_LIBRARY_VERSION}"

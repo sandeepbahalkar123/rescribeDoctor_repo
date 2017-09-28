@@ -32,14 +32,27 @@
         android:background="@color/tagColor"
         android:padding="@dimen/dp8">
 
+        <ng.max.slideview.SlideView
+            android:id="@+id/audioSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            app:buttonBackgroundColor="@android:color/transparent"
+            app:buttonImage="@drawable/speak_reverce"
+            app:reverseSlide="true"
+            app:slideBackgroundColor="@color/tagColor"
+            app:slideText="@string/timing"
+            app:slideTextColor="@android:color/white"
+            app:strokeColor="@color/tagColor" />
+
         <RelativeLayout
             android:id="@+id/messageTypeSubLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp4"
             android:layout_marginStart="@dimen/dp4"
-            android:layout_toLeftOf="@+id/recorderOrSendButton"
-            android:layout_toStartOf="@+id/recorderOrSendButton"
+            android:layout_toLeftOf="@+id/sendButton"
+            android:layout_toStartOf="@+id/sendButton"
             android:background="@drawable/group_4_copy_2">
 
             <EditText
@@ -86,14 +99,17 @@
         </RelativeLayout>
 
         <ImageView
-            android:id="@+id/recorderOrSendButton"
+            android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp2"
+            android:layout_marginRight="@dimen/dp2"
             android:padding="@dimen/dp6"
-            android:src="@drawable/speak" />
+            android:visibility="invisible"
+            android:src="@drawable/send" />
 
     </RelativeLayout>
 

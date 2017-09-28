@@ -12,12 +12,16 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -70,6 +74,7 @@ import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +84,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import droidninja.filepicker.FilePickerBuilder;
 import droidninja.filepicker.FilePickerConst;
+import ng.max.slideview.SlideView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -97,16 +103,25 @@ import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.TYPING;
 @RuntimePermissions
 public class ChatActivity extends AppCompatActivity implements HelperResponse, ChatAdapter.ItemListener {
 
+    // Audio
+
+    private static final String LOG_TAG = "AudioRecordTest";
+    private static String mFileName = null;
+    private MediaRecorder mRecorder = null;
+    private MediaPlayer mPlayer = null;
+
+    // Audio End
+
     private static final int MAX_ATTACHMENT_COUNT = 10;
     public static final String CHAT = "chat";
 
-    private static final String RESCRIBE_FILES = "/Rescribe/Files";
-    private static final String RESCRIBE_PHOTOS = "/Rescribe/Photos";
-    private static final String RESCRIBE_AUDIO = "/Rescribe/Audios";
+    private static final String RESCRIBE_FILES = "/Rescribe/Files/";
+    private static final String RESCRIBE_PHOTOS = "/Rescribe/Photos/";
+    private static final String RESCRIBE_AUDIO = "/Rescribe/Audios/";
 
-    private static final String RESCRIBE_UPLOAD_FILES = "/Rescribe/SentFiles";
-    private static final String RESCRIBE_UPLOAD_PHOTOS = "/Rescribe/SentPhotos";
-    private static final String RESCRIBE_UPLOAD_AUDIO = "/Rescribe/SentAudios";
+    private static final String RESCRIBE_UPLOAD_FILES = "/Rescribe/SentFiles/";
+    private static final String RESCRIBE_UPLOAD_PHOTOS = "/Rescribe/SentPhotos/";
+    private static final String RESCRIBE_UPLOAD_AUDIO = "/Rescribe/SentAudios/";
 
     private String filesFolder;
     private String photosFolder;
@@ -140,13 +155,16 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     LinearLayout buttonLayout;
     @BindView(R.id.messageTypeSubLayout)
     RelativeLayout messageTypeSubLayout;
-    @BindView(R.id.recorderOrSendButton)
-    ImageView recorderOrSendButton;
+    @BindView(R.id.sendButton)
+    ImageView sendButton;
     @BindView(R.id.messageTypeLayout)
     RelativeLayout messageTypeLayout;
 
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
+
+    @BindView(R.id.audioSlider)
+    SlideView audioSlider;
 
     // Check Typing
 
@@ -154,6 +172,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private static final String TYPING_MESSAGE = "typing...";
     final Handler timeoutHandler = new Handler();
     private boolean isTyping;
+
     final Runnable typingTimeout = new Runnable() {
         public void run() {
             isTyping = false;
@@ -169,7 +188,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         typeStatus.setPatId(chatList.getId());
         typeStatus.setSender(DOCTOR);
         typeStatus.setTypeStatus(isTyping);
-        mqttService.typingStatus(typeStatus);
+        if (mqttService != null)
+            mqttService.typingStatus(typeStatus);
     }
 
     // End Check Typing
@@ -248,7 +268,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     }
 
     private ChatHelper chatHelper;
-    private boolean isSend = false;
     private boolean isExistInChat = false;
 
     private static final String TAG = "ChatActivity";
@@ -381,9 +400,10 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 // reset the timeout
                 timeoutHandler.removeCallbacks(typingTimeout);
                 if (messageType.getText().toString().trim().length() > 0) {
-                    recorderOrSendButton.setImageResource(R.drawable.send);
+
+                    audioSlider.setVisibility(View.INVISIBLE);
+                    sendButton.setVisibility(View.VISIBLE);
                     cameraButton.setVisibility(View.GONE);
-                    isSend = true;
                     // Typing status
                     // schedule the timeout
                     timeoutHandler.postDelayed(typingTimeout, TYPING_TIMEOUT);
@@ -393,9 +413,10 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                     }
                     // End Typing status
                 } else {
-                    recorderOrSendButton.setImageResource(R.drawable.speak);
+
+                    audioSlider.setVisibility(View.VISIBLE);
+                    sendButton.setVisibility(View.INVISIBLE);
                     cameraButton.setVisibility(View.VISIBLE);
-                    isSend = false;
                     // Typing status
                     isTyping = false;
                     typingStatus();
@@ -409,8 +430,119 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         });
 
         uploadInit();
+        audioSliderInit();
         //----------
     }
+
+    // Audio Code
+
+    private void audioSliderInit() {
+        // Get Audio Permission
+
+        // Record to the external cache directory for visibility
+        mFileName = audioUploadFolder;
+
+        ChatActivityPermissionsDispatcher.getAudioPermissionWithCheck(ChatActivity.this);
+
+        audioSlider.getTextView().setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_mic_red_24dp, 0, 0, 0);
+        audioSlider.getTextView().setCompoundDrawablePadding(CommonMethods.convertDpToPixel(5));
+        audioSlider.setOnSlideCompleteListener(new SlideView.OnSlideCompleteListener() {
+            @Override
+            public void onSlideComplete(SlideView slideView) {
+                messageTypeSubLayout.setVisibility(View.VISIBLE);
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(100);
+                cntr_aCounter.cancel();
+                stopRecording();
+                File file = new File(mFileName);
+                boolean deleted = file.delete();
+                mFileName = audioUploadFolder;
+
+            }
+        });
+
+        audioSlider.setOnActionDownListener(new SlideView.OnActionDownListener() {
+            @Override
+            public void OnActionDown(SlideView slideView) {
+                Log.d("Start", "Track");
+                messageTypeSubLayout.setVisibility(View.INVISIBLE);
+
+                mFileName += "Aud_" + System.nanoTime() + ".3gp";
+                cntr_aCounter.start();
+                startRecording();
+            }
+        });
+
+        audioSlider.setOnActionUpListener(new SlideView.OnActionUpListener() {
+            @Override
+            public void OnActionUp(SlideView slideView) {
+                Log.d("Stop", "Track");
+                messageTypeSubLayout.setVisibility(View.VISIBLE);
+                cntr_aCounter.cancel();
+                mFileName = audioUploadFolder;
+                stopRecording();
+            }
+        });
+    }
+
+    @NeedsPermission(Manifest.permission.RECORD_AUDIO)
+    void getAudioPermission() {
+        CommonMethods.Log(TAG, "asked permission");
+    }
+
+    private void startPlaying() {
+        mPlayer = new MediaPlayer();
+        try {
+            mPlayer.setDataSource(mFileName);
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+    }
+
+    private void stopPlaying() {
+        mPlayer.release();
+        mPlayer = null;
+    }
+
+    CountDownTimer cntr_aCounter = new CountDownTimer(60_000, 1_000) {
+        public void onTick(long millisUntilFinished) {
+            // recodeing code
+            String time = "00:" + (millisUntilFinished / 1000) + "  <Slide to Cancel";
+            audioSlider.getTextView().setText(time);
+        }
+
+        public void onFinish() {
+            //finish action
+            stopRecording();
+        }
+    };
+
+    private void startRecording() {
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder.setOutputFile(mFileName);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try {
+            mRecorder.prepare();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+
+        mRecorder.start();
+
+    }
+
+    private void stopRecording() {
+        mRecorder.stop();
+        mRecorder.release();
+        mRecorder = null;
+    }
+
+    // End Audio Code
 
     private void downloadInit() {
         downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
@@ -432,7 +564,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 Log.i(TAG, photosFolder + " Directory Created");
             }
         }
-        File dirAudioFolder = new File(filesFolder);
+        File dirAudioFolder = new File(audioFolder);
         if (!dirAudioFolder.exists()) {
             if (dirAudioFolder.mkdirs()) {
                 Log.i(TAG, audioFolder + " Directory Created");
@@ -447,19 +579,19 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         photosUploadFolder = sdCard.getAbsolutePath() + RESCRIBE_UPLOAD_PHOTOS;
         audioUploadFolder = sdCard.getAbsolutePath() + RESCRIBE_UPLOAD_AUDIO;
 
-        File dirFilesFolder = new File(filesFolder);
+        File dirFilesFolder = new File(filesUploadFolder);
         if (!dirFilesFolder.exists()) {
             if (dirFilesFolder.mkdirs()) {
                 Log.i(TAG, filesUploadFolder + " Directory Created");
             }
         }
-        File dirPhotosFolder = new File(photosFolder);
+        File dirPhotosFolder = new File(photosUploadFolder);
         if (!dirPhotosFolder.exists()) {
             if (dirPhotosFolder.mkdirs()) {
                 Log.i(TAG, photosUploadFolder + " Directory Created");
             }
         }
-        File dirAudioFolder = new File(filesFolder);
+        File dirAudioFolder = new File(audioUploadFolder);
         if (!dirAudioFolder.exists()) {
             if (dirAudioFolder.mkdirs()) {
                 Log.i(TAG, audioUploadFolder + " Directory Created");
@@ -477,7 +609,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         UploadService.UPLOAD_POOL_SIZE = 10;
     }
 
-    @OnClick({R.id.backButton, R.id.attachmentButton, R.id.cameraButton, R.id.recorderOrSendButton})
+    @OnClick({R.id.backButton, R.id.attachmentButton, R.id.cameraButton, R.id.sendButton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backButton:
@@ -489,54 +621,47 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             case R.id.cameraButton:
                 ChatActivityPermissionsDispatcher.onPickPhotoWithCheck(ChatActivity.this);
                 break;
-            case R.id.recorderOrSendButton:
-                if (isSend) {
+            case R.id.sendButton:
+                // SendButton
+                String message = messageType.getText().toString();
+                message = message.trim();
+                if (!message.equals("")) {
 
-                    // SendButton
-                    String message = messageType.getText().toString();
-                    message = message.trim();
-                    if (!message.equals("")) {
+                    MQTTMessage messageL = new MQTTMessage();
+                    messageL.setTopic(MQTTService.TOPIC[0]);
+                    messageL.setSender(DOCTOR);
+                    messageL.setMsg(message);
 
-                        MQTTMessage messageL = new MQTTMessage();
-                        messageL.setTopic(MQTTService.TOPIC[0]);
-                        messageL.setSender(DOCTOR);
-                        messageL.setMsg(message);
+                    String generatedId = CHAT + mqttMessage.size() + "_" + System.nanoTime();
 
-                        String generatedId = CHAT + mqttMessage.size() + "_" + System.nanoTime();
+                    messageL.setMsgId(generatedId);
 
-                        messageL.setMsgId(generatedId);
+                    messageL.setDocId(Integer.parseInt(docId));
+                    messageL.setPatId(chatList.getId());
+                    messageL.setName(docName);
+                    messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
+                    messageL.setImageUrl(imageUrl);
+                    messageL.setSpecialization(speciality);
+                    messageL.setPaidStatus(FREE);
 
-                        messageL.setDocId(Integer.parseInt(docId));
-                        messageL.setPatId(chatList.getId());
-                        messageL.setName(docName);
-                        messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
-                        messageL.setImageUrl(imageUrl);
-                        messageL.setSpecialization(speciality);
-                        messageL.setPaidStatus(FREE);
+                    messageL.setFileUrl("");
+                    messageL.setFileType("");
 
-                        messageL.setFileUrl("");
-                        messageL.setFileType("");
-
-                        // send msg by http api
+                    // send msg by http api
 //                        chatHelper.sendMsgToPatient(messageL);
 
-                        // send msg by mqtt
-                        mqttService.passMessage(messageL);
+                    // send msg by mqtt
+                    mqttService.passMessage(messageL);
 
-                        if (mqttService.getNetworkStatus()) {
-                            if (chatAdapter != null) {
-                                messageType.setText("");
-                                mqttMessage.add(messageL);
-                                chatAdapter.notifyItemInserted(mqttMessage.size() - 1);
-                                chatRecyclerView.smoothScrollToPosition(mqttMessage.size() - 1);
-                            }
-                        } else
-                            CommonMethods.showToast(ChatActivity.this, getResources().getString(R.string.internet));
-                    }
-                } else {
-
-                    // Record Button stuff here
-
+                    if (mqttService.getNetworkStatus()) {
+                        if (chatAdapter != null) {
+                            messageType.setText("");
+                            mqttMessage.add(messageL);
+                            chatAdapter.notifyItemInserted(mqttMessage.size() - 1);
+                            chatRecyclerView.smoothScrollToPosition(mqttMessage.size() - 1);
+                        }
+                    } else
+                        CommonMethods.showToast(ChatActivity.this, getResources().getString(R.string.internet));
                 }
                 break;
         }
@@ -714,6 +839,16 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         if (mBounded) {
             unbindService(mConnection);
             mBounded = false;
+        }
+
+        if (mRecorder != null) {
+            mRecorder.release();
+            mRecorder = null;
+        }
+
+        if (mPlayer != null) {
+            mPlayer.release();
+            mPlayer = null;
         }
     }
 

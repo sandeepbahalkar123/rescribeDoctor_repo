@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -536,6 +537,11 @@ public class CommonMethods {
 
     public static String getFileNameFromPath(String filePath) {
         return filePath.substring(filePath.lastIndexOf("/") + 1);
+    }
+
+    public static float spToPx(int sp, Context context) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+                context.getResources().getDisplayMetrics());
     }
 }
 
