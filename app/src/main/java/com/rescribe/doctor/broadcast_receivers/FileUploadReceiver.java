@@ -8,12 +8,10 @@ import com.google.gson.Gson;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.uploadfile.ChatFileUploadModel;
-import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.service.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import net.gotev.uploadservice.MultipartUploadTask;
 import net.gotev.uploadservice.ServerResponse;
 import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
@@ -40,7 +38,7 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
         if (uploadInfo.getUploadId().length() > CHAT.length()) {
             String prefix = uploadInfo.getUploadId().substring(0, 4);
             if (prefix.equals(CHAT)) {
-                instance.updateMessageData(uploadInfo.getUploadId(), RescribeConstants.FAILED);
+                instance.updateMessageUpload(uploadInfo.getUploadId(), RescribeConstants.FAILED);
             }
         }
 
@@ -59,7 +57,7 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
             String prefix = uploadInfo.getUploadId().substring(0, 4);
             if (prefix.equals(CHAT)) {
 
-                MQTTMessage mqttMessage = instance.getMessageDataById(uploadInfo.getUploadId());
+                MQTTMessage mqttMessage = instance.getMessageUploadById(uploadInfo.getUploadId());
 
                 String response = serverResponse.getBodyAsString();
                 ChatFileUploadModel chatFileUploadModel = gson.fromJson(response, ChatFileUploadModel.class);

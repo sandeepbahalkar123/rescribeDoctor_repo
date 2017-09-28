@@ -24,44 +24,25 @@ public class AppDBHelper extends SQLiteOpenHelper {
     private final String TAG = "Rescribe/AppDBHelper";
 
     private static final String MESSAGE_UPLOAD_ID = "message_upload_id";
-    private static final String MESSAGE_STATUS = "message_status";
-    private static final String MESSAGE_FILE_DATA = "message_file_data";
-    private static final String MY_MESSAGE_TABLE = "my_message_table";
+    private static final String MESSAGE_UPLOAD_STATUS = "message_status";
+    private static final String MESSAGE_FILE_UPLOAD = "message_file_data";
+    private static final String MESSAGE_UPLOAD_TABLE = "my_message_table";
+
+    private static final String MESSAGE_DOWNLOAD_ID = "message_download_id";
+    private static final String MESSAGE_DOWNLOAD_STATUS = "message_download_status";
+    private static final String MESSAGE_FILE_DOWNLOAD = "message_file_download";
+    private static final String MESSAGE_DOWNLOAD_TABLE = "message_download_table";
 
     public static final String CHAT_USER_ID = "user_id";
     public static final String MESSAGE = "message";
     public static final String MESSAGE_TABLE = "unread_messages";
 
-    public static final String INV_ID = "inv_id";
-    public static final String INV_NAME = "inv_name";
-    public static final String INV_NAME_KEY = "inv_key";
-    public static final String INV_OPD_ID = "inv_opd_id";
-    public static final String INV_DR_NAME = "inv_dr_name";
-    public static final String INV_UPLOAD_STATUS = "upload_status";
-    public static final String INV_UPLOADED_IMAGES = "uploaded_images";
-    public static final String INVESTIGATION_TABLE = "investigation_table";
-
-    public static final String RECORDS_DOC_ID = "records_doc_id";
-    public static final String RECORDS_VISIT_DATE = "records_visit_date";
-    public static final String RECORDS_OPDID = "records_opdid";
-    public static final String RECORDS_UPLOAD_ID = "records_upload_id";
-    public static final String RECORDS_STATUS = "records_upload_status";
-    public static final String RECORDS_IMAGE_DATA = "records_image_data";
-    public static final String MY_RECORDS_TABLE = "MyRecords";
-
-    private static final String PREFERENCES_TABLE = "preferences_table";
     private static final String DATABASE_NAME = "MyRescribe.sqlite";
     private static final String DB_PATH_SUFFIX = "/data/data/com.rescribe.doctor/databases/";
     private static final int DB_VERSION = 1;
     public static final String APP_DATA_TABLE = "PrescriptionData";
     public static final String COLUMN_ID = "dataId";
     public static final String COLUMN_DATA = "data";
-
-    public static final String USER_ID = "userId";
-    public static final String BREAKFAST_TIME = "breakfastTime";
-    public static final String LUNCH_TIME = "lunchTime";
-    public static final String DINNER_TIME = "dinnerTime";
-    public static final String SNACKS_TIME = "snacksTime";
 
     static AppDBHelper instance = null;
     private Context mContext;
@@ -257,38 +238,38 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return cnt;
     }*/
 
-    // Chat Data
+    // Chat Upload Data
 
-    public boolean insertMessageData(String id, int status, String data) {
-        if (messageDataTableNumberOfRows(id) == 0) {
+    public boolean insertMessageUpload(String id, int status, String data) {
+        if (messageUploadTableNumberOfRows(id) == 0) {
             SQLiteDatabase db = getWritableDatabase();
             ContentValues contentValues = new ContentValues();
 
             contentValues.put(MESSAGE_UPLOAD_ID, id);
-            contentValues.put(MESSAGE_STATUS, status);
-            contentValues.put(MESSAGE_FILE_DATA, data);
+            contentValues.put(MESSAGE_UPLOAD_STATUS, status);
+            contentValues.put(MESSAGE_FILE_UPLOAD, data);
 
-            db.insert(MY_MESSAGE_TABLE, null, contentValues);
+            db.insert(MESSAGE_UPLOAD_TABLE, null, contentValues);
         }
         return true;
     }
 
-    private int messageDataTableNumberOfRows(String id) {
+    private int messageUploadTableNumberOfRows(String id) {
         SQLiteDatabase db = getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(db, MY_MESSAGE_TABLE, MESSAGE_UPLOAD_ID + " = ? ", new String[]{id});
+        return (int) DatabaseUtils.queryNumEntries(db, MESSAGE_UPLOAD_TABLE, MESSAGE_UPLOAD_ID + " = ? ", new String[]{id});
     }
 
-    public int updateMessageData(String id, int isUploaded) {
+    public int updateMessageUpload(String id, int isUploaded) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(MESSAGE_STATUS, isUploaded);
+        contentValues.put(MESSAGE_UPLOAD_STATUS, isUploaded);
 
-        return db.update(MY_MESSAGE_TABLE, contentValues, MESSAGE_UPLOAD_ID + " = ? ", new String[]{id});
+        return db.update(MESSAGE_UPLOAD_TABLE, contentValues, MESSAGE_UPLOAD_ID + " = ? ", new String[]{id});
     }
 
-    public MQTTData getMessageData() {
+    public MQTTData getMessageUpload() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + MY_MESSAGE_TABLE, null);
+        Cursor cursor = db.rawQuery("select * from " + MESSAGE_UPLOAD_TABLE, null);
 
         MQTTData myMessageData = new MQTTData();
         ArrayList<MQTTMessage> mqttMessages = new ArrayList<>();
@@ -296,9 +277,9 @@ public class AppDBHelper extends SQLiteOpenHelper {
         Gson gson = new Gson();
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                String imageJson = cursor.getString(cursor.getColumnIndex(MESSAGE_FILE_DATA));
+                String imageJson = cursor.getString(cursor.getColumnIndex(MESSAGE_FILE_UPLOAD));
                 MQTTMessage mqttMessage = gson.fromJson(imageJson, MQTTMessage.class);
-                mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(MESSAGE_STATUS)));
+                mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(MESSAGE_UPLOAD_STATUS)));
                 mqttMessages.add(mqttMessage);
                 cursor.moveToNext();
             }
@@ -310,17 +291,17 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return myMessageData;
     }
 
-    public MQTTMessage getMessageDataById(String id) {
+    public MQTTMessage getMessageUploadById(String id) {
         SQLiteDatabase db = getReadableDatabase();
-        String countQuery = "select * from " + MY_MESSAGE_TABLE + " where " + MESSAGE_UPLOAD_ID + " = '" + id + "'";
+        String countQuery = "select * from " + MESSAGE_UPLOAD_TABLE + " where " + MESSAGE_UPLOAD_ID + " = '" + id + "'";
         Cursor cursor = db.rawQuery(countQuery, null);
 
         Gson gson = new Gson();
         MQTTMessage mqttMessage = null;
         if (cursor.moveToFirst()) {
-            String imageJson = cursor.getString(cursor.getColumnIndex(MESSAGE_FILE_DATA));
+            String imageJson = cursor.getString(cursor.getColumnIndex(MESSAGE_FILE_UPLOAD));
             mqttMessage = gson.fromJson(imageJson, MQTTMessage.class);
-            mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(MESSAGE_STATUS)));
+            mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(MESSAGE_UPLOAD_STATUS)));
         }
         cursor.close();
 
@@ -329,6 +310,85 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     public boolean deleteUploadedMessage(String id) {
         SQLiteDatabase db = getWritableDatabase();
-        return db.delete(MY_MESSAGE_TABLE, MESSAGE_UPLOAD_ID + "='" + id + "'", null) > 0;
+        return db.delete(MESSAGE_UPLOAD_TABLE, MESSAGE_UPLOAD_ID + "='" + id + "'", null) > 0;
     }
+
+    // Chat Upload Data End
+
+    // Chat Download Data
+
+    public boolean insertMessageDownload(String id, int status, String data) {
+        if (messageDownloadTableNumberOfRows(id) == 0) {
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+
+            contentValues.put(MESSAGE_DOWNLOAD_ID, id);
+            contentValues.put(MESSAGE_DOWNLOAD_STATUS, status);
+            contentValues.put(MESSAGE_FILE_DOWNLOAD, data);
+
+            db.insert(MESSAGE_DOWNLOAD_TABLE, null, contentValues);
+        }
+        return true;
+    }
+
+    private int messageDownloadTableNumberOfRows(String id) {
+        SQLiteDatabase db = getReadableDatabase();
+        return (int) DatabaseUtils.queryNumEntries(db, MESSAGE_DOWNLOAD_TABLE, MESSAGE_DOWNLOAD_ID + " = ? ", new String[]{id});
+    }
+
+    public int updateMessageDownloading(String id, int isDownloaded) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MESSAGE_DOWNLOAD_STATUS, isDownloaded);
+
+        return db.update(MESSAGE_DOWNLOAD_TABLE, contentValues, MESSAGE_DOWNLOAD_ID + " = ? ", new String[]{id});
+    }
+
+    public MQTTData getMessageDownload() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + MESSAGE_DOWNLOAD_TABLE, null);
+
+        MQTTData myMessageData = new MQTTData();
+        ArrayList<MQTTMessage> mqttMessages = new ArrayList<>();
+
+        Gson gson = new Gson();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String imageJson = cursor.getString(cursor.getColumnIndex(MESSAGE_FILE_DOWNLOAD));
+                MQTTMessage mqttMessage = gson.fromJson(imageJson, MQTTMessage.class);
+                mqttMessage.setDownloadStatus(cursor.getInt(cursor.getColumnIndex(MESSAGE_DOWNLOAD_STATUS)));
+                mqttMessages.add(mqttMessage);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+
+        myMessageData.setMqttMessages(mqttMessages);
+
+        return myMessageData;
+    }
+
+    public MQTTMessage getMessageDownloadById(String id) {
+        SQLiteDatabase db = getReadableDatabase();
+        String countQuery = "select * from " + MESSAGE_DOWNLOAD_TABLE + " where " + MESSAGE_DOWNLOAD_ID + " = '" + id + "'";
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        Gson gson = new Gson();
+        MQTTMessage mqttMessage = null;
+        if (cursor.moveToFirst()) {
+            String imageJson = cursor.getString(cursor.getColumnIndex(MESSAGE_FILE_DOWNLOAD));
+            mqttMessage = gson.fromJson(imageJson, MQTTMessage.class);
+            mqttMessage.setDownloadStatus(cursor.getInt(cursor.getColumnIndex(MESSAGE_DOWNLOAD_STATUS)));
+        }
+        cursor.close();
+
+        return mqttMessage;
+    }
+
+    public boolean deleteDownloadedMessage(String id) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete(MESSAGE_DOWNLOAD_TABLE, MESSAGE_DOWNLOAD_ID + "='" + id + "'", null) > 0;
+    }
+
+    // Chat Download Data End
 }

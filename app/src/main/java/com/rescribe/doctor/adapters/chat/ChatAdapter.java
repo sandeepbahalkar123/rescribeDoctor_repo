@@ -3,6 +3,7 @@ package com.rescribe.doctor.adapters.chat;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.rescribe.doctor.util.RescribeConstants.COMPLETED;
+import static com.rescribe.doctor.util.RescribeConstants.DOWNLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
 
@@ -74,7 +76,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
             holder.receiverLayout.setVisibility(View.GONE);
             holder.senderLayout.setVisibility(View.VISIBLE);
 
-            if (!message.getImageUrl().equals("")){
+            if (!message.getImageUrl().equals("")) {
                 RequestOptions requestOptions = new RequestOptions();
                 requestOptions.dontAnimate();
                 requestOptions.override(100, 100);
@@ -111,7 +113,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                         holder.senderFileUploadStopped.setVisibility(View.GONE);
                         holder.senderFileUploading.setVisibility(View.GONE);
                     }
-                    
+
                     holder.senderPhotoLayout.setVisibility(View.GONE);
                     String extension = CommonMethods.getExtension(message.getFileUrl());
 
@@ -133,6 +135,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                             .buildRoundRect(extension, holder.senderFileIcon.getResources().getColor(R.color.grey_500), CommonMethods.convertDpToPixel(2));
                     holder.senderFileIcon.setImageDrawable(fileTextDrawable);
 
+                    holder.senderFileLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (message.getUploadStatus() == FAILED) {
+                                itemListener.uploadFile(message);
+                                message.setUploadStatus(UPLOADING);
+                                notifyItemChanged(position);
+                            } else if (message.getUploadStatus() == COMPLETED) {
+                                // do file open stuff here
+                                openFile(Uri.parse(message.getFileUrl()));
+                            }
+                        }
+                    });
+
                 } else {
 
                     holder.senderPhotoLayout.setVisibility(View.VISIBLE);
@@ -151,7 +167,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                         holder.senderPhotoUploading.setVisibility(View.GONE);
                         holder.senderPhotoUploadStopped.setVisibility(View.GONE);
                     }
-                    
+
                     RequestOptions requestOptions = new RequestOptions();
                     requestOptions.dontAnimate();
                     requestOptions.override(300, 300);
@@ -221,7 +237,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
             holder.receiverLayout.setVisibility(View.VISIBLE);
             holder.senderLayout.setVisibility(View.GONE);
 
-            if (!message.getImageUrl().equals("")){
+            if (!message.getImageUrl().equals("")) {
                 RequestOptions requestOptions = new RequestOptions();
                 requestOptions.dontAnimate();
                 requestOptions.override(100, 100);
@@ -247,9 +263,19 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                     holder.receiverFileLayout.setVisibility(View.VISIBLE);
                     holder.receiverPhotoLayout.setVisibility(View.GONE);
 
-                    holder.receiverFileProgressLayout.setVisibility(View.VISIBLE);
-                    holder.receiverFileDownloadStopped.setVisibility(View.VISIBLE);
-                    holder.receiverFileDownloading.setVisibility(View.GONE);
+                    if (message.getDownloadStatus() == FAILED) {
+                        holder.receiverFileProgressLayout.setVisibility(View.VISIBLE);
+                        holder.receiverFileDownloadStopped.setVisibility(View.VISIBLE);
+                        holder.receiverFileDownloading.setVisibility(View.GONE);
+                    } else if (message.getDownloadStatus() == COMPLETED) {
+                        holder.receiverFileProgressLayout.setVisibility(View.GONE);
+                        holder.receiverFileDownloadStopped.setVisibility(View.GONE);
+                        holder.receiverFileDownloading.setVisibility(View.GONE);
+                    } else if (message.getDownloadStatus() == UPLOADING) {
+                        holder.receiverFileProgressLayout.setVisibility(View.VISIBLE);
+                        holder.receiverFileDownloadStopped.setVisibility(View.GONE);
+                        holder.receiverFileDownloading.setVisibility(View.VISIBLE);
+                    }
 
                     String extension = CommonMethods.getExtension(message.getFileUrl());
 
@@ -272,10 +298,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
 
                     holder.receiverFileIcon.setImageDrawable(fileTextDrawable);
 
-                    holder.receiverFileProgressLayout.setOnClickListener(new View.OnClickListener() {
+                    holder.receiverFileLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            itemListener.downloadFile(message);
+                            if (message.getDownloadStatus() == FAILED) {
+                                itemListener.downloadFile(message);
+                                message.setDownloadStatus(DOWNLOADING);
+                                notifyItemChanged(position);
+                            } else if (message.getDownloadStatus() == COMPLETED) {
+                                // open File in Viewer
+                                openFile(Uri.parse(message.getFileUrl()));
+                            }
                         }
                     });
 
@@ -336,6 +369,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
 
     }
 
+    private void openFile(Uri uri) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, "*/*");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(intent);
+    }
+
    /* private void fileDownload(String url, String dirPath, String fileName) {
         if (NetworkUtil.getConnectivityStatusBoolean(context)) {
             Request request = new Request(url, dirPath, fileName);
@@ -391,7 +432,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
         ImageView senderFileIcon;
         @BindView(R.id.senderFileExtension)
         CustomTextView senderFileExtension;
-       
+
         @BindView(R.id.senderFileLayout)
         RelativeLayout senderFileLayout;
 
@@ -399,7 +440,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
         ImageView receiverFileIcon;
         @BindView(R.id.receiverFileExtension)
         CustomTextView receiverFileExtension;
-       
+
         @BindView(R.id.receiverFileLayout)
         RelativeLayout receiverFileLayout;
 
@@ -418,7 +459,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
 
         @BindView(R.id.senderPhotoProgressLayout)
         RelativeLayout senderPhotoProgressLayout;
-        
+
         @BindView(R.id.receiverFileProgressLayout)
         RelativeLayout receiverFileProgressLayout;
 
@@ -434,7 +475,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
         RelativeLayout senderPhotoUploading;
         @BindView(R.id.senderPhotoUploadStopped)
         RelativeLayout senderPhotoUploadStopped;
-        
+
         ListViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
@@ -443,6 +484,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
 
     public interface ItemListener {
         void uploadFile(MQTTMessage mqttMessage);
-        void downloadFile(MQTTMessage mqttMessage);
+
+        long downloadFile(MQTTMessage mqttMessage);
     }
 }

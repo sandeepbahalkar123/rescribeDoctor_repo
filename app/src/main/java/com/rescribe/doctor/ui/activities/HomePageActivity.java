@@ -3,7 +3,6 @@ package com.rescribe.doctor.ui.activities;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,20 +17,25 @@ import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 import com.heinrichreimersoftware.materialdrawer.theme.DrawerTheme;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.helpers.login.LoginHelper;
+import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.service.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
+
 /**
  * Created by jeetal on 28/6/17.
  */
 
 @RuntimePermissions
-public class HomePageActivity extends DrawerActivity {
+public class HomePageActivity extends DrawerActivity implements HelperResponse {
 
     private static final long MANAGE_ACCOUNT = 121;
     private static final long ADD_ACCOUNT = 122;
@@ -39,6 +43,8 @@ public class HomePageActivity extends DrawerActivity {
     private Context mContext;
     private Toolbar toolbar;
     private AppDBHelper appDBHelper;
+    private String docId;
+    private LoginHelper loginHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,12 @@ public class HomePageActivity extends DrawerActivity {
         mContext = HomePageActivity.this;
         HomePageActivityPermissionsDispatcher.getPermissionWithCheck(HomePageActivity.this);
         appDBHelper = new AppDBHelper(mContext);
+
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+        loginHelper = new LoginHelper(mContext, HomePageActivity.this);
+        ActiveRequest activeRequest = new ActiveRequest();
+        activeRequest.setId(Integer.parseInt(docId));
+        loginHelper.doActiveStatus(activeRequest);
 
         drawerConfiguration();
     }
@@ -163,7 +175,9 @@ public class HomePageActivity extends DrawerActivity {
                     startActivity(intent);
                 } else */
                 if (id.equalsIgnoreCase(getString(R.string.logout))) {
-                    logout();
+                    ActiveRequest activeRequest = new ActiveRequest();
+                    activeRequest.setId(Integer.parseInt(docId));
+                    loginHelper.doLogout(activeRequest);
                 } else if (id.equalsIgnoreCase(getString(R.string.doctor_connect))) {
                     Intent intent = new Intent(mContext, DoctorConnectActivity.class);
                     startActivity(intent);
@@ -236,5 +250,29 @@ public class HomePageActivity extends DrawerActivity {
 //                CommonMethods.showToast(mContext, "Welcome " + newProfile.getName());
             }
         });
+    }
+
+    @Override
+    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        if (mOldDataTag.equals(RescribeConstants.LOGOUT))
+            logout();
+        else if (mOldDataTag.equals(ACTIVE_STATUS))
+            CommonMethods.Log(ACTIVE_STATUS, "active");
+
+    }
+
+    @Override
+    public void onParseError(String mOldDataTag, String errorMessage) {
+
+    }
+
+    @Override
+    public void onServerError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @Override
+    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
+
     }
 }

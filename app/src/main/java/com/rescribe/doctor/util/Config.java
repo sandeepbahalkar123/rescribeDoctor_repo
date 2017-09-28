@@ -34,6 +34,9 @@ public class Config {
     public static final String CHAT_FILE_UPLOAD = "api/upload/chatDoc";
     public static final String GET_PATIENT_CHAT_LIST = "api/chat/getChatTabUsers?user1id=";
 
+    public static final String LOGOUT = "api/doctors/logDoctorSignOut";
+    public static final String ACTIVE = "api/doctors/logDoctorActivity";
+
 }
 
 

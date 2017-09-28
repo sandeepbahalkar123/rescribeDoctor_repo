@@ -79,8 +79,8 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
             intentService.putExtra(SEND_MESSAGE, true);
             intentService.putExtra(MESSAGE_LIST, messageL);
             context.startService(intentService);
-            MessageNotification.cancel(context, recievedMessage.getDocId());
-            appDBHelper.deleteUnreadMessage(recievedMessage.getDocId());
+            MessageNotification.cancel(context, recievedMessage.getPatId()); // Change
+            appDBHelper.deleteUnreadMessage(recievedMessage.getPatId()); // Change
 
         }
     }
@@ -89,8 +89,8 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (customResponse instanceof SendMessageModel) {
             if (recievedMessage != null) {
-                MessageNotification.cancel(context, recievedMessage.getDocId());
-                appDBHelper.deleteUnreadMessage(recievedMessage.getDocId());
+                MessageNotification.cancel(context, recievedMessage.getPatId()); // Change
+                appDBHelper.deleteUnreadMessage(recievedMessage.getPatId()); // Change
             }
         }
     }

@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import static com.rescribe.doctor.util.RescribeConstants.DOWNLOADING;
+import static com.rescribe.doctor.util.RescribeConstants.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
 
 public class MQTTMessage implements Parcelable {
@@ -60,6 +62,10 @@ public class MQTTMessage implements Parcelable {
     @Expose
     private int uploadStatus = UPLOADING;
 
+    @SerializedName("downloadStatus")
+    @Expose
+    private int downloadStatus = FAILED;
+
     // Added End
 
     public final static Creator<MQTTMessage> CREATOR = new Creator<MQTTMessage>() {
@@ -86,6 +92,7 @@ public class MQTTMessage implements Parcelable {
             instance.address = ((String) in.readValue((String.class.getClassLoader())));
 
             instance.uploadStatus = ((int) in.readValue((int.class.getClassLoader())));
+            instance.downloadStatus = ((int) in.readValue((int.class.getClassLoader())));
 
             return instance;
         }
@@ -228,6 +235,14 @@ public class MQTTMessage implements Parcelable {
         this.uploadStatus = uploadStatus;
     }
 
+    public int getDownloadStatus() {
+        return downloadStatus;
+    }
+
+    public void setDownloadStatus(int downloadStatus) {
+        this.downloadStatus = downloadStatus;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(msgId);
         dest.writeValue(topic);
@@ -246,6 +261,7 @@ public class MQTTMessage implements Parcelable {
         dest.writeValue(address);
 
         dest.writeValue(uploadStatus);
+        dest.writeValue(downloadStatus);
     }
 
     public int describeContents() {

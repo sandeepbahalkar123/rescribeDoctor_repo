@@ -26,7 +26,7 @@ public class SendMessageModel implements CustomResponse {
         return data;
     }
 
-    public void setData(String data) {
+    public void notifyDataChanged(String data) {
         this.data = data;
     }*/
 

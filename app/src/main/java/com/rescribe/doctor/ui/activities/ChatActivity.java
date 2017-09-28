@@ -2,14 +2,18 @@ package com.rescribe.doctor.ui.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -18,6 +22,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -60,6 +65,7 @@ import net.gotev.uploadservice.UploadNotificationConfig;
 import net.gotev.uploadservice.UploadService;
 import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -73,7 +79,9 @@ import droidninja.filepicker.FilePickerConst;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE;
 import static com.rescribe.doctor.service.MQTTService.DOCTOR;
+import static com.rescribe.doctor.service.MQTTService.NOTIFY;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 import static com.rescribe.doctor.util.RescribeConstants.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
@@ -149,45 +157,75 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(NOTIFY)) {
+                boolean delivered = intent.getBooleanExtra(MQTTService.DELIVERED, false);
+                boolean isReceived = intent.getBooleanExtra(MQTTService.IS_MESSAGE, false);
 
-            boolean delivered = intent.getBooleanExtra(MQTTService.DELIVERED, false);
-            boolean isReceived = intent.getBooleanExtra(MQTTService.IS_MESSAGE, false);
+                if (delivered) {
 
-            if (delivered) {
+                    Log.d(TAG, "Delivery Complete");
+                    Log.d(TAG + " MESSAGE_ID", intent.getStringExtra(MQTTService.MESSAGE_ID));
 
-                Log.d(TAG, "Delivery Complete");
-                Log.d(TAG + " MESSAGE_ID", intent.getStringExtra(MQTTService.MESSAGE_ID));
-
-            } else if (isReceived) {
-                MQTTMessage message = intent.getParcelableExtra(MQTTService.MESSAGE);
-                if (message.getPatId() == chatList.getId()) {
-                    if (chatAdapter != null) {
-                        mqttMessage.add(message);
-                        chatAdapter.notifyItemInserted(mqttMessage.size() - 1);
-                        chatRecyclerView.smoothScrollToPosition(mqttMessage.size() - 1);
-                    }
-                } else {
-                    // Other user message
-
-                }
-            } else {
-                // Getting type status
-                TypeStatus typeStatus = intent.getParcelableExtra(MQTTService.MESSAGE);
-                if (typeStatus.getPatId() == chatList.getId()) {
-                    if (typeStatus.isTyping()) {
-                        dateTime.setText(TYPING_MESSAGE);
-                        dateTime.setTextColor(Color.WHITE);
+                } else if (isReceived) {
+                    MQTTMessage message = intent.getParcelableExtra(MQTTService.MESSAGE);
+                    if (message.getPatId() == chatList.getId()) {
+                        if (chatAdapter != null) {
+                            mqttMessage.add(message);
+                            chatAdapter.notifyItemInserted(mqttMessage.size() - 1);
+                            chatRecyclerView.smoothScrollToPosition(mqttMessage.size() - 1);
+                        }
                     } else {
-                        dateTime.setText(chatList.getOnlineStatus());
-                        dateTime.setTextColor(statusColor);
+                        // Other user message
+
                     }
                 } else {
-                    // Other use message
+                    // Getting type status
+                    TypeStatus typeStatus = intent.getParcelableExtra(MQTTService.MESSAGE);
+                    if (typeStatus.getPatId() == chatList.getId()) {
+                        if (typeStatus.isTyping()) {
+                            dateTime.setText(TYPING_MESSAGE);
+                            dateTime.setTextColor(Color.WHITE);
+                        } else {
+                            dateTime.setText(chatList.getOnlineStatus());
+                            dateTime.setTextColor(statusColor);
+                        }
+                    } else {
+                        // Other use message
 
+                    }
                 }
+            } else if (intent.getAction().equals(ACTION_DOWNLOAD_COMPLETE)) {
+                checkDownloaded();
             }
         }
     };
+
+    void checkDownloaded() {
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterByStatus(DownloadManager.STATUS_SUCCESSFUL);
+//                query.setFilterById(enqueue);
+        Cursor c = downloadManager.query(query);
+        if (c.moveToFirst()) {
+            int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
+            if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
+                String fileUri = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                String fileName = c.getString(c.getColumnIndex(DownloadManager.COLUMN_TITLE));
+                long id = c.getLong(c.getColumnIndex(DownloadManager.COLUMN_ID));
+                for (int index = mqttMessage.size() - 1; index >= 0; index--) {
+                    if (mqttMessage.get(index).getMsg().equals(fileName)) {
+                        mqttMessage.get(index).setDownloadStatus(COMPLETED);
+                        mqttMessage.get(index).setFileUrl(fileUri);
+                        chatAdapter.notifyItemChanged(index);
+                        downloadManager.remove(id);
+                        break;
+                    }
+                }
+                Log.i(TAG, "downloaded file " + fileUri);
+            } else {
+                Log.i(TAG, "download failed " + c.getInt(columnIndex));
+            }
+        }
+    }
 
     private ChatHelper chatHelper;
     private boolean isSend = false;
@@ -218,7 +256,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private String Url;
     private String authorizationString;
     private UploadNotificationConfig uploadNotificationConfig;
-//    private DownloadManager downloadManager;
+    private DownloadManager downloadManager;
 
     @Override
     public void onBackPressed() {
@@ -294,6 +332,12 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         chatRecyclerView.setLayoutManager(mLayoutManager);
+
+        // off recyclerView Animation
+        RecyclerView.ItemAnimator animator = chatRecyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator)
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+
         chatAdapter = new ChatAdapter(mqttMessage, doctorTextDrawable, ChatActivity.this);
         chatRecyclerView.setAdapter(chatAdapter);
 
@@ -349,7 +393,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     }
 
     private void downloadInit() {
-
+        downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
     }
 
     private void uploadInit() {
@@ -589,7 +633,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             mqttService = mLocalBinder.getServerInstance();
 
             // set Current Chat User
-            mqttService.setCurrentChatUser(Integer.parseInt(docId));
+            mqttService.setCurrentChatUser(chatList.getId()); // Change
         }
     };
 
@@ -615,6 +659,9 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         broadcastReceiver.register(this);
         registerReceiver(receiver, new IntentFilter(
                 MQTTService.NOTIFY));
+
+        registerReceiver(receiver, new IntentFilter(
+                ACTION_DOWNLOAD_COMPLETE));
 
         if (isFirstTime > 0) {
             ArrayList<MQTTMessage> unreadMessages = appDBHelper.getUnreadMessagesById(chatList.getId());
@@ -715,7 +762,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             final int startPosition = mqttMessage.size() + 1;
             int addedCount = 0;
 
-            MQTTData messageData = appDBHelper.getMessageData();
+            MQTTData messageData = appDBHelper.getMessageUpload();
             ArrayList<MQTTMessage> mqttMessList = messageData.getMqttMessages();
 
             for (MQTTMessage mqttMess : mqttMessList) {
@@ -734,6 +781,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                     }
                 }, 200);
             }
+
+            checkDownloaded();
         }
     }
 
@@ -794,17 +843,52 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             e.printStackTrace();
         }
 
-        appDBHelper.insertMessageData(mqttMessage.getMsgId(), RescribeConstants.UPLOADING, new Gson().toJson(mqttMessage));
+        appDBHelper.insertMessageUpload(mqttMessage.getMsgId(), RescribeConstants.UPLOADING, new Gson().toJson(mqttMessage));
     }
 
     // Download File
 
     @Override
-    public void downloadFile(MQTTMessage mqttMessage) {
-        /*downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(
-                Uri.parse(mqttMessage.getFileUrl()));
-        long enqueue = downloadManager.enqueue(request);*/
+    public long downloadFile(MQTTMessage mqttMessage) {
+        long downloadReference;
+
+        File sdCard = Environment.getExternalStorageDirectory();
+        String folder = sdCard.getAbsolutePath() + "/Rescribe/Files";
+        File dir = new File(folder);
+        if (!dir.exists()) {
+            if (dir.mkdirs()) {
+                Log.i(TAG, "Directory Created");
+            }
+        }
+
+        // Create request for android download manager
+        downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+
+        // For Test Big File Download
+//        mqttMessage.setFileUrl("https://dl.google.com/dl/android/studio/ide-zips/2.3.3.0/android-studio-ide-162.4069837-linux.zip");
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mqttMessage.getFileUrl()));
+
+        //Setting title of request
+        request.setTitle(mqttMessage.getMsg());
+
+        //Setting description of request
+        request.setDescription("Rescribe File Downloading");
+
+        request.allowScanningByMediaScanner();
+
+        //Set the local destination for the downloaded file to a path
+        //within the application's external files directory
+
+        request.setDestinationInExternalPublicDir("/Rescribe/Files", CommonMethods.getFileNameFromPath(mqttMessage.getFileUrl()));
+
+        // Keep notification after complete
+//        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        //Enqueue download and save into referenceId
+        downloadReference = downloadManager.enqueue(request);
+
+        return downloadReference;
     }
 
     // Broadcast
@@ -820,7 +904,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             if (uploadInfo.getUploadId().length() > CHAT.length()) {
                 String prefix = uploadInfo.getUploadId().substring(0, 4);
                 if (prefix.equals(CHAT)) {
-                    appDBHelper.updateMessageData(uploadInfo.getUploadId(), FAILED);
+                    appDBHelper.updateMessageUpload(uploadInfo.getUploadId(), FAILED);
 
                     int position = getPositionById(uploadInfo.getUploadId());
 

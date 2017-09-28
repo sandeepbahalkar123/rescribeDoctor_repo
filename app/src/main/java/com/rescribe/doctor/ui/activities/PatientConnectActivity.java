@@ -53,7 +53,7 @@ public class PatientConnectActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
 
             boolean delivered = intent.getBooleanExtra(MQTTService.DELIVERED, false);
-            boolean isReceived = intent.getBooleanExtra(MQTTService.RECEIVED, false);
+            boolean isReceived = intent.getBooleanExtra(MQTTService.IS_MESSAGE, false);
 
             if (delivered) {
 

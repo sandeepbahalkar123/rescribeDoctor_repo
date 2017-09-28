@@ -24,7 +24,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         mContext = SplashScreenActivity.this;
 
         // Hard Coded
-        /*RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGVOdW1iZXIiOjc3Mzg0NzczMDYsInBhc3N3b3JkIjoidGVzdDEyMzQiLCJpYXQiOjE1MDY0OTgxNjgsImV4cCI6MTUwNjU4NDU2OH0.-RDHe-fXjjDW6PQQfglnlxY2k03siwsyaUOIwGj_TjI", mContext);
+       /* RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGVOdW1iZXIiOjc3Mzg0NzczMDYsInBhc3N3b3JkIjoidGVzdDEyMzQiLCJpYXQiOjE1MDY0OTgxNjgsImV4cCI6MTUwNjU4NDU2OH0.-RDHe-fXjjDW6PQQfglnlxY2k03siwsyaUOIwGj_TjI", mContext);
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, "10", mContext);
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, "Dr. Shalu Gupta", mContext);
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, "", mContext);

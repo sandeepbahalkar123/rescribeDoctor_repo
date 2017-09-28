@@ -34,6 +34,7 @@ import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
 import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
+import com.rescribe.doctor.model.login.ActiveStatusModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
 import com.rescribe.doctor.model.patient_connect.ChatPatientConnectModel;
@@ -476,6 +477,16 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.CHAT_HISTORY: //This is for get archived list
                         ChatHistoryModel chatHistoryModel = new Gson().fromJson(data, ChatHistoryModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, chatHistoryModel, mOldDataTag);
+                        break;
+
+                    case RescribeConstants.ACTIVE_STATUS: //This is for get archived list
+                        ActiveStatusModel activeStatusModel = new Gson().fromJson(data, ActiveStatusModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, activeStatusModel, mOldDataTag);
+                        break;
+
+                    case RescribeConstants.LOGOUT: //This is for get archived list
+                        ActiveStatusModel activeStatusLogout = new Gson().fromJson(data, ActiveStatusModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, activeStatusLogout, mOldDataTag);
                         break;
 
                     default:

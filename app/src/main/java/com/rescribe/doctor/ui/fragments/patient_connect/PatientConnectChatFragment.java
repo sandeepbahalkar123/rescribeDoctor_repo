@@ -80,7 +80,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         if (mReceivedPatientDataList.isEmpty()) {
             mPatientConnectHelper.doGetChatPatientList();
         } else {
-            setData();
+            notifyDataChanged();
         }
     }
 
@@ -96,7 +96,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
             ChatPatientConnectModel patientConnectBaseModel = (ChatPatientConnectModel) customResponse;
             ChatPatientConnectModel.PatientListData patientListData = patientConnectBaseModel.getPatientListData();
             mReceivedPatientDataList.addAll(patientListData.getPatientDataList());
-            setData();
+            notifyDataChanged();
         }
     }
 
@@ -115,7 +115,8 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
     }
 
-    public void setData() {
+    public void notifyDataChanged() {
+        if (mPatientConnectAdapter != null)
         if (!mReceivedPatientDataList.isEmpty()) {
             mPatientConnectAdapter.notifyDataSetChanged();
                 isDataListViewVisible(true);
@@ -124,14 +125,21 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
             }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        notifyDataChanged();
+    }
 
     public void isDataListViewVisible(boolean flag) {
-        if (flag) {
-            mEmptyListView.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyListView.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
+        if (mEmptyListView != null) {
+            if (flag) {
+                mEmptyListView.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyListView.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -148,13 +156,13 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
             if (!isThere) {
                 PatientData patientData = new PatientData();
-                patientData.setId(message.getDocId());
+                patientData.setId(message.getPatId()); // Change
                 patientData.setPatientName(message.getName());
 //                patientData.setImageUrl(message.getImageUrl());
                 patientData.setUnreadMessages(1);
                 patientData.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
                 mReceivedPatientDataList.add(0, patientData);
-                mPatientConnectAdapter.notifyDataSetChanged();
+                notifyDataChanged();
             }
         }
     }

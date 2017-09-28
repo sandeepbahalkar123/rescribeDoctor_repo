@@ -533,5 +533,9 @@ public class CommonMethods {
     public static String getExtension(String filePath) {
         return filePath.substring(filePath.lastIndexOf(".") + 1);
     }
+
+    public static String getFileNameFromPath(String filePath) {
+        return filePath.substring(filePath.lastIndexOf("/") + 1);
+    }
 }
 

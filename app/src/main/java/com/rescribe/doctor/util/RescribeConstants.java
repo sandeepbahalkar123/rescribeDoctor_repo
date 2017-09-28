@@ -89,6 +89,9 @@ public class RescribeConstants {
     public static final String CHAT_USERS = RescribeConstants.BLANK + 12;
     public static final String GET_PATIENT_CHAT_LIST = RescribeConstants.BLANK + 13;
 
+    public static final String ACTIVE_STATUS = RescribeConstants.BLANK + 14;
+    public static final String LOGOUT = RescribeConstants.BLANK + 15;
+
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
 
@@ -101,8 +104,10 @@ public class RescribeConstants {
     public static final String FACEBOOK_LOGIN = "facebook_login";
 
     public static final int UPLOADING = 1;
+    public static final int DOWNLOADING = 1;
     public static final int FAILED = 0;
     public static final int COMPLETED = 3;
+
     public static final String UPLOADING_STATUS = "uploading_status";
     public static final String INVESTIGATION_NOTIFICATION_TIME = "9:00 AM";
     public static final String APPOINTMENT_NOTIFICATION_TIME = "9:00 AM";

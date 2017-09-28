@@ -55,7 +55,6 @@ public class MQTTService extends Service {
     public static final String NOTIFY = "com.rescribe";
     public static final String IS_MESSAGE = "is_message";
     public static final String MESSAGE_ID = "message_id";
-    public static final String RECEIVED = "delivery";
     public static final String[] TOPIC = {"doctorConnect", "doctor/status"};
     public static final String DELIVERED = "delivered";
 
@@ -191,14 +190,14 @@ public class MQTTService extends Service {
                                         if (!messageL.getSender().equals(MQTTService.DOCTOR)) { // Change
                                             if (currentChatUser != messageL.getPatId()) { // Change
                                                 ArrayList<MQTTMessage> messagesTemp = new ArrayList<>();
-                                                ArrayList<MQTTMessage> messages = appDBHelper.insertUnreadMessage(messageL.getDocId(), payloadString);
+                                                ArrayList<MQTTMessage> messages = appDBHelper.insertUnreadMessage(messageL.getPatId(), payloadString); // Change
 
                                                 if (messages.size() > 6) {
                                                     for (int index = messages.size() - 6; index < messages.size(); index++)
                                                         messagesTemp.add(messages.get(index));
                                                 } else messagesTemp.addAll(messages);
 
-                                                MessageNotification.notify(MQTTService.this, messagesTemp, String.valueOf(messageL.getName()), appDBHelper.unreadMessageCountById(messageL.getDocId()), getReplyPendingIntent(messageL), messageL.getDocId());
+                                                MessageNotification.notify(MQTTService.this, messagesTemp, String.valueOf(messageL.getName()), appDBHelper.unreadMessageCountById(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
                                             }
                                             Intent intent = new Intent(NOTIFY);
                                             intent.putExtra(IS_MESSAGE, true);
