@@ -317,7 +317,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     // Chat Download Data
 
-    public boolean insertMessageDownload(String id, int status, String data) {
+    /*public boolean insertMessageDownload(String id, int status, String data) {
         if (messageDownloadTableNumberOfRows(id) == 0) {
             SQLiteDatabase db = getWritableDatabase();
             ContentValues contentValues = new ContentValues();
@@ -388,7 +388,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public boolean deleteDownloadedMessage(String id) {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(MESSAGE_DOWNLOAD_TABLE, MESSAGE_DOWNLOAD_ID + "='" + id + "'", null) > 0;
-    }
+    }*/
 
     // Chat Download Data End
 }

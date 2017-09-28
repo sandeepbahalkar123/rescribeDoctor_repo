@@ -16,7 +16,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MQTTMessage;
-import com.rescribe.doctor.service.MQTTService;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 
 import java.util.ArrayList;

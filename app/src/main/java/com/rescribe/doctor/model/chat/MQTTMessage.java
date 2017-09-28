@@ -54,9 +54,6 @@ public class MQTTMessage implements Parcelable {
     @SerializedName("fileType")
     @Expose
     private String fileType = "";
-    @SerializedName("address")
-    @Expose
-    private String address;
 
     @SerializedName("uploadStatus")
     @Expose
@@ -89,7 +86,6 @@ public class MQTTMessage implements Parcelable {
             instance.imageUrl = ((String) in.readValue((String.class.getClassLoader())));
             instance.fileUrl = ((String) in.readValue((String.class.getClassLoader())));
             instance.fileType = ((String) in.readValue((String.class.getClassLoader())));
-            instance.address = ((String) in.readValue((String.class.getClassLoader())));
 
             instance.uploadStatus = ((int) in.readValue((int.class.getClassLoader())));
             instance.downloadStatus = ((int) in.readValue((int.class.getClassLoader())));
@@ -191,14 +187,6 @@ public class MQTTMessage implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getName() {
         return name;
     }
@@ -258,7 +246,6 @@ public class MQTTMessage implements Parcelable {
         dest.writeValue(imageUrl);
         dest.writeValue(fileUrl);
         dest.writeValue(fileType);
-        dest.writeValue(address);
 
         dest.writeValue(uploadStatus);
         dest.writeValue(downloadStatus);

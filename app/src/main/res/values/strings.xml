@@ -107,5 +107,6 @@
     <string name="online">Online</string>
     <string name="offline">Offline</string>
     <string name="idle">Idle</string>
+    <string name="doc_viewer_not_found">Document viewer not found.</string>
 
 </resources>

@@ -11,11 +11,11 @@ import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.service.MQTTService;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import static com.rescribe.doctor.service.MQTTService.REPLY_ACTION;
-import static com.rescribe.doctor.service.MQTTService.SEND_MESSAGE;
+import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
+import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
 import static com.rescribe.doctor.ui.activities.ChatActivity.CHAT;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 

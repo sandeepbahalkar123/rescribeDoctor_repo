@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.service.MQTTService;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.util.RescribeConstants;
 
 public class SplashScreenActivity extends AppCompatActivity {

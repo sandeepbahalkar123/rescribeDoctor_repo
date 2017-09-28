@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.uploadfile.ChatFileUploadModel;
-import com.rescribe.doctor.service.MQTTService;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -17,7 +17,7 @@ import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
 import static com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver.MESSAGE_LIST;
-import static com.rescribe.doctor.service.MQTTService.SEND_MESSAGE;
+import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
 import static com.rescribe.doctor.ui.activities.ChatActivity.CHAT;
 
 public class FileUploadReceiver extends UploadServiceBroadcastReceiver {

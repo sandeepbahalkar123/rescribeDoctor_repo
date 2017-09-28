@@ -24,13 +24,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MQTTMessage;
-import com.rescribe.doctor.service.MQTTService;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.activities.ZoomImageViewActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -144,7 +145,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                                 notifyItemChanged(position);
                             } else if (message.getUploadStatus() == COMPLETED) {
                                 // do file open stuff here
-                                openFile(Uri.parse(message.getFileUrl()));
+                                try {
+                                    itemListener.openFile(Uri.parse(message.getFileUrl()));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     });
@@ -307,7 +312,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                                 notifyItemChanged(position);
                             } else if (message.getDownloadStatus() == COMPLETED) {
                                 // open File in Viewer
-                                openFile(Uri.parse(message.getFileUrl()));
+                                try {
+                                    itemListener.openFile(Uri.parse(message.getFileUrl()));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     });
@@ -368,28 +377,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
         holder.receiverProfilePhoto.setImageDrawable(mReceiverTextDrawable);
 
     }
-
-    private void openFile(Uri uri) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, "*/*");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        context.startActivity(intent);
-    }
-
-   /* private void fileDownload(String url, String dirPath, String fileName) {
-        if (NetworkUtil.getConnectivityStatusBoolean(context)) {
-            Request request = new Request(url, dirPath, fileName);
-            long downloadId = fetch.enqueue(request);
-
-            if (downloadId != Fetch.ENQUEUE_ERROR_ID) {
-                //Download was successfully queued for download.
-
-
-            }
-        } else
-            CommonMethods.showToast(context, context.getResources().getString(R.string.internet));
-    }*/
 
     @Override
     public int getItemCount() {
@@ -484,7 +471,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
 
     public interface ItemListener {
         void uploadFile(MQTTMessage mqttMessage);
-
         long downloadFile(MQTTMessage mqttMessage);
+        void openFile(Uri parse) throws IOException;
     }
 }

@@ -28,6 +28,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.droidninja.filepicker.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
         <activity
             android:name=".ui.activities.SplashScreenActivity"
             android:configChanges="orientation|keyboard|screenSize"
@@ -83,7 +93,7 @@
             android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".service.MQTTService" />
+        <service android:name=".services.MQTTService" />
 
         <receiver
             android:name=".broadcast_receivers.ReplayBroadcastReceiver"

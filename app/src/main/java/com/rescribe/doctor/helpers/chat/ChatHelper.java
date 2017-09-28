@@ -10,7 +10,7 @@ import com.rescribe.doctor.model.chat.MessageList;
 import com.rescribe.doctor.model.chat.MessageRequestModel;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.network.ConnectionFactory;
-import com.rescribe.doctor.service.MQTTService;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;

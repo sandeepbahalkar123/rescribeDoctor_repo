@@ -145,7 +145,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
     public void notifyCount(MQTTMessage message) {
         boolean isThere = false;
-        if (mReceivedPatientDataList != null) {
+        if (mReceivedPatientDataList != null && mPatientConnectAdapter != null) {
             for (int index = 0; index < mReceivedPatientDataList.size(); index++) {
                 if (mReceivedPatientDataList.get(index).getId() == message.getPatId()) {
                     mPatientConnectAdapter.notifyItemChanged(index);

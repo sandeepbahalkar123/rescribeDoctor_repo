@@ -3,6 +3,7 @@ package com.rescribe.doctor.ui.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,12 +13,14 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,7 +54,7 @@ import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.service.MQTTService;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -80,8 +83,8 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 import static android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE;
-import static com.rescribe.doctor.service.MQTTService.DOCTOR;
-import static com.rescribe.doctor.service.MQTTService.NOTIFY;
+import static com.rescribe.doctor.services.MQTTService.DOCTOR;
+import static com.rescribe.doctor.services.MQTTService.NOTIFY;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 import static com.rescribe.doctor.util.RescribeConstants.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
@@ -96,6 +99,23 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
     private static final int MAX_ATTACHMENT_COUNT = 10;
     public static final String CHAT = "chat";
+
+    private static final String RESCRIBE_FILES = "/Rescribe/Files";
+    private static final String RESCRIBE_PHOTOS = "/Rescribe/Photos";
+    private static final String RESCRIBE_AUDIO = "/Rescribe/Audios";
+
+    private static final String RESCRIBE_UPLOAD_FILES = "/Rescribe/SentFiles";
+    private static final String RESCRIBE_UPLOAD_PHOTOS = "/Rescribe/SentPhotos";
+    private static final String RESCRIBE_UPLOAD_AUDIO = "/Rescribe/SentAudios";
+
+    private String filesFolder;
+    private String photosFolder;
+    private String audioFolder;
+
+    private String filesUploadFolder;
+    private String photosUploadFolder;
+    private String audioUploadFolder;
+
     @BindView(R.id.backButton)
     ImageView backButton;
     @BindView(R.id.profilePhoto)
@@ -207,21 +227,21 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         Cursor c = downloadManager.query(query);
         if (c.moveToFirst()) {
             int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
+            String fileUri = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+            String fileName = c.getString(c.getColumnIndex(DownloadManager.COLUMN_TITLE));
+            long id = c.getLong(c.getColumnIndex(DownloadManager.COLUMN_ID));
             if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
-                String fileUri = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-                String fileName = c.getString(c.getColumnIndex(DownloadManager.COLUMN_TITLE));
-                long id = c.getLong(c.getColumnIndex(DownloadManager.COLUMN_ID));
                 for (int index = mqttMessage.size() - 1; index >= 0; index--) {
                     if (mqttMessage.get(index).getMsg().equals(fileName)) {
                         mqttMessage.get(index).setDownloadStatus(COMPLETED);
                         mqttMessage.get(index).setFileUrl(fileUri);
                         chatAdapter.notifyItemChanged(index);
-                        downloadManager.remove(id);
                         break;
                     }
                 }
                 Log.i(TAG, "downloaded file " + fileUri);
             } else {
+
                 Log.i(TAG, "download failed " + c.getInt(columnIndex));
             }
         }
@@ -246,7 +266,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private String docName;
     private String imageUrl = "";
     private String speciality = "";
-    private String fileUrl = "";
 
     private PatientData chatList;
     private int statusColor;
@@ -279,6 +298,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         ButterKnife.bind(this);
 
         appDBHelper = new AppDBHelper(this);
+
+        downloadInit();
 
         chatList = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
         statusColor = getIntent().getIntExtra(RescribeConstants.STATUS_COLOR, ContextCompat.getColor(ChatActivity.this, R.color.green_light));
@@ -388,28 +409,71 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         });
 
         uploadInit();
-        downloadInit();
         //----------
     }
 
     private void downloadInit() {
         downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+
+        File sdCard = Environment.getExternalStorageDirectory();
+        filesFolder = sdCard.getAbsolutePath() + RESCRIBE_FILES;
+        photosFolder = sdCard.getAbsolutePath() + RESCRIBE_PHOTOS;
+        audioFolder = sdCard.getAbsolutePath() + RESCRIBE_AUDIO;
+
+        File dirFilesFolder = new File(filesFolder);
+        if (!dirFilesFolder.exists()) {
+            if (dirFilesFolder.mkdirs()) {
+                Log.i(TAG, filesFolder + " Directory Created");
+            }
+        }
+        File dirPhotosFolder = new File(photosFolder);
+        if (!dirPhotosFolder.exists()) {
+            if (dirPhotosFolder.mkdirs()) {
+                Log.i(TAG, photosFolder + " Directory Created");
+            }
+        }
+        File dirAudioFolder = new File(filesFolder);
+        if (!dirAudioFolder.exists()) {
+            if (dirAudioFolder.mkdirs()) {
+                Log.i(TAG, audioFolder + " Directory Created");
+            }
+        }
     }
 
     private void uploadInit() {
+
+        File sdCard = Environment.getExternalStorageDirectory();
+        filesUploadFolder = sdCard.getAbsolutePath() + RESCRIBE_UPLOAD_FILES;
+        photosUploadFolder = sdCard.getAbsolutePath() + RESCRIBE_UPLOAD_PHOTOS;
+        audioUploadFolder = sdCard.getAbsolutePath() + RESCRIBE_UPLOAD_AUDIO;
+
+        File dirFilesFolder = new File(filesFolder);
+        if (!dirFilesFolder.exists()) {
+            if (dirFilesFolder.mkdirs()) {
+                Log.i(TAG, filesUploadFolder + " Directory Created");
+            }
+        }
+        File dirPhotosFolder = new File(photosFolder);
+        if (!dirPhotosFolder.exists()) {
+            if (dirPhotosFolder.mkdirs()) {
+                Log.i(TAG, photosUploadFolder + " Directory Created");
+            }
+        }
+        File dirAudioFolder = new File(filesFolder);
+        if (!dirAudioFolder.exists()) {
+            if (dirAudioFolder.mkdirs()) {
+                Log.i(TAG, audioUploadFolder + " Directory Created");
+            }
+        }
+
         // Uploading
-
         device = Device.getInstance(ChatActivity.this);
-
         Url = Config.BASE_URL + Config.CHAT_FILE_UPLOAD;
-
         authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, ChatActivity.this);
-
         uploadNotificationConfig = new UploadNotificationConfig();
         uploadNotificationConfig.setTitleForAllStatuses("File Uploading");
         uploadNotificationConfig.setIconColorForAllStatuses(Color.parseColor("#04abdf"));
         uploadNotificationConfig.setClearOnActionForAllStatuses(true);
-
         UploadService.UPLOAD_POOL_SIZE = 10;
     }
 
@@ -724,13 +788,13 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                     messageL.setName(chatH.getName());
                     messageL.setSpecialization(chatH.getSpecialization());
                     messageL.setOnlineStatus(chatH.getOnlineStatus());
-                    messageL.setAddress(chatH.getAddress());
                     messageL.setImageUrl(chatH.getImageUrl());
                     messageL.setPaidStatus(chatH.getPaidStatus());
                     messageL.setFileType(chatH.getFileType());
                     messageL.setUploadStatus(COMPLETED);
-
-                    String msgTime = CommonMethods.getFormatedDate(chatH.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_hh_mm_ss);
+                    String msgTime = "";
+                    if (chatH.getMsgTime() != null)
+                        msgTime = CommonMethods.getFormattedDate(chatH.getMsgTime(), RescribeConstants.DATE_PATTERN.YYYY_MM_DD_hh_mm_ss, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_hh_mm_ss);
                     messageL.setMsgTime(msgTime);
                     mqttMessage.add(0, messageL);
                 }
@@ -852,18 +916,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     public long downloadFile(MQTTMessage mqttMessage) {
         long downloadReference;
 
-        File sdCard = Environment.getExternalStorageDirectory();
-        String folder = sdCard.getAbsolutePath() + "/Rescribe/Files";
-        File dir = new File(folder);
-        if (!dir.exists()) {
-            if (dir.mkdirs()) {
-                Log.i(TAG, "Directory Created");
-            }
-        }
-
-        // Create request for android download manager
-        downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-
         // For Test Big File Download
 //        mqttMessage.setFileUrl("https://dl.google.com/dl/android/studio/ide-zips/2.3.3.0/android-studio-ide-162.4069837-linux.zip");
 
@@ -880,7 +932,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         //Set the local destination for the downloaded file to a path
         //within the application's external files directory
 
-        request.setDestinationInExternalPublicDir("/Rescribe/Files", CommonMethods.getFileNameFromPath(mqttMessage.getFileUrl()));
+        request.setDestinationInExternalPublicDir(RESCRIBE_FILES, CommonMethods.getFileNameFromPath(mqttMessage.getFileUrl()));
 
         // Keep notification after complete
 //        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
@@ -889,6 +941,82 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         downloadReference = downloadManager.enqueue(request);
 
         return downloadReference;
+    }
+
+    @Override
+    public void openFile(Uri uriTemp) {
+
+        File file;
+        if (uriTemp.toString().contains("file://"))
+            file = new File(uriTemp.getPath());
+        else file = new File(uriTemp.toString());
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        Uri uri = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".droidninja.filepicker.provider", file);
+        } else {
+            uri = Uri.fromFile(createImageFile(uriTemp));
+        }
+
+        // Check what kind of file you are trying to open, by comparing the uri with extensions.
+        // When the if condition is matched, plugin sets the correct intent (mime) type,
+        // so Android knew what application to use to open the file
+        if (uri.toString().contains(".doc") || uri.toString().contains(".docx")) {
+            // Word document
+            intent.setDataAndType(uri, "application/msword");
+        } else if (uri.toString().contains(".pdf")) {
+            // PDF file
+            intent.setDataAndType(uri, "application/pdf");
+        } else if (uri.toString().contains(".ppt") || uri.toString().contains(".pptx")) {
+            // Powerpoint file
+            intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+        } else if (uri.toString().contains(".xls") || uri.toString().contains(".xlsx")) {
+            // Excel file
+            intent.setDataAndType(uri, "application/vnd.ms-excel");
+        } else if (uri.toString().contains(".zip") || uri.toString().contains(".rar")) {
+            // WAV audio file
+            intent.setDataAndType(uri, "application/x-wav");
+        } else if (uri.toString().contains(".rtf")) {
+            // RTF file
+            intent.setDataAndType(uri, "application/rtf");
+        } else if (uri.toString().contains(".wav") || uri.toString().contains(".mp3")) {
+            // WAV audio file
+            intent.setDataAndType(uri, "audio/x-wav");
+        } else if (uri.toString().contains(".gif")) {
+            // GIF file
+            intent.setDataAndType(uri, "image/gif");
+        } else if (uri.toString().contains(".jpg") || uri.toString().contains(".jpeg") || uri.toString().contains(".png")) {
+            // JPG file
+            intent.setDataAndType(uri, "image/jpeg");
+        } else if (uri.toString().contains(".txt")) {
+            // Text file
+            intent.setDataAndType(uri, "text/plain");
+        } else if (uri.toString().contains(".3gp") || uri.toString().contains(".mpg") || uri.toString().contains(".mpeg") || uri.toString().contains(".mpe") || uri.toString().contains(".mp4") || uri.toString().contains(".avi")) {
+            // Video files
+            intent.setDataAndType(uri, "video/*");
+        } else {
+            //if you want you can also define the intent type for any other file
+
+            //additionally use else clause below, to manage other unknown extensions
+            //in this case, Android will show all applications installed on the device
+            //so you can choose which application to use
+            intent.setDataAndType(uri, "*/*");
+        }
+
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            CommonMethods.showToast(ChatActivity.this, getResources().getString(R.string.doc_viewer_not_found));
+        }
+    }
+
+    private File createImageFile(Uri uriTemp) {
+        return new File(filesFolder, CommonMethods.getFileNameFromPath(uriTemp.toString()));
     }
 
     // Broadcast
