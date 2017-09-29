@@ -322,6 +322,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         ButterKnife.bind(this);
 
         appDBHelper = new AppDBHelper(this);
+        swipeLayout.setRefreshing(true);
 
         downloadInit();
 
@@ -1048,8 +1049,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 next += 1;
             }
 
-            swipeLayout.setRefreshing(false);
-
             final int startPosition = mqttMessage.size() + 1;
             int addedCount = 0;
 
@@ -1072,6 +1071,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                     }
                 }, 200);
             }
+
+            swipeLayout.setRefreshing(false);
         }
     }
 
