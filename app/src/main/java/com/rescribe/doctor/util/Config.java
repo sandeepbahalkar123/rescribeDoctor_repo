@@ -16,10 +16,10 @@ public class Config {
     //Declared all URL used in app here
 
 
-    //    private static final String BROKER = "tcp://test.mosquitto.org:1883";
+//    public static final String BROKER = "tcp://ec2-13-126-175-156.ap-south-1.compute.amazonaws.com:1883";
     public static final String BROKER = "tcp://192.168.0.182:1883";
 
-      public static String BASE_URL = "http://192.168.0.182:3003/";
+          public static String BASE_URL = "http://192.168.0.182:3003/";
 //    public static String BASE_URL = "http://drrescribe.com:3003/";
 
     public Context mContext;
