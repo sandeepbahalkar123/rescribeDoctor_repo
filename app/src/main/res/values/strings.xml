@@ -108,6 +108,6 @@
     <string name="offline">Offline</string>
     <string name="idle">Idle</string>
     <string name="doc_viewer_not_found">Document viewer not found.</string>
-    <string name="timing"><![CDATA[00:00 < Slide to Cancel]]></string>
+    <string name="timing"><![CDATA[< slide to cancel]]></string>
 
 </resources>

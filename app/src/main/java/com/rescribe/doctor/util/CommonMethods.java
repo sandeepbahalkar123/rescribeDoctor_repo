@@ -539,6 +539,10 @@ public class CommonMethods {
         return filePath.substring(filePath.lastIndexOf("/") + 1);
     }
 
+    public static String getFilePath(String filePath) {
+        return filePath.substring(0, filePath.lastIndexOf("/") + 1);
+    }
+
     public static float spToPx(int sp, Context context) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
                 context.getResources().getDisplayMetrics());

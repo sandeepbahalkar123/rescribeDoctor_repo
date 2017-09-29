@@ -73,9 +73,15 @@ import net.gotev.uploadservice.UploadService;
 import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,6 +100,7 @@ import static com.rescribe.doctor.services.MQTTService.NOTIFY;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 import static com.rescribe.doctor.util.RescribeConstants.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
+import static com.rescribe.doctor.util.RescribeConstants.FILE.AUD;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.DOC;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
 import static com.rescribe.doctor.util.RescribeConstants.SEND_MESSAGE;
@@ -109,6 +116,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private static String mFileName = null;
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
+    private ImageView audioIcon;
+    private boolean isPlaying = false;
 
     // Audio End
 
@@ -243,14 +252,12 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     void checkDownloaded() {
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterByStatus(DownloadManager.STATUS_SUCCESSFUL);
-//                query.setFilterById(enqueue);
         Cursor c = downloadManager.query(query);
+
         if (c.moveToFirst()) {
-            int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
-            String fileUri = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-            String fileName = c.getString(c.getColumnIndex(DownloadManager.COLUMN_TITLE));
-            long id = c.getLong(c.getColumnIndex(DownloadManager.COLUMN_ID));
-            if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
+            do {
+                String fileUri = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                String fileName = c.getString(c.getColumnIndex(DownloadManager.COLUMN_TITLE));
                 for (int index = mqttMessage.size() - 1; index >= 0; index--) {
                     if (mqttMessage.get(index).getMsg().equals(fileName)) {
                         mqttMessage.get(index).setDownloadStatus(COMPLETED);
@@ -258,12 +265,9 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                         chatAdapter.notifyItemChanged(index);
                         break;
                     }
+                    Log.i(TAG, "downloaded file " + fileUri);
                 }
-                Log.i(TAG, "downloaded file " + fileUri);
-            } else {
-
-                Log.i(TAG, "download failed " + c.getInt(columnIndex));
-            }
+            } while (c.moveToNext());
         }
     }
 
@@ -453,7 +457,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.vibrate(100);
                 cntr_aCounter.cancel();
-                stopRecording();
+                stopRecording(false);
                 File file = new File(mFileName);
                 boolean deleted = file.delete();
                 mFileName = audioUploadFolder;
@@ -467,7 +471,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 Log.d("Start", "Track");
                 messageTypeSubLayout.setVisibility(View.INVISIBLE);
 
-                mFileName += "Aud_" + System.nanoTime() + ".3gp";
+                mFileName += "Aud_" + System.nanoTime() + ".mp3";
                 cntr_aCounter.start();
                 startRecording();
             }
@@ -479,8 +483,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 Log.d("Stop", "Track");
                 messageTypeSubLayout.setVisibility(View.VISIBLE);
                 cntr_aCounter.cancel();
-                mFileName = audioUploadFolder;
-                stopRecording();
+                stopRecording(audioCounter > 2);
             }
         });
     }
@@ -490,32 +493,59 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         CommonMethods.Log(TAG, "asked permission");
     }
 
-    private void startPlaying() {
+    private void startPlaying(String path) {
         mPlayer = new MediaPlayer();
         try {
-            mPlayer.setDataSource(mFileName);
+            audioIcon.setImageResource(R.drawable.ic_stop_white_24dp);
+            mPlayer.setDataSource(path);
             mPlayer.prepare();
             mPlayer.start();
+            isPlaying = true;
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
         }
+
+        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                audioIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+                isPlaying = false;
+            }
+        });
     }
 
     private void stopPlaying() {
-        mPlayer.release();
-        mPlayer = null;
+        audioIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+        try {
+            mPlayer.release();
+            mPlayer = null;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            isPlaying = false;
+        }
+
     }
 
+    private int audioCounter = 0;
     CountDownTimer cntr_aCounter = new CountDownTimer(60_000, 1_000) {
         public void onTick(long millisUntilFinished) {
             // recodeing code
-            String time = "00:" + (millisUntilFinished / 1000) + "  <Slide to Cancel";
+            NumberFormat f = new DecimalFormat("00");
+            String time = "00:" + f.format(audioCounter) + "  " + getResources().getString(R.string.timing);
             audioSlider.getTextView().setText(time);
+            audioCounter += 1;
         }
 
         public void onFinish() {
             //finish action
-            stopRecording();
+            try {
+                stopRecording(true);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     };
 
@@ -532,14 +562,31 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             Log.e(LOG_TAG, "prepare() failed");
         }
 
-        mRecorder.start();
+        try {
+            mRecorder.start();
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "prepare() start");
+        }
 
     }
 
-    private void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
+    private void stopRecording(boolean isSend) {
+        CommonMethods.Log("isCanceled Recording : " + audioCounter, String.valueOf(isSend));
+        audioCounter = 0;
+        try {
+            mRecorder.stop();
+            mRecorder.release();
+        } catch (RuntimeException ex) {
+            //Ignore
+        }
         mRecorder = null;
+
+        if (isSend) {
+            ArrayList<String> audioFile = new ArrayList<String>();
+            audioFile.add(mFileName);
+            uploadFiles(audioFile, RescribeConstants.FILE.AUD);
+            mFileName = audioUploadFolder;
+        }
     }
 
     // End Audio Code
@@ -711,20 +758,23 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 }
             } else if (requestCode == FilePickerConst.REQUEST_CODE_DOC) {
                 if (!data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS).isEmpty()) {
-                    uploadFiles(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS));
+                    uploadFiles(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS), RescribeConstants.FILE.DOC);
                 }
             }
         }
     }
 
-    private void uploadFiles(ArrayList<String> files) {
+    private void uploadFiles(ArrayList<String> files, String fileType) {
         int startPosition = mqttMessage.size() + 1;
         for (String file : files) {
+
+            String fileForUpload = copyFile(CommonMethods.getFilePath(file), CommonMethods.getFileNameFromPath(file), filesUploadFolder);
+
             MQTTMessage messageL = new MQTTMessage();
             messageL.setTopic(MQTTService.TOPIC[0]);
             messageL.setSender(DOCTOR);
 
-            String fileName = file.substring(file.lastIndexOf("/") + 1);
+            String fileName = fileForUpload.substring(fileForUpload.lastIndexOf("/") + 1);
 
             messageL.setMsg(fileName);
 
@@ -732,8 +782,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
             messageL.setMsgId(generatedId);
 
-            messageL.setFileUrl(file);
-            messageL.setFileType(DOC);
+            messageL.setFileUrl(fileForUpload);
+            messageL.setFileType(fileType);
 
             messageL.setDocId(Integer.parseInt(docId));
             messageL.setPatId(chatList.getId());
@@ -760,6 +810,9 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private void uploadPhotos(ArrayList<String> files) {
         int startPosition = mqttMessage.size() + 1;
         for (String file : files) {
+
+            String fileForUpload = copyFile(CommonMethods.getFilePath(file), CommonMethods.getFileNameFromPath(file), photosUploadFolder);
+
             MQTTMessage messageL = new MQTTMessage();
             messageL.setTopic(MQTTService.TOPIC[0]);
             messageL.setSender(DOCTOR);
@@ -776,7 +829,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             messageL.setSpecialization(speciality);
             messageL.setPaidStatus(FREE);
 
-            messageL.setFileUrl(file);
+            messageL.setFileUrl(fileForUpload);
             messageL.setFileType(IMG);
 
             messageL.setUploadStatus(UPLOADING);
@@ -912,6 +965,10 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
 //                messageListTemp.clear();
 
+                DownloadManager.Query query = new DownloadManager.Query();
+                query.setFilterByStatus(DownloadManager.STATUS_SUCCESSFUL);
+                Cursor cu = downloadManager.query(query);
+
                 for (ChatHistory chatH : chatHistory) {
                     MQTTMessage messageL = new MQTTMessage();
                     messageL.setMsgId(chatH.getChatId());
@@ -926,13 +983,41 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                     messageL.setImageUrl(chatH.getImageUrl());
                     messageL.setPaidStatus(chatH.getPaidStatus());
                     messageL.setFileType(chatH.getFileType());
+                    messageL.setFileUrl(chatH.getFileUrl());
+
                     messageL.setUploadStatus(COMPLETED);
+
+                    if (chatH.getSender().equals(DOCTOR)) {
+                        if (chatH.getFileType().equals(AUD)) {
+                            messageL.setFileUrl(audioUploadFolder + chatH.getMsg());
+                        } else if (chatH.getFileType().equals(DOC)) {
+                            messageL.setFileUrl(filesUploadFolder + chatH.getMsg());
+                        }
+                    }
+
+                    // Check Download
+                    if (chatH.getFileType().equals(DOC) || chatH.getFileType().equals(AUD)) {
+                        if (cu.moveToFirst()) {
+                            do {
+                                String fileUri = cu.getString(cu.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                                String fileName = cu.getString(cu.getColumnIndex(DownloadManager.COLUMN_TITLE));
+                                if (messageL.getMsg().equals(fileName)) {
+                                    messageL.setDownloadStatus(COMPLETED);
+                                    messageL.setFileUrl(fileUri);
+                                }
+                            } while (cu.moveToNext());
+                        }
+                    }
+                    // End
+
                     String msgTime = "";
                     if (chatH.getMsgTime() != null)
                         msgTime = CommonMethods.getFormattedDate(chatH.getMsgTime(), RescribeConstants.DATE_PATTERN.YYYY_MM_DD_hh_mm_ss, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_hh_mm_ss);
                     messageL.setMsgTime(msgTime);
                     mqttMessage.add(0, messageL);
                 }
+
+                cu.close();
 
                 if (next == 1) {
                     isExistInChat = mqttMessage.isEmpty();
@@ -981,7 +1066,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 }, 200);
             }
 
-            checkDownloaded();
+//            checkDownloaded();
         }
     }
 
@@ -1079,74 +1164,96 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     }
 
     @Override
-    public void openFile(Uri uriTemp) {
+    public void openFile(MQTTMessage message, ImageView senderFileIcon) {
 
-        File file;
-        if (uriTemp.toString().contains("file://"))
-            file = new File(uriTemp.getPath());
-        else file = new File(uriTemp.toString());
+        Uri uriTemp = Uri.parse(message.getFileUrl());
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (message.getFileType().equals(DOC)) {
 
-        Uri uri = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".droidninja.filepicker.provider", file);
-        } else {
-            uri = Uri.fromFile(createImageFile(uriTemp));
-        }
+            File file;
+            if (uriTemp.toString().contains("file://"))
+                file = new File(uriTemp.getPath());
+            else file = new File(uriTemp.toString());
 
-        // Check what kind of file you are trying to open, by comparing the uri with extensions.
-        // When the if condition is matched, plugin sets the correct intent (mime) type,
-        // so Android knew what application to use to open the file
-        if (uri.toString().contains(".doc") || uri.toString().contains(".docx")) {
-            // Word document
-            intent.setDataAndType(uri, "application/msword");
-        } else if (uri.toString().contains(".pdf")) {
-            // PDF file
-            intent.setDataAndType(uri, "application/pdf");
-        } else if (uri.toString().contains(".ppt") || uri.toString().contains(".pptx")) {
-            // Powerpoint file
-            intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
-        } else if (uri.toString().contains(".xls") || uri.toString().contains(".xlsx")) {
-            // Excel file
-            intent.setDataAndType(uri, "application/vnd.ms-excel");
-        } else if (uri.toString().contains(".zip") || uri.toString().contains(".rar")) {
-            // WAV audio file
-            intent.setDataAndType(uri, "application/x-wav");
-        } else if (uri.toString().contains(".rtf")) {
-            // RTF file
-            intent.setDataAndType(uri, "application/rtf");
-        } else if (uri.toString().contains(".wav") || uri.toString().contains(".mp3")) {
-            // WAV audio file
-            intent.setDataAndType(uri, "audio/x-wav");
-        } else if (uri.toString().contains(".gif")) {
-            // GIF file
-            intent.setDataAndType(uri, "image/gif");
-        } else if (uri.toString().contains(".jpg") || uri.toString().contains(".jpeg") || uri.toString().contains(".png")) {
-            // JPG file
-            intent.setDataAndType(uri, "image/jpeg");
-        } else if (uri.toString().contains(".txt")) {
-            // Text file
-            intent.setDataAndType(uri, "text/plain");
-        } else if (uri.toString().contains(".3gp") || uri.toString().contains(".mpg") || uri.toString().contains(".mpeg") || uri.toString().contains(".mpe") || uri.toString().contains(".mp4") || uri.toString().contains(".avi")) {
-            // Video files
-            intent.setDataAndType(uri, "video/*");
-        } else {
-            //if you want you can also define the intent type for any other file
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            //additionally use else clause below, to manage other unknown extensions
-            //in this case, Android will show all applications installed on the device
-            //so you can choose which application to use
-            intent.setDataAndType(uri, "*/*");
-        }
+            Uri uri = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".droidninja.filepicker.provider", file);
+            } else {
+                uri = Uri.fromFile(createImageFile(uriTemp));
+            }
 
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            CommonMethods.showToast(ChatActivity.this, getResources().getString(R.string.doc_viewer_not_found));
+            // Check what kind of file you are trying to open, by comparing the uri with extensions.
+            // When the if condition is matched, plugin sets the correct intent (mime) type,
+            // so Android knew what application to use to open the file
+            if (uri.toString().contains(".doc") || uri.toString().contains(".docx")) {
+                // Word document
+                intent.setDataAndType(uri, "application/msword");
+            } else if (uri.toString().contains(".pdf")) {
+                // PDF file
+                intent.setDataAndType(uri, "application/pdf");
+            } else if (uri.toString().contains(".ppt") || uri.toString().contains(".pptx")) {
+                // Powerpoint file
+                intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+            } else if (uri.toString().contains(".xls") || uri.toString().contains(".xlsx")) {
+                // Excel file
+                intent.setDataAndType(uri, "application/vnd.ms-excel");
+            } else if (uri.toString().contains(".zip") || uri.toString().contains(".rar")) {
+                // WAV audio file
+                intent.setDataAndType(uri, "application/x-wav");
+            } else if (uri.toString().contains(".rtf")) {
+                // RTF file
+                intent.setDataAndType(uri, "application/rtf");
+            } else if (uri.toString().contains(".wav") || uri.toString().contains(".mp3")) {
+                // WAV audio file
+                intent.setDataAndType(uri, "audio/x-wav");
+            } else if (uri.toString().contains(".gif")) {
+                // GIF file
+                intent.setDataAndType(uri, "image/gif");
+            } else if (uri.toString().contains(".jpg") || uri.toString().contains(".jpeg") || uri.toString().contains(".png")) {
+                // JPG file
+                intent.setDataAndType(uri, "image/jpeg");
+            } else if (uri.toString().contains(".txt")) {
+                // Text file
+                intent.setDataAndType(uri, "text/plain");
+            } else if (uri.toString().contains(".3gp") || uri.toString().contains(".mpg") || uri.toString().contains(".mpeg") || uri.toString().contains(".mpe") || uri.toString().contains(".mp4") || uri.toString().contains(".avi")) {
+                // Video files
+                intent.setDataAndType(uri, "video/*");
+            } else {
+                //if you want you can also define the intent type for any other file
+
+                //additionally use else clause below, to manage other unknown extensions
+                //in this case, Android will show all applications installed on the device
+                //so you can choose which application to use
+                intent.setDataAndType(uri, "*/*");
+            }
+
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                CommonMethods.showToast(ChatActivity.this, getResources().getString(R.string.doc_viewer_not_found));
+            }
+        } else if (message.getFileType().equals(AUD)) {
+
+            if (this.audioIcon != null) {
+                this.audioIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+                senderFileIcon.setImageResource(R.drawable.ic_stop_white_24dp);
+            } else {
+                senderFileIcon.setImageResource(R.drawable.ic_stop_white_24dp);
+            }
+
+            this.audioIcon = senderFileIcon;
+
+            if (!isPlaying)
+                startPlaying(message.getFileUrl());
+            else {
+                stopPlaying();
+                startPlaying(message.getFileUrl());
+            }
         }
     }
 
@@ -1163,6 +1270,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
         @Override
         public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
+
+            CommonMethods.Log(TAG, "FaildUpload");
 
             if (uploadInfo.getUploadId().length() > CHAT.length()) {
                 String prefix = uploadInfo.getUploadId().substring(0, 4);
@@ -1192,6 +1301,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         @Override
         public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
 
+            CommonMethods.Log(TAG, "onCompleted " + serverResponse.getBodyAsString());
+
             if (uploadInfo.getUploadId().length() > CHAT.length()) {
                 String prefix = uploadInfo.getUploadId().substring(0, 4);
                 if (prefix.equals(CHAT)) {
@@ -1209,4 +1320,28 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         public void onCancelled(Context context, UploadInfo uploadInfo) {
         }
     };
+
+    private String copyFile(String inputPath, String inputFile, String outputPath) {
+        InputStream in;
+        OutputStream out;
+        try {
+            in = new FileInputStream(inputPath + inputFile);
+            out = new FileOutputStream(outputPath + inputFile);
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            in.close();
+
+            // write the output file (You have now copied the file)
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            Log.e("tag", e.getMessage());
+        }
+        return outputPath + inputFile;
+    }
 }

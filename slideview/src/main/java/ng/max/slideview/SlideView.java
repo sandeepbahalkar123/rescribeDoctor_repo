@@ -217,7 +217,6 @@ public class SlideView extends RelativeLayout implements SeekBar.OnSeekBarChange
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-//        onActionDownListener.OnActionDown(this);
     }
 
     @Override

@@ -74,7 +74,7 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
                     context.startService(intentService);
                 }
 
-                instance.deleteUploadedMessage(uploadInfo.getUploadId());
+                instance.updateMessageUpload(uploadInfo.getUploadId(), RescribeConstants.COMPLETED);
             }
         }
 
