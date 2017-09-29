@@ -308,10 +308,10 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return mqttMessage;
     }
 
-    public boolean deleteUploadedMessage(String id) {
+    /*public boolean deleteUploadedMessage(String id) {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(MESSAGE_UPLOAD_TABLE, MESSAGE_UPLOAD_ID + "='" + id + "'", null) > 0;
-    }
+    }*/
 
     // Chat Upload Data End
 

@@ -63,6 +63,7 @@ import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
+import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -698,10 +699,9 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 //                        chatHelper.sendMsgToPatient(messageL);
 
                     // send msg by mqtt
-                    mqttService.passMessage(messageL);
-
-                    if (mqttService.getNetworkStatus()) {
+                    if (NetworkUtil.getConnectivityStatusBoolean(ChatActivity.this)) {
                         if (chatAdapter != null) {
+                            mqttService.passMessage(messageL);
                             messageType.setText("");
                             mqttMessage.add(messageL);
                             chatAdapter.notifyItemInserted(mqttMessage.size() - 1);
@@ -895,12 +895,20 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         }
 
         if (mRecorder != null) {
-            mRecorder.release();
+            try {
+                mRecorder.release();
+            } catch (Exception e) {
+                // ignore
+            }
             mRecorder = null;
         }
 
         if (mPlayer != null) {
-            mPlayer.release();
+            try {
+                mPlayer.release();
+            } catch (Exception e) {
+                // ignore
+            }
             mPlayer = null;
         }
     }
@@ -941,7 +949,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
         broadcastReceiver.unregister(this);
         unregisterReceiver(receiver);
-        mqttService.setCurrentChatUser(0);
+        if (mqttService != null)
+            mqttService.setCurrentChatUser(0);
     }
 
     @Override
@@ -962,8 +971,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             ChatHistoryModel chatHistoryModel = (ChatHistoryModel) customResponse;
             if (chatHistoryModel.getCommon().getStatusCode().equals(RescribeConstants.SUCCESS)) {
                 final List<ChatHistory> chatHistory = chatHistoryModel.getHistoryData().getChatHistory();
-
-//                messageListTemp.clear();
 
                 DownloadManager.Query query = new DownloadManager.Query();
                 query.setFilterByStatus(DownloadManager.STATUS_SUCCESSFUL);
@@ -1050,7 +1057,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             ArrayList<MQTTMessage> mqttMessList = messageData.getMqttMessages();
 
             for (MQTTMessage mqttMess : mqttMessList) {
-                if (chatList.getId() == mqttMess.getDocId()) {
+                if (chatList.getId() == mqttMess.getDocId()) { // Change
                     mqttMessage.add(mqttMess);
                     addedCount += 1;
                 }
@@ -1065,8 +1072,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                     }
                 }, 200);
             }
-
-//            checkDownloaded();
         }
     }
 
