@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class AppDBHelper extends SQLiteOpenHelper {
 
-    private final String TAG = "Rescribe/AppDBHelper";
+    private final String TAG = "DrRescribe/AppDBHelper";
 
     private static final String MESSAGE_UPLOAD_ID = "message_upload_id";
     private static final String MESSAGE_UPLOAD_STATUS = "message_status";
@@ -38,7 +38,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public static final String MESSAGE_TABLE = "unread_messages";
 
     private static final String DATABASE_NAME = "MyRescribe.sqlite";
-    private static final String DB_PATH_SUFFIX = "/data/data/com.rescribe.doctor/databases/";
+    private static final String DB_PATH_SUFFIX = "/data/data/com.rescribe.doctor/databases/"; // Change
     private static final int DB_VERSION = 1;
     public static final String APP_DATA_TABLE = "PrescriptionData";
     public static final String COLUMN_ID = "dataId";

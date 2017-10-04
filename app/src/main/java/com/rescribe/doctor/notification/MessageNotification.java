@@ -60,7 +60,7 @@ public class MessageNotification {
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle()
                 .setBigContentTitle(title)
-                .setSummaryText("Patient Message");
+                .setSummaryText("New Message");
 
         for (MQTTMessage message : messageContent)
             inboxStyle.addLine(message.getMsg());

@@ -69,7 +69,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         mPatientConnectHelper = new PatientConnectHelper(getActivity(), this);
 
         mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
@@ -95,6 +95,10 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.GET_PATIENT_CHAT_LIST)) {
             ChatPatientConnectModel patientConnectBaseModel = (ChatPatientConnectModel) customResponse;
             ChatPatientConnectModel.PatientListData patientListData = patientConnectBaseModel.getPatientListData();
+            if (patientListData.getPatientDataList().isEmpty()) {
+                mEmptyListView.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            }
             mReceivedPatientDataList.addAll(patientListData.getPatientDataList());
             notifyDataChanged();
         }
@@ -102,17 +106,20 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
-
+        mEmptyListView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
-
+        mEmptyListView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-
+        mEmptyListView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     public void notifyDataChanged() {
@@ -164,6 +171,12 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                 mReceivedPatientDataList.add(0, patientData);
                 notifyDataChanged();
             }
+
+            if (!mReceivedPatientDataList.isEmpty()) {
+                mEmptyListView.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+            }
+
         }
     }
 

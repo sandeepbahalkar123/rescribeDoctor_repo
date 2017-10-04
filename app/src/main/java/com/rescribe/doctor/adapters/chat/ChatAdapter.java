@@ -46,10 +46,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
     private final Context context;
     private final ItemListener itemListener;
     private TextDrawable mReceiverTextDrawable;
+    private TextDrawable mSelfTextDrawable;
     private ArrayList<MQTTMessage> mqttMessages;
 
-    public ChatAdapter(ArrayList<MQTTMessage> mqttMessages, TextDrawable mReceiverTextDrawable, Context context) {
+    public ChatAdapter(ArrayList<MQTTMessage> mqttMessages, TextDrawable mSelfTextDrawable, TextDrawable mReceiverTextDrawable, Context context) {
         this.mqttMessages = mqttMessages;
+        this.mSelfTextDrawable = mSelfTextDrawable;
         this.mReceiverTextDrawable = mReceiverTextDrawable;
         this.context = context;
 
@@ -81,11 +83,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                 requestOptions.dontAnimate();
                 requestOptions.override(100, 100);
                 requestOptions.transform(new CircleCrop(holder.senderProfilePhoto.getContext()));
-                requestOptions.placeholder(R.drawable.exercise);
+                requestOptions.placeholder(mSelfTextDrawable);
                 Glide.with(holder.senderProfilePhoto.getContext())
                         .load(message.getImageUrl())
                         .apply(requestOptions).thumbnail(0.2f)
                         .into(holder.senderProfilePhoto);
+            } else {
+                holder.senderProfilePhoto.setImageDrawable(mSelfTextDrawable);
             }
 
             if (message.getFileUrl().isEmpty()) {
@@ -290,11 +294,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                 requestOptions.dontAnimate();
                 requestOptions.override(100, 100);
                 requestOptions.transform(new CircleCrop(holder.receiverProfilePhoto.getContext()));
-                requestOptions.placeholder(R.drawable.doctor_speciality);
+                requestOptions.placeholder(mReceiverTextDrawable);
                 Glide.with(holder.receiverProfilePhoto.getContext())
                         .load(message.getImageUrl())
                         .apply(requestOptions).thumbnail(0.2f)
                         .into(holder.receiverProfilePhoto);
+            } else {
+                holder.receiverProfilePhoto.setImageDrawable(mReceiverTextDrawable);
             }
 
             if (message.getFileUrl().isEmpty()) {
@@ -460,9 +466,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                 }
             }
         }
-
-        //TODO, sendProfiile Image will set, added it for now
-        holder.receiverProfilePhoto.setImageDrawable(mReceiverTextDrawable);
 
     }
 

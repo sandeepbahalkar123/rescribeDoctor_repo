@@ -100,17 +100,20 @@ public class PatientConnectFragment extends Fragment implements HelperResponse {
 
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
-
+        mEmptyListView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
-
+        mEmptyListView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-
+        mEmptyListView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     public void setAdapter() {

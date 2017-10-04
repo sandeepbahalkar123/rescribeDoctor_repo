@@ -45,6 +45,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.chat.ChatAdapter;
+import com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver;
 import com.rescribe.doctor.helpers.chat.ChatHelper;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -98,6 +99,7 @@ import permissions.dispatcher.RuntimePermissions;
 import static android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE;
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.NOTIFY;
+import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 import static com.rescribe.doctor.util.RescribeConstants.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
@@ -106,6 +108,7 @@ import static com.rescribe.doctor.util.RescribeConstants.FILE.DOC;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
 import static com.rescribe.doctor.util.RescribeConstants.SEND_MESSAGE;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.TYPING;
 
 @RuntimePermissions
@@ -280,7 +283,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private ArrayList<MQTTMessage> mqttMessage = new ArrayList<>();
 
     private String docId;
-    private TextDrawable doctorTextDrawable;
+    private TextDrawable mSelfDrawable;
+    private TextDrawable mReceiverDrawable;
 
     // load more
     int next = 1;
@@ -292,7 +296,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private String speciality = "";
 
     private PatientData chatList;
-    private int statusColor;
+    private static int statusColor;
 
     // Uploading
     private Device device;
@@ -322,20 +326,53 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         ButterKnife.bind(this);
 
         appDBHelper = new AppDBHelper(this);
+
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this);
+        docName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, this);
+        imageUrl = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, this);
+        speciality = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY, this);
+
         swipeLayout.setRefreshing(true);
 
         downloadInit();
 
-        chatList = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
-        statusColor = getIntent().getIntExtra(RescribeConstants.STATUS_COLOR, ContextCompat.getColor(ChatActivity.this, R.color.green_light));
+        if (getIntent().getAction() != null) {
+            if (getIntent().getAction().equals(REPLY_ACTION)) {
+                chatList = new PatientData();
+                MQTTMessage mqttMessage = getIntent().getParcelableExtra(ReplayBroadcastReceiver.MESSAGE_LIST);
+                chatList.setPatientName(mqttMessage.getName());
+                chatList.setId(mqttMessage.getPatId());
+                chatList.setOnlineStatus(ONLINE);
+                chatList.setUnreadMessages(0);
+                statusColor = ContextCompat.getColor(ChatActivity.this, R.color.green_light);
+            }else {
+                chatList = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
+                statusColor = getIntent().getIntExtra(RescribeConstants.STATUS_COLOR, ContextCompat.getColor(ChatActivity.this, R.color.green_light));
+            }
+        } else {
+            chatList = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
+            statusColor = getIntent().getIntExtra(RescribeConstants.STATUS_COLOR, ContextCompat.getColor(ChatActivity.this, R.color.green_light));
+        }
 
         receiverName.setText(chatList.getPatientName());
-        String doctorName = chatList.getPatientName();
+        String patientName = chatList.getPatientName();
 
+        if (patientName != null) {
+            int color2 = ColorGenerator.MATERIAL.getColor(patientName);
+            mReceiverDrawable = TextDrawable.builder()
+                    .beginConfig()
+                    .width(Math.round(getResources().getDimension(R.dimen.dp40)))  // width in px
+                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                    .endConfig()
+                    .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
+        }
+
+
+        String doctorName = docName;
         if (doctorName != null) {
-//            doctorName = doctorName.replace("Dr. ", "");
+            doctorName = doctorName.replace("Dr. ", "");
             int color2 = ColorGenerator.MATERIAL.getColor(doctorName);
-            doctorTextDrawable = TextDrawable.builder()
+            mSelfDrawable = TextDrawable.builder()
                     .beginConfig()
                     .width(Math.round(getResources().getDimension(R.dimen.dp40)))  // width in px
                     .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
@@ -345,36 +382,12 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
         // Remove
 
-        profilePhoto.setImageDrawable(doctorTextDrawable);
-
-        /*if (chatList.getImageUrl() != null) {
-            if (!chatList.getImageUrl().equals("")) {
-                RequestOptions requestOptions = new RequestOptions();
-                requestOptions.dontAnimate();
-                requestOptions.override(CommonMethods.convertDpToPixel(40), CommonMethods.convertDpToPixel(40));
-                requestOptions.placeholder(doctorTextDrawable);
-                requestOptions.error(doctorTextDrawable);
-
-                Glide.with(ChatActivity.this)
-                        .load(chatList.getImageUrl())
-                        .apply(requestOptions).thumbnail(0.5f)
-                        .into(profilePhoto);
-
-            } else {
-                profilePhoto.setImageDrawable(doctorTextDrawable);
-            }
-        } else {
-            profilePhoto.setImageDrawable(doctorTextDrawable);
-        }*/
+        profilePhoto.setImageDrawable(mReceiverDrawable);
 
         dateTime.setText(chatList.getOnlineStatus());
         dateTime.setTextColor(statusColor);
 
         chatHelper = new ChatHelper(this, this);
-        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this);
-        docName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, this);
-        imageUrl = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, this);
-        speciality = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY, this);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         chatRecyclerView.setLayoutManager(mLayoutManager);
@@ -384,7 +397,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         if (animator instanceof SimpleItemAnimator)
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
-        chatAdapter = new ChatAdapter(mqttMessage, doctorTextDrawable, ChatActivity.this);
+        chatAdapter = new ChatAdapter(mqttMessage, mSelfDrawable, mReceiverDrawable, ChatActivity.this);
         chatRecyclerView.setAdapter(chatAdapter);
 
         chatHelper.getChatHistory(next, Integer.parseInt(docId), chatList.getId());
@@ -472,7 +485,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             public void OnActionDown(SlideView slideView) {
                 Log.d("Start", "Track");
                 messageTypeSubLayout.setVisibility(View.INVISIBLE);
-
                 mFileName += "Aud_" + System.nanoTime() + ".mp3";
                 cntr_aCounter.start();
                 startRecording();
