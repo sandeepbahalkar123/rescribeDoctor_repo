@@ -161,6 +161,7 @@
                 android:layout_toStartOf="@+id/senderFileProgressLayout"
                 android:padding="@dimen/dp6"
                 android:ellipsize="end"
+                android:textSize="@dimen/sp17"
                 android:maxLines="1"
                 android:textColor="@color/white"
                 app:customFont="@string/roboto_medium"
