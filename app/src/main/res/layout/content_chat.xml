@@ -8,14 +8,21 @@
     tools:context="com.rescribe.doctor.ui.activities.ChatActivity"
     tools:showIn="@layout/activity_chat">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/chatList"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/messageTypeLayout"
-        android:paddingEnd="@dimen/dp6"
-        android:background="@drawable/layer_3"
-        android:paddingStart="@dimen/dp6" />
+        android:layout_above="@+id/messageTypeLayout">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/chatList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/layer_3"
+            android:paddingEnd="@dimen/dp6"
+            android:paddingStart="@dimen/dp6" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <RelativeLayout
         android:id="@+id/messageTypeLayout"
@@ -25,15 +32,28 @@
         android:background="@color/tagColor"
         android:padding="@dimen/dp8">
 
+        <ng.max.slideview.SlideView
+            android:id="@+id/audioSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            app:buttonBackgroundColor="@android:color/transparent"
+            app:buttonImage="@drawable/speak"
+            app:reverseSlide="true"
+            app:slideBackgroundColor="@color/tagColor"
+            app:slideText="@string/timing"
+            app:slideTextColor="@android:color/white"
+            app:strokeColor="@color/tagColor" />
+
         <RelativeLayout
             android:id="@+id/messageTypeSubLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp4"
             android:layout_marginStart="@dimen/dp4"
-            android:layout_toLeftOf="@+id/recorderOrSendButton"
-            android:layout_toStartOf="@+id/recorderOrSendButton"
-            android:background="@drawable/group_4_copy_2"
-            android:layout_marginLeft="@dimen/dp4">
+            android:layout_toLeftOf="@+id/sendButton"
+            android:layout_toStartOf="@+id/sendButton"
+            android:background="@drawable/group_4_copy_2">
 
             <EditText
                 android:id="@+id/messageType"
@@ -79,14 +99,17 @@
         </RelativeLayout>
 
         <ImageView
-            android:id="@+id/recorderOrSendButton"
+            android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp2"
+            android:layout_marginRight="@dimen/dp2"
             android:padding="@dimen/dp6"
-            android:src="@drawable/speak" />
+            android:visibility="invisible"
+            android:src="@drawable/send" />
 
     </RelativeLayout>
 

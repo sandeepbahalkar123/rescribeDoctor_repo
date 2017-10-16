@@ -10,13 +10,12 @@ import android.content.pm.Signature;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -51,7 +50,6 @@ public class CommonMethods {
     public static void showToast(Context context, String error) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
     }
-
 
 
     public static void showSnack(View mViewById, String msg) {
@@ -264,20 +262,24 @@ public class CommonMethods {
     }
 
 
-    public static String getFormatedDate(String strDate, String sourceFormate,
-                                         String destinyFormate) {
-        SimpleDateFormat df;
-        df = new SimpleDateFormat(sourceFormate, Locale.US);
-        Date date = null;
-        try {
-            date = df.parse(strDate);
+    public static String getFormattedDate(String strDate, String sourceFormat,
+                                          String destinyFormat) {
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        if (!strDate.equals("")) {
 
-        df = new SimpleDateFormat(destinyFormate, Locale.US);
-        return df.format(date);
+            SimpleDateFormat df;
+            df = new SimpleDateFormat(sourceFormat, Locale.US);
+            Date date = null;
+            try {
+                date = df.parse(strDate);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            df = new SimpleDateFormat(destinyFormat, Locale.US);
+            return df.format(date);
+        } else return "";
     }
 
     /**
@@ -382,7 +384,7 @@ public class CommonMethods {
     }
 
 
-    public static int getDoctorSpecialistIcons(String caseStudyName,Context mContext) {
+    public static int getDoctorSpecialistIcons(String caseStudyName, Context mContext) {
 
         // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
         int abbreviation = R.drawable.gynecologist;
@@ -425,7 +427,6 @@ public class CommonMethods {
 
         return abbreviation;
     }
-
 
 
     public static Date convertStringToDate(String dateString, String dateFormat) {
@@ -528,6 +529,23 @@ public class CommonMethods {
                 datePickerDialog.show();
             }
         }
+    }
+
+    public static String getExtension(String filePath) {
+        return filePath.substring(filePath.lastIndexOf(".") + 1);
+    }
+
+    public static String getFileNameFromPath(String filePath) {
+        return filePath.substring(filePath.lastIndexOf("/") + 1);
+    }
+
+    public static String getFilePath(String filePath) {
+        return filePath.substring(0, filePath.lastIndexOf("/") + 1);
+    }
+
+    public static float spToPx(int sp, Context context) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+                context.getResources().getDisplayMetrics());
     }
 }
 

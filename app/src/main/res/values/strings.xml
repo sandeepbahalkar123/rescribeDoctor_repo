@@ -1,108 +1,39 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Rescribe</string>
-    <string name="breakfast_after">breakfastAfter</string>
-    <string name="breakfast_before">breakfastBefore</string>
-    <string name="lunch_before">lunchBefore</string>
-    <string name="lunch_after">lunchAfter</string>
-    <string name="dinner_after">dinnerAfter</string>
-    <string name="dinner_before">dinnerBefore</string>
-    <string name="snacks_after">snacksAfter</string>
-    <string name="after">After</string>
-    <string name="normal">Normal Level :</string>
-    <string name="moderate">Moderate Level :</string>
-    <string name="severe">Severe Level :</string>
-    <string name="location">Location</string>
-    <string name="snacks_before">snacksBefore</string>
-    <string name="investigations">Investigations</string>
-    <string name="going_medication">On Going Medication</string>
-    <string name="visit_details">Single Visit Details</string>
-    <string name="doctor_details">Doctor Visits</string>
-    <string name="before">Before</string>
+    <string name="app_name">Dr Rescribe</string>
     <string name="enter_mobile_no">Mobile No.</string>
     <string name="log_in">Login</string>
     <string name="enter_full_name">Name</string>
     <string name="enter_email_id">Email ID</string>
-    <string name="cancel">Cancel</string>
     <string name="action_settings">Settings</string>
     <string name="internet">Please check your Internet Connection</string>
     <string name="timeout">Timeout error</string>
-    <string name="breakfast">Breakfast</string>
     <string name="break_fast">BREAKFAST</string>
-    <string name="lunch">Lunch</string>
-    <string name="snacks">Snacks</string>
     <string name="mlunch">LUNCH</string>
     <string name="msnacks">SNACKS</string>
-    <string name="dinner">Dinner</string>
-    <string name="smallcasedinner">dinner</string>
-    <string name="smallcaselunch">lunch</string>
-    <string name="smallcasesnacks">snacks</string>
-    <string name="smallcasebreakfast">breakfast</string>
     <string name="mdinner">DINNER</string>
-    <string name="instructions">Instruction:</string>
     <string name="resend_in_text">Resend in</string>
     <string name="resend"><u>Resend OTP</u></string>
     <string name="ok">OK</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_up_confirmation">Sign Up Confirmation</string>
     <string name="logout">Logout</string>
-    <string name="customnotificationticker">Medicine Dose Notification</string>
     <string name="notification">Notification</string>
     <string name="roboto_bold">roboto_bold.ttf</string>
     <string name="roboto_medium">roboto_medium.ttf</string>
     <string name="roboto_regular">roboto_regular.ttf</string>
-    <string name="title_activity_preferences">Preferences</string>
-    <string name="save">Save</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="enter_otp">Enter OTP</string>
     <string name="enter">Enter&#160;</string>
-    <string name="dinner_medication">Dinner Medication</string>
-    <string name="snacks_medication">Evening Medication</string>
-    <string name="lunch_medication">Lunch Medication</string>
-    <string name="breakfast_medication">Breakfast Medication</string>
-    <string name="taken_medicine">Have you taken your medicine?</string>
-    <string name="dosage_completed">Dosage completed?</string>
     <string name="read_more"><u>more</u></string>
     <string name="read_less">&#160;<u>
         less</u></string>
-    <string name="title_activity_investigation">Investigation</string>
-    <string name="title_activity_selected_docs">Selected Documents</string>
-    <string name="upload">Upload</string>
-    <string name="adddocs">Add Documents</string>
     <string name="done">Done</string>
 
     <string name="title_activity_zoomview">Zoom View</string>
-    <string name="investigation_msg">Have you done the investigations advised by Dr. Shah?</string>
-    <string name="appointment_msg">You have an appointment with Dr. ---- on --th June at --:-- am.</string>
-    <string name="appointment">Appointment</string>
-    <string name="investigation">Investigation</string>
-    <string name="appointments">Appointments</string>
-    <string name="addrecords">Add Records</string>
-    <string name="my_appointments">My Appointments</string>
-    <string name="one_day_visit_date">VISIT_DATE</string>
-    <string name="just_now">Just\nNow</string>
-    <string name="investigation_title">We request you to upload &amp; share the results of the following investigation with Dr. Shah:</string>
-    <string name="gmail">Share With Gmail</string>
     <string name="type">type</string>
-    <string name="already_upload">Already Uploaded</string>
-    <string name="new_document">New Document</string>
-    <string name="title_activity_uploaded_docs">Uploaded Documents</string>
 
     <string name="name">Name</string>
-    <string name="specialization">SPECIALIZATION</string>
-    <string name="address">ADDRESS</string>
-    <string name="upcoming">upcoming</string>
-    <string name="cancelled">cancelled</string>
-    <string name="completed">completed</string>
-    <string name="reset">Reset</string>
-    <string name="filter">Filter</string>
-    <string name="select_doctors">Select Doctor\'s</string>
-    <string name="select_doctors_speciality">Select Speciality</string>
-    <string name="select_month_year"><![CDATA[Select Month & Year]]></string>
-    <string name="case_details">Case Details</string>
-    <string name="back">Back</string>
-    <string name="latitude">latitude</string>
-    <string name="longitude">longitude</string>
     <string name="details">&#160;Details</string>
     <string name="forgot_password">Forgot  password?</string>
     <string name="forgot_password_header">Forgot Password</string>
@@ -113,75 +44,28 @@
     <string name="err_email_invalid">Enter valid email.</string>
     <string name="err_otp_invalid">Enter valid OTP</string>
     <string name="err_maximum_otp_retries">You have exceeded maximum retry of OTP generation, please try after sometime.</string>
-    <string name="doctors">Doctor\'s</string>
-    <string name="doctors_speciality">Doctor\'s Speciality</string>
-    <string name="apply">Apply</string>
     <string name="err_invalid_mobile_no">Enter valid mobile no.</string>
     <string name="enter_password">Password</string>
     <string name="error_too_small_password">Password should be 8 characters long. </string>
     <string name="title">Title</string>
-    <string name="add_record">Add Records</string>
-    <string name="select_doctor_name">Doctor Name</string>
-    <string name="my_records">My Records</string>
-    <string name="select_date_text">Select Date</string>
-    <string name="enter_date">Enter Date</string>
-    <string name="enter_address">Enter Address</string>
-    <string name="add_caption">Add Caption</string>
-    <string name="opd_id">OPDID</string>
-    <string name="normalRange">normal</string>
-    <string name="moderateRange">Moderate</string>
-    <string name="severeRange">Severe</string>
-    <string name="less">less</string>
-    <string name="equal">equal</string>
-    <string name="greater">greater</string>
-    <string name="less_than_sign"><![CDATA[<]]></string>
-    <string name="greater_than_sign"><![CDATA[>]]></string>
     <string name="server_error">Server Error</string>
-    <string name="bp_max">BpMax</string>
-    <string name="bp">BP</string>
-    <string name="colon_sign">:</string>
-    <string name="bp_min">BpMin</string>
-    <string name="dash">-</string>
-    <string name="and_sign"><![CDATA[&]]></string>
-    <string name="systolic_pressure">Systolic BP</string>
-    <string name="diastolic_pressure">Diastolic BP</string>
 
 
     <!--//*** Google Map key-->
 
-    <string name="times">times</string>
-    <string name="days">days</string>
-    <string name="space">\u0020</string>
     <string name="enter_otp_for_login">Otp For Login</string>
     <string name="your_health">Your Own Healthcare Repository</string>
     <string name="using_otp">Using OTP</string>
     <!-- <string name="google_maps_key">AIzaSyDxO-cLqGemArsUCSrn_uIUn5FzTkds4u0</string>-->
 
-    <string name="no_investigation">Investigation not available</string>
-    <string name="bill_invoices">Bill Invoices</string>
-    <string name="case_encounter">Case Encounter</string>
-    <string name="others">Others</string>
-    <string name="title_activity_report_selection">Report Selection</string>
-    <string name="prescriptions">Prescriptions</string>
-    <string name="select_report">Please select Reports</string>
-    <string name="title_activity_reports">Reports</string>
-
-    <string name="retry">Retry</string>
-    <string name="please_select_doctor_name">Please enter Doctor Name</string>
-    <string name="please_enter_date">Please enter Date</string>
-    <string name="please_enter_doctor_address">Please enter Doctor Address</string>
-    <string name="please_select_at_least_one_document">Please select at least one Document.</string>
-    <string name="gmail_application_not_found">Gmail application not found</string>
     <!-- <string name="google_maps_key">AIzaSyDxO-cLqGemArsUCSrn_uIUn5FzTkds4u0</string>-->
     <!--Key for Release-->
-    <string name="google_maps_key">AIzaSyCO8J2ASZDrJ4ARM1VVnZV7e5EQGryfeEE</string>
 
     <!--Key for Debug-->
 
     <!-- <string name="google_maps_key">AIzaSyBtI5h1jCRJZFXQowkuglxMtNYPURtHX5M</string>-->
     <string name="profile_exists">User\'s profile is already exist!!</string>
     <string name="enter_otp_no">Enter otp received on your mobile no.</string>
-    <string name="address_not_found">Address not Found</string>
     <string name="login_with_gmail">Login with gmail</string>
     <string name="login_with_facebook">Login with facebook</string>
 
@@ -191,16 +75,11 @@
     <string name="login_confirmation">Login Confirmation</string>
     <string name="dummy_full">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
     <string name="dummy_normal">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
-    <string name="gallery">Gallery</string>
-    <string name="files">Files</string>
-    <string name="doctor_image">Doctor Image</string>
-    <string name="documents_uploaded_successfully">Documents Uploaded Successfully</string>
     <string name="doctor_connect">Doctor Connect</string>
     <string name="patient_connect">Patient Connect</string>
     <string name="chats">Chats</string>
     <string name="connect">Connect</string>
     <string name="search">Search</string>
-    <string name="doctor_activity">Doctor Activity</string>
     <string name="clicked_item_data">clicked_item_data</string>
     <string name="pick_speciality">Pick Speciality</string>
     <string name="details_note"><![CDATA[Your details will remain 100% private & secure. If you think you have medical emergency, contact your doctor immediately.]]></string>
@@ -222,16 +101,13 @@
     <string name="nephrologist">nephrologist</string>
     <string name="surgeon">surgeon</string>
     <string name="endocrinologist">endocrinologist</string>
-    <string name="action_reply">Reply</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="type_a_message">Type a message</string>
-    <string name="chat">Chat</string>
     <string name="dr">Dr.</string>
     <string name="online">Online</string>
     <string name="offline">Offline</string>
     <string name="idle">Idle</string>
-
-    <string name="not_connected">Not Connected</string>
-    <string name="send">Send</string>
+    <string name="doc_viewer_not_found">Document viewer not found.</string>
+    <string name="timing"><![CDATA[< slide to cancel]]></string>
 
 </resources>

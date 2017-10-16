@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
 
-public class MessageRequestModel implements CustomResponse{
+public class MessageRequestModel implements CustomResponse {
 
     @SerializedName("msg")
     @Expose

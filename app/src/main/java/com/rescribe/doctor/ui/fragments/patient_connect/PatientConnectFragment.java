@@ -2,7 +2,6 @@ package com.rescribe.doctor.ui.fragments.patient_connect;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,10 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
 import com.rescribe.doctor.adapters.patient_connect.PatientConnectChatAdapter;
 import com.rescribe.doctor.helpers.patient_connect.PatientConnectHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -83,7 +80,7 @@ public class PatientConnectFragment extends Fragment implements HelperResponse {
         super.onResume();
         //Api call to get doctorChatList
         if (mReceivedPatientDataList == null) {
-            mPatientConnectHelper.doGetChatPatientList();
+            mPatientConnectHelper.doGetPatientList();
         } else {
             setAdapter();
         }
@@ -103,17 +100,20 @@ public class PatientConnectFragment extends Fragment implements HelperResponse {
 
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
-
+        mEmptyListView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
-
+        mEmptyListView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-
+        mEmptyListView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     public void setAdapter() {

@@ -1,10 +1,11 @@
 package com.rescribe.doctor.ui.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,27 +17,34 @@ import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 import com.heinrichreimersoftware.materialdrawer.theme.DrawerTheme;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.helpers.login.LoginHelper;
+import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.service.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
+import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
 
 /**
  * Created by jeetal on 28/6/17.
  */
 
-public class HomePageActivity extends DrawerActivity {
+@RuntimePermissions
+public class HomePageActivity extends DrawerActivity implements HelperResponse {
 
     private static final long MANAGE_ACCOUNT = 121;
     private static final long ADD_ACCOUNT = 122;
+    private static final String TAG = "Home";
     private Context mContext;
-    private String mGetMealTime;
-    String breakFastTime = "";
-    String lunchTime = "";
-    String dinnerTime = "";
-    String snacksTime = "";
     private Toolbar toolbar;
     private AppDBHelper appDBHelper;
+    private String docId;
+    private LoginHelper loginHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,48 +53,27 @@ public class HomePageActivity extends DrawerActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mContext = HomePageActivity.this;
+        HomePageActivityPermissionsDispatcher.getPermissionWithCheck(HomePageActivity.this);
         appDBHelper = new AppDBHelper(mContext);
 
-        String currentDate = CommonMethods.getCurrentDate();
-        String pastDate = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.NOTIFY_DATE, mContext);
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+        loginHelper = new LoginHelper(mContext, HomePageActivity.this);
+        ActiveRequest activeRequest = new ActiveRequest();
+        activeRequest.setId(Integer.parseInt(docId));
+        loginHelper.doActiveStatus(activeRequest);
 
-        if (!currentDate.equals(pastDate)) {
-            if (getIntent().getBooleanExtra(RescribeConstants.ALERT, true))
-                notificationForMedicine();
-        }
         drawerConfiguration();
-
-        // start mqtt Service
-        // use this to start and trigger a service
-        Intent serviceIntent = new Intent(this, MQTTService.class);
-        // potentially add data to the serviceIntent
-        serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
-        startService(serviceIntent);
     }
 
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void getPermission() {
+        CommonMethods.Log(TAG, "asked permission");
+    }
 
-    private void notificationForMedicine() {
-
-        String currentDate = CommonMethods.getCurrentDate();
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.NOTIFY_DATE, currentDate, mContext);
-
-        AppDBHelper appDBHelper = new AppDBHelper(mContext);
-        Cursor cursor = appDBHelper.getPreferences("1");
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                breakFastTime = cursor.getString(cursor.getColumnIndex(AppDBHelper.BREAKFAST_TIME));
-                lunchTime = cursor.getString(cursor.getColumnIndex(AppDBHelper.LUNCH_TIME));
-                dinnerTime = cursor.getString(cursor.getColumnIndex(AppDBHelper.DINNER_TIME));
-                snacksTime = cursor.getString(cursor.getColumnIndex(AppDBHelper.SNACKS_TIME));
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
-
-        String times[] = {breakFastTime, lunchTime, dinnerTime, snacksTime};
-        String date = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
-        // notification for prescription , investigation and appointment initiated here
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        HomePageActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
@@ -188,10 +175,9 @@ public class HomePageActivity extends DrawerActivity {
                     startActivity(intent);
                 } else */
                 if (id.equalsIgnoreCase(getString(R.string.logout))) {
-                    logout();
-                } else if (id.equalsIgnoreCase(getString(R.string.doctor_connect))) {
-                    Intent intent = new Intent(mContext, DoctorConnectActivity.class);
-                    startActivity(intent);
+                    ActiveRequest activeRequest = new ActiveRequest();
+                    activeRequest.setId(Integer.parseInt(docId));
+                    loginHelper.doLogout(activeRequest);
                 } else if (id.equalsIgnoreCase(getString(R.string.patient_connect))) {
                     Intent intent = new Intent(mContext, PatientConnectActivity.class);
                     startActivity(intent);
@@ -261,5 +247,29 @@ public class HomePageActivity extends DrawerActivity {
 //                CommonMethods.showToast(mContext, "Welcome " + newProfile.getName());
             }
         });
+    }
+
+    @Override
+    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        if (mOldDataTag.equals(RescribeConstants.LOGOUT))
+            logout();
+        else if (mOldDataTag.equals(ACTIVE_STATUS))
+            CommonMethods.Log(ACTIVE_STATUS, "active");
+
+    }
+
+    @Override
+    public void onParseError(String mOldDataTag, String errorMessage) {
+
+    }
+
+    @Override
+    public void onServerError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @Override
+    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
+
     }
 }

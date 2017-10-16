@@ -1,24 +1,17 @@
 package com.rescribe.doctor.helpers.patient_connect;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request;
-import com.google.gson.Gson;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.network.ConnectionFactory;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
-
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by jeetal on 6/9/17.
@@ -41,7 +34,9 @@ public class PatientConnectHelper implements ConnectionListener {
         //CommonMethods.Log(TAG, customResponse.toString());
         switch (responseResult) {
             case ConnectionListener.RESPONSE_OK:
-                if (mOldDataTag == RescribeConstants.TASK_GET_PATIENT_LIST) {
+                if (mOldDataTag.equals(RescribeConstants.TASK_GET_PATIENT_LIST)) {
+                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
+                } else if (mOldDataTag.equals(RescribeConstants.GET_PATIENT_CHAT_LIST)) {
                     mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 }
                 break;
@@ -75,27 +70,19 @@ public class PatientConnectHelper implements ConnectionListener {
 
     }
 
-    public void doGetChatPatientList() {
+    public void doGetPatientList() {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_PATIENT_LIST, Request.Method.GET, true);
         mConnectionFactory.setHeaderParams();
         String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
-        mConnectionFactory.setUrl(Config.GET_PATIENT_CHAT_LIST + id);
+        mConnectionFactory.setUrl(Config.GET_PATIENT_LIST + id);
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_PATIENT_LIST);
+    }
 
-       /* try {
-            InputStream is = mContext.getAssets().open("patient_connect.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
-            Log.e(TAG, "doGetChatPatientList" + json);
-
-            PatientConnectBaseModel doctorConnectBaseModel = new Gson().fromJson(json, PatientConnectBaseModel.class);
-            onResponse(ConnectionListener.RESPONSE_OK, doctorConnectBaseModel, RescribeConstants.TASK_GET_PATIENT_LIST);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
+    public void doGetChatPatientList() {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.GET_PATIENT_CHAT_LIST, Request.Method.GET, true);
+        mConnectionFactory.setHeaderParams();
+        String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+        mConnectionFactory.setUrl(Config.GET_PATIENT_CHAT_LIST + id);
+        mConnectionFactory.createConnection(RescribeConstants.GET_PATIENT_CHAT_LIST);
     }
 }

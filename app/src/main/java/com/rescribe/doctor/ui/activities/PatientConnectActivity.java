@@ -1,23 +1,27 @@
 package com.rescribe.doctor.ui.activities;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.patient_connect.PatientData;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientConnectChatFragment;
@@ -38,6 +42,27 @@ import butterknife.OnClick;
  */
 
 public class PatientConnectActivity extends AppCompatActivity {
+
+    private final static String TAG = "DoctorConnect";
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            boolean delivered = intent.getBooleanExtra(MQTTService.DELIVERED, false);
+            boolean isReceived = intent.getBooleanExtra(MQTTService.IS_MESSAGE, false);
+
+            if (delivered) {
+
+                Log.d(TAG, "Delivery Complete");
+                Log.d(TAG, "MESSAGE_ID" + intent.getStringExtra(MQTTService.MESSAGE_ID));
+
+            } else if (isReceived) {
+                MQTTMessage message = intent.getParcelableExtra(MQTTService.MESSAGE);
+                mPatientConnectChatFragment.notifyCount(message);
+            }
+        }
+    };
+
     @BindView(R.id.backButton)
     ImageView mBackButton;
     @BindView(R.id.tabsDoctorConnect)
@@ -51,6 +76,9 @@ public class PatientConnectActivity extends AppCompatActivity {
     EditTextWithDeleteButton mSearchView;
     @BindView(R.id.whiteUnderLine)
     TextView whiteUnderLine;
+
+    public static final int PAID = 1;
+    public static final int FREE = 0;
 
     private ViewPagerAdapter mAdapter;
     //-----
@@ -208,5 +236,29 @@ public class PatientConnectActivity extends AppCompatActivity {
 
     public void setReceivedConnectedPatientDataList(ArrayList<PatientData> mReceivedConnectedPatientDataList) {
         this.mReceivedConnectedPatientDataList = mReceivedConnectedPatientDataList;
+    }
+
+    // Recent
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiver, new IntentFilter(
+                MQTTService.NOTIFY));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (Activity.RESULT_OK == resultCode) {
+            PatientData patientData = data.getParcelableExtra(RescribeConstants.CHAT_USERS);
+            mPatientConnectChatFragment.addItem(patientData);
+        }
     }
 }

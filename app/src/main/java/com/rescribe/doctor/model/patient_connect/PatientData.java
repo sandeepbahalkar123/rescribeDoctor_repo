@@ -20,11 +20,15 @@ public class PatientData implements Parcelable, CustomResponse {
     @Expose
     private String onlineStatus;
 
-    public Integer getPatientId() {
+    @SerializedName("unreadMessages")
+    @Expose
+    private int unreadMessages;
+
+    public Integer getId() {
         return patientId;
     }
 
-    public void setPatientId(Integer patientId) {
+    public void setId(Integer patientId) {
         this.patientId = patientId;
     }
 
@@ -44,6 +48,14 @@ public class PatientData implements Parcelable, CustomResponse {
         this.onlineStatus = onlineStatus;
     }
 
+    public int getUnreadMessages() {
+        return unreadMessages;
+    }
+
+    public void setUnreadMessages(int unreadMessages) {
+        this.unreadMessages = unreadMessages;
+    }
+
     public final static Creator<PatientData> CREATOR = new Creator<PatientData>() {
         @SuppressWarnings({
                 "unchecked"
@@ -53,6 +65,7 @@ public class PatientData implements Parcelable, CustomResponse {
             instance.patientId = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.patientName = ((String) in.readValue((String.class.getClassLoader())));
             instance.onlineStatus = ((String) in.readValue((String.class.getClassLoader())));
+            instance.unreadMessages = ((int) in.readValue((Integer.class.getClassLoader())));
             return instance;
         }
 
@@ -67,10 +80,11 @@ public class PatientData implements Parcelable, CustomResponse {
         dest.writeValue(patientId);
         dest.writeValue(patientName);
         dest.writeValue(onlineStatus);
+
+        dest.writeValue(unreadMessages);
     }
 
     public int describeContents() {
         return 0;
     }
-
 }

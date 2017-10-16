@@ -13,17 +13,10 @@ import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
 
-import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
 import com.rescribe.doctor.adapters.patient_connect.PatientConnectChatAdapter;
-import com.rescribe.doctor.helpers.patient_connect.PatientConnectHelper;
-import com.rescribe.doctor.interfaces.CustomResponse;
-import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 
-import com.rescribe.doctor.ui.activities.DoctorConnectActivity;
 import com.rescribe.doctor.ui.activities.PatientConnectActivity;
-import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 

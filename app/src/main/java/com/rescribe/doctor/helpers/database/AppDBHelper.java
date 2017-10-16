@@ -7,6 +7,9 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.google.gson.Gson;
+import com.rescribe.doctor.model.chat.MQTTData;
+import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.util.CommonMethods;
 
 import java.io.File;
@@ -14,41 +17,32 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class AppDBHelper extends SQLiteOpenHelper {
 
-    private final String TAG = "Rescribe/AppDBHelper";
+    private final String TAG = "DrRescribe/AppDBHelper";
 
-    public static final String INV_ID = "inv_id";
-    public static final String INV_NAME = "inv_name";
-    public static final String INV_NAME_KEY = "inv_key";
-    public static final String INV_OPD_ID = "inv_opd_id";
-    public static final String INV_DR_NAME = "inv_dr_name";
-    public static final String INV_UPLOAD_STATUS = "upload_status";
-    public static final String INV_UPLOADED_IMAGES = "uploaded_images";
-    public static final String INVESTIGATION_TABLE = "investigation_table";
+    private static final String MESSAGE_UPLOAD_ID = "message_upload_id";
+    private static final String MESSAGE_UPLOAD_STATUS = "message_status";
+    private static final String MESSAGE_FILE_UPLOAD = "message_file_data";
+    private static final String MESSAGE_UPLOAD_TABLE = "my_message_table";
 
-    public static final String RECORDS_DOC_ID = "records_doc_id";
-    public static final String RECORDS_VISIT_DATE = "records_visit_date";
-    public static final String RECORDS_OPDID = "records_opdid";
-    public static final String RECORDS_UPLOAD_ID = "records_upload_id";
-    public static final String RECORDS_STATUS = "records_upload_status";
-    public static final String RECORDS_IMAGE_DATA = "records_image_data";
-    public static final String MY_RECORDS_TABLE = "MyRecords";
+    private static final String MESSAGE_DOWNLOAD_ID = "message_download_id";
+    private static final String MESSAGE_DOWNLOAD_STATUS = "message_download_status";
+    private static final String MESSAGE_FILE_DOWNLOAD = "message_file_download";
+    private static final String MESSAGE_DOWNLOAD_TABLE = "message_download_table";
 
-    private static final String PREFERENCES_TABLE = "preferences_table";
+    public static final String CHAT_USER_ID = "user_id";
+    public static final String MESSAGE = "message";
+    public static final String MESSAGE_TABLE = "unread_messages";
+
     private static final String DATABASE_NAME = "MyRescribe.sqlite";
-    private static final String DB_PATH_SUFFIX = "/data/data/com.rescribe.doctor/databases/";
+    private static final String DB_PATH_SUFFIX = "/data/data/com.rescribe.doctor/databases/"; // Change
     private static final int DB_VERSION = 1;
     public static final String APP_DATA_TABLE = "PrescriptionData";
     public static final String COLUMN_ID = "dataId";
     public static final String COLUMN_DATA = "data";
-
-    public static final String USER_ID = "userId";
-    public static final String BREAKFAST_TIME = "breakfastTime";
-    public static final String LUNCH_TIME = "lunchTime";
-    public static final String DINNER_TIME = "dinnerTime";
-    public static final String SNACKS_TIME = "snacksTime";
 
     static AppDBHelper instance = null;
     private Context mContext;
@@ -177,143 +171,224 @@ public class AppDBHelper extends SQLiteOpenHelper {
         CommonMethods.Log("DeletedOfflineDatabase", "APP_DATA , PREFERENCES TABLE, INVESTIGATION");
     }
 
-    public boolean insertPreferences(String userId, String breakfastTime, String lunchTime, String snacksTime, String dinnerTime) {
-        if (preferencesTableNumberOfRows(userId) == 0) {
+    // All About Chat
+
+    public boolean deleteUnreadMessage(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete(MESSAGE_TABLE, CHAT_USER_ID + "=" + id, null) > 0;
+    }
+
+    public ArrayList<MQTTMessage> insertUnreadMessage(int id, String message) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(CHAT_USER_ID, id);
+        contentValues.put(MESSAGE, message);
+
+        db.insert(MESSAGE_TABLE, null, contentValues);
+
+        return getUnreadMessagesById(id);
+    }
+
+    public int unreadMessageCountById(int id) {
+        // Return Total Count
+        SQLiteDatabase db = getReadableDatabase();
+        String countQuery = "select * from " + MESSAGE_TABLE + " where " + CHAT_USER_ID + " = " + id;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int cnt = cursor.getCount();
+        cursor.close();
+        return cnt;
+    }
+
+    /*public int unreadMessageCount() {
+        // Return Total Count
+        SQLiteDatabase db = getReadableDatabase();
+        String countQuery = "select * from " + MESSAGE_TABLE;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int cnt = cursor.getCount();
+        cursor.close();
+        return cnt;
+    }*/
+
+    public ArrayList<MQTTMessage> getUnreadMessagesById(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        String countQuery = "select * from " + MESSAGE_TABLE + " where " + CHAT_USER_ID + " = " + id;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        ArrayList<MQTTMessage> chatDoctors = new ArrayList<>();
+        Gson gson = new Gson();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String messageJson = cursor.getString(cursor.getColumnIndex(MESSAGE));
+                MQTTMessage MQTTMessage = gson.fromJson(messageJson, MQTTMessage.class);
+                chatDoctors.add(MQTTMessage);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+
+        return chatDoctors;
+    }
+
+    /*public int unreadMessageUsersCount() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + MESSAGE_TABLE + " group by " + CHAT_USER_ID, null);
+        int cnt = cursor.getCount();
+        cursor.close();
+        return cnt;
+    }*/
+
+    // Chat Upload Data
+
+    public boolean insertMessageUpload(String id, int status, String data) {
+        if (messageUploadTableNumberOfRows(id) == 0) {
             SQLiteDatabase db = getWritableDatabase();
             ContentValues contentValues = new ContentValues();
 
-            contentValues.put(USER_ID, userId);
-            contentValues.put(BREAKFAST_TIME, breakfastTime);
-            contentValues.put(LUNCH_TIME, lunchTime);
-            contentValues.put(DINNER_TIME, dinnerTime);
-            contentValues.put(SNACKS_TIME, snacksTime);
+            contentValues.put(MESSAGE_UPLOAD_ID, id);
+            contentValues.put(MESSAGE_UPLOAD_STATUS, status);
+            contentValues.put(MESSAGE_FILE_UPLOAD, data);
 
-            db.insert(PREFERENCES_TABLE, null, contentValues);
-        } else {
-            updatePreferences(userId, breakfastTime, lunchTime, snacksTime, dinnerTime);
+            db.insert(MESSAGE_UPLOAD_TABLE, null, contentValues);
         }
         return true;
     }
 
-    private int preferencesTableNumberOfRows(String userId) {
+    private int messageUploadTableNumberOfRows(String id) {
         SQLiteDatabase db = getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(db, PREFERENCES_TABLE, USER_ID + " = ? ", new String[]{userId});
+        return (int) DatabaseUtils.queryNumEntries(db, MESSAGE_UPLOAD_TABLE, MESSAGE_UPLOAD_ID + " = ? ", new String[]{id});
     }
 
-    public Cursor getPreferences(String userId) {
-        SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("select * from " + PREFERENCES_TABLE + " where " + USER_ID + "=" + userId + "", null);
-    }
-
-    private boolean updatePreferences(String userId, String breakfastTime, String lunchTime, String snacksTime, String dinnerTime) {
+    public int updateMessageUpload(String id, int isUploaded) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(BREAKFAST_TIME, breakfastTime);
-        contentValues.put(LUNCH_TIME, lunchTime);
-        contentValues.put(DINNER_TIME, dinnerTime);
-        contentValues.put(SNACKS_TIME, snacksTime);
+        contentValues.put(MESSAGE_UPLOAD_STATUS, isUploaded);
 
-        db.update(PREFERENCES_TABLE, contentValues, USER_ID + " = ? ", new String[]{userId});
-        return true;
+        return db.update(MESSAGE_UPLOAD_TABLE, contentValues, MESSAGE_UPLOAD_ID + " = ? ", new String[]{id});
     }
 
-    private int deletePreferences(String userId) {
+    public MQTTData getMessageUpload() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + MESSAGE_UPLOAD_TABLE, null);
+
+        MQTTData myMessageData = new MQTTData();
+        ArrayList<MQTTMessage> mqttMessages = new ArrayList<>();
+
+        Gson gson = new Gson();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String imageJson = cursor.getString(cursor.getColumnIndex(MESSAGE_FILE_UPLOAD));
+                MQTTMessage mqttMessage = gson.fromJson(imageJson, MQTTMessage.class);
+                mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(MESSAGE_UPLOAD_STATUS)));
+                mqttMessages.add(mqttMessage);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+
+        myMessageData.setMqttMessages(mqttMessages);
+
+        return myMessageData;
+    }
+
+    public MQTTMessage getMessageUploadById(String id) {
+        SQLiteDatabase db = getReadableDatabase();
+        String countQuery = "select * from " + MESSAGE_UPLOAD_TABLE + " where " + MESSAGE_UPLOAD_ID + " = '" + id + "'";
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        Gson gson = new Gson();
+        MQTTMessage mqttMessage = null;
+        if (cursor.moveToFirst()) {
+            String imageJson = cursor.getString(cursor.getColumnIndex(MESSAGE_FILE_UPLOAD));
+            mqttMessage = gson.fromJson(imageJson, MQTTMessage.class);
+            mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(MESSAGE_UPLOAD_STATUS)));
+        }
+        cursor.close();
+
+        return mqttMessage;
+    }
+
+    /*public boolean deleteUploadedMessage(String id) {
         SQLiteDatabase db = getWritableDatabase();
-        return db.delete(PREFERENCES_TABLE,
-                USER_ID + " = ? ",
-                new String[]{userId});
-    }
+        return db.delete(MESSAGE_UPLOAD_TABLE, MESSAGE_UPLOAD_ID + "='" + id + "'", null) > 0;
+    }*/
 
-    // investigation
+    // Chat Upload Data End
 
-    public boolean insertInvestigationData(int id, String name, String key, String dr_name, int opd_id, boolean isUploaded, String imageJson) {
-        if (investigationDataTableNumberOfRows(id) == 0) {
+    // Chat Download Data
+
+    /*public boolean insertMessageDownload(String id, int status, String data) {
+        if (messageDownloadTableNumberOfRows(id) == 0) {
             SQLiteDatabase db = getWritableDatabase();
             ContentValues contentValues = new ContentValues();
 
-            contentValues.put(INV_ID, id);
-            contentValues.put(INV_NAME, name);
-            contentValues.put(INV_NAME_KEY, key);
+            contentValues.put(MESSAGE_DOWNLOAD_ID, id);
+            contentValues.put(MESSAGE_DOWNLOAD_STATUS, status);
+            contentValues.put(MESSAGE_FILE_DOWNLOAD, data);
 
-            contentValues.put(INV_DR_NAME, dr_name);
-            contentValues.put(INV_OPD_ID, opd_id);
-
-            contentValues.put(INV_UPLOAD_STATUS, isUploaded ? 1 : 0);
-            contentValues.put(INV_UPLOADED_IMAGES, imageJson);
-
-            db.insert(INVESTIGATION_TABLE, null, contentValues);
+            db.insert(MESSAGE_DOWNLOAD_TABLE, null, contentValues);
         }
         return true;
     }
 
-    private int investigationDataTableNumberOfRows(int id) {
+    private int messageDownloadTableNumberOfRows(String id) {
         SQLiteDatabase db = getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(db, INVESTIGATION_TABLE, INV_ID + " = ? ", new String[]{String.valueOf(id)});
+        return (int) DatabaseUtils.queryNumEntries(db, MESSAGE_DOWNLOAD_TABLE, MESSAGE_DOWNLOAD_ID + " = ? ", new String[]{id});
     }
 
-    public int updateInvestigationData(int id, boolean isUploaded, String imageJson) {
+    public int updateMessageDownloading(String id, int isDownloaded) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(INV_UPLOAD_STATUS, isUploaded ? 1 : 0);
-        contentValues.put(INV_UPLOADED_IMAGES, imageJson);
+        contentValues.put(MESSAGE_DOWNLOAD_STATUS, isDownloaded);
 
-        return db.update(INVESTIGATION_TABLE, contentValues, INV_ID + " = ? ", new String[]{String.valueOf(id)});
+        return db.update(MESSAGE_DOWNLOAD_TABLE, contentValues, MESSAGE_DOWNLOAD_ID + " = ? ", new String[]{id});
     }
-    public Cursor getAllInvestigationData() {
+
+    public MQTTData getMessageDownload() {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("select * from " + INVESTIGATION_TABLE, null);
-    }
+        Cursor cursor = db.rawQuery("select * from " + MESSAGE_DOWNLOAD_TABLE, null);
 
-    public int deleteInvestigation(String id) {
-        SQLiteDatabase db = getWritableDatabase();
-        return db.delete(INVESTIGATION_TABLE,
-                INV_ID + " = ? ",
-                new String[]{id});
-    }
+        MQTTData myMessageData = new MQTTData();
+        ArrayList<MQTTMessage> mqttMessages = new ArrayList<>();
 
-    // MyRecords
-
-    public boolean insertMyRecordsData(String id, int status, String data, int docId,int opdId, String visitDate) {
-        if (MyRecordsDataTableNumberOfRows(id) == 0) {
-            SQLiteDatabase db = getWritableDatabase();
-            ContentValues contentValues = new ContentValues();
-
-            contentValues.put(RECORDS_DOC_ID, docId);
-            contentValues.put(RECORDS_OPDID, opdId);
-            contentValues.put(RECORDS_VISIT_DATE, visitDate);
-
-            contentValues.put(RECORDS_UPLOAD_ID, id);
-            contentValues.put(RECORDS_STATUS, status);
-            contentValues.put(RECORDS_IMAGE_DATA, data);
-
-            db.insert(MY_RECORDS_TABLE, null, contentValues);
+        Gson gson = new Gson();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String imageJson = cursor.getString(cursor.getColumnIndex(MESSAGE_FILE_DOWNLOAD));
+                MQTTMessage mqttMessage = gson.fromJson(imageJson, MQTTMessage.class);
+                mqttMessage.setDownloadStatus(cursor.getInt(cursor.getColumnIndex(MESSAGE_DOWNLOAD_STATUS)));
+                mqttMessages.add(mqttMessage);
+                cursor.moveToNext();
+            }
         }
-        return true;
+        cursor.close();
+
+        myMessageData.setMqttMessages(mqttMessages);
+
+        return myMessageData;
     }
 
-    private int MyRecordsDataTableNumberOfRows(String id) {
+    public MQTTMessage getMessageDownloadById(String id) {
         SQLiteDatabase db = getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(db, MY_RECORDS_TABLE, RECORDS_UPLOAD_ID + " = ? ", new String[]{id});
+        String countQuery = "select * from " + MESSAGE_DOWNLOAD_TABLE + " where " + MESSAGE_DOWNLOAD_ID + " = '" + id + "'";
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        Gson gson = new Gson();
+        MQTTMessage mqttMessage = null;
+        if (cursor.moveToFirst()) {
+            String imageJson = cursor.getString(cursor.getColumnIndex(MESSAGE_FILE_DOWNLOAD));
+            mqttMessage = gson.fromJson(imageJson, MQTTMessage.class);
+            mqttMessage.setDownloadStatus(cursor.getInt(cursor.getColumnIndex(MESSAGE_DOWNLOAD_STATUS)));
+        }
+        cursor.close();
+
+        return mqttMessage;
     }
 
-    public int updateMyRecordsData(String id, int isUploaded) {
+    public boolean deleteDownloadedMessage(String id) {
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(RECORDS_STATUS, isUploaded);
+        return db.delete(MESSAGE_DOWNLOAD_TABLE, MESSAGE_DOWNLOAD_ID + "='" + id + "'", null) > 0;
+    }*/
 
-        return db.update(MY_RECORDS_TABLE, contentValues, RECORDS_UPLOAD_ID + " = ? ", new String[]{id});
-    }
-
-
-    public Cursor getAllMyRecordsData() {
-        SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("select from " + MY_RECORDS_TABLE, null);
-    }
-
-    public int deleteMyRecords() {
-        SQLiteDatabase db = getWritableDatabase();
-        return db.delete(MY_RECORDS_TABLE, null, null);
-    }
-
-    // End MyRecords
+    // Chat Download Data End
 }

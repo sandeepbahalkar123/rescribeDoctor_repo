@@ -15,7 +15,7 @@ public class PatientConnectBaseModel implements CustomResponse {
     private Common common;
     @SerializedName("data")
     @Expose
-    private PatientListData patientListData;
+    private PatientListData patientListData = new PatientListData();
 
     public Common getCommon() {
         return common;
@@ -36,7 +36,7 @@ public class PatientConnectBaseModel implements CustomResponse {
     public class PatientListData {
         @SerializedName("patientList")
         @Expose
-        private ArrayList<PatientData> patientDataList;
+        private ArrayList<PatientData> patientDataList = new ArrayList<>();
 
         public ArrayList<PatientData> getPatientDataList() {
             return patientDataList;

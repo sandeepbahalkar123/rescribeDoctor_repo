@@ -10,6 +10,7 @@ import com.rescribe.doctor.model.chat.MessageList;
 import com.rescribe.doctor.model.chat.MessageRequestModel;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.network.ConnectionFactory;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -77,7 +78,7 @@ public class ChatHelper implements ConnectionListener {
         messageRequestModel.setMsg(messageL.getMsg());
         // 2017-10-13 12:08:07
         messageRequestModel.setMsgTime(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_hh_mm_ss));
-        messageRequestModel.setSender("user1");
+        messageRequestModel.setSender(MQTTService.DOCTOR);
         messageRequestModel.setUser1id(messageL.getDocId());
         messageRequestModel.setUser2id(messageL.getPatId());
 
@@ -89,7 +90,7 @@ public class ChatHelper implements ConnectionListener {
     }
 
     public void getChatHistory(int pgNmbr, int user1id, int user2id) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.CHAT_HISTORY, Request.Method.GET, false);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, false, RescribeConstants.CHAT_HISTORY, Request.Method.GET, false);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.CHAT_HISTORY + "user1id=" + user1id + "&user2id=" + user2id + "&pgNmbr=" + pgNmbr);
         mConnectionFactory.createConnection(RescribeConstants.CHAT_HISTORY);

@@ -17,6 +17,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.AppGlobalContainerActivity;
@@ -180,13 +181,21 @@ public class LoginFragment extends Fragment implements HelperResponse {
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_LOGIN)) {
             //After login user navigated to HomepageActivity
-            LoginModel loginModel = (LoginModel) customResponse;
-            if (loginModel.getCommon().isSuccess()) {
-                CommonMethods.Log(TAG + " Token", loginModel.getLoginInfo().getAuthToken());
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, loginModel.getLoginInfo().getAuthToken(), getActivity());
+            LoginModel receivedModel = (LoginModel) customResponse;
+            if (receivedModel.getCommon().isSuccess()) {
+
+                DocDetail docDetail = receivedModel.getDoctorLoginData().getDocDetail();
+                String authToken = receivedModel.getDoctorLoginData().getAuthToken();
+
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, authToken, getActivity());
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, String.valueOf(docDetail.getDocId()), getActivity());
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, docDetail.getDocName(), getActivity());
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, docDetail.getDocImgUrl(), getActivity());
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.EMAIL, docDetail.getDocEmail(), getActivity());
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY, docDetail.getDocSpaciality(), getActivity());
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADDRESS, docDetail.getDocAddress(), getActivity());
+
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, getActivity());
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, loginModel.getLoginInfo().getDocId(), getActivity());
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.EMAIL, editTextEmailID.getText().toString(), getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, editTextPassword.getText().toString(), getActivity());
                 Intent intent = new Intent(getActivity(), HomePageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -194,7 +203,7 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 startActivity(intent);
                 getActivity().finish();
             } else {
-                CommonMethods.showToast(getActivity(), loginModel.getCommon().getStatusMessage());
+                CommonMethods.showToast(getActivity(), receivedModel.getCommon().getStatusMessage());
             }
         }
         //--- TODO  NOT CONFIRMED ABOUT THIS IMPLEMENTATION RIGHT NOW, HENCE COMMENTED.
