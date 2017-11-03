@@ -15,7 +15,7 @@ import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.MQTTMessage;
-import com.rescribe.doctor.model.chat.TypeStatus;
+import com.rescribe.doctor.model.chat.UserStatus;
 import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.ChatActivity;
@@ -216,12 +216,12 @@ public class MQTTService extends Service {
                                         } else Log.d(TAG + " DOCTOR_MES", payloadString);
                                     } else Log.d(TAG + " OTHERS_MES", payloadString);
                                 } else if (topic.equals(TOPIC[1])) {
-                                    TypeStatus typeStatus = gson.fromJson(payloadString, TypeStatus.class);
-                                    if (myid.equals(String.valueOf(typeStatus.getDocId()))) { // Change
-                                        if (!typeStatus.getSender().equals(MQTTService.DOCTOR)) { // Change
+                                    UserStatus userStatus = gson.fromJson(payloadString, UserStatus.class);
+                                    if (myid.equals(String.valueOf(userStatus.getDocId()))) { // Change
+                                        if (!userStatus.getSender().equals(MQTTService.DOCTOR)) { // Change
                                             Intent intent = new Intent(NOTIFY);
                                             intent.putExtra(IS_MESSAGE, false);
-                                            intent.putExtra(MESSAGE, typeStatus);
+                                            intent.putExtra(MESSAGE, userStatus);
                                             sendBroadcast(intent);
                                         }
                                     }
@@ -293,12 +293,12 @@ public class MQTTService extends Service {
         }
     }
 
-    public void typingStatus(TypeStatus typeStatus) {
+    public void typingStatus(UserStatus userStatus) {
         try {
             // 2017-10-13 13:08:07
             String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_hh_mm_ss);
-            typeStatus.setMsgTime(msgTime);
-            String content = gson.toJson(typeStatus, TypeStatus.class);
+            userStatus.setMsgTime(msgTime);
+            String content = gson.toJson(userStatus, UserStatus.class);
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);

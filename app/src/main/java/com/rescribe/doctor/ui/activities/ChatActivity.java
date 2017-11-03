@@ -53,7 +53,7 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTData;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.SendMessageModel;
-import com.rescribe.doctor.model.chat.TypeStatus;
+import com.rescribe.doctor.model.chat.UserStatus;
 import com.rescribe.doctor.model.chat.history.ChatHistory;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
 import com.rescribe.doctor.model.patient_connect.PatientData;
@@ -194,15 +194,15 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     };
 
     private void typingStatus() {
-        TypeStatus typeStatus = new TypeStatus();
+        UserStatus userStatus = new UserStatus();
         String generatedId = TYPING + mqttMessage.size() + "_" + System.nanoTime();
-        typeStatus.setMsgId(generatedId);
-        typeStatus.setDocId(Integer.parseInt(docId));
-        typeStatus.setPatId(chatList.getId());
-        typeStatus.setSender(DOCTOR);
-        typeStatus.setTypeStatus(isTyping);
+        userStatus.setMsgId(generatedId);
+        userStatus.setDocId(Integer.parseInt(docId));
+        userStatus.setPatId(chatList.getId());
+        userStatus.setSender(DOCTOR);
+        userStatus.setTypeStatus(isTyping);
         if (mqttService != null)
-            mqttService.typingStatus(typeStatus);
+            mqttService.typingStatus(userStatus);
     }
 
     // End Check Typing
@@ -233,9 +233,9 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                     }
                 } else {
                     // Getting type status
-                    TypeStatus typeStatus = intent.getParcelableExtra(MQTTService.MESSAGE);
-                    if (typeStatus.getPatId() == chatList.getId()) {
-                        if (typeStatus.isTyping()) {
+                    UserStatus userStatus = intent.getParcelableExtra(MQTTService.MESSAGE);
+                    if (userStatus.getPatId() == chatList.getId()) {
+                        if (userStatus.isTyping()) {
                             dateTime.setText(TYPING_MESSAGE);
                             dateTime.setTextColor(Color.WHITE);
                         } else {

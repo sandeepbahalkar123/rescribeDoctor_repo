@@ -126,6 +126,10 @@ public class DrawerProfileAdapter extends ArrayAdapter<DrawerProfile> {
             viewHolder.getTextViewPrimary().setText(drawerProfile.getName());
             viewHolder.getTextViewPrimary().setTextColor(textColorPrimary);
 
+            //--Ritesh Edit Start : DISABLE VISIBILITY OF NAME
+            viewHolder.getTextViewPrimary().setVisibility(View.GONE);
+            //--
+
             if (drawerProfile.hasDescription()) {
                 viewHolder.getTextViewSecondary().setText(drawerProfile.getDescription());
                 viewHolder.getTextViewSecondary().setTextColor(drawerTheme.getTextColorSecondary());
