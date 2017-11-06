@@ -56,6 +56,10 @@ public class ChatHistory implements Parcelable {
     @Expose
     private String fileUrl;
 
+    @SerializedName("msgStatus")
+    @Expose
+    private String msgStatus = "";
+
     // Added End
 
     public final static Creator<ChatHistory> CREATOR = new Creator<ChatHistory>() {
@@ -83,6 +87,8 @@ public class ChatHistory implements Parcelable {
 
             instance.fileType = ((String) in.readValue((String.class.getClassLoader())));
             instance.fileUrl = ((String) in.readValue((String.class.getClassLoader())));
+
+            instance.msgStatus = ((String) in.readValue((String.class.getClassLoader())));
 
             return instance;
         }
@@ -207,6 +213,14 @@ public class ChatHistory implements Parcelable {
         this.fileUrl = fileUrl;
     }
 
+    public String getMsgStatus() {
+        return msgStatus;
+    }
+
+    public void setMsgStatus(String msgStatus) {
+        this.msgStatus = msgStatus;
+    }
+
     // End Added
 
     public void writeToParcel(Parcel dest, int flags) {
@@ -226,6 +240,8 @@ public class ChatHistory implements Parcelable {
 
         dest.writeValue(fileType);
         dest.writeValue(fileUrl);
+
+        dest.writeValue(msgStatus);
     }
 
     public int describeContents() {

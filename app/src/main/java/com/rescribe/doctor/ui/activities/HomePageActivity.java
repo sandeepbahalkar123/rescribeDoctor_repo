@@ -178,9 +178,6 @@ public class HomePageActivity extends DrawerActivity implements HelperResponse {
                     ActiveRequest activeRequest = new ActiveRequest();
                     activeRequest.setId(Integer.parseInt(docId));
                     loginHelper.doLogout(activeRequest);
-                } else if (id.equalsIgnoreCase(getString(R.string.doctor_connect))) {
-                    Intent intent = new Intent(mContext, DoctorConnectActivity.class);
-                    startActivity(intent);
                 } else if (id.equalsIgnoreCase(getString(R.string.patient_connect))) {
                     Intent intent = new Intent(mContext, PatientConnectActivity.class);
                     startActivity(intent);
