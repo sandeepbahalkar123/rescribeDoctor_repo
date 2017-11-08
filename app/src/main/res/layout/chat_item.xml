@@ -230,7 +230,6 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/senderTimeStatusLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -492,7 +491,6 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/receiverTimeStatusLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"

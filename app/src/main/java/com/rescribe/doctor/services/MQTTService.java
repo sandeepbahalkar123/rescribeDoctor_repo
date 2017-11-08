@@ -366,7 +366,6 @@ public class MQTTService extends Service {
 
     public void passMessage(MQTTMessage mqttMessage) {
         try {
-            mqttMessage.setSender(DOCTOR);
             String content = gson.toJson(mqttMessage, MQTTMessage.class);
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);

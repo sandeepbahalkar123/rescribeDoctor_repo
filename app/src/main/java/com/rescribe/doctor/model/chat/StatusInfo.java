@@ -18,9 +18,11 @@ public class StatusInfo implements Parcelable {
     @SerializedName("user2id")
     @Expose
     private int user2id;
+
     @SerializedName("sender")
     @Expose
     private String sender = DOCTOR;
+
     @SerializedName("msgTime")
     @Expose
     private String msgTime;

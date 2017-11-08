@@ -80,7 +80,6 @@
     <string name="chats">Chats</string>
     <string name="connect">Connect</string>
     <string name="search">Search</string>
-    <string name="clicked_item_data">clicked_item_data</string>
     <string name="pick_speciality">Pick Speciality</string>
     <string name="details_note"><![CDATA[Your details will remain 100% private & secure. If you think you have medical emergency, contact your doctor immediately.]]></string>
     <string name="cardiologist">cardiologist</string>
@@ -103,7 +102,6 @@
     <string name="endocrinologist">endocrinologist</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="type_a_message">Type a message</string>
-    <string name="dr">Dr.</string>
     <string name="online">Online</string>
     <string name="offline">Offline</string>
     <string name="idle">Idle</string>
