@@ -38,6 +38,10 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.IDLE;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
+
 
 /**
  * Created by jeetal on 6/9/17.
@@ -63,6 +67,10 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         TextView doctorType;
         @BindView(R.id.onlineStatusTextView)
         TextView onlineStatusTextView;
+
+        @BindView(R.id.onlineStatusIcon)
+        ImageView onlineStatusIcon;
+
         @BindView(R.id.paidStatusTextView)
         TextView paidStatusTextView;
         @BindView(R.id.imageOfDoctor)
@@ -109,14 +117,15 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         final PatientData doctorConnectChatModel = dataList.get(position);
 
         //-----------
-        if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(mOnline)) {
+        holder.onlineStatusIcon.setVisibility(View.GONE);
+
+        if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(ONLINE)) {
+            holder.onlineStatusIcon.setVisibility(View.VISIBLE);
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.green_light));
-        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(mIdle)) {
+        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(IDLE)) {
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.range_yellow));
-        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(mOffline)) {
+        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(OFFLINE)) {
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.grey_500));
-        } else {
-            holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
         }
         //-----------
 

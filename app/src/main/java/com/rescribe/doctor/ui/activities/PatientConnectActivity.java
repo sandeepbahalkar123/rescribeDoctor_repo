@@ -20,7 +20,9 @@ import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MQTTMessage;
+import com.rescribe.doctor.model.chat.StatusInfo;
 import com.rescribe.doctor.model.patient_connect.PatientData;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
@@ -35,6 +37,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.rescribe.doctor.services.MQTTService.MESSAGE;
+import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
+import static com.rescribe.doctor.services.MQTTService.STATUS_INFO;
+import static com.rescribe.doctor.ui.activities.ChatActivity.CHAT;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
 
 
 /**
@@ -86,6 +94,7 @@ public class PatientConnectActivity extends AppCompatActivity {
     private PatientConnectFragment mPatientConnectFragment;
     private PatientSearchFragment mPatientSearchFragment;
     private ArrayList<PatientData> mReceivedConnectedPatientDataList;
+    private String docId;
     //-----
 
     @Override
@@ -93,6 +102,9 @@ public class PatientConnectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_connect);
         ButterKnife.bind(this);
+
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, PatientConnectActivity.this);
+
         title.setText("" + getString(R.string.patient_connect));
         mFragmentTitleList[0] = getString(R.string.chats);
         mFragmentTitleList[1] = getString(R.string.connect);
@@ -245,6 +257,8 @@ public class PatientConnectActivity extends AppCompatActivity {
         super.onResume();
         registerReceiver(receiver, new IntentFilter(
                 MQTTService.NOTIFY));
+
+//        sendUserStatus(ONLINE);
     }
 
     @Override
@@ -261,4 +275,22 @@ public class PatientConnectActivity extends AppCompatActivity {
             mPatientConnectChatFragment.addItem(patientData);
         }
     }
+
+    // change
+
+    /*private void sendUserStatus(String userStatus) {
+        // send user status via mqtt
+        StatusInfo statusInfo = new StatusInfo();
+        statusInfo.setPatId(-2);
+        statusInfo.setDocId(Integer.parseInt(docId));
+        statusInfo.setUserStatus(userStatus);
+        String generatedId = CHAT + 0 + "_" + System.nanoTime();
+        statusInfo.setMsgId(generatedId);
+
+        Intent intentService = new Intent(PatientConnectActivity.this, MQTTService.class);
+        intentService.putExtra(SEND_MESSAGE, true);
+        intentService.putExtra(MESSAGE, false);
+        intentService.putExtra(STATUS_INFO, statusInfo);
+        startService(intentService);
+    }*/
 }

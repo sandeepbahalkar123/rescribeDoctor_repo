@@ -16,6 +16,11 @@ public class PatientData implements Parcelable, CustomResponse {
     @SerializedName("patientName")
     @Expose
     private String patientName;
+
+    @SerializedName("imageUrl")
+    @Expose
+    private String imageUrl = "";
+
     @SerializedName("onlineStatus")
     @Expose
     private String onlineStatus;
@@ -38,6 +43,14 @@ public class PatientData implements Parcelable, CustomResponse {
 
     public void setPatientName(String patientName) {
         this.patientName = patientName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getOnlineStatus() {
@@ -64,6 +77,7 @@ public class PatientData implements Parcelable, CustomResponse {
             PatientData instance = new PatientData();
             instance.patientId = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.patientName = ((String) in.readValue((String.class.getClassLoader())));
+            instance.imageUrl = ((String) in.readValue((String.class.getClassLoader())));
             instance.onlineStatus = ((String) in.readValue((String.class.getClassLoader())));
             instance.unreadMessages = ((int) in.readValue((Integer.class.getClassLoader())));
             return instance;
@@ -79,8 +93,8 @@ public class PatientData implements Parcelable, CustomResponse {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(patientId);
         dest.writeValue(patientName);
+        dest.writeValue(imageUrl);
         dest.writeValue(onlineStatus);
-
         dest.writeValue(unreadMessages);
     }
 

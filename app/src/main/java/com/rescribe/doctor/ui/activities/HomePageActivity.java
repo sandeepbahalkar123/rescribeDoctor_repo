@@ -20,15 +20,22 @@ import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.chat.StatusInfo;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.services.MQTTService.MESSAGE;
+import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
+import static com.rescribe.doctor.services.MQTTService.STATUS_INFO;
+import static com.rescribe.doctor.ui.activities.ChatActivity.CHAT;
 import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
 
 /**
  * Created by jeetal on 28/6/17.

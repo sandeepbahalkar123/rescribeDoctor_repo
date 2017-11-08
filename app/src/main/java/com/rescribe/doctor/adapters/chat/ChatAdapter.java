@@ -40,6 +40,8 @@ import butterknife.ButterKnife;
 import static com.rescribe.doctor.util.RescribeConstants.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.DOWNLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder> {
@@ -75,7 +77,37 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
         final MQTTMessage message = mqttMessages.get(position);
 
-        if (mqttMessages.get(position).getSender().equals(MQTTService.DOCTOR)) {
+        String timeText = CommonMethods.getFormattedDate(message.getMsgTime(), RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss, RescribeConstants.DATE_PATTERN.hh_mm_a);
+        String dateText = CommonMethods.getDayFromDateTime(message.getMsgTime(),RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY);
+        holder.dateTextView.setText(dateText);
+
+        if (position > 0) {
+            String preDate = CommonMethods.getDayFromDateTime(mqttMessages.get(position - 1).getMsgTime(), RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY);
+            message.setDateVisible(!preDate.equals(dateText));
+        }
+
+        if (message.isDateVisible())
+            holder.dateTextView.setVisibility(View.VISIBLE);
+        else holder.dateTextView.setVisibility(View.GONE);
+
+        if (message.getSender().equals(MQTTService.DOCTOR)) {
+
+            // set Time
+            holder.senderTimeTextView.setText(timeText);
+
+            // message status
+
+            switch (message.getMsgStatus()) {
+                case REACHED:
+                    holder.senderTickImageView.setImageResource(R.drawable.ic_reached);
+                    break;
+                case SEEN:
+                    holder.senderTickImageView.setImageResource(R.drawable.ic_seen);
+                    break;
+                default:
+                    holder.senderTickImageView.setImageResource(R.drawable.ic_sent);
+                    break;
+            }
 
             // reset margin
             RelativeLayout.LayoutParams resetSenderPhotoLayoutParams = new RelativeLayout.LayoutParams(
@@ -306,6 +338,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
             }
 
         } else {
+
+            // set Time
+            holder.receiverTimeTextView.setText(timeText);
 
             // reset margin
             RelativeLayout.LayoutParams resetReceiverPhotoLayoutParams = new RelativeLayout.LayoutParams(
@@ -598,6 +633,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
         @BindView(R.id.senderLayoutChild)
         LinearLayout senderLayoutChild;
 
+        // Time and Message Status
+        @BindView(R.id.receiverTimeTextView)
+        TextView receiverTimeTextView;
+        @BindView(R.id.senderTimeTextView)
+        TextView senderTimeTextView;
+        @BindView(R.id.senderTickImageView)
+        ImageView senderTickImageView;
+
+        @BindView(R.id.dateTextView)
+        TextView dateTextView;
+
         ListViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
@@ -606,9 +652,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
 
     public interface ItemListener {
         void uploadFile(MQTTMessage mqttMessage);
-
         long downloadFile(MQTTMessage mqttMessage);
-
         void openFile(MQTTMessage message, ImageView senderFileIcon) throws IOException;
     }
 }

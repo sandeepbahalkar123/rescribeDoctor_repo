@@ -12,6 +12,7 @@ import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
@@ -47,7 +48,6 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
 
             MQTTMessage messageL = new MQTTMessage();
             messageL.setTopic(MQTTService.TOPIC[0]);
-            messageL.setSender(MQTTService.DOCTOR);
             messageL.setMsg(message.toString());
 
             String generatedId = CHAT + 0 + "_" + System.nanoTime();
@@ -68,6 +68,10 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
             messageL.setSpecialization(speciality);
             messageL.setPaidStatus(FREE);
             messageL.setFileType("");
+
+            // 2017-10-13 13:08:07
+            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
+            messageL.setMsgTime(msgTime);
 
             // send msg by http api
 

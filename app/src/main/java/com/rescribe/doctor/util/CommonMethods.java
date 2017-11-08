@@ -170,6 +170,37 @@ public class CommonMethods {
         return dateFormat.format(date);
     }
 
+    public static String getDayFromDateTime(String dateText,String originalDateFormat, String expectedDateFormat) {
+        Calendar calendar = Calendar.getInstance();
+        Date today = calendar.getTime();
+
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        Date yesterday = calendar.getTime();
+
+        DateFormat expectedFormat = new SimpleDateFormat(expectedDateFormat, Locale.US);
+
+        SimpleDateFormat originalFormat = new SimpleDateFormat(originalDateFormat, Locale.US);
+        Date date;
+        try {
+            date = originalFormat.parse(dateText);
+        } catch (ParseException ex) {
+            return "";
+        }
+
+        String originalDateAsString = expectedFormat.format(date);
+
+        String todayAsString = expectedFormat.format(today);
+        String yesterdayAsString = expectedFormat.format(yesterday);
+
+        if (todayAsString.equals(originalDateAsString))
+            return "Today";
+
+        if (yesterdayAsString.equals(originalDateAsString))
+            return "Yesterday";
+
+        return originalDateAsString;
+    }
+
     public static String getDayFromDate(String dateFormat, String date) {
 
         date = date.trim();

@@ -27,14 +27,33 @@
                 android:padding="@dimen/dp10"
                 android:src="@drawable/back_arrow_a_01" />
 
-            <ImageView
-                android:id="@+id/profilePhoto"
+            <RelativeLayout
+                android:id="@+id/profilePhotoLayout"
                 android:layout_width="@dimen/dp40"
                 android:layout_height="@dimen/dp40"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/backButton"
-                android:layout_toRightOf="@+id/backButton"
-                android:src="@drawable/welcome_copy_3" />
+                android:layout_toRightOf="@+id/backButton">
+
+                <ImageView
+                    android:id="@+id/profilePhoto"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
+                    tools:src="@drawable/layer_12" />
+
+                <ImageView
+                    android:id="@+id/onlineStatusIcon"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:layout_margin="2dp"
+                    app:srcCompat="@drawable/online_icon" />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/titleLayout"
@@ -42,14 +61,14 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/dp10"
                 android:layout_marginStart="@dimen/dp10"
-                android:layout_toEndOf="@+id/profilePhoto"
-                android:layout_toRightOf="@+id/profilePhoto">
+                android:layout_toEndOf="@+id/profilePhotoLayout"
+                android:layout_toRightOf="@+id/profilePhotoLayout">
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/receiverName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Rashmi Gangar"
+                    tools:text="Rashmi Gangar"
                     app:customFont="@string/roboto_bold"
                     android:layout_alignParentTop="true"
                     android:textColor="@color/white"
@@ -60,7 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:customFont="@string/roboto_medium"
-                    android:text="Last seen today at 10:30 am"
+                    tools:text="Last seen today at 10:30 am"
                     android:layout_alignParentBottom="true"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp12" />

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.util.RescribeConstants.DOWNLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
@@ -24,9 +25,13 @@ public class MQTTMessage implements Parcelable {
     @SerializedName("msgTime")
     @Expose
     private String msgTime;
+
+    // change
+
     @SerializedName("sender")
     @Expose
-    private String sender;
+    private String sender = DOCTOR;
+
     @SerializedName("user2id")
     @Expose
     private int patId;
@@ -42,6 +47,11 @@ public class MQTTMessage implements Parcelable {
     @SerializedName("onlineStatus")
     @Expose
     private String onlineStatus;
+
+    @SerializedName("msgStatus")
+    @Expose
+    private String msgStatus = "";
+
     @SerializedName("paidStatus")
     @Expose
     private int paidStatus;
@@ -63,6 +73,8 @@ public class MQTTMessage implements Parcelable {
     @Expose
     private int downloadStatus = FAILED;
 
+    private boolean isDateVisible;
+
     // Added End
 
     public final static Creator<MQTTMessage> CREATOR = new Creator<MQTTMessage>() {
@@ -82,6 +94,9 @@ public class MQTTMessage implements Parcelable {
             instance.name = ((String) in.readValue((String.class.getClassLoader())));
             instance.specialization = ((String) in.readValue((String.class.getClassLoader())));
             instance.onlineStatus = ((String) in.readValue((String.class.getClassLoader())));
+
+            instance.msgStatus = ((String) in.readValue((String.class.getClassLoader())));
+
             instance.paidStatus = ((int) in.readValue((int.class.getClassLoader())));
             instance.imageUrl = ((String) in.readValue((String.class.getClassLoader())));
             instance.fileUrl = ((String) in.readValue((String.class.getClassLoader())));
@@ -90,6 +105,7 @@ public class MQTTMessage implements Parcelable {
             instance.uploadStatus = ((int) in.readValue((int.class.getClassLoader())));
             instance.downloadStatus = ((int) in.readValue((int.class.getClassLoader())));
 
+            instance.isDateVisible = ((boolean) in.readValue((int.class.getClassLoader())));
             return instance;
         }
 
@@ -171,6 +187,14 @@ public class MQTTMessage implements Parcelable {
         this.onlineStatus = onlineStatus;
     }
 
+    public String getMsgStatus() {
+        return msgStatus;
+    }
+
+    public void setMsgStatus(String msgStatus) {
+        this.msgStatus = msgStatus;
+    }
+
     public int getPaidStatus() {
         return paidStatus;
     }
@@ -231,6 +255,14 @@ public class MQTTMessage implements Parcelable {
         this.downloadStatus = downloadStatus;
     }
 
+    public boolean isDateVisible() {
+        return isDateVisible;
+    }
+
+    public void setDateVisible(boolean dateVisible) {
+        isDateVisible = dateVisible;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(msgId);
         dest.writeValue(topic);
@@ -242,6 +274,7 @@ public class MQTTMessage implements Parcelable {
         dest.writeValue(name);
         dest.writeValue(specialization);
         dest.writeValue(onlineStatus);
+        dest.writeValue(msgStatus);
         dest.writeValue(paidStatus);
         dest.writeValue(imageUrl);
         dest.writeValue(fileUrl);
@@ -249,6 +282,8 @@ public class MQTTMessage implements Parcelable {
 
         dest.writeValue(uploadStatus);
         dest.writeValue(downloadStatus);
+
+        dest.writeValue(isDateVisible);
     }
 
     public int describeContents() {

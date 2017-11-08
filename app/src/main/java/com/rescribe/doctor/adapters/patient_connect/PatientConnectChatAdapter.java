@@ -27,11 +27,13 @@ import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.IDLE;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
 
 
 /**
@@ -43,7 +45,6 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
     private final ArrayList<PatientData> mArrayList;
     private final ColorGenerator mColorGenerator;
     private Fragment mCalledParentFragment;
-    private String mIdle, mOnline, mOffline;
     private Context mContext;
     private ArrayList<PatientData> dataList;
     String searchString = "";
@@ -57,6 +58,10 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
         TextView doctorType;
         @BindView(R.id.onlineStatusTextView)
         TextView onlineStatusTextView;
+
+        @BindView(R.id.onlineStatusIcon)
+        ImageView onlineStatusIcon;
+
         @BindView(R.id.paidStatusTextView)
         TextView paidStatusTextView;
         @BindView(R.id.imageOfDoctor)
@@ -75,10 +80,6 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
         this.dataList = appointmentsList;
         this.mCalledParentFragment = parentFragment;
         mArrayList = appointmentsList;
-
-        mOnline = mContext.getString(R.string.online);
-        mOffline = mContext.getString(R.string.offline);
-        mIdle = mContext.getString(R.string.idle);
         this.mContext = mContext;
         //--------------
         mColorGenerator = ColorGenerator.MATERIAL;
@@ -98,14 +99,16 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
         final PatientData doctorConnectChatModel = dataList.get(position);
 
         //-----------
-        if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(mOnline)) {
+
+        holder.onlineStatusIcon.setVisibility(View.GONE);
+
+        if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(ONLINE)) {
+            holder.onlineStatusIcon.setVisibility(View.VISIBLE);
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.green_light));
-        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(mIdle)) {
+        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(IDLE)) {
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.range_yellow));
-        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(mOffline)) {
+        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(OFFLINE)) {
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.grey_500));
-        } else {
-            holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
         }
         //-----------
 

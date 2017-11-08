@@ -12,10 +12,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
-
 import com.rescribe.doctor.adapters.patient_connect.PatientConnectChatAdapter;
 import com.rescribe.doctor.model.patient_connect.PatientData;
-
 import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 
 import java.util.ArrayList;

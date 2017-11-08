@@ -24,6 +24,21 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <com.rescribe.doctor.ui.customesViews.CustomTextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp6"
+        android:background="@drawable/date_time_back"
+        android:padding="@dimen/dp6"
+        android:textAllCaps="true"
+        android:textColor="@color/Gray"
+        android:textSize="@dimen/sp12"
+        android:visibility="gone"
+        tools:text="12 September 2017"
+        tools:visibility="visible" />
+
     <RelativeLayout
         android:id="@+id/messageTypeLayout"
         android:layout_width="match_parent"
