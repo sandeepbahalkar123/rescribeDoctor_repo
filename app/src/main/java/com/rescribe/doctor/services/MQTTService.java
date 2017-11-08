@@ -324,7 +324,6 @@ public class MQTTService extends Service {
     // change
     public void passStatusInfo(StatusInfo statusInfo) {
         try {
-            statusInfo.setSender(DOCTOR);
             // 2017-10-13 13:08:07
             String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
             statusInfo.setMsgTime(msgTime);
@@ -346,7 +345,6 @@ public class MQTTService extends Service {
 
     public void typingStatus(StatusInfo statusInfo) {
         try {
-            statusInfo.setSender(DOCTOR);
             // 2017-10-13 13:08:07
             String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
             statusInfo.setMsgTime(msgTime);

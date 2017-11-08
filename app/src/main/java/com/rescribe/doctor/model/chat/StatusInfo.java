@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import static com.rescribe.doctor.services.MQTTService.DOCTOR;
+
 public class StatusInfo implements Parcelable {
     @SerializedName("msgId")
     @Expose
@@ -18,7 +20,7 @@ public class StatusInfo implements Parcelable {
     private int user2id;
     @SerializedName("sender")
     @Expose
-    private String sender;
+    private String sender = DOCTOR;
     @SerializedName("msgTime")
     @Expose
     private String msgTime;
