@@ -51,6 +51,7 @@ public class MQTTService extends Service {
     public static final String KEY_REPLY = "key_replay";
     public static final String REPLY_ACTION = "com.rescribe.doctor.REPLY_ACTION"; // Change
     public static final String SEND_MESSAGE = "send_message";
+    public static final String STATUS_INFO = "status_info";
 
     private static int currentChatUser = -1;
     private static final String TAG = "MQTTService";
@@ -58,7 +59,7 @@ public class MQTTService extends Service {
     public static final String NOTIFY = "com.rescribe.doctor.NOTIFY"; // Change
     public static final String IS_MESSAGE = "is_message";
     public static final String MESSAGE_ID = "message_id";
-    public static final String[] TOPIC = {"doctorConnect", "doctor/status"};
+    public static final String[] TOPIC = {"doctorConnect", "doctor/status", "message/status"};
     public static final String DELIVERED = "delivered";
 
     public static final String DOCTOR = "user1";
@@ -152,7 +153,11 @@ public class MQTTService extends Service {
                         } catch (MqttException e) {
                             e.printStackTrace();
                         }
-                    } else passMessage((MQTTMessage) intent.getParcelableExtra(MESSAGE_LIST));
+                    } else {// change
+                        if (intent.getBooleanExtra(MESSAGE, true)) {
+                            passMessage((MQTTMessage) intent.getParcelableExtra(MESSAGE_LIST));
+                        } else passStatusInfo((StatusInfo) intent.getParcelableExtra(STATUS_INFO));
+                    }
             } else {
                 if (mqttClient != null)
                     if (!mqttClient.isConnected()) {
@@ -206,12 +211,8 @@ public class MQTTService extends Service {
                                             statusInfo.setMsgId(messageL.getMsgId());
                                             statusInfo.setDocId(messageL.getDocId());
                                             statusInfo.setPatId(messageL.getPatId());
-                                            statusInfo.setSender(DOCTOR);
 
                                             if (currentChatUser != messageL.getPatId()) {
-
-                                                // change
-                                                statusInfo.setMessageStatus(REACHED);
 
                                                 ArrayList<MQTTMessage> messagesTemp = new ArrayList<>();
                                                 ArrayList<MQTTMessage> messages = appDBHelper.insertUnreadMessage(messageL.getPatId(), payloadString); // Change
@@ -222,12 +223,15 @@ public class MQTTService extends Service {
                                                 } else messagesTemp.addAll(messages);
 
                                                 MessageNotification.notify(MQTTService.this, messagesTemp, String.valueOf(messageL.getName()), appDBHelper.unreadMessageCountById(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
+
+                                                // change
+                                                statusInfo.setMessageStatus(REACHED);
                                             } else {
                                                 // change
                                                 statusInfo.setMessageStatus(SEEN);
                                             }
 
-                                            messageStatus(statusInfo);
+                                            passStatusInfo(statusInfo);
 
                                             Intent intent = new Intent(NOTIFY);
                                             intent.putExtra(IS_MESSAGE, true);
@@ -236,9 +240,9 @@ public class MQTTService extends Service {
                                         } else Log.d(TAG + " DOCTOR_MES", payloadString);
                                     } else Log.d(TAG + " OTHERS_MES", payloadString);
                                 } else if (topic.equals(TOPIC[1]))
-                                    broadcastStatus(myid, payloadString); // change
+                                    broadcastStatus(payloadString, topic); // change
                                 else if (topic.equals(TOPIC[2]))
-                                    broadcastStatus(myid, payloadString); // change
+                                    broadcastStatus(payloadString, topic); // change
                             }
                         } else Log.d(TAG + " LOGOUT_MES", payloadString);
                     } catch (JsonSyntaxException e) {
@@ -307,21 +311,20 @@ public class MQTTService extends Service {
     }
 
     // change
-    private void broadcastStatus(String myid, String payloadString) {
+    private void broadcastStatus(String payloadString, String topic) {
         StatusInfo statusInfo = gson.fromJson(payloadString, StatusInfo.class);
-        if (myid.equals(String.valueOf(statusInfo.getPatId()))) {
             if (!statusInfo.getSender().equals(MQTTService.DOCTOR)) {
                 Intent intent = new Intent(NOTIFY);
                 intent.putExtra(IS_MESSAGE, false);
                 intent.putExtra(MESSAGE, statusInfo);
                 sendBroadcast(intent);
             }
-        }
     }
 
     // change
-    public void messageStatus(StatusInfo statusInfo) {
+    public void passStatusInfo(StatusInfo statusInfo) {
         try {
+            statusInfo.setSender(DOCTOR);
             // 2017-10-13 13:08:07
             String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
             statusInfo.setMsgTime(msgTime);
@@ -343,6 +346,7 @@ public class MQTTService extends Service {
 
     public void typingStatus(StatusInfo statusInfo) {
         try {
+            statusInfo.setSender(DOCTOR);
             // 2017-10-13 13:08:07
             String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
             statusInfo.setMsgTime(msgTime);
@@ -364,6 +368,7 @@ public class MQTTService extends Service {
 
     public void passMessage(MQTTMessage mqttMessage) {
         try {
+            mqttMessage.setSender(DOCTOR);
             String content = gson.toJson(mqttMessage, MQTTMessage.class);
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
@@ -384,6 +389,19 @@ public class MQTTService extends Service {
     public void onDestroy() {
         super.onDestroy();
         if (mqttClient.isConnected()) {
+
+            // change
+
+            /*String myid = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, MQTTService.this);
+            // send user status via mqtt
+            StatusInfo statusInfo = new StatusInfo();
+            statusInfo.setPatId(-2);
+            statusInfo.setDocId(Integer.parseInt(myid));
+            statusInfo.setUserStatus(OFFLINE);
+            String generatedId = CHAT + 0 + "_" + System.nanoTime();
+            statusInfo.setMsgId(generatedId);
+            passStatusInfo(statusInfo);*/
+
             try {
                 mqttClient.disconnect();
                 CommonMethods.Log(TAG, "disconnect");

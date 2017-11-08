@@ -48,7 +48,6 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
 
             MQTTMessage messageL = new MQTTMessage();
             messageL.setTopic(MQTTService.TOPIC[0]);
-            messageL.setSender(MQTTService.DOCTOR);
             messageL.setMsg(message.toString());
 
             String generatedId = CHAT + 0 + "_" + System.nanoTime();

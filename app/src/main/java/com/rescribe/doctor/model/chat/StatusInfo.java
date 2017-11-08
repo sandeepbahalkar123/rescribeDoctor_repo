@@ -27,7 +27,7 @@ public class StatusInfo implements Parcelable {
     private boolean typeStatus;
     @SerializedName("userStatus")
     @Expose
-    private String userStatus;
+    private String userStatus = "";
 
     @SerializedName("messageStatus")
     @Expose

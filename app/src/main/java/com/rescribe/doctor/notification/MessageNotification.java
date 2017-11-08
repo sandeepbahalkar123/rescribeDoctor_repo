@@ -67,12 +67,12 @@ public class MessageNotification {
 
 // Create the RemoteInput specifying above key
         RemoteInput remoteInput = new RemoteInput.Builder(MQTTService.KEY_REPLY)
-                .setLabel("Replay")
+                .setLabel("Reply")
                 .build();
 
         // Add to your action, enabling Direct Reply
         NotificationCompat.Action mAction =
-                new NotificationCompat.Action.Builder(R.drawable.ic_action_stat_reply, "Replay", replyPendingIntent)
+                new NotificationCompat.Action.Builder(R.drawable.ic_action_stat_reply, "Reply", replyPendingIntent)
                         .addRemoteInput(remoteInput)
                         .setAllowGeneratedReplies(true)
                         .build();
