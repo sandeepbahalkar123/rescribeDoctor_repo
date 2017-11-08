@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="end"
+    android:orientation="vertical"
     android:padding="@dimen/dp5">
+
+    <com.rescribe.doctor.ui.customesViews.CustomTextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="12 September 2017"
+        android:textColor="@color/Gray"
+        android:textSize="@dimen/sp12"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/dp6"
+        android:visibility="gone"
+        android:textAllCaps="true"
+        android:layout_marginBottom="@dimen/dp10"
+        android:background="@drawable/date_time_back" />
 
     <RelativeLayout
         android:id="@+id/senderLayout"
@@ -234,7 +248,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp2"
-                    android:text="1:00 AM"
+                    tools:text="1:00 AM"
                     android:textColor="@color/Gray"
                     android:textSize="12sp"
                     app:customFont="@string/roboto_regular" />
@@ -496,7 +510,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp2"
-                    android:text="1:00 AM"
+                    tools:text="1:00 AM"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     app:customFont="@string/roboto_regular" />
@@ -507,4 +521,4 @@
 
     </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>
