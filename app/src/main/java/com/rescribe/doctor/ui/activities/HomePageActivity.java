@@ -41,7 +41,6 @@ public class HomePageActivity extends DrawerActivity implements HelperResponse {
     private static final long ADD_ACCOUNT = 122;
     private static final String TAG = "Home";
     private Context mContext;
-    private Toolbar toolbar;
     private AppDBHelper appDBHelper;
     private String docId;
     private LoginHelper loginHelper;
@@ -50,7 +49,7 @@ public class HomePageActivity extends DrawerActivity implements HelperResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_drawer);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mContext = HomePageActivity.this;
         HomePageActivityPermissionsDispatcher.getPermissionWithCheck(HomePageActivity.this);

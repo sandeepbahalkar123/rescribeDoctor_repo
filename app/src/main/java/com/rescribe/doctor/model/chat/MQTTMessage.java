@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.util.RescribeConstants.DOWNLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
@@ -24,9 +25,12 @@ public class MQTTMessage implements Parcelable {
     @SerializedName("msgTime")
     @Expose
     private String msgTime;
+
+    // change
     @SerializedName("sender")
     @Expose
-    private String sender;
+    private String sender = DOCTOR;
+
     @SerializedName("user2id")
     @Expose
     private int patId;

@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.uploadfile.ChatFileUploadModel;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -18,7 +19,6 @@ import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
 import static com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver.MESSAGE_LIST;
 import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
-import static com.rescribe.doctor.ui.activities.ChatActivity.CHAT;
 
 public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
     AppDBHelper instance;
@@ -35,12 +35,12 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
         if (instance == null)
             instance = new AppDBHelper(context);
 
-        if (uploadInfo.getUploadId().length() > CHAT.length()) {
-            String prefix = uploadInfo.getUploadId().substring(0, 4);
-            if (prefix.equals(CHAT)) {
+        String doctorId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, context);
+
+        String prefix[] = uploadInfo.getUploadId().split("_");
+        if (prefix[0].equals(doctorId)) {
                 instance.updateMessageUpload(uploadInfo.getUploadId(), RescribeConstants.FAILED);
             }
-        }
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(uploadInfo.getNotificationID());
@@ -53,9 +53,10 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
         if (instance == null)
             instance = new AppDBHelper(context);
 
-        if (uploadInfo.getUploadId().length() > CHAT.length()) {
-            String prefix = uploadInfo.getUploadId().substring(0, 4);
-            if (prefix.equals(CHAT)) {
+        String doctorId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, context);
+
+            String prefix[] = uploadInfo.getUploadId().split("_");
+            if (prefix[0].equals(doctorId)) {
 
                 MQTTMessage mqttMessage = instance.getMessageUploadById(uploadInfo.getUploadId());
 
@@ -76,7 +77,6 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
 
                 instance.updateMessageUpload(uploadInfo.getUploadId(), RescribeConstants.COMPLETED);
             }
-        }
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(uploadInfo.getNotificationID());

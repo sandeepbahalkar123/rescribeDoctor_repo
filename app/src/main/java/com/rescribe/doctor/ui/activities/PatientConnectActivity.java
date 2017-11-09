@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MQTTMessage;
-import com.rescribe.doctor.model.chat.StatusInfo;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
@@ -37,12 +36,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.rescribe.doctor.services.MQTTService.MESSAGE;
-import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
-import static com.rescribe.doctor.services.MQTTService.STATUS_INFO;
-import static com.rescribe.doctor.ui.activities.ChatActivity.CHAT;
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
 
 
 /**
