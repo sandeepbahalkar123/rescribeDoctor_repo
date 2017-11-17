@@ -124,6 +124,7 @@ public class RescribeConstants {
     public static final String CONNECT_REQUEST = "connect_request";
     public static final String PATIENT_INFO = "patient_info";
     public static final String STATUS_COLOR = "status_color";
+    public static final int PLACE_PICKER_REQUEST = 99;
 
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
@@ -183,6 +184,15 @@ public class RescribeConstants {
         public static final String DOC = "doc";
         public static final String VID = "vid";
         public static final String AUD = "aud";
+        public static final String LOC = "loc";
+    }
+
+    public static class FILE_EMOJI {
+        public static final String IMG_FILE = "🏞 Image";
+        public static final String DOC_FILE = "📒 Document";
+        public static final String VID_FILE = "📹 Video";
+        public static final String AUD_FILE = "🔊 Audio";
+        public static final String LOC_FILE = "📍 Location";
     }
 
     public class INVESTIGATION_KEYS {

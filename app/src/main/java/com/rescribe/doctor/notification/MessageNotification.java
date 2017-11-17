@@ -18,8 +18,15 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.activities.PatientConnectActivity;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+
+import static com.rescribe.doctor.util.RescribeConstants.FILE.AUD;
+import static com.rescribe.doctor.util.RescribeConstants.FILE.DOC;
+import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
+import static com.rescribe.doctor.util.RescribeConstants.FILE.LOC;
+import static com.rescribe.doctor.util.RescribeConstants.FILE.VID;
 
 /**
  * Helper class for showing and canceling new message
@@ -43,7 +50,9 @@ public class MessageNotification {
         // TODO: Remove this if your notification has no relevant thumbnail.
         final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.exercise);
 
-        final String content = messageContent.get(messageContent.size() - 1).getMsg();
+        MQTTMessage lastMessage = messageContent.get(messageContent.size() - 1);
+        String content = getContent(lastMessage);
+
         String title;
         if (unread > 1)
             title = userName + " (" + unread + " messages)";
@@ -63,7 +72,7 @@ public class MessageNotification {
                 .setSummaryText("New Message");
 
         for (MQTTMessage message : messageContent)
-            inboxStyle.addLine(message.getMsg());
+            inboxStyle.addLine(getContent(message));
 
 // Create the RemoteInput specifying above key
         RemoteInput remoteInput = new RemoteInput.Builder(MQTTService.KEY_REPLY)
@@ -140,5 +149,31 @@ public class MessageNotification {
         final NotificationManager nm = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(NOTIFICATION_TAG, notificationId);
+    }
+
+    private static String getContent(MQTTMessage mqttMessage) {
+        String content;
+        switch (mqttMessage.getFileType()) {
+            case DOC:
+                content = RescribeConstants.FILE_EMOJI.DOC_FILE;
+                break;
+            case AUD:
+                content = RescribeConstants.FILE_EMOJI.AUD_FILE;
+                break;
+            case VID:
+                content = RescribeConstants.FILE_EMOJI.VID_FILE;
+                break;
+            case LOC:
+                content = RescribeConstants.FILE_EMOJI.LOC_FILE;
+                break;
+            case IMG:
+                content = RescribeConstants.FILE_EMOJI.IMG_FILE;
+                break;
+            default:
+                content = mqttMessage.getMsg();
+                break;
+        }
+
+        return content;
     }
 }

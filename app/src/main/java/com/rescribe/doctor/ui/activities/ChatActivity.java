@@ -3,6 +3,7 @@ package com.rescribe.doctor.ui.activities;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
@@ -29,6 +30,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -36,7 +38,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,6 +52,10 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.chat.ChatAdapter;
@@ -98,6 +106,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import droidninja.filepicker.FilePickerBuilder;
 import droidninja.filepicker.FilePickerConst;
+import io.codetail.animation.SupportAnimator;
+import io.codetail.animation.ViewAnimationUtils;
 import ng.max.slideview.SlideView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -114,6 +124,7 @@ import static com.rescribe.doctor.util.RescribeConstants.FILE.DOC;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
+import static com.rescribe.doctor.util.RescribeConstants.PLACE_PICKER_REQUEST;
 import static com.rescribe.doctor.util.RescribeConstants.SEND_MESSAGE;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
@@ -123,16 +134,13 @@ import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.TYPING;
 public class ChatActivity extends AppCompatActivity implements HelperResponse, ChatAdapter.ItemListener {
 
     // Audio
-
     private static final String LOG_TAG = "AudioRecordTest";
     private static String mFileName = null;
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
     private ImageView audioIcon;
     private boolean isPlaying = false;
-
     private int prePosition = -1;
-
     // Audio End
 
     private static final int MAX_ATTACHMENT_COUNT = 10;
@@ -195,6 +203,12 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     @BindView(R.id.dateTextView)
     TextView dateTextView;
 
+    @BindView(R.id.reveal_items)
+    CardView mRevealView;
+
+    @BindView(R.id.exitRevealDialog)
+    FrameLayout exitRevealDialog;
+
     // Check Typing
 
     final int TYPING_TIMEOUT = 3000; // 5 seconds timeout
@@ -208,6 +222,10 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             typingStatus();
         }
     };
+
+    private boolean mPressed = false;
+    private SupportAnimator mAnimator;
+    private boolean hidden = true;
 
     private void typingStatus() {
         StatusInfo statusInfo = new StatusInfo();
@@ -371,23 +389,31 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
     @Override
     public void onBackPressed() {
-        if (isExistInChat) {
-            if (mqttMessage.isEmpty())
-                setResult(Activity.RESULT_CANCELED);
-            else {
-                Intent in = new Intent();
-                in.putExtra(RescribeConstants.CHAT_USERS, chatList);
-                setResult(Activity.RESULT_OK, in);
-            }
-        } else setResult(Activity.RESULT_CANCELED);
-        super.onBackPressed();
+        if (mPressed) {
+            openBottomSheetMenu();
+        } else {
+            if (isExistInChat) {
+                if (mqttMessage.isEmpty())
+                    setResult(Activity.RESULT_CANCELED);
+                else {
+                    Intent in = new Intent();
+                    in.putExtra(RescribeConstants.CHAT_USERS, chatList);
+                    setResult(Activity.RESULT_OK, in);
+                }
+            } else setResult(Activity.RESULT_CANCELED);
+            super.onBackPressed();
+        }
     }
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+
+        mRevealView.setVisibility(View.INVISIBLE);
+        exitRevealDialog.setVisibility(View.GONE);
 
         appDBHelper = new AppDBHelper(this);
 
@@ -614,7 +640,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 File file = new File(mFileName);
                 boolean deleted = file.delete();
                 mFileName = audioUploadFolder;
-
             }
         });
 
@@ -808,14 +833,42 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         UploadService.UPLOAD_POOL_SIZE = 10;
     }
 
-    @OnClick({R.id.backButton, R.id.attachmentButton, R.id.cameraButton, R.id.sendButton})
+    @OnClick({R.id.backButton, R.id.attachmentButton, R.id.cameraButton, R.id.sendButton, R.id.exitRevealDialog, R.id.camera, R.id.document, R.id.location})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.camera:
+                ChatActivityPermissionsDispatcher.onPickPhotoWithCheck(ChatActivity.this);
+                openBottomSheetMenu();
+                break;
+
+            case R.id.document:
+                ChatActivityPermissionsDispatcher.onPickDocWithCheck(ChatActivity.this);
+                openBottomSheetMenu();
+                break;
+
+            case R.id.location:
+
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+
+                openBottomSheetMenu();
+                break;
+
+            case R.id.exitRevealDialog:
+                if (mPressed)
+                    openBottomSheetMenu();
+                break;
             case R.id.backButton:
                 onBackPressed();
                 break;
             case R.id.attachmentButton:
-                ChatActivityPermissionsDispatcher.onPickDocWithCheck(ChatActivity.this);
+                openBottomSheetMenu();
                 break;
             case R.id.cameraButton:
                 ChatActivityPermissionsDispatcher.onPickPhotoWithCheck(ChatActivity.this);
@@ -851,9 +904,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                     String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
                     messageL.setMsgTime(msgTime);
 
-                    // send msg by http api
-//                        chatHelper.sendMsgToPatient(messageL);
-
                     // send msg by mqtt
                     if (NetworkUtil.getConnectivityStatusBoolean(ChatActivity.this)) {
                         if (chatAdapter != null) {
@@ -867,6 +917,54 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                         CommonMethods.showToast(ChatActivity.this, getResources().getString(R.string.internet));
                 }
                 break;
+        }
+    }
+
+    private void openBottomSheetMenu() {
+
+        if (!mPressed) {
+            mPressed = true;
+
+            int cx = (mRevealView.getLeft() + mRevealView.getRight());
+            int cy = mRevealView.getBottom();
+            int endradius = Math.max(mRevealView.getWidth(), mRevealView.getHeight());
+            mAnimator = ViewAnimationUtils.createCircularReveal(mRevealView, cx, cy, 0, endradius);
+            mAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            mAnimator.setDuration(300);
+
+            if (hidden) {
+                mRevealView.setVisibility(View.VISIBLE);
+                exitRevealDialog.setVisibility(View.VISIBLE);
+                mAnimator.start();
+                hidden = false;
+            }
+        } else {
+            if (mAnimator != null && !mAnimator.isRunning()) {
+                mAnimator = mAnimator.reverse();
+                mAnimator.addListener(new SupportAnimator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart() {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd() {
+                        mRevealView.setVisibility(View.INVISIBLE);
+                        exitRevealDialog.setVisibility(View.GONE);
+                        hidden = true;
+                        mPressed = false;
+                    }
+
+                    @Override
+                    public void onAnimationCancel() {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat() {
+                    }
+                });
+                mAnimator.start();
+            }
         }
     }
 
@@ -916,8 +1014,52 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 if (!data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS).isEmpty()) {
                     uploadFiles(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS), RescribeConstants.FILE.DOC);
                 }
+            } else if (requestCode == PLACE_PICKER_REQUEST) {
+                Place place = PlacePicker.getPlace(data, this);
+                String latlong = place.getLatLng().latitude + "," + place.getLatLng().longitude;
+                sendLocation(latlong);
             }
         }
+    }
+
+    private void sendLocation(String latlong) {
+
+        MQTTMessage messageL = new MQTTMessage();
+        messageL.setTopic(MQTTService.TOPIC[0]);
+        messageL.setMsg("");
+        messageL.setFileUrl(latlong);
+
+        String generatedId = docId + "_" + mqttMessage.size() + System.nanoTime();
+
+        messageL.setMsgId(generatedId);
+        messageL.setDocId(Integer.parseInt(docId));
+        messageL.setPatId(chatList.getId());
+
+        messageL.setName(docName);
+        messageL.setOnlineStatus(ONLINE);
+        messageL.setImageUrl(imageUrl);
+
+        messageL.setFileType(RescribeConstants.FILE.LOC);
+        messageL.setSpecialization("");
+        messageL.setPaidStatus(FREE);
+        messageL.setUploadStatus(COMPLETED);
+
+        messageL.setSender(DOCTOR);
+
+        // 2017-10-13 13:08:07
+        String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
+        messageL.setMsgTime(msgTime);
+
+        // send msg by mqtt
+        if (NetworkUtil.getConnectivityStatusBoolean(ChatActivity.this)) {
+            if (chatAdapter != null) {
+                mqttService.passMessage(messageL);
+                mqttMessage.add(messageL);
+                chatAdapter.notifyItemInserted(mqttMessage.size() - 1);
+                chatRecyclerView.smoothScrollToPosition(mqttMessage.size() - 1);
+            }
+        } else
+            CommonMethods.showToast(ChatActivity.this, getResources().getString(R.string.internet));
     }
 
     private void uploadFiles(ArrayList<String> files, String fileType) {
@@ -953,9 +1095,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             // 2017-10-13 13:08:07
             String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
             messageL.setMsgTime(msgTime);
-
-            // send msg by mqtt
-//            mqttService.passMessage(messageL);
 
             mqttMessage.add(messageL);
 
@@ -1000,9 +1139,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
             messageL.setMsgTime(msgTime);
 
-// send msg by mqtt
-//            mqttService.passMessage(messageL);
-
             mqttMessage.add(messageL);
 
             uploadFile(messageL);
@@ -1029,7 +1165,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     ServiceConnection mConnection = new ServiceConnection() {
 
         public void onServiceDisconnected(ComponentName name) {
-//            Toast.makeText(ChatActivity.this, "Service is disconnected", Toast.LENGTH_SHORT).show();
             mBounded = false;
             mqttService = null;
         }
@@ -1311,27 +1446,17 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     public long downloadFile(MQTTMessage mqttMessage) {
         long downloadReference;
 
-        // For Test Big File Download
-//        mqttMessage.setFileUrl("https://dl.google.com/dl/android/studio/ide-zips/2.3.3.0/android-studio-ide-162.4069837-linux.zip");
-
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mqttMessage.getFileUrl()));
-
         //Setting title of request
         request.setTitle(mqttMessage.getMsg());
-
         //Setting description of request
         request.setDescription("Rescribe File Downloading");
-
         request.allowScanningByMediaScanner();
-
         //Set the local destination for the downloaded file to a path
         //within the application's external files directory
-
         request.setDestinationInExternalPublicDir(RESCRIBE_FILES, CommonMethods.getFileNameFromPath(mqttMessage.getFileUrl()));
-
         // Keep notification after complete
 //        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
         //Enqueue download and save into referenceId
         downloadReference = downloadManager.enqueue(request);
 
@@ -1446,7 +1571,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         @Override
         public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
 
-            CommonMethods.Log(TAG, "FaildUpload");
+            CommonMethods.Log(TAG, "FailedUpload");
 
                 String prefix[] = uploadInfo.getUploadId().split("_");
                 if (prefix[0].equals(docId)) {

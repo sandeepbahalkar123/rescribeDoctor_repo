@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.widget.Button;
 
@@ -14,7 +15,7 @@ import com.rescribe.doctor.util.RescribeConstants;
 /**
  * Created by Sandeep Bahalkar
  */
-public class CustomButton extends Button {
+public class CustomButton extends AppCompatButton {
     public CustomButton(Context context, AttributeSet attrs) {
         super(context, attrs);
 

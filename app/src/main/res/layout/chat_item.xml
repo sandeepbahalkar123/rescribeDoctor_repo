@@ -79,7 +79,7 @@
                             android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
                             android:scaleType="centerCrop"
-                            tools:src="@drawable/image_placeholder" />
+                            android:src="@drawable/image_placeholder" />
 
                         <RelativeLayout
                             android:id="@+id/senderPhotoProgressLayout"
@@ -342,7 +342,7 @@
                             android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
                             android:scaleType="centerCrop"
-                            tools:src="@drawable/image_placeholder" />
+                            android:src="@drawable/image_placeholder" />
 
                         <RelativeLayout
                             android:id="@+id/receiverPhotoProgressLayout"

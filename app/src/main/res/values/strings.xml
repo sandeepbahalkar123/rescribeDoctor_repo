@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Dr Rescribe</string>
     <string name="enter_mobile_no">Mobile No.</string>
     <string name="log_in">Login</string>
@@ -63,7 +63,8 @@
 
     <!--Key for Debug-->
 
-    <!-- <string name="google_maps_key">AIzaSyBtI5h1jCRJZFXQowkuglxMtNYPURtHX5M</string>-->
+    <string name="google_maps_key">AIzaSyBtI5h1jCRJZFXQowkuglxMtNYPURtHX5M</string>
+
     <string name="profile_exists">User\'s profile is already exist!!</string>
     <string name="enter_otp_no">Enter otp received on your mobile no.</string>
     <string name="login_with_gmail">Login with gmail</string>
