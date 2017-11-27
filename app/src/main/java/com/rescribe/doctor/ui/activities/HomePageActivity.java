@@ -77,9 +77,7 @@ public class HomePageActivity extends DrawerActivity implements HelperResponse {
 
     @Override
     public void onBackPressed() {
-
         closeDrawer();
-
         super.onBackPressed();
     }
 

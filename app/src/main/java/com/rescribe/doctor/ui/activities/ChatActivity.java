@@ -52,10 +52,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.chat.ChatAdapter;
@@ -124,7 +121,7 @@ import static com.rescribe.doctor.util.RescribeConstants.FILE.DOC;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
-import static com.rescribe.doctor.util.RescribeConstants.PLACE_PICKER_REQUEST;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.SEND_MESSAGE;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
@@ -848,14 +845,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
             case R.id.location:
 
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
+                Intent locationPicker = new Intent(ChatActivity.this, LocationPickerActivity.class);
+                startActivityForResult(locationPicker, LocationPickerActivity.LOCATION_REQUEST);
 
                 openBottomSheetMenu();
                 break;
@@ -1014,10 +1005,9 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 if (!data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS).isEmpty()) {
                     uploadFiles(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS), RescribeConstants.FILE.DOC);
                 }
-            } else if (requestCode == PLACE_PICKER_REQUEST) {
-                Place place = PlacePicker.getPlace(data, this);
-                String latlong = place.getLatLng().latitude + "," + place.getLatLng().longitude;
-                sendLocation(latlong);
+            } else if (requestCode == LocationPickerActivity.LOCATION_REQUEST) {
+                LatLng latLng = data.getParcelableExtra(LocationPickerActivity.LAT_LONG);
+                sendLocation(latLng.latitude + ", " + latLng.longitude);
             }
         }
     }
@@ -1294,7 +1284,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                     messageL.setFileUrl(chatH.getFileUrl());
                     messageL.setMsgTime(chatH.getMsgTime());
 
-                    messageL.setMsgStatus(chatH.getMsgStatus());
+                    messageL.setMsgStatus(chatH.getMsgStatus() == null ? SENT : chatH.getMsgStatus());
 
                     messageL.setUploadStatus(COMPLETED);
 

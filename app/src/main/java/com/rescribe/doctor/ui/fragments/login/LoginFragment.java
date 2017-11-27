@@ -23,7 +23,6 @@ import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.AppGlobalContainerActivity;
 import com.rescribe.doctor.ui.activities.HomePageActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
-import com.rescribe.doctor.ui.fragments.login.SignUpFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -194,7 +193,6 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.EMAIL, docDetail.getDocEmail(), getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY, docDetail.getDocSpaciality(), getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADDRESS, docDetail.getDocAddress(), getActivity());
-
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, editTextPassword.getText().toString(), getActivity());
                 Intent intent = new Intent(getActivity(), HomePageActivity.class);

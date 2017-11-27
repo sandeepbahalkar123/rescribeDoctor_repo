@@ -7,8 +7,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
-import static com.rescribe.doctor.util.RescribeConstants.DOWNLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
 
 public class MQTTMessage implements Parcelable {
@@ -49,7 +49,7 @@ public class MQTTMessage implements Parcelable {
 
     @SerializedName("msgStatus")
     @Expose
-    private String msgStatus = "";
+    private String msgStatus = SENT;
 
     @SerializedName("paidStatus")
     @Expose

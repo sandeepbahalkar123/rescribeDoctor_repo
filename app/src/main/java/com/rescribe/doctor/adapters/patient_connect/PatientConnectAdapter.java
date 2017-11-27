@@ -2,7 +2,6 @@ package com.rescribe.doctor.adapters.patient_connect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -23,17 +22,11 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
-import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
-import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
-import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -7,8 +7,8 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.notification.MQTTServiceAlarmTask;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.util.RescribeConstants;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -35,13 +35,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, "1234", mContext);*/
         // End Hard Coded
 
-        // start mqtt Service
-        // use this to start and trigger a service
-        Intent serviceIntent = new Intent(this, MQTTService.class);
-        // potentially add data to the serviceIntent
-        serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
-        startService(serviceIntent);
-
+        MQTTServiceAlarmTask.cancelAlarm(mContext);
+        new MQTTServiceAlarmTask(mContext).run();
         doNext();
 
     }

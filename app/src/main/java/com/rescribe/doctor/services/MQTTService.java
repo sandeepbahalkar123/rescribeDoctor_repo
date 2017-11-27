@@ -59,7 +59,7 @@ public class MQTTService extends Service {
     public static final String NOTIFY = "com.rescribe.doctor.NOTIFY"; // Change
     public static final String IS_MESSAGE = "is_message";
     public static final String MESSAGE_ID = "message_id";
-    public static final String[] TOPIC = {"doctorConnect", "doctor/status", "message/status"};
+    public static final String[] TOPIC = {"chatConnect/message", "chatConnect/userStatus",  "chatConnect/messageStatus", "chatConnect/internet"};
     public static final String DELIVERED = "delivered";
 
     public static final String DOCTOR = "user1";

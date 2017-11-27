@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
+
 public class ChatHistory implements Parcelable {
 
     @SerializedName("chat_id")
@@ -58,7 +60,7 @@ public class ChatHistory implements Parcelable {
 
     @SerializedName("msgStatus")
     @Expose
-    private String msgStatus = "";
+    private String msgStatus = SENT;
 
     // Added End
 

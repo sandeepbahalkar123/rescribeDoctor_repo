@@ -97,12 +97,12 @@
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
                     android:paddingBottom="@dimen/dp14"
-                    android:paddingEnd="@dimen/dp8"
-                    android:paddingLeft="@dimen/dp18"
-                    android:paddingRight="@dimen/dp8"
-                    android:paddingStart="@dimen/dp18"
+                    android:paddingEnd="@dimen/dp18"
+                    android:paddingStart="@dimen/dp9"
                     android:paddingTop="@dimen/dp14"
-                    android:src="@drawable/attach" />
+                    android:src="@drawable/attach"
+                    android:paddingLeft="@dimen/dp9"
+                    android:paddingRight="@dimen/dp18" />
 
                 <ImageButton
                     android:id="@+id/cameraButton"
@@ -111,11 +111,11 @@
                     android:background="@color/transparent"
                     android:paddingBottom="@dimen/dp14"
                     android:paddingEnd="@dimen/dp18"
-                    android:paddingLeft="@dimen/dp8"
-                    android:paddingRight="@dimen/dp18"
-                    android:paddingStart="@dimen/dp8"
+                    android:paddingStart="@dimen/dp9"
                     android:paddingTop="@dimen/dp14"
-                    android:src="@drawable/photo_camera" />
+                    android:src="@drawable/photo_camera"
+                    android:paddingRight="@dimen/dp18"
+                    android:paddingLeft="@dimen/dp9" />
 
             </LinearLayout>
 
