@@ -38,7 +38,7 @@ public class MQTTServiceAlarmTask implements Runnable {
         // potentially add data to the serviceIntent
         serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
         PendingIntent pendingIntent = PendingIntent.getService(context, MQTT_ALARM_TASK, serviceIntent, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HALF_HOUR, pendingIntent);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
     }
 
     public static void cancelAlarm(Context context) {

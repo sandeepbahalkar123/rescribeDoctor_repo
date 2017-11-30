@@ -123,7 +123,6 @@ public class RescribeConstants {
     public static final String SEARCH__REQUEST = "search_request";
     public static final String CONNECT_REQUEST = "connect_request";
     public static final String PATIENT_INFO = "patient_info";
-    public static final String STATUS_COLOR = "status_color";
     public static final int PLACE_PICKER_REQUEST = 99;
 
     public static String HEADER_COLOR = "#E4422C";

@@ -111,8 +111,13 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE;
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
+import static com.rescribe.doctor.services.MQTTService.MESSAGE_STATUS_TOPIC;
+import static com.rescribe.doctor.services.MQTTService.MESSAGE_TOPIC;
 import static com.rescribe.doctor.services.MQTTService.NOTIFY;
 import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
+import static com.rescribe.doctor.services.MQTTService.TOPIC;
+import static com.rescribe.doctor.services.MQTTService.USER_STATUS_TOPIC;
+import static com.rescribe.doctor.services.MQTTService.USER_TYPING_STATUS_TOPIC;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 import static com.rescribe.doctor.util.RescribeConstants.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
@@ -124,6 +129,8 @@ import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.SEND_MESSAGE;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.IDLE;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.TYPING;
 
@@ -254,83 +261,103 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(NOTIFY)) {
-                boolean delivered = intent.getBooleanExtra(MQTTService.DELIVERED, false);
-                boolean isReceived = intent.getBooleanExtra(MQTTService.IS_MESSAGE, false);
 
-                if (delivered) {
+            if (intent.getAction() != null) {
 
-                    Log.d(TAG, "Delivery Complete");
-                    Log.d(TAG + " MESSAGE_ID", intent.getStringExtra(MQTTService.MESSAGE_ID));
+                if (intent.getAction().equals(NOTIFY)) {
 
-                } else if (isReceived) {
-                    MQTTMessage message = intent.getParcelableExtra(MQTTService.MESSAGE);
-                    if (message.getPatId() == chatList.getId()) {
-                        if (chatAdapter != null) {
-                            mqttMessage.add(message);
-                            chatAdapter.notifyItemInserted(mqttMessage.size() - 1);
-                            chatRecyclerView.smoothScrollToPosition(mqttMessage.size() - 1);
-                        }
-                    } else {
-                        // Other user message
-                        CommonMethods.Log(TAG, "Other user message");
-                    }
-                } else {
-                    // Getting type status
-                    StatusInfo statusInfo = intent.getParcelableExtra(MQTTService.MESSAGE);
+                    String topic = intent.getStringExtra(MQTTService.TOPIC_KEY);
+                    topic = topic == null ? "" : topic;
 
-                    // change
-                    if (statusInfo.getPatId() == chatList.getId() && Integer.parseInt(docId) == statusInfo.getDocId()) {
+                    if (intent.getBooleanExtra(MQTTService.DELIVERED, false)) {
 
-                        // change
-                        if (statusInfo.getUserStatus().equals("")) {
-                            if (statusInfo.getMessageStatus().equals("")) {
+                        Log.d(TAG, "Delivery Complete");
+                        Log.d(TAG + " MESSAGE_ID", intent.getStringExtra(MQTTService.MESSAGE_ID));
 
-                                CommonMethods.Log(TAG, "typing status");
+                    } else if (topic.equals(TOPIC[MESSAGE_TOPIC])) {
 
-                                if (statusInfo.isTyping()) {
-                                    dateTime.setText(TYPING_MESSAGE);
-                                    dateTime.setTextColor(Color.WHITE);
-                                } else {
-                                    dateTime.setText(chatList.getOnlineStatus());
-                                    dateTime.setTextColor(statusColor);
-                                }
-                            } else {
+                        // User message
+                        CommonMethods.Log(TAG, "User message");
 
-                                CommonMethods.Log(TAG, "message status");
-
-                                switch (statusInfo.getMessageStatus()) {
-                                    case SEEN:
-                                        // change message status as a read
-                                        for (MQTTMessage mqttMessage : mqttMessage)
-                                            mqttMessage.setMsgStatus(SEEN);
-
-                                        chatAdapter.notifyDataSetChanged();
-
-                                        break;
-                                    case REACHED:
-                                        // change message status as a reached
-                                        for (MQTTMessage mqttMessage : mqttMessage) {
-                                            if (!mqttMessage.getMsgStatus().equals(SEEN))
-                                                mqttMessage.setMsgStatus(REACHED);
-                                        }
-
-                                        chatAdapter.notifyDataSetChanged();
-                                        break;
-                                }
+                        MQTTMessage message = intent.getParcelableExtra(MQTTService.MESSAGE);
+                        if (message.getPatId() == chatList.getId()) {
+                            if (chatAdapter != null) {
+                                mqttMessage.add(message);
+                                chatAdapter.notifyItemInserted(mqttMessage.size() - 1);
+                                chatRecyclerView.smoothScrollToPosition(mqttMessage.size() - 1);
                             }
                         } else {
-                            CommonMethods.Log(TAG, "user status");
+                            // Other user message
+                            CommonMethods.Log(TAG, "Other user message");
                         }
-                    } else {
-                        CommonMethods.Log(TAG, "Other user status");
+                    }  else if (topic.equals(TOPIC[MESSAGE_STATUS_TOPIC])) {
+
+                        // Message Status
+                        CommonMethods.Log(TAG, "message status");
+                        StatusInfo statusInfo = intent.getParcelableExtra(MQTTService.MESSAGE);
+                        if (statusInfo.getPatId() == chatList.getId() && Integer.parseInt(docId) == statusInfo.getDocId()) {
+
+                            switch (statusInfo.getMessageStatus()) {
+                                case SEEN:
+                                    // change message status as a read
+                                    for (MQTTMessage mqttMessage : mqttMessage)
+                                        mqttMessage.setMsgStatus(SEEN);
+
+                                    chatAdapter.notifyDataSetChanged();
+
+                                    break;
+                                case REACHED:
+                                    // change message status as a reached
+                                    for (MQTTMessage mqttMessage : mqttMessage) {
+                                        if (!mqttMessage.getMsgStatus().equals(SEEN))
+                                            mqttMessage.setMsgStatus(REACHED);
+                                    }
+
+                                    chatAdapter.notifyDataSetChanged();
+                                    break;
+                            }
+                        } else {
+                            // Other use message
+                            CommonMethods.Log(TAG, "Other user status");
+                        }
+                    } else if (topic.equals(TOPIC[USER_TYPING_STATUS_TOPIC])) {
+
+                        // Typing Status
+                        CommonMethods.Log(TAG, "typing status");
+                        StatusInfo statusInfo = intent.getParcelableExtra(MQTTService.MESSAGE);
+                        if (statusInfo.getPatId() == chatList.getId() && Integer.parseInt(docId) == statusInfo.getDocId()) {
+
+                            if (statusInfo.isTyping()) {
+                                dateTime.setText(TYPING_MESSAGE);
+                                dateTime.setTextColor(Color.WHITE);
+                            } else {
+                                dateTime.setText(chatList.getOnlineStatus());
+                                setUserStatusColor(chatList.getOnlineStatus());
+                            }
+                        }
+                    } else if (topic.equals(TOPIC[USER_STATUS_TOPIC])) {
+                        // User Status
+                        CommonMethods.Log(TAG, "User status");
                     }
+                } else if (intent.getAction().equals(ACTION_DOWNLOAD_COMPLETE)) {
+                    checkDownloaded();
                 }
-            } else if (intent.getAction().equals(ACTION_DOWNLOAD_COMPLETE)) {
-                checkDownloaded();
-            }
+            } else CommonMethods.Log(TAG, "null action");
         }
     };
+
+    private void setUserStatusColor(String onlineStatus) {
+        if (onlineStatus.equalsIgnoreCase(ONLINE)) {
+            onlineStatusIcon.setVisibility(View.VISIBLE);
+            dateTime.setTextColor(ContextCompat.getColor(ChatActivity.this, R.color.green_light));
+        } else if (onlineStatus.equalsIgnoreCase(IDLE)) {
+            dateTime.setTextColor(ContextCompat.getColor(ChatActivity.this, R.color.range_yellow));
+            onlineStatusIcon.setVisibility(View.INVISIBLE);
+        } else if (onlineStatus.equalsIgnoreCase(OFFLINE)) {
+            dateTime.setTextColor(ContextCompat.getColor(ChatActivity.this, R.color.grey_500));
+            onlineStatusIcon.setVisibility(View.INVISIBLE);
+        }
+    }
 
     void checkDownloaded() {
         DownloadManager.Query query = new DownloadManager.Query();
@@ -375,7 +402,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private String speciality = "";
 
     private PatientData chatList;
-    private static int statusColor;
 
     // Uploading
     private Device device;
@@ -431,14 +457,11 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 chatList.setId(mqttMessage.getPatId());
                 chatList.setOnlineStatus(ONLINE);
                 chatList.setUnreadMessages(0);
-                statusColor = ContextCompat.getColor(ChatActivity.this, R.color.green_light);
             } else {
                 chatList = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
-                statusColor = getIntent().getIntExtra(RescribeConstants.STATUS_COLOR, ContextCompat.getColor(ChatActivity.this, R.color.green_light));
             }
         } else {
             chatList = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
-            statusColor = getIntent().getIntExtra(RescribeConstants.STATUS_COLOR, ContextCompat.getColor(ChatActivity.this, R.color.green_light));
         }
 
         receiverName.setText(chatList.getPatientName());
@@ -487,7 +510,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         }
 
         dateTime.setText(chatList.getOnlineStatus());
-        dateTime.setTextColor(statusColor);
+        setUserStatusColor(chatList.getOnlineStatus());
 
         if (chatList.getOnlineStatus().equalsIgnoreCase(ONLINE))
             onlineStatusIcon.setVisibility(View.VISIBLE);
@@ -871,7 +894,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 if (!message.equals("")) {
 
                     MQTTMessage messageL = new MQTTMessage();
-                    messageL.setTopic(MQTTService.TOPIC[0]);
+                    messageL.setTopic(TOPIC[MESSAGE_TOPIC]);
                     messageL.setMsg(message);
 
                     String generatedId = docId + "_" + mqttMessage.size() + System.nanoTime();
@@ -890,6 +913,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
                     messageL.setFileUrl("");
                     messageL.setFileType("");
+                    messageL.setMsgStatus(SENT);
 
                     // 2017-10-13 13:08:07
                     String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
@@ -1015,7 +1039,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private void sendLocation(String latlong) {
 
         MQTTMessage messageL = new MQTTMessage();
-        messageL.setTopic(MQTTService.TOPIC[0]);
+        messageL.setTopic(TOPIC[MESSAGE_TOPIC]);
         messageL.setMsg("");
         messageL.setFileUrl(latlong);
 
@@ -1033,6 +1057,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         messageL.setSpecialization("");
         messageL.setPaidStatus(FREE);
         messageL.setUploadStatus(COMPLETED);
+        messageL.setMsgStatus(SENT);
 
         messageL.setSender(DOCTOR);
 
@@ -1059,7 +1084,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             String fileForUpload = copyFile(CommonMethods.getFilePath(file), CommonMethods.getFileNameFromPath(file), filesUploadFolder);
 
             MQTTMessage messageL = new MQTTMessage();
-            messageL.setTopic(MQTTService.TOPIC[0]);
+            messageL.setTopic(TOPIC[MESSAGE_TOPIC]);
 
             String fileName = fileForUpload.substring(fileForUpload.lastIndexOf("/") + 1);
 
@@ -1079,6 +1104,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             messageL.setImageUrl(imageUrl);
             messageL.setSpecialization(speciality);
             messageL.setPaidStatus(FREE);
+            messageL.setMsgStatus(SENT);
 
             messageL.setSender(DOCTOR);
 
@@ -1104,7 +1130,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             String fileForUpload = copyFile(CommonMethods.getFilePath(file), CommonMethods.getFileNameFromPath(file), photosUploadFolder);
 
             MQTTMessage messageL = new MQTTMessage();
-            messageL.setTopic(MQTTService.TOPIC[0]);
+            messageL.setTopic(TOPIC[MESSAGE_TOPIC]);
             messageL.setMsg("");
 
             String generatedId = docId + "_" + mqttMessage.size() + System.nanoTime();
@@ -1122,8 +1148,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             messageL.setFileType(IMG);
 
             messageL.setSender(DOCTOR);
-
             messageL.setUploadStatus(UPLOADING);
+            messageL.setMsgStatus(SENT);
 
             // 2017-10-13 13:08:07
             String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
@@ -1563,15 +1589,15 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
             CommonMethods.Log(TAG, "FailedUpload");
 
-                String prefix[] = uploadInfo.getUploadId().split("_");
-                if (prefix[0].equals(docId)) {
-                    appDBHelper.updateMessageUpload(uploadInfo.getUploadId(), FAILED);
+            String prefix[] = uploadInfo.getUploadId().split("_");
+            if (prefix[0].equals(docId)) {
+                appDBHelper.updateMessageUpload(uploadInfo.getUploadId(), FAILED);
 
-                    int position = getPositionById(uploadInfo.getUploadId());
+                int position = getPositionById(uploadInfo.getUploadId());
 
-                    mqttMessage.get(position).setUploadStatus(FAILED);
-                    chatAdapter.notifyItemChanged(position);
-                }
+                mqttMessage.get(position).setUploadStatus(FAILED);
+                chatAdapter.notifyItemChanged(position);
+            }
 
         }
 
@@ -1591,15 +1617,15 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
             CommonMethods.Log(TAG, "onCompleted " + serverResponse.getBodyAsString());
 
-                String prefix[] = uploadInfo.getUploadId().split("_");
-                if (prefix[0].equals(docId)) {
+            String prefix[] = uploadInfo.getUploadId().split("_");
+            if (prefix[0].equals(docId)) {
 //                    appDBHelper.deleteUploadedMessage(uploadInfo.getUploadId());
 
-                    int position = getPositionById(uploadInfo.getUploadId());
+                int position = getPositionById(uploadInfo.getUploadId());
 
-                    mqttMessage.get(position).setUploadStatus(COMPLETED);
-                    chatAdapter.notifyItemChanged(position);
-                }
+                mqttMessage.get(position).setUploadStatus(COMPLETED);
+                chatAdapter.notifyItemChanged(position);
+            }
         }
 
         @Override

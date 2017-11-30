@@ -16,6 +16,7 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
+import static com.rescribe.doctor.services.MQTTService.MESSAGE_TOPIC;
 import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
 import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
@@ -47,7 +48,7 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
             this.context = context;
 
             MQTTMessage messageL = new MQTTMessage();
-            messageL.setTopic(MQTTService.TOPIC[0]);
+            messageL.setTopic(MQTTService.TOPIC[MESSAGE_TOPIC]);
             messageL.setMsg(message.toString());
 
             String generatedId = recievedMessage.getDocId() + "_" + 0 + System.nanoTime();
