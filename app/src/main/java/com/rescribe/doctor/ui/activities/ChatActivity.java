@@ -253,7 +253,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
         statusInfo.setMessageStatus(messageStatus);
         if (mqttService != null)
-            mqttService.passStatusInfo(statusInfo);
+            mqttService.messageStatus(statusInfo);
     }
 
     // End Check Typing

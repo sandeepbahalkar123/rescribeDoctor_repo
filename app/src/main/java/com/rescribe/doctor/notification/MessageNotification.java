@@ -153,26 +153,29 @@ public class MessageNotification {
 
     private static String getContent(MQTTMessage mqttMessage) {
         String content;
-        switch (mqttMessage.getFileType()) {
-            case DOC:
-                content = RescribeConstants.FILE_EMOJI.DOC_FILE;
-                break;
-            case AUD:
-                content = RescribeConstants.FILE_EMOJI.AUD_FILE;
-                break;
-            case VID:
-                content = RescribeConstants.FILE_EMOJI.VID_FILE;
-                break;
-            case LOC:
-                content = RescribeConstants.FILE_EMOJI.LOC_FILE;
-                break;
-            case IMG:
-                content = RescribeConstants.FILE_EMOJI.IMG_FILE;
-                break;
-            default:
-                content = mqttMessage.getMsg();
-                break;
-        }
+
+        if (mqttMessage.getFileType() != null) {
+            switch (mqttMessage.getFileType()) {
+                case DOC:
+                    content = RescribeConstants.FILE_EMOJI.DOC_FILE;
+                    break;
+                case AUD:
+                    content = RescribeConstants.FILE_EMOJI.AUD_FILE;
+                    break;
+                case VID:
+                    content = RescribeConstants.FILE_EMOJI.VID_FILE;
+                    break;
+                case LOC:
+                    content = RescribeConstants.FILE_EMOJI.LOC_FILE;
+                    break;
+                case IMG:
+                    content = RescribeConstants.FILE_EMOJI.IMG_FILE;
+                    break;
+                default:
+                    content = mqttMessage.getMsg();
+                    break;
+            }
+        } else content = mqttMessage.getMsg();
 
         return content;
     }
