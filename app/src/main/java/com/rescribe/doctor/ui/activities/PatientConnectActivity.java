@@ -28,6 +28,7 @@ import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientConnectChatFragment;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientConnectFragment;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -36,6 +37,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.rescribe.doctor.services.MQTTService.MESSAGE_TOPIC;
+import static com.rescribe.doctor.services.MQTTService.NOTIFY;
+import static com.rescribe.doctor.services.MQTTService.TOPIC;
 
 
 /**
@@ -49,17 +54,24 @@ public class PatientConnectActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            boolean delivered = intent.getBooleanExtra(MQTTService.DELIVERED, false);
-            boolean isReceived = intent.getBooleanExtra(MQTTService.IS_MESSAGE, false);
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(NOTIFY)) {
 
-            if (delivered) {
+                    String topic = intent.getStringExtra(MQTTService.TOPIC_KEY);
+                    topic = topic == null ? "" : topic;
 
-                Log.d(TAG, "Delivery Complete");
-                Log.d(TAG, "MESSAGE_ID" + intent.getStringExtra(MQTTService.MESSAGE_ID));
+                    if (intent.getBooleanExtra(MQTTService.DELIVERED, false)) {
 
-            } else if (isReceived) {
-                MQTTMessage message = intent.getParcelableExtra(MQTTService.MESSAGE);
-                mPatientConnectChatFragment.notifyCount(message);
+                        Log.d(TAG, "Delivery Complete");
+                        Log.d(TAG + " MSG_ID", intent.getStringExtra(MQTTService.MESSAGE_ID));
+
+                    } else if (topic.equals(TOPIC[MESSAGE_TOPIC])) {
+                        // User message
+                        CommonMethods.Log(TAG, "User message");
+                        MQTTMessage message = intent.getParcelableExtra(MQTTService.MESSAGE);
+                        mPatientConnectChatFragment.notifyCount(message);
+                    }
+                }
             }
         }
     };
@@ -249,7 +261,7 @@ public class PatientConnectActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver(receiver, new IntentFilter(
-                MQTTService.NOTIFY));
+                NOTIFY));
 
 //        sendUserStatus(ONLINE);
     }

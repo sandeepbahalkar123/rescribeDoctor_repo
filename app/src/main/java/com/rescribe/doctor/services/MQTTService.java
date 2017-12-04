@@ -60,7 +60,6 @@ public class MQTTService extends Service {
     private static final String TAG = "MQTTService";
     public static final String MESSAGE = "message";
     public static final String NOTIFY = "com.rescribe.doctor.NOTIFY"; // Change
-    public static final String IS_MESSAGE = "is_message";
     public static final String MESSAGE_ID = "message_id";
 
     public static final int MESSAGE_TOPIC = 0;
@@ -234,8 +233,8 @@ public class MQTTService extends Service {
                                             }
 
                                             Intent intent = new Intent(NOTIFY);
-                                            intent.putExtra(IS_MESSAGE, true);
                                             intent.putExtra(MESSAGE, messageL);
+                                            intent.putExtra(TOPIC_KEY, topic);
                                             sendBroadcast(intent);
 
                                             messageStatus(statusInfo);
@@ -346,7 +345,7 @@ public class MQTTService extends Service {
     public void messageStatus(StatusInfo statusInfo) {
         try {
             // 2017-10-13 13:08:07
-            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
+            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
             statusInfo.setMsgTime(msgTime);
             String content = gson.toJson(statusInfo, StatusInfo.class);
             MqttMessage message = new MqttMessage(content.getBytes());
@@ -366,7 +365,7 @@ public class MQTTService extends Service {
     public void typingStatus(StatusInfo statusInfo) {
         try {
             // 2017-10-13 13:08:07
-            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
+            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
             statusInfo.setMsgTime(msgTime);
             String content = gson.toJson(statusInfo, StatusInfo.class);
             MqttMessage message = new MqttMessage(content.getBytes());

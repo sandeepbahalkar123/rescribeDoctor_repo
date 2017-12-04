@@ -73,7 +73,7 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
             messageL.setSender(DOCTOR);
 
             // 2017-10-13 13:08:07
-            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
+            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
             messageL.setMsgTime(msgTime);
 
             // send msg by http api

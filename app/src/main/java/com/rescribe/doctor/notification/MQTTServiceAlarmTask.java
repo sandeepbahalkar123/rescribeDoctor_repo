@@ -36,7 +36,6 @@ public class MQTTServiceAlarmTask implements Runnable {
         // use this to start and trigger a service
         Intent serviceIntent = new Intent(context, MQTTService.class);
         // potentially add data to the serviceIntent
-        serviceIntent.putExtra(MQTTService.IS_MESSAGE, false);
         PendingIntent pendingIntent = PendingIntent.getService(context, MQTT_ALARM_TASK, serviceIntent, 0);
         am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
     }
