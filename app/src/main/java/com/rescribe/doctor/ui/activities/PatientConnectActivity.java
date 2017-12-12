@@ -19,16 +19,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.login.LoginHelper;
+import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
+<<<<<<< HEAD
 import com.rescribe.doctor.model.chat.StatusInfo;
+=======
+import com.rescribe.doctor.model.login.ActiveRequest;
+>>>>>>> a8bffc502e47a4a6d5700b4f0b31820dafb51233
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
+import com.rescribe.doctor.ui.customesViews.SwitchButton;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientConnectChatFragment;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientConnectFragment;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -38,20 +47,26 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+<<<<<<< HEAD
 import static com.rescribe.doctor.services.MQTTService.MESSAGE;
 import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
 import static com.rescribe.doctor.services.MQTTService.STATUS_INFO;
 import static com.rescribe.doctor.ui.activities.ChatActivity.CHAT;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
+=======
+import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
+>>>>>>> a8bffc502e47a4a6d5700b4f0b31820dafb51233
 
 
 /**
  * Created by jeetal on 5/9/17.
  */
 
-public class PatientConnectActivity extends AppCompatActivity {
+public class PatientConnectActivity extends AppCompatActivity implements HelperResponse {
 
     private final static String TAG = "DoctorConnect";
+    @BindView(R.id.radioButton)
+    SwitchButton radioButton;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -95,6 +110,11 @@ public class PatientConnectActivity extends AppCompatActivity {
     private PatientSearchFragment mPatientSearchFragment;
     private ArrayList<PatientData> mReceivedConnectedPatientDataList;
     private String docId;
+<<<<<<< HEAD
+=======
+    private LoginHelper loginHelper;
+    private Context mContext;
+>>>>>>> a8bffc502e47a4a6d5700b4f0b31820dafb51233
     //-----
 
     @Override
@@ -102,9 +122,14 @@ public class PatientConnectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_connect);
         ButterKnife.bind(this);
+<<<<<<< HEAD
 
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, PatientConnectActivity.this);
 
+=======
+        mContext = PatientConnectActivity.this;
+        radioButton.setChecked(true);
+>>>>>>> a8bffc502e47a4a6d5700b4f0b31820dafb51233
         title.setText("" + getString(R.string.patient_connect));
         mFragmentTitleList[0] = getString(R.string.chats);
         mFragmentTitleList[1] = getString(R.string.connect);
@@ -114,7 +139,11 @@ public class PatientConnectActivity extends AppCompatActivity {
         initialize();
     }
 
+
     private void initialize() {
+        loginHelper = new LoginHelper(this, this);
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+
         mTabsPatientConnect.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -123,9 +152,11 @@ public class PatientConnectActivity extends AppCompatActivity {
                     mSearchView.setVisibility(View.VISIBLE);
                     whiteUnderLine.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
+                    radioButton.setVisibility(View.GONE);
                 } else {
                     mSearchView.setVisibility(View.GONE);
                     title.setVisibility(View.VISIBLE);
+                    radioButton.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -137,9 +168,11 @@ public class PatientConnectActivity extends AppCompatActivity {
 
                     mSearchView.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
+                    radioButton.setVisibility(View.GONE);
                 } else {
                     mSearchView.setVisibility(View.GONE);
                     title.setVisibility(View.VISIBLE);
+                    radioButton.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -148,12 +181,13 @@ public class PatientConnectActivity extends AppCompatActivity {
                 int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
                     whiteUnderLine.setVisibility(View.VISIBLE);
-
                     mSearchView.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
+                    radioButton.setVisibility(View.GONE);
                 } else {
                     mSearchView.setVisibility(View.GONE);
                     title.setVisibility(View.VISIBLE);
+                    radioButton.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -165,6 +199,7 @@ public class PatientConnectActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
 
@@ -207,6 +242,50 @@ public class PatientConnectActivity extends AppCompatActivity {
     public void onViewClicked() {
         mSearchView.setText("");
         onBackPressed();
+    }
+
+    @Override
+    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        if (mOldDataTag.equals(ACTIVE_STATUS))
+            CommonMethods.Log(ACTIVE_STATUS, "active");
+        else if (mOldDataTag.equals(RescribeConstants.LOGOUT)) {
+
+        }
+
+    }
+
+    @Override
+    public void onParseError(String mOldDataTag, String errorMessage) {
+
+    }
+
+    @Override
+    public void onServerError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @Override
+    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @OnClick({R.id.radioButton, R.id.searchView})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.radioButton:
+                if (radioButton.isChecked()) {
+                    ActiveRequest activeRequest = new ActiveRequest();
+                    activeRequest.setId(Integer.parseInt(docId));
+                    loginHelper.doActiveStatus(activeRequest);
+                } else {
+                    ActiveRequest activeRequest = new ActiveRequest();
+                    activeRequest.setId(Integer.parseInt(docId));
+                    loginHelper.doLogout(activeRequest);
+                }
+                break;
+            case R.id.searchView:
+                break;
+        }
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -258,7 +337,12 @@ public class PatientConnectActivity extends AppCompatActivity {
         registerReceiver(receiver, new IntentFilter(
                 MQTTService.NOTIFY));
 
+<<<<<<< HEAD
 //        sendUserStatus(ONLINE);
+=======
+
+
+>>>>>>> a8bffc502e47a4a6d5700b4f0b31820dafb51233
     }
 
     @Override

@@ -25,8 +25,8 @@
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center|left"
                 android:text="@string/doctor_connect"
@@ -34,6 +34,23 @@
                 android:textSize="@dimen/sp16"
                 android:visibility="visible"
                 app:customFont="@string/roboto_bold" />
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+            <com.rescribe.doctor.ui.customesViews.SwitchButton
+                android:id="@+id/radioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SwitchButtonStyle"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                app:kswAnimationDuration="0"
+                app:kswTextOff="OFF"
+                app:kswTextOn="ON"
+                android:padding="@dimen/dp12"
+                android:visibility="visible" />
+</RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

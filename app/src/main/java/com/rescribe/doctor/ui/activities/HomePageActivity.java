@@ -1,15 +1,25 @@
 package com.rescribe.doctor.ui.activities;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.TextView;
 
 import com.heinrichreimersoftware.materialdrawer.DrawerActivity;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
@@ -62,7 +72,6 @@ public class HomePageActivity extends DrawerActivity implements HelperResponse {
         mContext = HomePageActivity.this;
         HomePageActivityPermissionsDispatcher.getPermissionWithCheck(HomePageActivity.this);
         appDBHelper = new AppDBHelper(mContext);
-
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
         loginHelper = new LoginHelper(mContext, HomePageActivity.this);
         ActiveRequest activeRequest = new ActiveRequest();
@@ -87,8 +96,36 @@ public class HomePageActivity extends DrawerActivity implements HelperResponse {
     public void onBackPressed() {
 
         closeDrawer();
+        final Dialog dialog = new Dialog(mContext);
 
-        super.onBackPressed();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_exit);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+
+
+        dialog.findViewById(R.id.button_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActiveRequest activeRequest = new ActiveRequest();
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT,RescribeConstants.YES,mContext);
+                activeRequest.setId(Integer.parseInt(docId));
+                loginHelper.doLogout(activeRequest);
+                dialog.dismiss();
+
+            }
+        });
+        dialog.findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+            }
+        });
+
+        dialog.show();
+
     }
 
 
@@ -185,6 +222,7 @@ public class HomePageActivity extends DrawerActivity implements HelperResponse {
                     ActiveRequest activeRequest = new ActiveRequest();
                     activeRequest.setId(Integer.parseInt(docId));
                     loginHelper.doLogout(activeRequest);
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, RescribeConstants.BLANK, mContext);
                 } else if (id.equalsIgnoreCase(getString(R.string.patient_connect))) {
                     Intent intent = new Intent(mContext, PatientConnectActivity.class);
                     startActivity(intent);
@@ -259,7 +297,11 @@ public class HomePageActivity extends DrawerActivity implements HelperResponse {
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (mOldDataTag.equals(RescribeConstants.LOGOUT))
-            logout();
+            if(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT,mContext).equalsIgnoreCase(RescribeConstants.YES)){
+                finish();
+            }else {
+                logout();
+            }
         else if (mOldDataTag.equals(ACTIVE_STATUS))
             CommonMethods.Log(ACTIVE_STATUS, "active");
 
