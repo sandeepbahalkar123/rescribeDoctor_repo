@@ -19,6 +19,7 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient_connect.PatientData;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -26,8 +27,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by jeetal on 6/9/17.
@@ -182,6 +181,9 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
     public void addItem(PatientData patientData) {
 
+        String time = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
+        patientData.setLastChatTime(time);
+
         boolean isThere = false;
         for (int index = 0; index < mReceivedPatientDataList.size(); index++) {
             if (mReceivedPatientDataList.get(index).getId().equals(patientData.getId())) {
@@ -189,10 +191,11 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                 break;
             }
         }
-        if (!isThere) {
+
+        if (!isThere)
             mReceivedPatientDataList.add(0, patientData);
+
             mPatientConnectAdapter.notifyDataSetChanged();
-        }
     }
 }
 

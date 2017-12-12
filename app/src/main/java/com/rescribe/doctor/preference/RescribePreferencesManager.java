@@ -212,8 +212,6 @@ public class RescribePreferencesManager {
     public interface RESCRIBE_PREFERENCES_KEY {
         String USER_GENDER = "user_gender";
         String EMAIL = "email";
-        String SERVER_CONNECTION_SUCCESS = "success";
-        String IS_VALID_IP_CONFIG = "isvalidipconfig";
         String AUTHTOKEN = "authToken";
         String DOC_ID = "docId";
         String LOGIN_STATUS = "login_status";
@@ -221,17 +219,14 @@ public class RescribePreferencesManager {
         String PASSWORD = "password";
         String LOGIN_OR_SIGNUP = "signup_login";
         String COACHMARK = "coachmark";
-        String NOTIFY_DATE = "notify_date";
         String MOBILE_NUMBER_GMAIL = "mobile_number_gmail" ;
         String PASSWORD_GMAIL = "password_gmail";
         String MOBILE_NUMBER_FACEBOOK = "mobile_number_facebook";
         String PASSWORD_FACEBOOK = "password_facebook";
-        String IS_SEARCHABLE = "";
-        String IS_EXIT = "exit";
         String USER_NAME = "doctorname";
         String PROFILE_PHOTO = "doctorprofile";
         String SPECIALITY = "speciality";
         String ADDRESS = "address";
-
+        String IS_EXIT = "isExit";
     }
 }

@@ -1,8 +1,14 @@
 package com.rescribe.doctor.services;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,10 +16,17 @@ import android.os.IBinder;
 import android.support.v4.app.RemoteInput;
 import android.util.Log;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.rescribe.doctor.R;
 import com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.model.chat.InternetConnect;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
 import com.rescribe.doctor.notification.MessageNotification;
@@ -52,14 +65,21 @@ public class MQTTService extends Service {
     public static final String REPLY_ACTION = "com.rescribe.doctor.REPLY_ACTION"; // Change
     public static final String SEND_MESSAGE = "send_message";
     public static final String STATUS_INFO = "status_info";
+    public static final String TOPIC_KEY = "topic_key";
 
     private static int currentChatUser = -1;
     private static final String TAG = "MQTTService";
     public static final String MESSAGE = "message";
     public static final String NOTIFY = "com.rescribe.doctor.NOTIFY"; // Change
-    public static final String IS_MESSAGE = "is_message";
     public static final String MESSAGE_ID = "message_id";
-    public static final String[] TOPIC = {"doctorConnect", "doctor/status", "message/status"};
+
+    public static final int MESSAGE_TOPIC = 0;
+    public static final int USER_STATUS_TOPIC = 1;
+    public static final int MESSAGE_STATUS_TOPIC = 2;
+    public static final int INTERNET_TOPIC = 3;
+    public static final int USER_TYPING_STATUS_TOPIC = 4;
+
+    public static final String[] TOPIC = {"chat/connect/message", "chat/connect/userStatus", "chat/connect/messageStatus", "chat/connect/internet", "chat/connect/userTypingStatus"};
     public static final String DELIVERED = "delivered";
 
     public static final String DOCTOR = "user1";
@@ -73,15 +93,15 @@ public class MQTTService extends Service {
     private int[] qos;
 
     private AppDBHelper appDBHelper;
-    private MqttConnectOptions connOpts;
+    private MqttConnectOptions connOpts = new MqttConnectOptions();
+    private Context mContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        mContext = this;
         initRxNetwork();
-
-        appDBHelper = new AppDBHelper(this);
+        appDBHelper = new AppDBHelper(mContext);
 
         //MQTT client id to use for the device. "" will generate a client id automatically
         MemoryPersistence persistence = new MemoryPersistence();
@@ -114,9 +134,8 @@ public class MQTTService extends Service {
                                     if (internetState.isEnabled) {
                                         if (!mqttClient.isConnected()) {
                                             mqttClient.reconnect();
-                                        } else Log.d(TAG, "Not Connected 2");
-                                    } else
-                                        mqttClient.disconnect();
+                                        } else Log.d(TAG, "Connected");
+                                    }
                                 } catch (MqttException ignored) {
                                     ignored.getStackTrace();
                                 }
@@ -146,27 +165,17 @@ public class MQTTService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             if (intent.getBooleanExtra(SEND_MESSAGE, false)) {
-                if (mqttClient != null)
-                    if (!mqttClient.isConnected()) {
-                        try {
-                            mqttClient.reconnect();
-                        } catch (MqttException e) {
-                            e.printStackTrace();
-                        }
-                    } else {// change
-                        if (intent.getBooleanExtra(MESSAGE, true)) {
-                            passMessage((MQTTMessage) intent.getParcelableExtra(MESSAGE_LIST));
-                        } else passStatusInfo((StatusInfo) intent.getParcelableExtra(STATUS_INFO));
+                if (!mqttClient.isConnected()) {
+                    try {
+                        mqttClient.reconnect();
+                    } catch (MqttException e) {
+                        e.printStackTrace();
                     }
-            } else {
-                if (mqttClient != null)
-                    if (!mqttClient.isConnected()) {
-                        try {
-                            mqttClient.reconnect();
-                        } catch (MqttException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                } else {// change
+                    if (intent.getBooleanExtra(MESSAGE, true)) {
+                        passMessage((MQTTMessage) intent.getParcelableExtra(MESSAGE_LIST));
+                    } else messageStatus((StatusInfo) intent.getParcelableExtra(STATUS_INFO));
+                }
             }
         }
         return START_STICKY;
@@ -183,11 +192,14 @@ public class MQTTService extends Service {
                 @Override
                 public void connectComplete(boolean reconnect, String serverURI) {
                     CommonMethods.Log("MqttCallbackExtended", String.valueOf(reconnect));
+
                     try {
                         mqttClient.subscribe(TOPIC, qos);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
+
+                    passInternetConnect();
                 }
 
                 public void messageArrived(final String topic, final MqttMessage msg) {
@@ -196,11 +208,11 @@ public class MQTTService extends Service {
 
                     try {
                         if (!msg.isDuplicate()) {
-                            String myid = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, MQTTService.this);
-                            String userLogin = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, MQTTService.this);
+                            String myid = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+                            String userLogin = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, mContext);
 
                             if (userLogin.equals(RescribeConstants.YES)) {
-                                if (topic.equals(TOPIC[0])) {
+                                if (topic.equals(TOPIC[MESSAGE_TOPIC])) {
                                     MQTTMessage messageL = gson.fromJson(payloadString, MQTTMessage.class);
                                     if (myid.equals(String.valueOf(messageL.getDocId()))) { // Change
                                         messageL.setTopic(topic);
@@ -222,27 +234,26 @@ public class MQTTService extends Service {
                                                         messagesTemp.add(messages.get(index));
                                                 } else messagesTemp.addAll(messages);
 
-                                                MessageNotification.notify(MQTTService.this, messagesTemp, String.valueOf(messageL.getName()), appDBHelper.unreadMessageCountById(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
-
                                                 // change
                                                 statusInfo.setMessageStatus(REACHED);
+
+                                                MessageNotification.notify(mContext, messagesTemp, messageL.getName(), getProfilePhotoBitmap(messageL), appDBHelper.unreadMessageCountById(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
                                             } else {
                                                 // change
                                                 statusInfo.setMessageStatus(SEEN);
                                             }
 
-                                            passStatusInfo(statusInfo);
-
                                             Intent intent = new Intent(NOTIFY);
-                                            intent.putExtra(IS_MESSAGE, true);
                                             intent.putExtra(MESSAGE, messageL);
+                                            intent.putExtra(TOPIC_KEY, topic);
                                             sendBroadcast(intent);
+
+                                            messageStatus(statusInfo);
+
                                         } else Log.d(TAG + " DOCTOR_MES", payloadString);
                                     } else Log.d(TAG + " OTHERS_MES", payloadString);
-                                } else if (topic.equals(TOPIC[1]))
-                                    broadcastStatus(payloadString, topic); // change
-                                else if (topic.equals(TOPIC[2]))
-                                    broadcastStatus(payloadString, topic); // change
+                                } else
+                                    broadcastStatus(payloadString, topic);
                             }
                         } else Log.d(TAG + " LOGOUT_MES", payloadString);
                     } catch (JsonSyntaxException e) {
@@ -261,21 +272,17 @@ public class MQTTService extends Service {
                     sendBroadcast(intent);
                 }
 
+                @Override
                 public void connectionLost(Throwable arg0) {
-                    try {
-                        Log.d(TAG, "Connection Lost");
-                        mqttClient.reconnect();
-                    } catch (MqttException e) {
-                        e.printStackTrace();
-                    }
+                    Log.d(TAG, "Connection Lost");
                 }
             });
 
-            connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(false);
+            connOpts.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
             connOpts.setAutomaticReconnect(true);
-//            connOpts.setWill(TOPIC[0], "Message Reached".getBytes(), 1, true);
-//            connOpts.setWill(TOPIC[1], "TypeStatus Reached".getBytes(), 1, true);
+//            connOpts.setWill(TOPIC[MESSAGE_STATUS_TOPIC], "Message Reached".getBytes(), 1, true);
+//            connOpts.setWill(TOPIC[USER_STATUS_TOPIC], "TypeStatus Reached".getBytes(), 1, true);
 //            connOpts.setKeepAliveInterval(120);
 //            connOpts.setUserName("ganesh");
 //            String password = "windows10";
@@ -298,7 +305,7 @@ public class MQTTService extends Service {
                     }
                 }
             };
-            mqttClient.connect(connOpts, MQTTService.this, mqttConnect);
+            mqttClient.connect(connOpts, mContext, mqttConnect);
 
         } catch (MqttException me) {
             Log.e(TAG + "reason ", "" + me.getReasonCode());
@@ -313,29 +320,52 @@ public class MQTTService extends Service {
     // change
     private void broadcastStatus(String payloadString, String topic) {
         StatusInfo statusInfo = gson.fromJson(payloadString, StatusInfo.class);
-            if (!statusInfo.getSender().equals(MQTTService.DOCTOR)) {
-                Intent intent = new Intent(NOTIFY);
-                intent.putExtra(IS_MESSAGE, false);
-                intent.putExtra(MESSAGE, statusInfo);
-                sendBroadcast(intent);
+        if (!statusInfo.getSender().equals(MQTTService.DOCTOR)) {
+            Intent intent = new Intent(NOTIFY);
+            intent.putExtra(MESSAGE, statusInfo);
+            intent.putExtra(TOPIC_KEY, topic);
+            sendBroadcast(intent);
+        }
+    }
+
+    private void passInternetConnect() {
+        try {
+
+            String myid = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+
+            InternetConnect internetConnect = new InternetConnect();
+            internetConnect.setUserId(Integer.parseInt(myid));
+            internetConnect.setSender(DOCTOR);
+
+            String content = gson.toJson(internetConnect, InternetConnect.class);
+            MqttMessage message = new MqttMessage(content.getBytes());
+            message.setQos(1);
+            message.setRetained(true);
+            if (mqttClient.isConnected()) {
+                mqttClient.publish(TOPIC[INTERNET_TOPIC], message);
+            } else {
+                mqttClient.reconnect();
             }
+            CommonMethods.Log("passInternetStatus: ", content);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
     }
 
     // change
-    public void passStatusInfo(StatusInfo statusInfo) {
+    public void messageStatus(StatusInfo statusInfo) {
         try {
             // 2017-10-13 13:08:07
-            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
+            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
             statusInfo.setMsgTime(msgTime);
             String content = gson.toJson(statusInfo, StatusInfo.class);
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
             if (mqttClient.isConnected()) {
-                mqttClient.publish(TOPIC[2], message);
+                mqttClient.publish(TOPIC[MESSAGE_STATUS_TOPIC], message);
             } else {
                 mqttClient.reconnect();
-                mqttClient.publish(TOPIC[2], message);
             }
             CommonMethods.Log("passMessageStatus: ", content);
         } catch (MqttException e) {
@@ -346,17 +376,16 @@ public class MQTTService extends Service {
     public void typingStatus(StatusInfo statusInfo) {
         try {
             // 2017-10-13 13:08:07
-            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
+            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
             statusInfo.setMsgTime(msgTime);
             String content = gson.toJson(statusInfo, StatusInfo.class);
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
             if (mqttClient.isConnected()) {
-                mqttClient.publish(TOPIC[1], message);
+                mqttClient.publish(TOPIC[USER_TYPING_STATUS_TOPIC], message);
             } else {
                 mqttClient.reconnect();
-                mqttClient.publish(TOPIC[1], message);
             }
             CommonMethods.Log("passTypeStatus: ", content);
         } catch (MqttException e) {
@@ -366,16 +395,14 @@ public class MQTTService extends Service {
 
     public void passMessage(MQTTMessage mqttMessage) {
         try {
-            mqttMessage.setSender(DOCTOR);
             String content = gson.toJson(mqttMessage, MQTTMessage.class);
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
             if (mqttClient.isConnected()) {
-                mqttClient.publish(TOPIC[0], message);
+                mqttClient.publish(TOPIC[MESSAGE_TOPIC], message);
             } else {
                 mqttClient.reconnect();
-                mqttClient.publish(TOPIC[0], message);
             }
             CommonMethods.Log("passMessage: ", content);
         } catch (MqttException e) {
@@ -390,7 +417,7 @@ public class MQTTService extends Service {
 
             // change
 
-            /*String myid = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, MQTTService.this);
+            /*String myid = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
             // send user status via mqtt
             StatusInfo statusInfo = new StatusInfo();
             statusInfo.setPatId(-2);
@@ -398,7 +425,7 @@ public class MQTTService extends Service {
             statusInfo.setUserStatus(OFFLINE);
             String generatedId = CHAT + 0 + "_" + System.nanoTime();
             statusInfo.setMsgId(generatedId);
-            passStatusInfo(statusInfo);*/
+            messageStatus(statusInfo);*/
 
             try {
                 mqttClient.disconnect();
@@ -434,7 +461,7 @@ public class MQTTService extends Service {
                     PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
             // start your activity for Android M and below
-            intent = new Intent(MQTTService.this, ChatActivity.class);
+            intent = new Intent(mContext, ChatActivity.class);
             intent.setAction(REPLY_ACTION);
             intent.putExtra(MESSAGE_LIST, mqttMessage);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -448,5 +475,70 @@ public class MQTTService extends Service {
             return remoteInput.getCharSequence(KEY_REPLY);
         }
         return null;
+    }
+
+    // getBitmap from message
+
+    @SuppressLint("CheckResult")
+    private Bitmap getProfilePhotoBitmap(final MQTTMessage messageL) {
+
+        TextDrawable mReceiverDrawable = null;
+        String doctorName = messageL.getName();
+        String doctorPhoto = messageL.getImageUrl();
+
+        if (!doctorName.isEmpty()) {
+            doctorName = doctorName.replace("Dr. ", "");
+            int color2 = ColorGenerator.MATERIAL.getColor(doctorName);
+            mReceiverDrawable = TextDrawable.builder()
+                    .beginConfig()
+                    .toUpperCase()
+                    .width(Math.round(getResources().getDimension(R.dimen.dp40)))  // width in px
+                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                    .endConfig()
+                    .buildRound(("" + doctorName.charAt(0)), color2);
+        }
+
+        if (doctorPhoto != null) {
+            if (!doctorPhoto.isEmpty()) {
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.dontAnimate();
+                requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+                requestOptions.skipMemoryCache(true);
+                requestOptions.placeholder(mReceiverDrawable);
+                requestOptions.error(mReceiverDrawable);
+
+                try {
+                    return Glide.with(this)
+                            .asBitmap()
+                            .load(doctorPhoto)
+                            .apply(requestOptions)
+                            .submit()
+                            .get();
+
+                } catch (Exception e) {
+                    return drawableToBitmap(mReceiverDrawable);
+                }
+            } else return drawableToBitmap(mReceiverDrawable);
+        } else return drawableToBitmap(mReceiverDrawable);
+    }
+
+    public Bitmap drawableToBitmap(Drawable drawable) {
+        Bitmap bitmap;
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0)
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        else
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 }

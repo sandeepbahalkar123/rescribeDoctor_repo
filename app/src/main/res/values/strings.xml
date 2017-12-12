@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Dr Rescribe</string>
     <string name="enter_mobile_no">Mobile No.</string>
     <string name="log_in">Login</string>
@@ -63,7 +63,8 @@
 
     <!--Key for Debug-->
 
-    <!-- <string name="google_maps_key">AIzaSyBtI5h1jCRJZFXQowkuglxMtNYPURtHX5M</string>-->
+    <string name="google_maps_key">AIzaSyBtI5h1jCRJZFXQowkuglxMtNYPURtHX5M</string>
+
     <string name="profile_exists">User\'s profile is already exist!!</string>
     <string name="enter_otp_no">Enter otp received on your mobile no.</string>
     <string name="login_with_gmail">Login with gmail</string>
@@ -75,12 +76,10 @@
     <string name="login_confirmation">Login Confirmation</string>
     <string name="dummy_full">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
     <string name="dummy_normal">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
-    <string name="doctor_connect">Doctor Connect</string>
     <string name="patient_connect">Patient Connect</string>
     <string name="chats">Chats</string>
     <string name="connect">Connect</string>
     <string name="search">Search</string>
-    <string name="clicked_item_data">clicked_item_data</string>
     <string name="pick_speciality">Pick Speciality</string>
     <string name="details_note"><![CDATA[Your details will remain 100% private & secure. If you think you have medical emergency, contact your doctor immediately.]]></string>
     <string name="cardiologist">cardiologist</string>
@@ -103,7 +102,6 @@
     <string name="endocrinologist">endocrinologist</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="type_a_message">Type a message</string>
-    <string name="dr">Dr.</string>
     <string name="online">Online</string>
     <string name="offline">Offline</string>
     <string name="idle">Idle</string>
@@ -111,5 +109,5 @@
     <string name="timing"><![CDATA[< slide to cancel]]></string>
     <string name="cancel">Cancel</string>
     <string name="do_you_exit">Do you want to exit ?</string>
-
+    <string name="title_activity_location_picker">Location Picker</string>
 </resources>

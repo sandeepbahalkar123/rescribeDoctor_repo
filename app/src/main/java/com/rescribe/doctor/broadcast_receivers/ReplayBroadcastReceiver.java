@@ -15,9 +15,10 @@ import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import static com.rescribe.doctor.services.MQTTService.DOCTOR;
+import static com.rescribe.doctor.services.MQTTService.MESSAGE_TOPIC;
 import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
 import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
-import static com.rescribe.doctor.ui.activities.ChatActivity.CHAT;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 
 public class ReplayBroadcastReceiver extends BroadcastReceiver implements HelperResponse {
@@ -47,10 +48,10 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
             this.context = context;
 
             MQTTMessage messageL = new MQTTMessage();
-            messageL.setTopic(MQTTService.TOPIC[0]);
+            messageL.setTopic(MQTTService.TOPIC[MESSAGE_TOPIC]);
             messageL.setMsg(message.toString());
 
-            String generatedId = CHAT + 0 + "_" + System.nanoTime();
+            String generatedId = recievedMessage.getDocId() + "_" + 0 + System.nanoTime();
             messageL.setMsgId(generatedId);
 
             messageL.setDocId(recievedMessage.getDocId());
@@ -69,8 +70,10 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
             messageL.setPaidStatus(FREE);
             messageL.setFileType("");
 
+            messageL.setSender(DOCTOR);
+
             // 2017-10-13 13:08:07
-            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
+            String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
             messageL.setMsgTime(msgTime);
 
             // send msg by http api

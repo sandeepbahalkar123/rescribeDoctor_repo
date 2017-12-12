@@ -90,11 +90,11 @@ public class Device {
     }
 
     public String getOSVersion() {
-        return Build.VERSION.RELEASE;
+        return Build.VERSION.RELEASE + "(" + Build.BRAND + ")";
     }
 
     public String getOS() {
-        return "Android (" + Build.BRAND + ")";
+        return "Android";
     }
 
 

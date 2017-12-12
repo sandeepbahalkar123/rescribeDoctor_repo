@@ -25,6 +25,10 @@ public class PatientData implements Parcelable, CustomResponse {
     @Expose
     private String onlineStatus;
 
+    @SerializedName("lastChatTime")
+    @Expose
+    private String lastChatTime;
+
     @SerializedName("unreadMessages")
     @Expose
     private int unreadMessages;
@@ -61,6 +65,14 @@ public class PatientData implements Parcelable, CustomResponse {
         this.onlineStatus = onlineStatus;
     }
 
+    public String getLastChatTime() {
+        return lastChatTime;
+    }
+
+    public void setLastChatTime(String lastChatTime) {
+        this.lastChatTime = lastChatTime;
+    }
+
     public int getUnreadMessages() {
         return unreadMessages;
     }
@@ -79,6 +91,7 @@ public class PatientData implements Parcelable, CustomResponse {
             instance.patientName = ((String) in.readValue((String.class.getClassLoader())));
             instance.imageUrl = ((String) in.readValue((String.class.getClassLoader())));
             instance.onlineStatus = ((String) in.readValue((String.class.getClassLoader())));
+            instance.lastChatTime = ((String) in.readValue((String.class.getClassLoader())));
             instance.unreadMessages = ((int) in.readValue((Integer.class.getClassLoader())));
             return instance;
         }
@@ -95,6 +108,7 @@ public class PatientData implements Parcelable, CustomResponse {
         dest.writeValue(patientName);
         dest.writeValue(imageUrl);
         dest.writeValue(onlineStatus);
+        dest.writeValue(lastChatTime);
         dest.writeValue(unreadMessages);
     }
 

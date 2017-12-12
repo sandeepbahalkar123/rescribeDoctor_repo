@@ -16,8 +16,9 @@
         android:layout_centerVertical="true"
         android:clickable="false"
         android:max="100"
+        android:thumbOffset="8dp"
         android:progressDrawable="@android:color/transparent"
-        android:thumb="@drawable/slide_view_thumb"
+        android:thumb="@drawable/speak"
         android:background="@null"
         android:splitTrack="false"/>
 

@@ -33,23 +33,22 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
+import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
+import com.rescribe.doctor.model.doctor_connect_chat.DoctorConnectChatBaseModel;
 import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
 import com.rescribe.doctor.model.login.ActiveStatusModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
 import com.rescribe.doctor.model.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
-
-import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
-import com.rescribe.doctor.model.doctor_connect_chat.DoctorConnectChatBaseModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
-import com.rescribe.doctor.util.RescribeConstants;
 import com.rescribe.doctor.util.NetworkUtil;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +57,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class RequestManager extends ConnectRequest implements Connector, RequestTimer.RequestTimerListener {
     private final String TAG = this.getClass().getName();
@@ -400,7 +401,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
             try {
                 jsonObject = new JSONObject(data);
                 Common common = gson.fromJson(jsonObject.optString("common"), Common.class);
-                if (!common.getStatusCode().equals(RescribeConstants.SUCCESS)) {
+                if (!common.getStatusCode().equals(SUCCESS)) {
                     CommonMethods.showToast(mContext, common.getStatusMessage());
                 }
             } catch (JSONException e) {
@@ -415,13 +416,16 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                 // This success response is for refresh token
                 // Need to Add
                 LoginModel loginModel = gson.fromJson(data, LoginModel.class);
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, loginModel.getDoctorLoginData().getAuthToken(), mContext);
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, mContext);
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, String.valueOf(loginModel.getDoctorLoginData().getDocDetail().getDocId()), mContext);
+                if (loginModel.getCommon().getStatusCode().equals(SUCCESS)) {
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, loginModel.getDoctorLoginData().getAuthToken(), mContext);
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, mContext);
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, String.valueOf(loginModel.getDoctorLoginData().getDocDetail().getDocId()), mContext);
 
-                mHeaderParams.put(RescribeConstants.AUTHORIZATION_TOKEN, loginModel.getDoctorLoginData().getAuthToken());
-
-                connect();
+                    mHeaderParams.put(RescribeConstants.AUTHORIZATION_TOKEN, loginModel.getDoctorLoginData().getAuthToken());
+                    connect();
+                } else {
+                    CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
+                }
 
             } else {
                 // This success response is for respective api's

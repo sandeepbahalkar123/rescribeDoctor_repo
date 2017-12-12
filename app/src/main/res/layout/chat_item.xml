@@ -79,7 +79,7 @@
                             android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
                             android:scaleType="centerCrop"
-                            tools:src="@drawable/image_placeholder" />
+                            android:src="@drawable/image_placeholder" />
 
                         <RelativeLayout
                             android:id="@+id/senderPhotoProgressLayout"
@@ -230,7 +230,6 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/senderTimeStatusLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -343,7 +342,7 @@
                             android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
                             android:scaleType="centerCrop"
-                            tools:src="@drawable/image_placeholder" />
+                            android:src="@drawable/image_placeholder" />
 
                         <RelativeLayout
                             android:id="@+id/receiverPhotoProgressLayout"
@@ -492,7 +491,6 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/receiverTimeStatusLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"

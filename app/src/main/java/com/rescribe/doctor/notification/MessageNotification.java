@@ -6,9 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
@@ -18,8 +16,15 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.activities.PatientConnectActivity;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+
+import static com.rescribe.doctor.util.RescribeConstants.FILE.AUD;
+import static com.rescribe.doctor.util.RescribeConstants.FILE.DOC;
+import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
+import static com.rescribe.doctor.util.RescribeConstants.FILE.LOC;
+import static com.rescribe.doctor.util.RescribeConstants.FILE.VID;
 
 /**
  * Helper class for showing and canceling new message
@@ -36,14 +41,11 @@ public class MessageNotification {
     private static final String GROUP = "RescribeMessages";
 
     public static void notify(final Context context, final ArrayList<MQTTMessage> messageContent,
-                              final String userName, final int unread, PendingIntent replyPendingIntent, final int notificationId) {
-        final Resources res = context.getResources();
+                              final String userName, Bitmap picture, final int unread, PendingIntent replyPendingIntent, final int notificationId) {
 
-        // This image is used as the notification's large icon (thumbnail).
-        // TODO: Remove this if your notification has no relevant thumbnail.
-        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.exercise);
+        MQTTMessage lastMessage = messageContent.get(messageContent.size() - 1);
+        String content = getContent(lastMessage);
 
-        final String content = messageContent.get(messageContent.size() - 1).getMsg();
         String title;
         if (unread > 1)
             title = userName + " (" + unread + " messages)";
@@ -63,7 +65,7 @@ public class MessageNotification {
                 .setSummaryText("New Message");
 
         for (MQTTMessage message : messageContent)
-            inboxStyle.addLine(message.getMsg());
+            inboxStyle.addLine(getContent(message));
 
 // Create the RemoteInput specifying above key
         RemoteInput remoteInput = new RemoteInput.Builder(MQTTService.KEY_REPLY)
@@ -140,5 +142,34 @@ public class MessageNotification {
         final NotificationManager nm = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(NOTIFICATION_TAG, notificationId);
+    }
+
+    private static String getContent(MQTTMessage mqttMessage) {
+        String content;
+
+        if (mqttMessage.getFileType() != null) {
+            switch (mqttMessage.getFileType()) {
+                case DOC:
+                    content = RescribeConstants.FILE_EMOJI.DOC_FILE;
+                    break;
+                case AUD:
+                    content = RescribeConstants.FILE_EMOJI.AUD_FILE;
+                    break;
+                case VID:
+                    content = RescribeConstants.FILE_EMOJI.VID_FILE;
+                    break;
+                case LOC:
+                    content = RescribeConstants.FILE_EMOJI.LOC_FILE;
+                    break;
+                case IMG:
+                    content = RescribeConstants.FILE_EMOJI.IMG_FILE;
+                    break;
+                default:
+                    content = mqttMessage.getMsg();
+                    break;
+            }
+        } else content = mqttMessage.getMsg();
+
+        return content;
     }
 }

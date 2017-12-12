@@ -23,11 +23,7 @@ import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
-<<<<<<< HEAD
-import com.rescribe.doctor.model.chat.StatusInfo;
-=======
 import com.rescribe.doctor.model.login.ActiveRequest;
->>>>>>> a8bffc502e47a4a6d5700b4f0b31820dafb51233
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
@@ -47,41 +43,41 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-<<<<<<< HEAD
-import static com.rescribe.doctor.services.MQTTService.MESSAGE;
-import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
-import static com.rescribe.doctor.services.MQTTService.STATUS_INFO;
-import static com.rescribe.doctor.ui.activities.ChatActivity.CHAT;
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
-=======
+import static com.rescribe.doctor.services.MQTTService.MESSAGE_TOPIC;
+import static com.rescribe.doctor.services.MQTTService.NOTIFY;
+import static com.rescribe.doctor.services.MQTTService.TOPIC;
 import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
->>>>>>> a8bffc502e47a4a6d5700b4f0b31820dafb51233
 
 
 /**
  * Created by jeetal on 5/9/17.
  */
 
-public class PatientConnectActivity extends AppCompatActivity implements HelperResponse {
+public class PatientConnectActivity extends AppCompatActivity implements HelperResponse{
 
     private final static String TAG = "DoctorConnect";
-    @BindView(R.id.radioButton)
-    SwitchButton radioButton;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            boolean delivered = intent.getBooleanExtra(MQTTService.DELIVERED, false);
-            boolean isReceived = intent.getBooleanExtra(MQTTService.IS_MESSAGE, false);
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(NOTIFY)) {
 
-            if (delivered) {
+                    String topic = intent.getStringExtra(MQTTService.TOPIC_KEY);
+                    topic = topic == null ? "" : topic;
 
-                Log.d(TAG, "Delivery Complete");
-                Log.d(TAG, "MESSAGE_ID" + intent.getStringExtra(MQTTService.MESSAGE_ID));
+                    if (intent.getBooleanExtra(MQTTService.DELIVERED, false)) {
 
-            } else if (isReceived) {
-                MQTTMessage message = intent.getParcelableExtra(MQTTService.MESSAGE);
-                mPatientConnectChatFragment.notifyCount(message);
+                        Log.d(TAG, "Delivery Complete");
+                        Log.d(TAG + " MSG_ID", intent.getStringExtra(MQTTService.MESSAGE_ID));
+
+                    } else if (topic.equals(TOPIC[MESSAGE_TOPIC])) {
+                        // User message
+                        CommonMethods.Log(TAG, "User message");
+                        MQTTMessage message = intent.getParcelableExtra(MQTTService.MESSAGE);
+                        mPatientConnectChatFragment.notifyCount(message);
+                    }
+                }
             }
         }
     };
@@ -100,6 +96,11 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     @BindView(R.id.whiteUnderLine)
     TextView whiteUnderLine;
 
+    @BindView(R.id.radioButton)
+    SwitchButton radioButton;
+
+    private LoginHelper loginHelper;
+
     public static final int PAID = 1;
     public static final int FREE = 0;
 
@@ -110,11 +111,6 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     private PatientSearchFragment mPatientSearchFragment;
     private ArrayList<PatientData> mReceivedConnectedPatientDataList;
     private String docId;
-<<<<<<< HEAD
-=======
-    private LoginHelper loginHelper;
-    private Context mContext;
->>>>>>> a8bffc502e47a4a6d5700b4f0b31820dafb51233
     //-----
 
     @Override
@@ -122,14 +118,8 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_connect);
         ButterKnife.bind(this);
-<<<<<<< HEAD
-
-        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, PatientConnectActivity.this);
-
-=======
-        mContext = PatientConnectActivity.this;
         radioButton.setChecked(true);
->>>>>>> a8bffc502e47a4a6d5700b4f0b31820dafb51233
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, PatientConnectActivity.this);
         title.setText("" + getString(R.string.patient_connect));
         mFragmentTitleList[0] = getString(R.string.chats);
         mFragmentTitleList[1] = getString(R.string.connect);
@@ -139,10 +129,9 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         initialize();
     }
 
-
     private void initialize() {
         loginHelper = new LoginHelper(this, this);
-        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, PatientConnectActivity.this);
 
         mTabsPatientConnect.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -199,7 +188,6 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
 
             }
         });
-
     }
 
 
@@ -242,50 +230,6 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     public void onViewClicked() {
         mSearchView.setText("");
         onBackPressed();
-    }
-
-    @Override
-    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equals(ACTIVE_STATUS))
-            CommonMethods.Log(ACTIVE_STATUS, "active");
-        else if (mOldDataTag.equals(RescribeConstants.LOGOUT)) {
-
-        }
-
-    }
-
-    @Override
-    public void onParseError(String mOldDataTag, String errorMessage) {
-
-    }
-
-    @Override
-    public void onServerError(String mOldDataTag, String serverErrorMessage) {
-
-    }
-
-    @Override
-    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-
-    }
-
-    @OnClick({R.id.radioButton, R.id.searchView})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.radioButton:
-                if (radioButton.isChecked()) {
-                    ActiveRequest activeRequest = new ActiveRequest();
-                    activeRequest.setId(Integer.parseInt(docId));
-                    loginHelper.doActiveStatus(activeRequest);
-                } else {
-                    ActiveRequest activeRequest = new ActiveRequest();
-                    activeRequest.setId(Integer.parseInt(docId));
-                    loginHelper.doLogout(activeRequest);
-                }
-                break;
-            case R.id.searchView:
-                break;
-        }
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -335,14 +279,9 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     protected void onResume() {
         super.onResume();
         registerReceiver(receiver, new IntentFilter(
-                MQTTService.NOTIFY));
+                NOTIFY));
 
-<<<<<<< HEAD
 //        sendUserStatus(ONLINE);
-=======
-
-
->>>>>>> a8bffc502e47a4a6d5700b4f0b31820dafb51233
     }
 
     @Override
@@ -358,6 +297,50 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
             PatientData patientData = data.getParcelableExtra(RescribeConstants.CHAT_USERS);
             mPatientConnectChatFragment.addItem(patientData);
         }
+    }
+
+    @OnClick({R.id.radioButton, R.id.searchView})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.radioButton:
+                if (radioButton.isChecked()) {
+                    ActiveRequest activeRequest = new ActiveRequest();
+                    activeRequest.setId(Integer.parseInt(docId));
+                    loginHelper.doActiveStatus(activeRequest);
+                } else {
+                    ActiveRequest activeRequest = new ActiveRequest();
+                    activeRequest.setId(Integer.parseInt(docId));
+                    loginHelper.doLogout(activeRequest);
+                }
+                break;
+            case R.id.searchView:
+                break;
+        }
+    }
+
+    @Override
+    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        if (mOldDataTag.equals(ACTIVE_STATUS))
+            CommonMethods.Log(ACTIVE_STATUS, "active");
+        else if (mOldDataTag.equals(RescribeConstants.LOGOUT)) {
+
+        }
+
+    }
+
+    @Override
+    public void onParseError(String mOldDataTag, String errorMessage) {
+
+    }
+
+    @Override
+    public void onServerError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @Override
+    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
+
     }
 
     // change

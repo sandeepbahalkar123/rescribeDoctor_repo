@@ -77,7 +77,7 @@ public class ChatHelper implements ConnectionListener {
         MessageRequestModel messageRequestModel = new MessageRequestModel();
         messageRequestModel.setMsg(messageL.getMsg());
         // 2017-10-13 12:08:07
-        messageRequestModel.setMsgTime(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss));
+        messageRequestModel.setMsgTime(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN));
         messageRequestModel.setSender(MQTTService.DOCTOR);
         messageRequestModel.setUser1id(messageL.getDocId());
         messageRequestModel.setUser2id(messageL.getPatId());

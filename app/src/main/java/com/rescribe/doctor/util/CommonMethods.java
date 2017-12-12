@@ -170,7 +170,7 @@ public class CommonMethods {
         return dateFormat.format(date);
     }
 
-    public static String getDayFromDateTime(String dateText,String originalDateFormat, String expectedDateFormat) {
+    public static String getDayFromDateTime(String dateText, String originalDateFormat, String expectedDateFormat) {
         Calendar calendar = Calendar.getInstance();
         Date today = calendar.getTime();
 
@@ -293,23 +293,20 @@ public class CommonMethods {
     }
 
 
-    public static String getFormattedDate(String strDate, String sourceFormat,
-                                          String destinyFormat) {
-
+    public static String getFormattedDate(String strDate, String sourceFormat, String destinyFormat) {
         if (!strDate.equals("")) {
 
             SimpleDateFormat df;
             df = new SimpleDateFormat(sourceFormat, Locale.US);
-            Date date = null;
+            Date date;
             try {
                 date = df.parse(strDate);
+                df = new SimpleDateFormat(destinyFormat, Locale.US);
+                return df.format(date);
 
             } catch (ParseException e) {
-                e.printStackTrace();
+                return "";
             }
-
-            df = new SimpleDateFormat(destinyFormat, Locale.US);
-            return df.format(date);
         } else return "";
     }
 

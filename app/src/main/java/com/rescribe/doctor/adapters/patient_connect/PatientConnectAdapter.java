@@ -2,7 +2,6 @@ package com.rescribe.doctor.adapters.patient_connect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -23,17 +22,12 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
-import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
-import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -130,7 +124,13 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         //-----------
 
         holder.onlineStatusTextView.setText(doctorConnectChatModel.getOnlineStatus());
-        holder.paidStatusTextView.setVisibility(View.GONE);
+
+        if (doctorConnectChatModel.getLastChatTime() != null) {
+            String time = CommonMethods.formatDateTime(doctorConnectChatModel.getLastChatTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.TIME);
+            holder.paidStatusTextView.setText(time);
+            holder.paidStatusTextView.setVisibility(View.VISIBLE);
+        } else holder.paidStatusTextView.setVisibility(View.GONE);
+
         holder.doctorType.setVisibility(View.GONE);
 
         //---------
@@ -167,12 +167,9 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ChatActivity.class);
                 intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
-                intent.putExtra(RescribeConstants.STATUS_COLOR, holder.onlineStatusTextView.getCurrentTextColor());
                 mContext.startActivity(intent);
             }
         });
-
-        holder.paidStatusTextView.setVisibility(View.GONE);
 
         int count = appDBHelper.unreadMessageCountById(doctorConnectChatModel.getId());
         doctorConnectChatModel.setUnreadMessages(count);
