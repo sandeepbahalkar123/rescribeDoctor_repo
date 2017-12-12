@@ -109,5 +109,7 @@
     <string name="idle">Idle</string>
     <string name="doc_viewer_not_found">Document viewer not found.</string>
     <string name="timing"><![CDATA[< slide to cancel]]></string>
+    <string name="cancel">Cancel</string>
+    <string name="do_you_exit">Do you want to exit ?</string>
 
 </resources>
