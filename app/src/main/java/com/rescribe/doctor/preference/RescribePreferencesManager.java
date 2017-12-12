@@ -227,9 +227,11 @@ public class RescribePreferencesManager {
         String MOBILE_NUMBER_FACEBOOK = "mobile_number_facebook";
         String PASSWORD_FACEBOOK = "password_facebook";
         String IS_SEARCHABLE = "";
+        String IS_EXIT = "exit";
         String USER_NAME = "doctorname";
         String PROFILE_PHOTO = "doctorprofile";
         String SPECIALITY = "speciality";
         String ADDRESS = "address";
+
     }
 }
