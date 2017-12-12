@@ -6,9 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
@@ -43,12 +41,7 @@ public class MessageNotification {
     private static final String GROUP = "RescribeMessages";
 
     public static void notify(final Context context, final ArrayList<MQTTMessage> messageContent,
-                              final String userName, final int unread, PendingIntent replyPendingIntent, final int notificationId) {
-        final Resources res = context.getResources();
-
-        // This image is used as the notification's large icon (thumbnail).
-        // TODO: Remove this if your notification has no relevant thumbnail.
-        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.exercise);
+                              final String userName, Bitmap picture, final int unread, PendingIntent replyPendingIntent, final int notificationId) {
 
         MQTTMessage lastMessage = messageContent.get(messageContent.size() - 1);
         String content = getContent(lastMessage);

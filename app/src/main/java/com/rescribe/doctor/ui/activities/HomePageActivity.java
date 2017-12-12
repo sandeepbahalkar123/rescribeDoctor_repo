@@ -170,7 +170,7 @@ public class HomePageActivity extends DrawerActivity implements HelperResponse {
                     activeRequest.setId(Integer.parseInt(docId));
                     loginHelper.doLogout(activeRequest);
                 } else if (id.equalsIgnoreCase(getString(R.string.patient_connect))) {
-                    Intent intent = new Intent(mContext, PatientConnectActivity.class);
+                    Intent intent = new Intent(mContext, ConnectSplashActivity.class);
                     startActivity(intent);
                 }
             }

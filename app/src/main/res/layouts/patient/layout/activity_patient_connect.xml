@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:gravity="center|left"
-                android:text="@string/doctor_connect"
+                android:text="@string/patient_connect"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp16"
                 android:visibility="visible"

@@ -1,9 +1,14 @@
 package com.rescribe.doctor.services;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,8 +16,14 @@ import android.os.IBinder;
 import android.support.v4.app.RemoteInput;
 import android.util.Log;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.rescribe.doctor.R;
 import com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.InternetConnect;
@@ -226,7 +237,7 @@ public class MQTTService extends Service {
                                                 // change
                                                 statusInfo.setMessageStatus(REACHED);
 
-                                                MessageNotification.notify(mContext, messagesTemp, String.valueOf(messageL.getName()), appDBHelper.unreadMessageCountById(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
+                                                MessageNotification.notify(mContext, messagesTemp, messageL.getName(), getProfilePhotoBitmap(messageL), appDBHelper.unreadMessageCountById(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
                                             } else {
                                                 // change
                                                 statusInfo.setMessageStatus(SEEN);
@@ -464,5 +475,70 @@ public class MQTTService extends Service {
             return remoteInput.getCharSequence(KEY_REPLY);
         }
         return null;
+    }
+
+    // getBitmap from message
+
+    @SuppressLint("CheckResult")
+    private Bitmap getProfilePhotoBitmap(final MQTTMessage messageL) {
+
+        TextDrawable mReceiverDrawable = null;
+        String doctorName = messageL.getName();
+        String doctorPhoto = messageL.getImageUrl();
+
+        if (!doctorName.isEmpty()) {
+            doctorName = doctorName.replace("Dr. ", "");
+            int color2 = ColorGenerator.MATERIAL.getColor(doctorName);
+            mReceiverDrawable = TextDrawable.builder()
+                    .beginConfig()
+                    .toUpperCase()
+                    .width(Math.round(getResources().getDimension(R.dimen.dp40)))  // width in px
+                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                    .endConfig()
+                    .buildRound(("" + doctorName.charAt(0)), color2);
+        }
+
+        if (doctorPhoto != null) {
+            if (!doctorPhoto.isEmpty()) {
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.dontAnimate();
+                requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+                requestOptions.skipMemoryCache(true);
+                requestOptions.placeholder(mReceiverDrawable);
+                requestOptions.error(mReceiverDrawable);
+
+                try {
+                    return Glide.with(this)
+                            .asBitmap()
+                            .load(doctorPhoto)
+                            .apply(requestOptions)
+                            .submit()
+                            .get();
+
+                } catch (Exception e) {
+                    return drawableToBitmap(mReceiverDrawable);
+                }
+            } else return drawableToBitmap(mReceiverDrawable);
+        } else return drawableToBitmap(mReceiverDrawable);
+    }
+
+    public Bitmap drawableToBitmap(Drawable drawable) {
+        Bitmap bitmap;
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0)
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        else
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 }
