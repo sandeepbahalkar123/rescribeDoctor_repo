@@ -110,4 +110,20 @@
     <string name="cancel">Cancel</string>
     <string name="do_you_exit">Do you want to exit ?</string>
     <string name="title_activity_location_picker">Location Picker</string>
+    <string name="apply">Apply</string>
+    <string name="filter">Filter</string>
+    <string name="reset">Reset</string>
+    <string name="sorting">Sorting</string>
+    <string name="sort">Sort by</string>
+    <string name="choose_one_option">Choose one option</string>
+    <string name="gender">Gender</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="age">Age</string>
+    <string name="age_range">Age Range</string>
+    <string name="city">City</string>
+    <string name="select_city">Select City</string>
+
+
 </resources>

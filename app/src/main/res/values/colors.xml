@@ -10,9 +10,15 @@
     <color name="drawer_bg">#edf1f4</color>
     <color name="Red">#FF0000</color>
     <color name="tagColor">#04abdf</color>
+    <color name="opd_completed">#6cbb8e</color>
+    <color name="opd_booked">#63c3d7</color>
+    <color name="opd_follow_up">#04abdf</color>
+    <color name="timing_bg_color">#50a9da</color>
     <color name="statusbar">#0077a7</color>
     <color name="switch_button_color">#9B9B9B</color>
     <color name="white">#ffffff</color>
+    <color name="gender_drawer">#cacaca</color>
+    <color name="choose_option_color">#6e6e6e</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
@@ -26,4 +32,5 @@
     <color name="grey_300">#dcdcdc</color>
     <color name="divider">#e5e5e5</color>
     <color name="rating_color">#3676a3</color>
+    <color name="view_line">#f4f4f4</color>
 </resources>

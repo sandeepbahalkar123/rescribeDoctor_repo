@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:theme="@style/AppTheme.AppBarOverlay">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp54"
+            android:background="@color/tagColor">
+
+            <ImageView
+                android:id="@+id/backImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp10"
+                android:paddingLeft="@dimen/dp14"
+                android:paddingTop="@dimen/dp6"
+                android:src="@drawable/back_arrow_a_01" />
+
+            <com.rescribe.doctor.ui.customesViews.CustomTextView
+                android:id="@+id/titleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_toRightOf="@id/backImageView"
+                android:paddingLeft="@dimen/dp16"
+                android:paddingStart="@dimen/dp16"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp18"
+                app:customFont="@string/roboto_bold"
+                tools:text="Appointments" />
+
+            <com.rescribe.doctor.ui.customesViews.CustomTextView
+                android:id="@+id/userInfoTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleTextView"
+                android:layout_marginBottom="@dimen/dp2"
+                android:layout_toRightOf="@id/backImageView"
+                android:paddingLeft="@dimen/dp16"
+                android:paddingStart="@dimen/dp16"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp12"
+                android:visibility="gone"
+                app:customFont="@string/roboto_bold"
+                tools:text="36 yrs - Male"
+                tools:visibility="visible" />
+
+            <com.rescribe.doctor.ui.customesViews.CustomTextView
+                android:id="@+id/dateTextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_toEndOf="@id/userInfoTextView"
+                android:layout_toRightOf="@id/userInfoTextView"
+                android:gravity="right"
+                android:paddingEnd="@dimen/dp16"
+                android:paddingRight="@dimen/dp16"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp12"
+                android:visibility="gone"
+                app:customFont="@string/roboto_medium"
+                tools:text="27th Dec '17"
+                tools:visibility="visible" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp1"
+            android:background="@color/view_line" />
+    </LinearLayout>
+
+</android.support.design.widget.AppBarLayout>
