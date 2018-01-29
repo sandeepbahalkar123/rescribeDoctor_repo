@@ -41,4 +41,15 @@
     <dimen name="dp37">37dp</dimen>
     <dimen name="sp19">19sp</dimen>
     <dimen name="sp22">22sp</dimen>
+    <dimen name="dp21">21dp</dimen>
+    <dimen name="sp24">24sp</dimen>
+    <dimen name="dp29">29dp</dimen>
+    <dimen name="dp25">25dp</dimen>
+    <dimen name="dp3">3dp</dimen>
+    <dimen name="dp100">100dp</dimen>
+    <dimen name="dp90">90dp</dimen>
+    <dimen name="dp51">51dp</dimen>
+    <dimen name="dp17">17dp</dimen>
+    <dimen name="dp23">23dp</dimen>
+    <dimen name="dp69">69dp</dimen>
 </resources>

@@ -5,6 +5,7 @@
     <color name="placeHolder">#55000000</color>
     <item name="errorColor" type="color">#BD362F</item>
     <color name="recentblue">#04abdf</color>
+    <color name="menu_blue_dot">#499bc8</color>
     <color name="drawer_menu_text_color">#646464</color>
     <color name="black">#000000</color>
     <color name="drawer_bg">#edf1f4</color>
@@ -16,11 +17,15 @@
     <color name="timing_bg_color">#50a9da</color>
     <color name="statusbar">#0077a7</color>
     <color name="switch_button_color">#9B9B9B</color>
+    <color name="dashboard_text_color">#995b5b5b</color>
+    <color name="dashboard_menu_text_color">#5b5b5b</color>
     <color name="white">#ffffff</color>
     <color name="gender_drawer">#cacaca</color>
     <color name="choose_option_color">#6e6e6e</color>
+    <color name="dashboard_divider_color">#98abb3</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="color_dashboard_count_bg">#98ABB3</color>
     <color name="colorAccent">#FF4081</color>
     <color name="vitals_name">#737373</color>
     <color name="login_bg_color">#54d8c8</color>
