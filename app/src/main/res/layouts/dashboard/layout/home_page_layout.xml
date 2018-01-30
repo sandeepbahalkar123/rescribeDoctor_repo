@@ -7,7 +7,6 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-
     <FrameLayout
         android:id="@+id/dashBoradBgframeLayout"
         android:layout_width="match_parent"
@@ -19,7 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="@dimen/dp3"
+            android:layout_marginBottom="@dimen/dp2"
+            android:layout_marginEnd="@dimen/dp8"
+            android:layout_marginStart="@dimen/dp8"
             android:background="@drawable/curve_edge_dashbooard_display_count_bg"
             android:orientation="horizontal"
             android:visibility="visible">
@@ -212,7 +213,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/welcomeTextView"
-                    android:text="@string/welcome"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp18"
                     app:customFont="@string/roboto_bold"
@@ -225,7 +225,6 @@
                     android:layout_below="@id/doctorNameTextView"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@string/welcome"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp13"
                     app:customFont="@string/roboto_bold"
@@ -238,7 +237,16 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/nestedScrollView">
+
+<LinearLayout
+    android:id="@+id/hostViewsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+</LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 

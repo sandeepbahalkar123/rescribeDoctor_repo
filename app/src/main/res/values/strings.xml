@@ -129,6 +129,12 @@
     <string name="select_status">Select Status</string>
     <string name="clinic_names">Clinic Names</string>
     <string name="select_clinic">Select Clinic</string>
+    <string name="search_hint"><![CDATA[Search by Name, Phone & Patient ID]]></string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="app_logo">AppLogo</string>
+    <string name="settings">Settings</string>
+    <string name="support">Support</string>
 
 
 </resources>

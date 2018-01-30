@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -49,7 +50,7 @@
             android:layout_centerVertical="true"
             tools:visibility="visible"
             android:visibility="gone"
-            tools:src="@drawable/dashboard_arrow"
+            android:src="@drawable/dashboard_arrow"
             tools:ignore="ContentDescription" />
         <com.rescribe.doctor.ui.customesViews.SwitchButton
             android:id="@+id/radioSwitch"

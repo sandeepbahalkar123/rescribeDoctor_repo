@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -34,7 +35,6 @@
             android:maxLines="1"
             android:paddingLeft="@dimen/dp23"
             android:paddingStart="@dimen/dp23"
-            android:text="@string/welcome"
             android:textColor="@color/dashboard_menu_text_color"
             android:textSize="@dimen/sp16"
             app:customFont="@string/roboto_regular"
@@ -43,14 +43,11 @@
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/viewTextView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/doctorNameTextView"
             android:layout_centerVertical="true"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:textColor="@color/timing_bg_color"
             android:textSize="@dimen/sp12"
             app:customFont="@string/roboto_medium"

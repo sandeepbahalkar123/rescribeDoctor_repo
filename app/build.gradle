@@ -47,7 +47,9 @@ android {
                             'src/main/res/layouts/patient',
                             'src/main/res/layouts/dashboard',
                             'src/main/res/layouts/common',
-                            'src/main/res/layouts/patient_appointment'
+                            'src/main/res/layouts/patient_appointment',
+                            'src/main/res/layouts/bottom_menu'
+
                     ]
         }
     }

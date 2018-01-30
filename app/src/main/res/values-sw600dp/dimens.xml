@@ -10,4 +10,5 @@
     <dimen name="dp51">51dp</dimen>
     <dimen name="dp17">17dp</dimen>
     <dimen name="dp69">69dp</dimen>
+    <dimen name="sp10">10sp</dimen>
 </resources>

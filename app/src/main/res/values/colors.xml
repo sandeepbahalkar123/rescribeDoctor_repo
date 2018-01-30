@@ -8,6 +8,7 @@
     <color name="menu_blue_dot">#499bc8</color>
     <color name="drawer_menu_text_color">#646464</color>
     <color name="black">#000000</color>
+    <color name="floating_blue_color">#3676A2</color>
     <color name="drawer_bg">#edf1f4</color>
     <color name="Red">#FF0000</color>
     <color name="tagColor">#04abdf</color>
@@ -30,6 +31,7 @@
     <color name="vitals_name">#737373</color>
     <color name="login_bg_color">#54d8c8</color>
     <color name="accent">#FF4081</color>
+    <color name="hint_color_my_appointment">#66ffffff</color>
     <color name="range_yellow">#ff9500</color>
     <color name="otp_background_layout">#EDF1F4</color>
     <color name="Gray">#736F6E</color>
@@ -38,4 +40,5 @@
     <color name="divider">#e5e5e5</color>
     <color name="rating_color">#3676a3</color>
     <color name="view_line">#f4f4f4</color>
+    <color name="grey">#b3b3b3</color>
 </resources>
