@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp16"
+    android:layout_marginBottom="@dimen/dp10"
     android:layout_marginEnd="@dimen/dp6"
     android:layout_marginLeft="@dimen/dp16"
     android:layout_marginRight="@dimen/dp6"
-    android:layout_marginTop="@dimen/dp16"
+    android:layout_marginTop="@dimen/dp10"
     android:background="@color/white"
     android:clickable="true"
     android:orientation="vertical">

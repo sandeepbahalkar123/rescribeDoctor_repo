@@ -130,10 +130,10 @@ public class RescribeConstants {
     public static String TEXT_COLOR = "#000000";
 
     public static class USER_STATUS{
-        public static final String ONLINE = "online";
-        public static final String OFFLINE = "offline";
-        public static final String TYPING = "typing";
-        public static final String IDLE = "idle";
+        public static final String ONLINE = "Online";
+        public static final String OFFLINE = "Offline";
+        public static final String TYPING = "Typing";
+        public static final String IDLE = "Idle";
     }
 
     // change

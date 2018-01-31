@@ -24,7 +24,6 @@ import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
-import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -125,11 +124,11 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
 
         holder.onlineStatusTextView.setText(doctorConnectChatModel.getOnlineStatus());
 
-        if (doctorConnectChatModel.getLastChatTime() != null) {
+        /*if (doctorConnectChatModel.getLastChatTime() != null) {
             String time = CommonMethods.formatDateTime(doctorConnectChatModel.getLastChatTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.TIME);
             holder.paidStatusTextView.setText(time);
             holder.paidStatusTextView.setVisibility(View.VISIBLE);
-        } else holder.paidStatusTextView.setVisibility(View.GONE);
+        } else */holder.paidStatusTextView.setVisibility(View.GONE);
 
         holder.doctorType.setVisibility(View.GONE);
 

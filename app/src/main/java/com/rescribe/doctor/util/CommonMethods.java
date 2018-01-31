@@ -52,6 +52,21 @@ public class CommonMethods {
     }
 
 
+    public static String toCamelCase(String input) {
+        StringBuilder result = new StringBuilder();
+        char firstChar = input.charAt(0);
+        result.append(Character.toUpperCase(firstChar));
+        for (int i = 1; i < input.length(); i++) {
+            char currentChar = input.charAt(i);
+            char previousChar = input.charAt(i - 1);
+            if (previousChar == ' ')
+                result.append(Character.toUpperCase(currentChar));
+            else
+                result.append(Character.toLowerCase(currentChar));
+        }
+        return result.toString();
+    }
+
     public static void showSnack(View mViewById, String msg) {
         if (mViewById != null) {
             Snackbar.make(mViewById, msg, Snackbar.LENGTH_LONG)

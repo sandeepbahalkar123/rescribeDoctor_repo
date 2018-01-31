@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.util.CommonMethods;
 
 public class PatientData implements Parcelable, CustomResponse {
 
@@ -23,7 +24,7 @@ public class PatientData implements Parcelable, CustomResponse {
 
     @SerializedName("onlineStatus")
     @Expose
-    private String onlineStatus;
+    private String onlineStatus = "";
 
     @SerializedName("lastChatTime")
     @Expose
@@ -58,7 +59,7 @@ public class PatientData implements Parcelable, CustomResponse {
     }
 
     public String getOnlineStatus() {
-        return onlineStatus;
+        return CommonMethods.toCamelCase(onlineStatus);
     }
 
     public void setOnlineStatus(String onlineStatus) {
