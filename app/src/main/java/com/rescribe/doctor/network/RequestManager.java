@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.Connector;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -39,6 +40,7 @@ import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseMo
 import com.rescribe.doctor.model.login.ActiveStatusModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
+import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
 import com.rescribe.doctor.model.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
@@ -491,6 +493,14 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.LOGOUT: //This is for get archived list
                         ActiveStatusModel activeStatusLogout = new Gson().fromJson(data, ActiveStatusModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, activeStatusLogout, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_GET_APPOINTMENT_DATA: //This is for get archived list
+                        MyAppointmentsBaseModel mMyAppointmentsBaseModel = new Gson().fromJson(data, MyAppointmentsBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mMyAppointmentsBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_GET_PATIENT_DATA: //This is for get archived list
+                        MyPatientBaseModel mMyPatientBaseModel = new Gson().fromJson(data, MyPatientBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mMyPatientBaseModel, mOldDataTag);
                         break;
 
                     default:

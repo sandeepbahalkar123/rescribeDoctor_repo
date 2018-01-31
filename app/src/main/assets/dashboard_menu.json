@@ -1,0 +1,49 @@
+{
+  "dashboardBottomMenuList": [
+    {
+      "name": "Home",
+      "identifier": "bottomMenu_Home",
+      "iconImageUrl": "home",
+      "selectedIconImageUrl": "home_selected"
+    },
+    {
+      "name": "Appointment",
+      "identifier": "bottomMenu_Appointment",
+      "iconImageUrl": "appointment",
+      "selectedIconImageUrl": "appointment_selected"
+    },
+    {
+      "name": "AppLogo",
+      "identifier": "bottomMenu_AppLogo",
+      "iconImageUrl": "applogo",
+      "selectedIconImageUrl": "applogo_selected"
+    },
+    {
+      "name": "Settings",
+      "identifier": "bottomMenu_Settings",
+      "iconImageUrl": "settings",
+      "selectedIconImageUrl": "settings_selected"
+    },
+    {
+      "name": "Support",
+      "identifier": "bottomMenu_Support",
+      "iconImageUrl": "support",
+      "selectedIconImageUrl": "support_selected",
+      "clickEvent": {
+        "bgImageUrl": "support_bg",
+        "clickOptions": [
+          {
+            "name": "Contact Number",
+            "identifier": "support_Contact",
+            "iconImageUrl": "contactnumber"
+          },
+          {
+            "name": "Support Email Id",
+            "identifier": "support_Email",
+            "iconImageUrl": "supportemailid"
+          }
+        ]
+      }
+    }
+  ]
+}

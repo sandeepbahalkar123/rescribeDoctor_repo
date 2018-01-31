@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/dashBoradBgframeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dashboard_image">
+
+        <LinearLayout
+            android:id="@+id/viewPagerDoctorItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="@dimen/dp2"
+            android:layout_marginEnd="@dimen/dp8"
+            android:layout_marginStart="@dimen/dp8"
+            android:background="@drawable/curve_edge_dashbooard_display_count_bg"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp20"
+                android:layout_marginStart="@dimen/dp20">
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/todayWaitingListOrAppointmentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:paddingTop="@dimen/dp25"
+                    android:textColor="@color/timing_bg_color"
+                    android:textSize="@dimen/sp24"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="21" />
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/todayWaitingListOrAppointmentTextView"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/todayWaitingListOrAppointmentCount"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dp10"
+                    android:paddingTop="@dimen/dp10"
+                    android:textColor="@color/dashboard_text_color"
+                    android:textSize="@dimen/sp12"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="Today's Appointment" />
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/dp21"
+                android:layout_marginEnd="@dimen/dp20"
+                android:layout_marginStart="@dimen/dp20"
+                android:layout_marginTop="@dimen/dp21"
+                android:background="@color/dashboard_divider_color"
+                tools:ignore="ContentDescription" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/todayNewAppointmentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:paddingTop="@dimen/dp25"
+                    android:textColor="@color/timing_bg_color"
+                    android:textSize="@dimen/sp24"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="21" />
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/todayNewAppointmentTextView"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/todayNewAppointmentCount"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dp10"
+                    android:paddingTop="@dimen/dp10"
+                    android:textColor="@color/dashboard_text_color"
+                    android:textSize="@dimen/sp12"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="Today's Appointment" />
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/dp21"
+                android:layout_marginEnd="@dimen/dp20"
+                android:layout_marginStart="@dimen/dp20"
+                android:layout_marginTop="@dimen/dp21"
+                android:background="@color/dashboard_divider_color"
+                tools:ignore="ContentDescription" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/dp29"
+                android:layout_marginRight="@dimen/dp29">
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/todayFollowAppointmentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:paddingTop="@dimen/dp25"
+                    android:textColor="@color/timing_bg_color"
+                    android:textSize="@dimen/sp24"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="21" />
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/todayFollowAppointmentTextView"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/todayFollowAppointmentCount"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dp10"
+                    android:paddingTop="@dimen/dp10"
+                    android:textColor="@color/dashboard_text_color"
+                    android:textSize="@dimen/sp12"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="Today's Appointment" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right">
+
+            <ImageView
+                android:id="@+id/locationImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp16"
+                android:layout_marginRight="@dimen/dp16"
+                android:layout_marginTop="@dimen/dp12"
+                android:src="@drawable/notification_icon"
+                tools:ignore="ContentDescription,RtlHardcoded,RtlSymmetry" />
+
+            <com.rescribe.doctor.ui.customesViews.CustomTextView
+                android:id="@+id/showCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/locationImageView"
+                android:layout_alignParentTop="true"
+                android:layout_alignRight="@id/locationImageView"
+                android:layout_marginTop="@dimen/dp8"
+                android:background="@drawable/badge_notification"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="7sp"
+                android:visibility="gone"
+                app:customFont="@string/roboto_medium"
+                tools:text="19"
+                tools:visibility="visible" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/doctorInfoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp14"
+            android:layout_marginStart="@dimen/dp14"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <com.rescribe.doctor.ui.customesViews.CircularImageView
+                android:layout_width="@dimen/dp100"
+                android:layout_height="@dimen/dp100"
+                android:layout_marginBottom="@dimen/dp30"
+                android:layout_marginTop="@dimen/dp54"
+                android:src="@drawable/grey_female" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp8"
+                android:layout_marginStart="@dimen/dp8"
+                android:layout_marginTop="@dimen/dp54">
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/welcomeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp20"
+                    android:text="@string/welcome"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp18"
+                    app:customFont="@string/roboto_bold" />
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/doctorNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/welcomeTextView"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp18"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="Dr. Rahul Kalyanpur" />
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/aboutDoctorTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/doctorNameTextView"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp13"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="MBBS, MD - Medicine, Neurology" />
+
+
+            </RelativeLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/nestedScrollView">
+
+<LinearLayout
+    android:id="@+id/hostViewsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+</LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

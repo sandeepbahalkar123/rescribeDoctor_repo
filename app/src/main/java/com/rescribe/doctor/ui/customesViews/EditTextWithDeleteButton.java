@@ -3,6 +3,7 @@ package com.rescribe.doctor.ui.customesViews;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -132,7 +133,7 @@ public class EditTextWithDeleteButton extends LinearLayout {
 
         editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.search, 0, 0, 0);
         editText.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dp4));
-
+        editText.setHintTextColor(ContextCompat.getColor(context,R.color.hint_color_my_appointment));
         editText.setHorizontallyScrolling(false);
         editText.setVerticalScrollBarEnabled(true);
         editText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);

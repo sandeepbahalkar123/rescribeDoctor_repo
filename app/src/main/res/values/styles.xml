@@ -118,5 +118,31 @@
         <item name="kswTextAdjust">-2dp</item>
         <item name="kswTextExtra">10dp</item>
     </style>
+    <style name="drawer_filter_header_icon_layout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">@dimen/dp8</item>
+        <item name="android:layout_marginStart">@dimen/dp8</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:padding">@dimen/dp8</item>
+    </style>
 
+    <style name="drawer_filter_header_layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingEnd">@dimen/dp8</item>
+        <item name="android:gravity">center|left</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingStart">@dimen/dp8</item>
+        <item name="android:textColor">@color/tagColor</item>
+        <item name="android:textSize">@dimen/sp16</item>
+    </style>
+
+    <style name="drawer_filter_header_direction_icon_layout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">@dimen/dp30</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
 </resources>
