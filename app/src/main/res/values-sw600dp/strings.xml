@@ -4,4 +4,15 @@
     <string name="profile">Profile</string>
     <string name="settings">Settings</string>
     <string name="support">Support</string>
+    <string name="outstanding_amount">Outstanding Amount:</string>
+    <string name="id">ID:</string>
+    <string name="years">yrs -</string>
+    <string name="opd">OPD</string>
+    <string name="nil">NIL</string>
+    <string name="booked">Booked</string>
+    <string name="completed">completed</string>
+    <string name="follow">Follow</string>
+    <string name="mr">Mr.</string>
+    <string name="mrs">Mrs.</string>
+    <string name="miss">Miss.</string>
 </resources>

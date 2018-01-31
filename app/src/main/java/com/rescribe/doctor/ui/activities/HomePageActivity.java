@@ -31,6 +31,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.SwitchButton;
 import com.rescribe.doctor.util.CommonMethods;
@@ -116,6 +117,7 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
     private String docId;
     private LoginHelper loginHelper;
     private WaitingOrAppointmentListAdapter mWaitingOrAppointmentListAdapter;
+    private LinearLayout menuOptionLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +163,13 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
         viewTextView.setText("VIEW");
         recyclerView.setNestedScrollingEnabled(false);
         mWaitingOrAppointmentListAdapter = new WaitingOrAppointmentListAdapter(mContext);
-
+        viewTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomePageActivity.this,MyAppointmentsActivity.class);
+                startActivity(intent);
+            }
+        });
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearlayoutManager);
         recyclerView.setNestedScrollingEnabled(false);
@@ -186,13 +194,20 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
         LayoutInflater inflaterPatientConnect = LayoutInflater.from(mContext);
         View inflaterPatientConnectLayout = inflater.inflate(R.layout.dashboard_menu_common_layout, null, false);
         hostViewsLayout.addView(inflaterPatientConnectLayout);
-
+        menuOptionLinearLayout = (LinearLayout) inflaterPatientConnectLayout.findViewById(R.id.menuOptionLinearLayout);
         menuImageWaitingList = (ImageView) inflaterPatientConnectLayout.findViewById(R.id.menuImageView);
         menuNameTextView = (CustomTextView) inflaterPatientConnectLayout.findViewById(R.id.menuNameTextView);
         dashboardArrowImageView = (ImageView) inflaterPatientConnectLayout.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflaterPatientConnectLayout.findViewById(R.id.radioSwitch);
         menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patient_connect_icon));
         menuNameTextView.setText("Patient Connect");
+        menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, PatientConnectActivity.class);
+                startActivity(intent);
+            }
+        });
         radioSwitch.setVisibility(View.VISIBLE);
 
         // inflate MyPatients layout

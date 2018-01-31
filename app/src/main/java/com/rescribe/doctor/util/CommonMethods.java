@@ -24,9 +24,18 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.CheckIpConnection;
 import com.rescribe.doctor.interfaces.DatePickerDialogListener;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
+import org.joda.time.Weeks;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -86,6 +95,18 @@ public class CommonMethods {
         }
     }
 
+    public static TextDrawable getTextDrawable(Context context, String name) {
+        ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
+        int color2 = mColorGenerator.getColor(name);
+        return TextDrawable.builder()
+                .beginConfig()
+                .width(Math.round(context.getResources().getDimension(R.dimen.dp67))) // width in px
+                .height(Math.round(context.getResources().getDimension(R.dimen.dp67))) // height in px
+                .endConfig()
+                .buildRound(("" + name.charAt(0)).toUpperCase(), color2);
+    }
+
+
     public static String getCurrentDateTime() // for enrollmentId
     {
         Calendar calendar = Calendar.getInstance();
@@ -116,6 +137,19 @@ public class CommonMethods {
         ViewGroup group = (ViewGroup) snack.getView();
         group.setBackgroundColor(mContext.getResources().getColor(R.color.errorColor));
         snack.show();
+    }
+    public static DateTime convertToDateTime(String stringToConvert){
+        String[] newStringArray = convertStringToArray(stringToConvert);
+        int year = Integer.parseInt(newStringArray[2].trim());
+        int day = Integer.parseInt(newStringArray[0].trim());
+        int month = Integer.parseInt(newStringArray[1].trim());
+        LocalDate mLocalDate = new LocalDate(year, month, day);
+        DateTime firstDateTime = mLocalDate.toDateTime(LocalTime.fromDateFields(mLocalDate.toDate()));
+        return firstDateTime;
+    }
+    public static String[] convertStringToArray(String stringToConvert){
+        String[] newStringArray = stringToConvert.split("-");
+        return newStringArray;
     }
 
 
@@ -255,6 +289,7 @@ public class CommonMethods {
             }
         }
     }
+
 
     public static String printKeyHash(Activity context) {
         PackageInfo packageInfo;
@@ -456,6 +491,25 @@ public class CommonMethods {
         return abbreviation;
     }
 
+    public static int displayAgeAnalysis(DateTime dateToday, DateTime birthdayDate) {
+        Period dateDifferencePeriod = displayBirthdayResult(dateToday, birthdayDate);
+        int getDateInDays = dateDifferencePeriod.getDays();
+        int getDateInWeeks = Weeks.weeksBetween(new DateTime(birthdayDate), new DateTime(dateToday)).getWeeks();
+        ;
+        int getDateInMonths = dateDifferencePeriod.getMonths();
+        int getDateInYears = dateDifferencePeriod.getYears();
+        int mDay = getDateInWeeks * 7;
+        int mMonth = getDateInMonths + (getDateInYears * 12);
+        int hours = mDay * 24;
+        int minutes = mDay * 24 * 60;
+        int seconds = mDay * 24 * 60 * 60;
+        return getDateInYears;
+    }
+
+    public static Period displayBirthdayResult(DateTime dateToday, DateTime birthdayDate) {
+        Period dateDifferencePeriod = new Period(birthdayDate, dateToday, PeriodType.yearMonthDayTime());
+        return dateDifferencePeriod;
+    }
 
     public static Date convertStringToDate(String dateString, String dateFormat) {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, Locale.US);

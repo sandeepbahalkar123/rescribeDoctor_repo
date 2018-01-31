@@ -91,6 +91,8 @@ public class RescribeConstants {
 
     public static final String ACTIVE_STATUS = RescribeConstants.BLANK + 14;
     public static final String LOGOUT = RescribeConstants.BLANK + 15;
+    public static final String TASK_GET_APPOINTMENT_DATA = BLANK + 16;
+    public static final String TASK_GET_PATIENT_DATA = BLANK + 17;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -124,6 +126,8 @@ public class RescribeConstants {
     public static final String CONNECT_REQUEST = "connect_request";
     public static final String PATIENT_INFO = "patient_info";
     public static final int PLACE_PICKER_REQUEST = 99;
+    public static final String APPOINTMENT_DATA = "appointment_data";
+
 
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";

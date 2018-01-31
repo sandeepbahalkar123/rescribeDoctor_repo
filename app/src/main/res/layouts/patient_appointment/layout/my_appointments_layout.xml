@@ -1,90 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:id="@+id/appointmentLayoutContainer"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/divider"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/appointmentLayoutContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/divider"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp54"
-            android:background="@color/tagColor"
+            android:layout_height="match_parent"
+            android:background="@color/divider"
             android:orientation="vertical">
 
-            <com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton
-                android:id="@+id/searchEditText"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:hintText="@string/search_hint">
+                android:layout_height="@dimen/dp54"
+                android:background="@color/tagColor"
+                android:orientation="vertical">
 
-            </com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton>
+                <com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton
+                    android:id="@+id/searchEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:hintText="@string/search_hint">
 
-            <TextView
-                android:id="@+id/whiteUnderLine"
+                </com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton>
+
+                <TextView
+                    android:id="@+id/whiteUnderLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp1"
+                    android:layout_marginBottom="@dimen/dp6"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:background="@color/white"
+                    android:drawableLeft="@drawable/search"
+                    android:drawablePadding="@dimen/dp4"
+                    android:drawableStart="@drawable/search"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp16"
+                    android:visibility="visible"
+                    tools:ignore="TextViewEdits"
+                    tools:visibility="visible" />
+            </LinearLayout>
+
+            <ExpandableListView
+                android:id="@+id/historyExpandableListView"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp1"
-                android:layout_marginBottom="@dimen/dp6"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginRight="@dimen/dp10"
-                android:background="@color/white"
-                android:drawableLeft="@drawable/search"
-                android:drawablePadding="@dimen/dp4"
-                android:drawableStart="@drawable/search"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp16"
+                android:layout_height="wrap_content"
+                android:background="@color/divider"
+                android:childDivider="@null"
+                android:divider="@null"
+                android:groupIndicator="@null"
                 android:visibility="gone"
-                tools:visibility="visible"
-                tools:ignore="TextViewEdits" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <include layout="@layout/common_no_records_found" />
         </LinearLayout>
 
-        <ExpandableListView
-            android:id="@+id/historyExpandableListView"
-            android:layout_width="match_parent"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/rightFab"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:childDivider="@null"
-            android:divider="@null"
-            android:groupIndicator="@null"
-            android:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginTop="@dimen/dp5"
+            android:src="@drawable/filter"
+            android:visibility="visible"
+            app:backgroundTint="@color/Red" />
 
-        <include layout="@layout/common_no_records_found" />
-    </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/rightFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:layout_marginRight="@dimen/fab_margin"
-        android:layout_marginTop="@dimen/dp5"
-        android:src="@drawable/filter"
-        android:visibility="visible"
-        app:backgroundTint="@color/Red"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/leftFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_gravity="bottom|left"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:layout_marginTop="@dimen/dp5"
-        android:src="@drawable/ic_add_action"
-        android:visibility="visible"
-        app:backgroundTint="@color/floating_blue_color" />
-</FrameLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/leftFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="bottom|left"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginTop="@dimen/dp5"
+            android:src="@drawable/ic_add_action"
+            android:visibility="visible"
+            app:backgroundTint="@color/floating_blue_color" />
+    </FrameLayout>
+</LinearLayout>

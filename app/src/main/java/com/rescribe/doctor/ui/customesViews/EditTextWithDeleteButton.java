@@ -133,7 +133,7 @@ public class EditTextWithDeleteButton extends LinearLayout {
 
         editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.search, 0, 0, 0);
         editText.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dp4));
-        editText.setHintTextColor(ContextCompat.getColor(context,R.color.accent));
+        editText.setHintTextColor(ContextCompat.getColor(context,R.color.hint_color_my_appointment));
         editText.setHorizontallyScrolling(false);
         editText.setVerticalScrollBarEnabled(true);
         editText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);

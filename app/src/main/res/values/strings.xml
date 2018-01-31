@@ -91,6 +91,9 @@
     <string name="dentist">dentist</string>
     <string name="gynecologist">gynecologist</string>
     <string name="paediatric">paediatric</string>
+    <string name="parse_error">parse error</string>
+    <string name="no_connection_error">no connection error</string>
+    <string name="default_error">default error</string>
     <string name="dermatologist">dermatologist</string>
     <string name="neurologist">neurologist</string>
     <string name="physician">physician</string>
@@ -135,6 +138,17 @@
     <string name="app_logo">AppLogo</string>
     <string name="settings">Settings</string>
     <string name="support">Support</string>
+    <string name="outstanding_amount">Outstanding Amount:</string>
+    <string name="id">ID:</string>
+    <string name="years">yrs -</string>
+    <string name="opd">OPD</string>
+    <string name="nil">NIL</string>
+    <string name="booked">booked</string>
+    <string name="completed">completed</string>
+    <string name="follow">follow</string>
+    <string name="mr">Mr.</string>
+    <string name="mrs">Mrs.</string>
+    <string name="miss">Miss.</string>
 
 
 </resources>

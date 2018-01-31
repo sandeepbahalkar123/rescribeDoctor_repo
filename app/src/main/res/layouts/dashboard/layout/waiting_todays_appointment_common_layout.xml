@@ -50,6 +50,7 @@
             android:layout_centerVertical="true"
             android:textColor="@color/timing_bg_color"
             android:textSize="@dimen/sp12"
+            android:padding="@dimen/dp4"
             app:customFont="@string/roboto_medium"
             tools:text="View" />
     </RelativeLayout>

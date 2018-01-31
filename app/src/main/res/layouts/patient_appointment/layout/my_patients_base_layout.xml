@@ -7,7 +7,9 @@
     tools:openDrawer="end">
 
     <include
-        layout="@layout/common_action_bar" />
+        layout="@layout/common_action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/viewContainer"

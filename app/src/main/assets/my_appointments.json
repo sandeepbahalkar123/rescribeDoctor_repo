@@ -1,0 +1,112 @@
+{
+  "common": {
+    "success": true,
+    "statusCode": 200,
+    "statusMessage": "USER AUTHENTICATED"
+  },
+  "data": {
+    "smsTemplate": "",
+    "emailSubject": "",
+    "emailTemplate": "",
+    "clinicList": [
+      {
+        "clinic_name": "Shree Clinic",
+        "locationId": 9,
+        "area": "Hadapasar",
+        "city": "Pune",
+        "address": "Near Magarpatta It park,Hadapsar,Pune",
+        "patientList": [
+          {
+            "salutation": 1,
+            "patientName": "Uren Chhadva",
+            "age": 33,
+            "dateOfBirth": "",
+            "gender": "Male",
+            "outStandingAmount": 450,
+            "patientId": 4653,
+            "aptId": 1334,
+            "opdId": 1107,
+            "patientPhone": "8149972785",
+            "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+            "appointmentDate": "2017-11-28T00:00:00.000Z",
+            "appointmentTime": "13:00:00",
+            "appointmentStatus": "Completed"
+          },
+          {
+            "salutation": 2,
+            "patientName": "Sudhir Patil",
+            "age": 42,
+            "dateOfBirth": "",
+            "gender": "Male",
+            "outStandingAmount": 0,
+            "patientId": 4654,
+            "aptId": 1335,
+            "opdId": 1108,
+            "patientPhone": "8149972786",
+            "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+            "appointmentDate": "2017-12-30T00:00:00.000Z",
+            "appointmentTime": "13:00:00",
+            "appointmentStatus": "Booked"
+          }
+        ]
+      },
+      {
+        "clinic_name": "Atharv Clinic",
+        "locationId": 10,
+        "area": "Kothrud",
+        "city": "Pune",
+        "address": "Kothrud depo Kothrud,Pune",
+        "patientList": [
+          {
+            "salutation": 3,
+            "patientName": "Sangeeta Yadav",
+            "age": 0,
+            "dateOfBirth": "23-05-1992",
+            "gender": "Female",
+            "outStandingAmount": 200,
+            "patientId": 4653,
+            "aptId": 1334,
+            "opdId": 1107,
+            "patientPhone": "8149972785",
+            "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Female_DRAvatar.jpg",
+            "appointmentDate": "2017-11-28T00:00:00.000Z",
+            "appointmentTime": "13:00:00",
+            "appointmentStatus": "Follow up"
+          },
+          {
+            "salutation": 3,
+            "patientName": "Sudhir Patil",
+            "age": 0,
+            "dateOfBirth": "28-08-1982",
+            "gender": "Male",
+            "outStandingAmount": 300,
+            "patientId": 4654,
+            "aptId": 1335,
+            "opdId": 1108,
+            "patientPhone": "8149972786",
+            "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+            "appointmentDate": "2017-12-30T00:00:00.000Z",
+            "appointmentTime": "13:00:00",
+            "appointmentStatus": "Booked"
+          },
+          {
+            "salutation": 4,
+            "patientName": "Ajit Desai",
+            "age": 0,
+            "dateOfBirth": "5-09-1996",
+            "gender": "Male",
+            "outStandingAmount": 1500,
+            "patientId": 4654,
+            "aptId": 1335,
+            "opdId": 1108,
+            "patientPhone": "914997259",
+            "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+            "appointmentDate": "2017-12-30T00:00:00.000Z",
+            "appointmentTime": "13:00:00",
+            "appointmentStatus": "Booked"
+          }
+        ]
+      }
+    ]
+  }
+}
