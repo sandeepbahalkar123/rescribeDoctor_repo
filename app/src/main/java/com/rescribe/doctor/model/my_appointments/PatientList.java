@@ -52,6 +52,8 @@ public class PatientList implements Parcelable
     @SerializedName("appointmentStatus")
     @Expose
     private String appointmentStatus;
+
+    private boolean selected;
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
 
@@ -199,6 +201,13 @@ public class PatientList implements Parcelable
 
     public void setAppointmentStatus(String appointmentStatus) {
         this.appointmentStatus = appointmentStatus;
+    }
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public void writeToParcel(Parcel dest, int flags) {

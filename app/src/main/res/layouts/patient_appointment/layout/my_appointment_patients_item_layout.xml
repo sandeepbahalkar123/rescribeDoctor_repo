@@ -4,10 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/groupItemLinearLayout"
     android:background="@color/divider"
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/hospitalDetailsLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -46,7 +48,9 @@
             tools:text="Worli, Mumbaifgfdgfdgfgf" />
 
         <LinearLayout
+            android:id="@+id/downArrowClickLinearLayout"
             android:layout_width="wrap_content"
+            android:padding="@dimen/dp4"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
@@ -81,9 +85,23 @@
                 tools:ignore="ContentDescription,ObsoleteLayoutParam"
                 android:paddingLeft="@dimen/dp3" />
         </LinearLayout>
+        <CheckBox
+            android:id="@+id/groupCheckbox"
+            android:layout_toStartOf="@id/downArrowClickLinearLayout"
+            tools:visibility="visible"
+            android:visibility="gone"
+            android:layout_marginEnd="@dimen/dp6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:button="@drawable/checkboxselecter"
+            android:layout_toLeftOf="@id/downArrowClickLinearLayout"
+            android:layout_marginRight="@dimen/dp6" />
+
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp7"
@@ -223,6 +241,7 @@
             </LinearLayout>
 
             <CheckBox
+                android:id="@+id/checkbox"
                 tools:visibility="visible"
                 android:visibility="gone"
                 android:layout_width="wrap_content"

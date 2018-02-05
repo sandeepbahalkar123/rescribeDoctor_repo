@@ -6,7 +6,7 @@
         android:topRightRadius="@dimen/dialog_radius" />
     <stroke
         android:width="0.5dp"
-        android:color="@color/color_dashboard_count_bg" />
+        android:color="@color/divider" />
     <padding
         android:bottom="0dp"
         android:left="0dp"

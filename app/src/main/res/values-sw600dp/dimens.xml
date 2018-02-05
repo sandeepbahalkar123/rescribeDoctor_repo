@@ -13,4 +13,7 @@
     <dimen name="sp10">10sp</dimen>
     <dimen name="dp28">28dp</dimen>
     <dimen name="dp32">32dp</dimen>
+    <dimen name="dp203">203dp</dimen>
+    <dimen name="dp65">65dp</dimen>
+    <dimen name="dp24">24dp</dimen>
 </resources>

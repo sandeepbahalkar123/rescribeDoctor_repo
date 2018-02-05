@@ -11,28 +11,30 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp69"
+        android:layout_marginLeft="60dp"
         android:orientation="horizontal">
 
         <com.rescribe.doctor.ui.customesViews.CircularImageView
-            android:layout_width="@dimen/dp8"
-            android:layout_height="@dimen/dp8"
-            android:layout_margin="@dimen/dp10"
-            android:background="@drawable/circular_bullet" />
+            android:layout_width="@dimen/dp6"
+            android:layout_height="@dimen/dp6"
+           android:layout_marginStart="@dimen/dp10"
+            android:layout_marginEnd="@dimen/dp4"
+            android:layout_marginTop="@dimen/dp6"
+            android:background="@drawable/circular_bullet"
+            android:layout_marginRight="@dimen/dp4"
+            android:layout_marginLeft="@dimen/dp10" />
 
         <TextView
             android:id="@+id/textViewName"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp210"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp4"
-            android:layout_marginStart="@dimen/dp4"
             android:paddingRight="@dimen/dp4"
             android:paddingEnd="@dimen/dp4"
-            android:paddingLeft="@dimen/dp2"
+            android:paddingLeft="@dimen/dp4"
             android:textColor="@color/timing_bg_color"
             android:textSize="@dimen/sp12"
             tools:text="@string/dummy_normal"
-            android:paddingStart="@dimen/dp2" />
+            android:paddingStart="@dimen/dp4" />
     </LinearLayout>
 
     <View

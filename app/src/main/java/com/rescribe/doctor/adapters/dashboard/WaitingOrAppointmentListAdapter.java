@@ -43,10 +43,11 @@ public class WaitingOrAppointmentListAdapter extends RecyclerView.Adapter<Waitin
     public void onBindViewHolder(final ListViewHolder holder, int position) {
 
         //TODO : NEED TO IMPLEMENT
+
         Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/roboto_bold.ttf");
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(opdList[position]);
-        spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), 0, opdList[position].length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-        holder.textViewName.setText(mDataListHospitalDetails[position] + " \n" + timingList[position] + " - " + spannableStringBuilder);
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(mDataListHospitalDetails[position] + " - " + timingList[position] + " - " + opdList[position]);
+        spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), mDataListHospitalDetails[position].length()+3+timingList[position].length()+3,spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        holder.textViewName.setText(spannableStringBuilder);
 
 
     }

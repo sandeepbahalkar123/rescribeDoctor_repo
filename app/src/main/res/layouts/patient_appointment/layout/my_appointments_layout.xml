@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/divider"
-    android:orientation="vertical">
+    android:background="@color/divider">
 
     <FrameLayout
         android:id="@+id/appointmentLayoutContainer"
@@ -15,38 +14,37 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/divider"
             android:orientation="vertical">
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/toolbar_divider_color" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp54"
+                android:layout_height="@dimen/dp56"
                 android:background="@color/tagColor"
                 android:orientation="vertical">
 
                 <com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton
                     android:id="@+id/searchEditText"
+                    android:visibility="visible"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     app:hintText="@string/search_hint">
+
 
                 </com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton>
 
-                <TextView
+                <ImageView
                     android:id="@+id/whiteUnderLine"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp1"
-                    android:layout_marginBottom="@dimen/dp6"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dp8"
+                    android:layout_marginBottom="@dimen/dp8"
                     android:layout_marginLeft="@dimen/dp10"
                     android:layout_marginRight="@dimen/dp10"
                     android:background="@color/white"
-                    android:drawableLeft="@drawable/search"
-                    android:drawablePadding="@dimen/dp4"
-                    android:drawableStart="@drawable/search"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/sp16"
                     android:visibility="visible"
                     tools:ignore="TextViewEdits"
                     tools:visibility="visible" />
@@ -61,10 +59,13 @@
                 android:divider="@null"
                 android:groupIndicator="@null"
                 android:visibility="gone"
+
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-<include layout="@layout/common_recycler_view"/>
-            <include layout="@layout/common_no_records_found" />
+
+            <include layout="@layout/common_recycler_view" />
+
         </LinearLayout>
+        <include layout="@layout/common_no_records_found" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/rightFab"

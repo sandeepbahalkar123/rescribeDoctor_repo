@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -33,10 +34,8 @@ import butterknife.Unbinder;
 
 public class MyPatientsFragment extends Fragment {
     private static Bundle args;
-    @BindView(R.id.searchEditText)
-    EditTextWithDeleteButton searchEditText;
     @BindView(R.id.whiteUnderLine)
-    TextView whiteUnderLine;
+    ImageView whiteUnderLine;
     @BindView(R.id.historyExpandableListView)
     ExpandableListView expandableListView;
     @BindView(R.id.emptyListView)

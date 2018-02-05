@@ -7,16 +7,13 @@
     tools:openDrawer="end">
 
     <include
-        layout="@layout/common_action_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        layout="@layout/common_action_bar" />
 
     <FrameLayout
         android:id="@+id/viewContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:background="@color/white"
         android:fitsSystemWindows="true"
         android:orientation="vertical" />
 

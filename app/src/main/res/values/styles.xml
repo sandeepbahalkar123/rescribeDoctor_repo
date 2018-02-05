@@ -43,27 +43,12 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:backgroundTint">@color/transparent</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:gravity">bottom|left</item>
-        <item name="android:textColorHint">@color/Gray</item>
-        <item name="android:textColor">@color/recentblue</item>
-        <item name="android:textSize">@dimen/sp12</item>
+        <item name="android:textColorHint">@color/hint_color_my_appointment</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/sp16</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/dp40</item>
-    </style>
-
-    <style name="AppLoginNewMainStyle">
-        <item name="android:textCursorDrawable">@drawable/cursor_color_white</item>
-        <item name="android:cursorVisible">true</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:backgroundTint">@color/transparent</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:gravity">bottom|left</item>
-        <item name="android:textColorHint">@color/white</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/sp14</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/dp40</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
 
@@ -111,7 +96,6 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">16sp</item>
         <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingRight">10dp</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
         <item name="kswBackDrawable">@drawable/switch_selecter</item>
@@ -126,6 +110,19 @@
         <item name="android:layout_marginStart">@dimen/dp8</item>
         <item name="android:adjustViewBounds">true</item>
         <item name="android:padding">@dimen/dp8</item>
+    </style>
+    <style name="AppLoginNewMainStyle">
+        <item name="android:textCursorDrawable">@drawable/cursor_color_white</item>
+        <item name="android:cursorVisible">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:backgroundTint">@color/transparent</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:gravity">bottom|left</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/sp14</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dp40</item>
     </style>
 
     <style name="drawer_filter_header_layout">

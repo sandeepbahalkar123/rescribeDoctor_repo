@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp54"
+        android:layout_height="@dimen/dp56"
         android:background="@color/tagColor">
 
         <ImageView
@@ -71,10 +71,7 @@
             tools:visibility="visible" />
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp1"
-        android:background="@color/view_line" />
+
 
 
 </LinearLayout>

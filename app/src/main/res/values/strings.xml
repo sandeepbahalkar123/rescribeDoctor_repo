@@ -149,6 +149,12 @@
     <string name="mr">Mr.</string>
     <string name="mrs">Mrs.</string>
     <string name="miss">Miss.</string>
+    <string name="appointments">Appointments</string>
+    <string name="apsotrophe">\'</string>
+    <string name="select_all">Select All</string>
+    <string name="send_sms">Send SMS</string>
+    <string name="send_mail">Send Email</string>
+    <string name="waiting_list">Waiting List</string>
 
 
 </resources>
