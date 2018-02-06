@@ -27,16 +27,14 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
 
     private Context mContext;
     private List<BottomMenu> mBottomMenuList;
-    private String[] mMenuNames = {"Select All", "Send SMS", "Send Email", "Waiting List"};
+    OnMenuBottomItemClickListener mOnMenuBottomItemClickListener;
+    private boolean isClicked;
 
-    public BottomMenuAppointmentAdapter(Context mContext) {
+    public BottomMenuAppointmentAdapter(Context mContext, OnMenuBottomItemClickListener mOnMenuBottomItemClickListener, ArrayList<BottomMenu> mBottomMenuList) {
         this.mContext = mContext;
-        mBottomMenuList = new ArrayList<>();
-        for (int index = 0; index < mMenuNames.length; index++) {
-            BottomMenu bottomMenu = new BottomMenu();
-            bottomMenu.setMenuName(mMenuNames[index]);
-            mBottomMenuList.add(bottomMenu);
-        }
+        this.mOnMenuBottomItemClickListener = mOnMenuBottomItemClickListener;
+        this.mBottomMenuList = mBottomMenuList ;
+
 
     }
 
@@ -49,25 +47,41 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
     }
 
     @Override
-    public void onBindViewHolder(final ListViewHolder holder, int position) {
-        BottomMenu mBottomMenu = mBottomMenuList.get(position);
+    public void onBindViewHolder(final ListViewHolder holder, final int position) {
+
+        final BottomMenu mBottomMenu = mBottomMenuList.get(position);
         //TODO : NEED TO IMPLEMENT
         holder.bottomMenuName.setText(mBottomMenu.getMenuName());
+
         if(mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.select_all))){
-          holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.select_all));
+            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.select_all));
         }else if(mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.send_sms))){
             holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.send_sms));
-
+            holder.menuBottomIcon.setColorFilter(ContextCompat.getColor(holder.menuBottomIcon.getContext(),R.color.grey), android.graphics.PorterDuff.Mode.MULTIPLY);
         }else if(mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.send_mail))){
             holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.send_email));
-
         }else if(mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.waiting_list))){
-
             holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.add_waiting_list));
-
         }
-        //  holder.timeSlot.setText(doctorObject.ge);
+        holder.menuBottomLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!mBottomMenu.isSelected()) {
+                    mBottomMenu.setSelected(true);
+                    holder.bottomMenuName.setTextColor(holder.bottomMenuName.getContext().getResources().getColor(R.color.tagColor));
+                    holder.menuBottomIcon.setColorFilter(ContextCompat.getColor(holder.menuBottomIcon.getContext(), R.color.tagColor), android.graphics.PorterDuff.Mode.MULTIPLY);
+                    notifyDataSetChanged();
+                }else{
+                    mBottomMenu.setSelected(false);
+                    holder.bottomMenuName.setTextColor(holder.bottomMenuName.getContext().getResources().getColor(R.color.grey));
+                    holder.menuBottomIcon.setColorFilter(ContextCompat.getColor(holder.menuBottomIcon.getContext(), R.color.grey), android.graphics.PorterDuff.Mode.MULTIPLY);
+                    notifyDataSetChanged();
+                }
+                mOnMenuBottomItemClickListener.setClickOnMenuItem(position,mBottomMenu);
 
+            }
+        });
+        //  holder.timeSlot.setText(doctorObject.ge);
 
     }
 
@@ -96,5 +110,8 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
             ButterKnife.bind(this, view);
             this.view = view;
         }
+    }
+    public interface OnMenuBottomItemClickListener {
+        void setClickOnMenuItem(int position, BottomMenu bottomMenu );
     }
 }

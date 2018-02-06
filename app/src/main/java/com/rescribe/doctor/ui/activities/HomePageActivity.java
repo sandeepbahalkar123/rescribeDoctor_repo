@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -139,6 +140,7 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
     }
 
     private void initialize() {
+        //Set values for upper dashboard blocks
         todayFollowAppointmentCount.setText("21");
         todayNewAppointmentCount.setText("21");
         todayWaitingListOrAppointmentCount.setText("21");
@@ -149,8 +151,99 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
         aboutDoctorTextView.setText("MBBS, MD - Medicine, Neurology");
         showCount.setVisibility(View.VISIBLE);
         showCount.setText("8");
-
         //setWaitingOrAppointmentLayoutHere
+        setLayoutForWaitingOrAppointment();
+        // inflate waiting list layout
+        setLayoutForWaitingList();
+        // inflate patientConnect layout
+        setLayoutForPatientConnect();
+        // inflate MyPatientsActivity layout
+        setLayoutForMyPatients();
+
+    }
+
+    private void setLayoutForMyPatients() {
+        LayoutInflater inflaterMyPatients = LayoutInflater.from(mContext);
+        View inflaterMyPatientsLayout = inflaterMyPatients.inflate(R.layout.dashboard_menu_common_layout, null, false);
+        hostViewsLayout.addView(inflaterMyPatientsLayout);
+        menuOptionLinearLayout = (LinearLayout) inflaterMyPatientsLayout.findViewById(R.id.menuOptionLinearLayout);
+        menuImageWaitingList = (ImageView) inflaterMyPatientsLayout.findViewById(R.id.menuImageView);
+        menuNameTextView = (CustomTextView) inflaterMyPatientsLayout.findViewById(R.id.menuNameTextView);
+        dashboardArrowImageView = (ImageView) inflaterMyPatientsLayout.findViewById(R.id.dashboardArrowImageView);
+        radioSwitch = (SwitchButton) inflaterMyPatientsLayout.findViewById(R.id.radioSwitch);
+        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.mypatients_icon));
+        menuNameTextView.setText("My Patients");
+        menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MyPatientsActivity.class);
+                startActivity(intent);
+            }
+        });
+        dashboardArrowImageView.setVisibility(View.VISIBLE);
+    }
+
+    private void setLayoutForPatientConnect() {
+        LayoutInflater inflaterPatientConnect = LayoutInflater.from(mContext);
+        View inflaterPatientConnectLayout = inflaterPatientConnect.inflate(R.layout.dashboard_menu_common_layout, null, false);
+        hostViewsLayout.addView(inflaterPatientConnectLayout);
+        menuOptionLinearLayout = (LinearLayout) inflaterPatientConnectLayout.findViewById(R.id.menuOptionLinearLayout);
+        menuImageWaitingList = (ImageView) inflaterPatientConnectLayout.findViewById(R.id.menuImageView);
+        menuNameTextView = (CustomTextView) inflaterPatientConnectLayout.findViewById(R.id.menuNameTextView);
+        dashboardArrowImageView = (ImageView) inflaterPatientConnectLayout.findViewById(R.id.dashboardArrowImageView);
+        radioSwitch = (SwitchButton) inflaterPatientConnectLayout.findViewById(R.id.radioSwitch);
+        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patient_connect_icon));
+        menuNameTextView.setText("Patient Connect");
+        menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, PatientConnectActivity.class);
+                startActivity(intent);
+            }
+        });
+        radioSwitch.setVisibility(View.VISIBLE);
+        //Radio Button functionality for chat online offline status
+        boolean appointmentAlert = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_CHECKED, mContext);
+        if (appointmentAlert) {
+            radioSwitch.setChecked(true);
+        } else {
+            radioSwitch.setChecked(false);
+        }
+
+        radioSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    ActiveRequest activeRequest = new ActiveRequest();
+                    RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_CHECKED, isChecked, mContext);
+                    activeRequest.setId(Integer.parseInt(docId));
+                    loginHelper.doActiveStatus(activeRequest);
+                } else {
+                    ActiveRequest activeRequest = new ActiveRequest();
+                    activeRequest.setId(Integer.parseInt(docId));
+                    RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_CHECKED, isChecked, mContext);
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, RescribeConstants.NO, mContext);
+                    loginHelper.doLogout(activeRequest);
+                }
+            }
+        });
+    }
+
+    private void setLayoutForWaitingList() {
+        LayoutInflater inflaterWaitingList = LayoutInflater.from(mContext);
+        View inflatedLayoutWaitingList = inflaterWaitingList.inflate(R.layout.dashboard_menu_common_layout, null, false);
+        hostViewsLayout.addView(inflatedLayoutWaitingList);
+
+        menuImageWaitingList = (ImageView) inflatedLayoutWaitingList.findViewById(R.id.menuImageView);
+        menuNameTextView = (CustomTextView) inflatedLayoutWaitingList.findViewById(R.id.menuNameTextView);
+        dashboardArrowImageView = (ImageView) inflatedLayoutWaitingList.findViewById(R.id.dashboardArrowImageView);
+        radioSwitch = (SwitchButton) inflatedLayoutWaitingList.findViewById(R.id.radioSwitch);
+        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.waitinglist_icon));
+        menuNameTextView.setText("Waiting List - 6");
+        dashboardArrowImageView.setVisibility(View.VISIBLE);
+    }
+
+    private void setLayoutForWaitingOrAppointment() {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View inflatedLayout = inflater.inflate(R.layout.waiting_todays_appointment_common_layout, null, false);
         hostViewsLayout.addView(inflatedLayout);
@@ -168,7 +261,7 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
         viewTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomePageActivity.this,MyAppointmentsActivity.class);
+                Intent intent = new Intent(HomePageActivity.this, MyAppointmentsActivity.class);
                 startActivity(intent);
             }
         });
@@ -180,59 +273,6 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
         if (animator instanceof SimpleItemAnimator)
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         recyclerView.setAdapter(mWaitingOrAppointmentListAdapter);
-        // inflate waiting list layout
-        LayoutInflater inflaterWaitingList = LayoutInflater.from(mContext);
-        View inflatedLayoutWaitingList = inflater.inflate(R.layout.dashboard_menu_common_layout, null, false);
-        hostViewsLayout.addView(inflatedLayoutWaitingList);
-
-        menuImageWaitingList = (ImageView) inflatedLayoutWaitingList.findViewById(R.id.menuImageView);
-        menuNameTextView = (CustomTextView) inflatedLayoutWaitingList.findViewById(R.id.menuNameTextView);
-        dashboardArrowImageView = (ImageView) inflatedLayoutWaitingList.findViewById(R.id.dashboardArrowImageView);
-        radioSwitch = (SwitchButton) inflatedLayoutWaitingList.findViewById(R.id.radioSwitch);
-        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.waitinglist_icon));
-        menuNameTextView.setText("Waiting List - 6");
-        dashboardArrowImageView.setVisibility(View.VISIBLE);
-        // inflate patientConnect layout
-        LayoutInflater inflaterPatientConnect = LayoutInflater.from(mContext);
-        View inflaterPatientConnectLayout = inflater.inflate(R.layout.dashboard_menu_common_layout, null, false);
-        hostViewsLayout.addView(inflaterPatientConnectLayout);
-        menuOptionLinearLayout = (LinearLayout) inflaterPatientConnectLayout.findViewById(R.id.menuOptionLinearLayout);
-        menuImageWaitingList = (ImageView) inflaterPatientConnectLayout.findViewById(R.id.menuImageView);
-        menuNameTextView = (CustomTextView) inflaterPatientConnectLayout.findViewById(R.id.menuNameTextView);
-        dashboardArrowImageView = (ImageView) inflaterPatientConnectLayout.findViewById(R.id.dashboardArrowImageView);
-        radioSwitch = (SwitchButton) inflaterPatientConnectLayout.findViewById(R.id.radioSwitch);
-        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patient_connect_icon));
-        menuNameTextView.setText("Patient Connect");
-        menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, PatientConnectActivity.class);
-                startActivity(intent);
-            }
-        });
-        radioSwitch.setVisibility(View.VISIBLE);
-
-        // inflate MyPatientsActivity layout
-        LayoutInflater inflaterMyPatients = LayoutInflater.from(mContext);
-        View inflaterMyPatientsLayout = inflater.inflate(R.layout.dashboard_menu_common_layout, null, false);
-        hostViewsLayout.addView(inflaterMyPatientsLayout);
-        menuOptionLinearLayout = (LinearLayout) inflaterMyPatientsLayout.findViewById(R.id.menuOptionLinearLayout);
-        menuImageWaitingList = (ImageView) inflaterMyPatientsLayout.findViewById(R.id.menuImageView);
-        menuNameTextView = (CustomTextView) inflaterMyPatientsLayout.findViewById(R.id.menuNameTextView);
-        dashboardArrowImageView = (ImageView) inflaterMyPatientsLayout.findViewById(R.id.dashboardArrowImageView);
-        radioSwitch = (SwitchButton) inflaterMyPatientsLayout.findViewById(R.id.radioSwitch);
-        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.mypatients_icon));
-        menuNameTextView.setText("My Patients");
-        menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, MyPatientsActivity.class);
-                startActivity(intent);
-            }
-        });
-        dashboardArrowImageView.setVisibility(View.VISIBLE);
-
-
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -453,6 +493,8 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
         if (mOldDataTag.equals(RescribeConstants.LOGOUT))
             if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, mContext).equalsIgnoreCase(RescribeConstants.YES)) {
                 finish();
+            } else if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, mContext).equalsIgnoreCase(RescribeConstants.NO)) {
+                //if user turns on radio button
             } else {
                 logout();
             }

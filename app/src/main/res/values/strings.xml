@@ -124,6 +124,11 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="age">Age</string>
+    <string name="less">less</string>
+    <string name="equal">equal</string>
+    <string name="greater">greater</string>
+    <string name="less_than_sign"><![CDATA[<]]></string>
+    <string name="greater_than_sign"><![CDATA[>]]></string>
     <string name="age_range">Age Range</string>
     <string name="city">City</string>
     <string name="select_city">Select City</string>
@@ -151,10 +156,27 @@
     <string name="miss">Miss.</string>
     <string name="appointments">Appointments</string>
     <string name="apsotrophe">\'</string>
+    <string name="normalRange">normal</string>
+    <string name="moderateRange">Moderate</string>
+    <string name="severeRange">Severe</string>
     <string name="select_all">Select All</string>
     <string name="send_sms">Send SMS</string>
     <string name="send_mail">Send Email</string>
     <string name="waiting_list">Waiting List</string>
+    <string name="bp_max">BpMax</string>
+    <string name="bp">BP</string>
+    <string name="colon_sign">:</string>
+    <string name="bp_min">BpMin</string>
+    <string name="dash">-</string>
+    <string name="and_sign"><![CDATA[&]]></string>
+    <string name="systolic_pressure">Systolic BP</string>
+    <string name="diastolic_pressure">Diastolic BP</string>
+    <string name="normal">Normal Level :</string>
+    <string name="moderate">Moderate Level :</string>
+    <string name="severe">Severe Level :</string>
+    <string name="visit_details">Visit Details</string>
+    <string name="specialization">SPECIALIZATION</string>
+    <string name="address">ADDRESS</string>
 
 
 </resources>

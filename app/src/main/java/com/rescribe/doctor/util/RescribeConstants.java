@@ -93,6 +93,7 @@ public class RescribeConstants {
     public static final String LOGOUT = RescribeConstants.BLANK + 15;
     public static final String TASK_GET_APPOINTMENT_DATA = BLANK + 16;
     public static final String TASK_GET_PATIENT_DATA = BLANK + 17;
+    public static final String TASK_ONE_DAY_VISIT = BLANK + 18;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -128,6 +129,10 @@ public class RescribeConstants {
     public static final int PLACE_PICKER_REQUEST = 99;
     public static final String APPOINTMENT_DATA = "appointment_data";
     public static final String MYPATIENTS_DATA = "mypatients_data";
+    public static final String DOCTOR_IMAGE_URL = "doctor_iamge_url";
+    public static final String PATIENT_VISIT_DATE = "patient_visit_date";
+    public static final String PATIENT_ID = "patient_id";
+    public static final String NO = "no";
 
 
     public static String HEADER_COLOR = "#E4422C";
@@ -179,6 +184,7 @@ public class RescribeConstants {
     }
 
     public static class TIME_STAMPS {
+        public static final int FIVE_FIFTY = 500;
         public static int ONE_SECONDS = 1000;
         public static int TWO_SECONDS = 2000;
         public static int THREE_SECONDS = 3000;

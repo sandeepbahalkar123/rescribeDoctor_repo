@@ -77,13 +77,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:paddingStart="@dimen/dp3"
+                android:layout_marginBottom="@dimen/dp4"
                 android:layout_toEndOf="@id/clinicPatientCount"
                 android:layout_toRightOf="@id/clinicPatientCount"
-               android:layout_marginBottom="@dimen/dp4"
+                android:paddingLeft="@dimen/dp3"
+                android:paddingStart="@dimen/dp3"
                 android:src="@drawable/appointment_count_arrow"
-                tools:ignore="ContentDescription,ObsoleteLayoutParam"
-                android:paddingLeft="@dimen/dp3" />
+                tools:ignore="ContentDescription,ObsoleteLayoutParam" />
+            <ImageView
+                android:id="@+id/upArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:scaleY="-1"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/dp4"
+                android:layout_toEndOf="@id/clinicPatientCount"
+                android:layout_toRightOf="@id/clinicPatientCount"
+                android:paddingLeft="@dimen/dp3"
+                android:paddingStart="@dimen/dp3"
+                android:src="@drawable/appointment_count_arrow"
+                tools:ignore="ContentDescription,ObsoleteLayoutParam" />
         </LinearLayout>
         <CheckBox
             android:id="@+id/groupCheckbox"

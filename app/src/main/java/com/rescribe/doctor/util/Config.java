@@ -12,6 +12,7 @@ public class Config {
     public static final String LOGIN_URL = "authApi/authenticate/doctorLogin";
     public static final String VERIFY_SIGN_UP_OTP = "authApi/authenticate/verifyOTP";
     public static final String SIGN_UP_URL = "authApi/authenticate/signUp";
+    public static final String ONE_DAY_VISIT_URL = "";
     public static boolean DEV_BUILD = true;
     //Declared all URL used in app here
 

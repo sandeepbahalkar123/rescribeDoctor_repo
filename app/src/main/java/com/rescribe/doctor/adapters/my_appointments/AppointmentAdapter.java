@@ -89,7 +89,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter {
         cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed);
+                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed,groupPosition);
                 isLongPressed = !isLongPressed;
                 notifyDataSetChanged();
                 return false;
@@ -236,11 +236,9 @@ public class AppointmentAdapter extends BaseExpandableListAdapter {
 
 
         if (isLongPressed) {
-            mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed);
             mCheckbox.setVisibility(View.VISIBLE);
             mGroupCheckbox.setVisibility(View.VISIBLE);
         } else {
-            mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed);
             mCheckbox.setVisibility(View.GONE);
             mGroupCheckbox.setVisibility(View.GONE);
         }
@@ -263,9 +261,9 @@ public class AppointmentAdapter extends BaseExpandableListAdapter {
         cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed);
                 isLongPressed = !isLongPressed;
                 notifyDataSetChanged();
+                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed,groupPosition);
                 return false;
             }
         });
@@ -274,7 +272,9 @@ public class AppointmentAdapter extends BaseExpandableListAdapter {
         CustomTextView mClinicNameTextView = (CustomTextView) convertView.findViewById(R.id.clinicNameTextView);
         CustomTextView mClinicAddress = (CustomTextView) convertView.findViewById(R.id.clinicAddress);
         CustomTextView mClinicPatientCount = (CustomTextView) convertView.findViewById(R.id.clinicPatientCount);
-        ImageView mDownArrow = (ImageView) convertView.findViewById(R.id.downArrow);
+        final ImageView mDownArrow = (ImageView) convertView.findViewById(R.id.downArrow);
+        final ImageView upArrow = (ImageView) convertView.findViewById(R.id.upArrow);
+
         ImageView mBluelineImageView = (ImageView) convertView.findViewById(R.id.bluelineImageView);
         CustomTextView mPatientIdTextView = (CustomTextView) convertView.findViewById(R.id.patientIdTextView);
         CircularImageView mPatientImageView = (CircularImageView) convertView.findViewById(R.id.patientImageView);
@@ -360,6 +360,13 @@ public class AppointmentAdapter extends BaseExpandableListAdapter {
         mHospitalDetailsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isExpanded) {
+                    mDownArrow.setVisibility(View.VISIBLE);
+                    upArrow.setVisibility(View.GONE);
+                } else {
+                    mDownArrow.setVisibility(View.GONE);
+                    upArrow.setVisibility(View.VISIBLE);
+                }
                 mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
             }
         });
@@ -380,6 +387,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter {
     public interface OnDownArrowClicked {
         void onDownArrowSetClick(int groupPosition, boolean isExpanded);
 
-        void onLongPressOpenBottomMenu(boolean isLongPressed);
+        void onLongPressOpenBottomMenu(boolean isLongPressed,int groupPosition);
     }
 }

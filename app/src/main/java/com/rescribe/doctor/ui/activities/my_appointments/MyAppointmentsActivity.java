@@ -153,23 +153,10 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         }
     }
 
-    public void openBottomMenusDialog() {
-        View modalbottomsheet = getLayoutInflater().inflate(R.layout.bottom_menu_appointments, null);
 
-        dialog = new BottomSheetDialog(mContext);
-        dialog.setContentView(modalbottomsheet);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-        recyclerView = (RecyclerView)modalbottomsheet.findViewById(R.id.recyclerView);
-        recyclerView.setVisibility(View.VISIBLE);
-        recyclerView.setBackgroundColor(ContextCompat.getColor(mContext,R.color.black));
-        mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(mContext);
-        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(linearlayoutManager);
-        // off recyclerView Animation
-        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-        if (animator instanceof SimpleItemAnimator)
-            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-        recyclerView.setAdapter(mBottomMenuAppointmentAdapter);
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
     }
 }

@@ -1,0 +1,31 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <include layout="@layout/common_action_bar" />
+    </android.support.design.widget.AppBarLayout>
+
+    <ExpandableListView
+        android:id="@+id/historyExpandableListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:childDivider="@null"
+        android:divider="@null"
+        android:groupIndicator="@null"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"></ExpandableListView>
+
+ <include layout="@layout/common_no_records_found"/>
+
+</android.support.design.widget.CoordinatorLayout>

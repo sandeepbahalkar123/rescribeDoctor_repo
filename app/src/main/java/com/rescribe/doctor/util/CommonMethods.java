@@ -84,6 +84,98 @@ public class CommonMethods {
             Log.d(TAG, "null snacbar view" + msg);
         }
     }
+    public static int getVitalIcons(String vitalDetailName) {
+
+        // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
+        int abbreviation = R.drawable.defaulticon;
+        if (vitalDetailName.equalsIgnoreCase("bp"))
+            abbreviation = R.drawable.bp;
+        else if (vitalDetailName.equalsIgnoreCase("weight"))
+            abbreviation = R.drawable.weight;
+        else if (vitalDetailName.equalsIgnoreCase("height"))
+            abbreviation = R.drawable.height;
+        else if (vitalDetailName.equalsIgnoreCase("bmi"))
+            abbreviation = R.drawable.bmi;
+        else if (vitalDetailName.equalsIgnoreCase("totalcholesterolhdlcholesterol"))
+            abbreviation = R.drawable.totalcholesterolhdlcholesterol;
+        else if (vitalDetailName.equalsIgnoreCase("ldlhdl"))
+            abbreviation = R.drawable.ldlhdl;
+        else if (vitalDetailName.equalsIgnoreCase("triglycerides"))
+            abbreviation = R.drawable.triglycerides;
+        else if (vitalDetailName.equalsIgnoreCase("hdlcholesterol"))
+            abbreviation = R.drawable.hdlcholesterol;
+        else if (vitalDetailName.equalsIgnoreCase("ldlcholesterol"))
+            abbreviation = R.drawable.ldlcholesterol;
+        else if (vitalDetailName.equalsIgnoreCase("totalcholesterol"))
+            abbreviation = R.drawable.totalcholesterol;
+        else if (vitalDetailName.equalsIgnoreCase("gfr"))
+            abbreviation = R.drawable.gfr;
+        else if (vitalDetailName.equalsIgnoreCase("bun"))
+            abbreviation = R.drawable.bun;
+        else if (vitalDetailName.equalsIgnoreCase("creatinine"))
+            abbreviation = R.drawable.creatinine;
+        else if (vitalDetailName.equalsIgnoreCase("respiratoryrate"))
+            abbreviation = R.drawable.respiratoryrate;
+        else if (vitalDetailName.equalsIgnoreCase("heartrate"))
+            abbreviation = R.drawable.heartrate;
+        else if (vitalDetailName.equalsIgnoreCase("temperature"))
+            abbreviation = R.drawable.temperature;
+        else if (vitalDetailName.equalsIgnoreCase("fbs"))
+            abbreviation = R.drawable.fbs;
+        else if (vitalDetailName.equalsIgnoreCase("ppbs"))
+            abbreviation = R.drawable.ppbs;
+        else if (vitalDetailName.equalsIgnoreCase("spo_2"))
+            abbreviation = R.drawable.spo_2;
+        else if (vitalDetailName.equalsIgnoreCase("platelet"))
+            abbreviation = R.drawable.platelet;
+        else if (vitalDetailName.equalsIgnoreCase("esr"))
+            abbreviation = R.drawable.esr;
+        else if (vitalDetailName.equalsIgnoreCase("hb"))
+            abbreviation = R.drawable.hb;
+
+        return abbreviation;
+    }
+    public static int getCaseStudyIcons(String caseStudyName) {
+
+        // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
+        int abbreviation = R.drawable.commonicon;
+        if (caseStudyName.contains("complaint"))
+            abbreviation = R.drawable.complaints;
+        else if (caseStudyName.contains("vital"))
+            abbreviation = R.drawable.vitals;
+        else if (caseStudyName.contains("remark"))
+            abbreviation = R.drawable.remarks;
+        else if (caseStudyName.contains("diagnosis"))
+            abbreviation = R.drawable.diagnosis;
+        else if (caseStudyName.contains("prescription"))
+            abbreviation = R.drawable.prescription;
+        else if (caseStudyName.contains("investigation"))
+            abbreviation = R.drawable.investigations;
+        else if (caseStudyName.contains("advice"))
+            abbreviation = R.drawable.advice; // not found
+        else if (caseStudyName.contains("treatment plan"))
+            abbreviation = R.drawable.treatment_plan; // not found
+        else if (caseStudyName.contains("surgery"))
+            abbreviation = R.drawable.surgery; // not found
+        else if (caseStudyName.contains("vaccination"))
+            abbreviation = R.drawable.vaccination; // not found
+        else if (caseStudyName.contains("general precaution"))
+            abbreviation = R.drawable.generalprecautions; // not found
+        else if (caseStudyName.contains("pre-operative precaution"))
+            abbreviation = R.drawable.preoperativeprecautions; // not found
+        else if (caseStudyName.contains("post-operative care"))
+            abbreviation = R.drawable.postoperativecare; // not found
+        else if (caseStudyName.contains("pain score"))
+            abbreviation = R.drawable.painscore; // not found
+        else if (caseStudyName.contains("exercise"))
+            abbreviation = R.drawable.exercise; // not found
+        else if (caseStudyName.contains("finding"))
+            abbreviation = R.drawable.finding; // not found
+        else if (caseStudyName.contains("allergie"))
+            abbreviation = R.drawable.allergy; // not found
+
+        return abbreviation;
+    }
 
 
     /**

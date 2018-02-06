@@ -78,7 +78,7 @@ public class EditTextWithDeleteButton extends LinearLayout {
                 if (hasFocus && editText.getText().toString().length() > 0)
                     clearTextButton.setVisibility(View.VISIBLE);
                 else
-                    clearTextButton.setVisibility(View.GONE);
+                    clearTextButton.setVisibility(View.VISIBLE);
 
             }
         });
@@ -86,7 +86,9 @@ public class EditTextWithDeleteButton extends LinearLayout {
 
             @Override
             public void onClick(View v) {
+/*
                 mClearButtonClickedInEditTextListener.onClearButtonClicked();
+*/
                 editText.setText("");
             }
         });
@@ -109,7 +111,7 @@ public class EditTextWithDeleteButton extends LinearLayout {
                 if (editText.getText().toString().length() > 0)
                     clearTextButton.setVisibility(View.VISIBLE);
                 else
-                    clearTextButton.setVisibility(View.GONE);
+                    clearTextButton.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -130,12 +132,12 @@ public class EditTextWithDeleteButton extends LinearLayout {
         editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         editText.setLayoutParams(new TableLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
-        editText.setTextColor(ContextCompat.getColor(context,R.color.white));
+        editText.setTextColor(ContextCompat.getColor(context, R.color.white));
         editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.search, 0, 0, 0);
         editText.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dp4));
-        editText.setHintTextColor(ContextCompat.getColor(context,R.color.hint_color_my_appointment));
+        editText.setHintTextColor(ContextCompat.getColor(context, R.color.hint_color_my_appointment));
         editText.setHorizontallyScrolling(false);
-        editText.setPadding( (int) getResources().getDimension(R.dimen.dp16),(int) getResources().getDimension(R.dimen.dp10),(int) getResources().getDimension(R.dimen.dp16),0);
+        editText.setPadding((int) getResources().getDimension(R.dimen.dp8), (int) getResources().getDimension(R.dimen.dp10), (int) getResources().getDimension(R.dimen.dp8), 0);
         editText.setVerticalScrollBarEnabled(true);
         editText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         editText.setBackground(null);
@@ -149,6 +151,7 @@ public class EditTextWithDeleteButton extends LinearLayout {
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
         params.gravity = Gravity.CENTER_VERTICAL;
+        params.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp6), getResources().getDimensionPixelSize(R.dimen.dp12), 0);
         clearTextButton.setLayoutParams(params);
         clearTextButton.setPadding(CommonMethods.convertDpToPixel(6), CommonMethods.convertDpToPixel(6), CommonMethods.convertDpToPixel(6), CommonMethods.convertDpToPixel(6));
         clearTextButton.setBackgroundResource(deleteButtonRes);

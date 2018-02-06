@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -45,7 +47,7 @@ public class MyPatientsFragment extends Fragment {
     @BindView(R.id.leftFab)
     FloatingActionButton leftFab;
     @BindView(R.id.appointmentLayoutContainer)
-    FrameLayout appointmentLayoutContainer;
+    LinearLayout appointmentLayoutContainer;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     private Unbinder unbinder;
@@ -78,6 +80,7 @@ public class MyPatientsFragment extends Fragment {
             recyclerView.setLayoutManager(linearlayoutManager);
             // off recyclerView Animation
             RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+            recyclerView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.divider));
             if (animator instanceof SimpleItemAnimator)
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
             recyclerView.setAdapter(mMyPatientsAdapter);

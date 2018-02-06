@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingTop="5dp"
-            android:textColor="#04abdf"
+            android:textColor="@color/grey"
             android:textSize="@dimen/sp10"
             tools:text="@string/md_content_description_drawer_close" />
 
