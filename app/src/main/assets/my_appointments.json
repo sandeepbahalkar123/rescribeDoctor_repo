@@ -18,23 +18,24 @@
         "patientList": [
           {
             "salutation": 1,
-            "patientName": "Uren Chhadva",
+            "patientName": "Rohit Patil",
             "age": 33,
             "dateOfBirth": "",
             "gender": "Male",
             "outStandingAmount": 450,
-            "patientId": 4653,
+            "patientId": 4040,
             "aptId": 1334,
             "opdId": 1107,
             "patientPhone": "8149972785",
             "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
             "appointmentDate": "2017-11-28T00:00:00.000Z",
             "appointmentTime": "13:00:00",
-            "appointmentStatus": "Completed"
+            "appointmentStatus": "Completed",
+            "patientEmail":"rohit.patil@scorgtechnologies.com"
           },
           {
             "salutation": 2,
-            "patientName": "Sudhir Patil",
+            "patientName": "Sandeep Bahalkar",
             "age": 42,
             "dateOfBirth": "",
             "gender": "Male",
@@ -46,7 +47,8 @@
             "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
             "appointmentDate": "2017-12-30T00:00:00.000Z",
             "appointmentTime": "13:00:00",
-            "appointmentStatus": "Booked"
+            "appointmentStatus": "Booked",
+            "patientEmail":"sandeep.bahalkar@scorgtechnologies.com"
           }
         ]
       },
@@ -59,51 +61,54 @@
         "patientList": [
           {
             "salutation": 3,
-            "patientName": "Sangeeta Yadav",
+            "patientName": "Ganesh Shirole",
             "age": 0,
             "dateOfBirth": "23-05-1992",
             "gender": "Female",
             "outStandingAmount": 200,
-            "patientId": 4653,
+            "patientId": 4444,
             "aptId": 1334,
             "opdId": 1107,
             "patientPhone": "8149972785",
             "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Female_DRAvatar.jpg",
             "appointmentDate": "2017-11-28T00:00:00.000Z",
             "appointmentTime": "13:00:00",
-            "appointmentStatus": "Follow up"
+            "appointmentStatus": "Follow up",
+            "patientEmail":"ganesh.shirole@scorgtechnologies.com"
           },
           {
             "salutation": 3,
-            "patientName": "Sudhir Patil",
+            "patientName": "Ritesh Pandhurkar",
             "age": 0,
             "dateOfBirth": "28-08-1982",
             "gender": "Male",
             "outStandingAmount": 300,
-            "patientId": 4654,
+            "patientId": 3333,
             "aptId": 1335,
             "opdId": 1108,
             "patientPhone": "8149972786",
             "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
             "appointmentDate": "2017-12-30T00:00:00.000Z",
             "appointmentTime": "13:00:00",
-            "appointmentStatus": "Booked"
+            "appointmentStatus": "Booked",
+            "patientEmail":"ritesh.pandhurkar@scorgtechnologies.com"
           },
           {
             "salutation": 4,
-            "patientName": "Ajit Desai",
+            "patientName": "Amruta ",
             "age": 0,
             "dateOfBirth": "5-09-1996",
             "gender": "Male",
             "outStandingAmount": 1500,
-            "patientId": 4654,
+            "patientId": 66666,
             "aptId": 1335,
             "opdId": 1108,
             "patientPhone": "914997259",
             "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
             "appointmentDate": "2017-12-30T00:00:00.000Z",
             "appointmentTime": "13:00:00",
-            "appointmentStatus": "Booked"
+            "appointmentStatus": "Booked",
+            "patientEmail":"amruta.nikam@scorgtechnologies.com"
           }
         ]
       }

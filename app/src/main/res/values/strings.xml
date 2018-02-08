@@ -17,6 +17,10 @@
     <string name="sign_up">Sign Up</string>
     <string name="sign_up_confirmation">Sign Up Confirmation</string>
     <string name="logout">Logout</string>
+    <string name="need_some_help">Need some help?</string>
+    <string name="feel_free">Feel free to get in touch with us</string>
+    <string name="call">CALL</string>
+    <string name="email">EMAIL</string>
     <string name="notification">Notification</string>
     <string name="roboto_bold">roboto_bold.ttf</string>
     <string name="roboto_medium">roboto_medium.ttf</string>
@@ -177,6 +181,8 @@
     <string name="visit_details">Visit Details</string>
     <string name="specialization">SPECIALIZATION</string>
     <string name="address">ADDRESS</string>
+    <string name="please_select_patients">Please select patients</string>
+    <string name="my_patients">My Patients</string>
 
 
 </resources>

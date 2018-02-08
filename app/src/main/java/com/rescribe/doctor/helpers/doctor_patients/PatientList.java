@@ -4,10 +4,12 @@ package com.rescribe.doctor.helpers.doctor_patients;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PatientList implements Parcelable
+public class PatientList implements Parcelable , Comparable<PatientList>
 {
 
     @SerializedName("salutation")
@@ -61,6 +63,11 @@ public class PatientList implements Parcelable
     @SerializedName("address")
     @Expose
     private String address;
+    @SerializedName("patientEmail")
+    @Expose
+    private String patientEmail;
+
+    private boolean selected;
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
 
@@ -96,6 +103,7 @@ public class PatientList implements Parcelable
         this.area = ((String) in.readValue((String.class.getClassLoader())));
         this.city = ((String) in.readValue((String.class.getClassLoader())));
         this.address = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -236,6 +244,21 @@ public class PatientList implements Parcelable
     public void setAddress(String address) {
         this.address = address;
     }
+    public String getPatientEmail() {
+        return patientEmail;
+    }
+
+    public void setPatientEmail(String patientEmail) {
+        this.patientEmail = patientEmail;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
@@ -255,10 +278,15 @@ public class PatientList implements Parcelable
         dest.writeValue(area);
         dest.writeValue(city);
         dest.writeValue(address);
+        dest.writeValue(patientEmail);
     }
 
     public int describeContents() {
         return  0;
     }
 
+    @Override
+    public int compareTo(@NonNull PatientList o) {
+        return 0;
+    }
 }

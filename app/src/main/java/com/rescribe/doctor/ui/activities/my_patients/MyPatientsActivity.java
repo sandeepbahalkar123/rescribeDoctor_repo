@@ -47,6 +47,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     private AppointmentHelper mAppointmentHelper;
     private Bundle bundle;
     private MyPatientsFragment mMyPatientsFragment;
+    private boolean isLongPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +55,11 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
         setContentView(R.layout.my_patients_base_layout);
         ButterKnife.bind(this);
         initialize();
-
-
     }
 
     private void initialize() {
         mContext = MyPatientsActivity.this;
+        titleTextView.setText(getString(R.string.my_patients));
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetMyPatients();
     }
@@ -95,10 +95,11 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
         CommonMethods.showToast(mContext,serverErrorMessage);
     }
 
-    @OnClick({R.id.titleTextView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
+    @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.titleTextView:
+            case R.id.backImageView:
+                onBackPressed();
                 break;
             case R.id.userInfoTextView:
                 break;
@@ -111,5 +112,15 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
             case R.id.drawer_layout:
                 break;
         }
+    }
+    @Override
+    public void onBackPressed() {
+        isLongPressed = mMyPatientsFragment.callOnBackPressed();
+        if(isLongPressed){
+            mMyPatientsFragment.removeCheckBox();
+        }else{
+            super.onBackPressed();
+        }
+
     }
 }

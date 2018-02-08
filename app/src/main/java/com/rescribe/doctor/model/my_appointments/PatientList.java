@@ -4,10 +4,12 @@ package com.rescribe.doctor.model.my_appointments;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PatientList implements Parcelable
+public class PatientList implements Parcelable ,Comparable<PatientList>
 {
 
     @SerializedName("salutation")
@@ -52,8 +54,13 @@ public class PatientList implements Parcelable
     @SerializedName("appointmentStatus")
     @Expose
     private String appointmentStatus;
+    @SerializedName("patientEmail")
+    @Expose
+    private String patientEmail;
 
     private boolean selected;
+
+    private boolean showHeader = true;
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
 
@@ -86,6 +93,7 @@ public class PatientList implements Parcelable
         this.appointmentDate = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentTime = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentStatus = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -209,6 +217,22 @@ public class PatientList implements Parcelable
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+    public boolean isShowHeader() {
+        return showHeader;
+    }
+
+    public void setShowHeader(boolean showHeader) {
+        this.showHeader = showHeader;
+    }
+
+    public String getPatientEmail() {
+        return patientEmail;
+    }
+
+    public void setPatientEmail(String patientEmail) {
+        this.patientEmail = patientEmail;
+    }
+
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
@@ -225,10 +249,16 @@ public class PatientList implements Parcelable
         dest.writeValue(appointmentDate);
         dest.writeValue(appointmentTime);
         dest.writeValue(appointmentStatus);
+        dest.writeValue(patientEmail);
     }
+
 
     public int describeContents() {
         return  0;
     }
 
+    @Override
+    public int compareTo(@NonNull PatientList o) {
+        return 0;
+    }
 }

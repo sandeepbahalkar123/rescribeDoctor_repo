@@ -131,14 +131,15 @@ public class EditTextWithDeleteButton extends LinearLayout {
         editText.setRawInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         editText.setLayoutParams(new TableLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1.2f));
         editText.setTextColor(ContextCompat.getColor(context, R.color.white));
         editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.search, 0, 0, 0);
-        editText.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dp4));
+        editText.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dp6));
         editText.setHintTextColor(ContextCompat.getColor(context, R.color.hint_color_my_appointment));
         editText.setHorizontallyScrolling(false);
-        editText.setPadding((int) getResources().getDimension(R.dimen.dp8), (int) getResources().getDimension(R.dimen.dp10), (int) getResources().getDimension(R.dimen.dp8), 0);
+        editText.setPadding((int) getResources().getDimension(R.dimen.dp12), (int) getResources().getDimension(R.dimen.dp8), 0, 0);
         editText.setVerticalScrollBarEnabled(true);
+        editText.setTextSize(14);
         editText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         editText.setBackground(null);
         editText.setHint(hintText);
@@ -151,9 +152,9 @@ public class EditTextWithDeleteButton extends LinearLayout {
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
         params.gravity = Gravity.CENTER_VERTICAL;
-        params.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp6), getResources().getDimensionPixelSize(R.dimen.dp12), 0);
+        params.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp3), getResources().getDimensionPixelSize(R.dimen.dp12), 0);
         clearTextButton.setLayoutParams(params);
-        clearTextButton.setPadding(CommonMethods.convertDpToPixel(6), CommonMethods.convertDpToPixel(6), CommonMethods.convertDpToPixel(6), CommonMethods.convertDpToPixel(6));
+        clearTextButton.setPadding(CommonMethods.convertDpToPixel(R.dimen.dp3), CommonMethods.convertDpToPixel(R.dimen.dp3), CommonMethods.convertDpToPixel(R.dimen.dp3), CommonMethods.convertDpToPixel(R.dimen.dp3));
         clearTextButton.setBackgroundResource(deleteButtonRes);
         clearTextButton.setVisibility(View.GONE);
         return clearTextButton;

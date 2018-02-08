@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
+import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,16 +27,13 @@ import butterknife.ButterKnife;
 public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMenuAppointmentAdapter.ListViewHolder> {
 
     private Context mContext;
-    private List<BottomMenu> mBottomMenuList;
+    private ArrayList<BottomMenu> mBottomMenuList;
     OnMenuBottomItemClickListener mOnMenuBottomItemClickListener;
-    private boolean isClicked;
 
     public BottomMenuAppointmentAdapter(Context mContext, OnMenuBottomItemClickListener mOnMenuBottomItemClickListener, ArrayList<BottomMenu> mBottomMenuList) {
         this.mContext = mContext;
         this.mOnMenuBottomItemClickListener = mOnMenuBottomItemClickListener;
-        this.mBottomMenuList = mBottomMenuList ;
-
-
+        this.mBottomMenuList = mBottomMenuList;
     }
 
     @Override
@@ -53,34 +51,42 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
         //TODO : NEED TO IMPLEMENT
         holder.bottomMenuName.setText(mBottomMenu.getMenuName());
 
-        if(mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.select_all))){
-            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.select_all));
-        }else if(mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.send_sms))){
-            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.send_sms));
-            holder.menuBottomIcon.setColorFilter(ContextCompat.getColor(holder.menuBottomIcon.getContext(),R.color.grey), android.graphics.PorterDuff.Mode.MULTIPLY);
-        }else if(mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.send_mail))){
-            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.send_email));
-        }else if(mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.waiting_list))){
-            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.add_waiting_list));
+        if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.select_all))) {
+            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.select_all));
+        } else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.send_sms))) {
+            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.send_sms));
+        } else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.send_mail))) {
+            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.send_email));
+        } else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.waiting_list))) {
+            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.add_waiting_list));
         }
         holder.menuBottomLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mBottomMenu.isSelected()) {
+                if (!mBottomMenu.isSelected()) {
                     mBottomMenu.setSelected(true);
                     holder.bottomMenuName.setTextColor(holder.bottomMenuName.getContext().getResources().getColor(R.color.tagColor));
                     holder.menuBottomIcon.setColorFilter(ContextCompat.getColor(holder.menuBottomIcon.getContext(), R.color.tagColor), android.graphics.PorterDuff.Mode.MULTIPLY);
                     notifyDataSetChanged();
-                }else{
+                } else {
                     mBottomMenu.setSelected(false);
                     holder.bottomMenuName.setTextColor(holder.bottomMenuName.getContext().getResources().getColor(R.color.grey));
                     holder.menuBottomIcon.setColorFilter(ContextCompat.getColor(holder.menuBottomIcon.getContext(), R.color.grey), android.graphics.PorterDuff.Mode.MULTIPLY);
                     notifyDataSetChanged();
                 }
-                mOnMenuBottomItemClickListener.setClickOnMenuItem(position,mBottomMenu);
+                mOnMenuBottomItemClickListener.setClickOnMenuItem(position, mBottomMenu);
 
             }
         });
+
+        if (mBottomMenu.isSelected()) {
+            holder.menuBottomIcon.setColorFilter(ContextCompat.getColor(holder.menuBottomIcon.getContext(), R.color.tagColor), android.graphics.PorterDuff.Mode.MULTIPLY);
+            holder.bottomMenuName.setTextColor(holder.bottomMenuName.getContext().getResources().getColor(R.color.tagColor));
+        } else {
+            holder.bottomMenuName.setTextColor(holder.bottomMenuName.getContext().getResources().getColor(R.color.grey));
+            holder.menuBottomIcon.setColorFilter(ContextCompat.getColor(holder.menuBottomIcon.getContext(), R.color.grey), android.graphics.PorterDuff.Mode.MULTIPLY);
+        }
+
         //  holder.timeSlot.setText(doctorObject.ge);
 
     }
@@ -88,6 +94,10 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
     @Override
     public int getItemCount() {
         return mBottomMenuList.size();
+    }
+
+    public ArrayList<BottomMenu> getList() {
+        return mBottomMenuList;
     }
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
@@ -111,7 +121,10 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
             this.view = view;
         }
     }
+
     public interface OnMenuBottomItemClickListener {
-        void setClickOnMenuItem(int position, BottomMenu bottomMenu );
+        void setClickOnMenuItem(int position, BottomMenu bottomMenu);
     }
+
+
 }

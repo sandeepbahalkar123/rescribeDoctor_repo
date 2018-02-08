@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ClinicList implements Parcelable {
+public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList> {
     @SerializedName("clinic_name")
     @Expose
     private String clinicName;
@@ -32,6 +33,7 @@ public class ClinicList implements Parcelable {
     private PatientList patientHeader;
     private boolean selectedGroupCheckbox;
 
+
     public final static Creator<ClinicList> CREATOR = new Creator<ClinicList>() {
 
 
@@ -46,8 +48,7 @@ public class ClinicList implements Parcelable {
             return (new ClinicList[size]);
         }
 
-    }
-    ;
+    };
 
     protected ClinicList(Parcel in) {
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
@@ -125,6 +126,10 @@ public class ClinicList implements Parcelable {
         this.selectedGroupCheckbox = selectedGroupCheckbox;
     }
 
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(clinicName);
         dest.writeValue(locationId);
@@ -138,4 +143,8 @@ public class ClinicList implements Parcelable {
         return  0;
     }
 
+    @Override
+    public int compareTo(@NonNull ClinicList o) {
+        return 0;
+    }
 }
