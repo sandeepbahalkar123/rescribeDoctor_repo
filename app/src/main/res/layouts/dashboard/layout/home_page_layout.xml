@@ -236,17 +236,17 @@
     </FrameLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/nestedScrollView">
+        android:layout_height="wrap_content">
 
-<LinearLayout
-    android:id="@+id/hostViewsLayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/hostViewsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-</LinearLayout>
+        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 

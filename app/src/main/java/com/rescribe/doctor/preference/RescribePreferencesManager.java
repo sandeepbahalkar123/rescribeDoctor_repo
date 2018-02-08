@@ -229,6 +229,6 @@ public class RescribePreferencesManager {
         String ADDRESS = "address";
         String IS_EXIT = "isExit";
         String PATIENT_ID = "patient_id";
-        String IS_CHECKED = "is_checked";
+        String CHAT_IS_CHECKED = "is_checked";
     }
 }

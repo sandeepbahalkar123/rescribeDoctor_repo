@@ -202,31 +202,8 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
             }
         });
         radioSwitch.setVisibility(View.VISIBLE);
-        //Radio Button functionality for chat online offline status
-        boolean appointmentAlert = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_CHECKED, mContext);
-        if (appointmentAlert) {
-            radioSwitch.setChecked(true);
-        } else {
-            radioSwitch.setChecked(false);
-        }
 
-        radioSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    ActiveRequest activeRequest = new ActiveRequest();
-                    RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_CHECKED, isChecked, mContext);
-                    activeRequest.setId(Integer.parseInt(docId));
-                    loginHelper.doActiveStatus(activeRequest);
-                } else {
-                    ActiveRequest activeRequest = new ActiveRequest();
-                    activeRequest.setId(Integer.parseInt(docId));
-                    RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_CHECKED, isChecked, mContext);
-                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, RescribeConstants.NO, mContext);
-                    loginHelper.doLogout(activeRequest);
-                }
-            }
-        });
+        setRadioSwitchStatus();
     }
 
     private void setLayoutForWaitingList() {
@@ -543,6 +520,35 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
                 break;
             case R.id.dashBoradBgframeLayout:
                 break;
+        }
+    }
+
+    private void setRadioSwitchStatus() {
+
+        radioSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.CHAT_IS_CHECKED, isChecked, mContext);
+                ActiveRequest activeRequest = new ActiveRequest();
+                activeRequest.setId(Integer.parseInt(docId));
+
+                if (isChecked) {
+                    loginHelper.doActiveStatus(activeRequest);
+                } else {
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, RescribeConstants.NO, mContext);
+                    loginHelper.doLogout(activeRequest);
+                }
+            }
+        });
+
+
+        //Radio Button functionality for chat online offline status
+
+        boolean isExists = RescribePreferencesManager.getSharedPreference(mContext).contains(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.CHAT_IS_CHECKED);
+        if (isExists) {
+            radioSwitch.setChecked(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.CHAT_IS_CHECKED, mContext));
+        } else {
+            radioSwitch.setChecked(true);
         }
     }
 }

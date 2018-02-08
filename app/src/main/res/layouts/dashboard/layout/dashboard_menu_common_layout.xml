@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menuOptionLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:id="@+id/menuOptionLinearLayout"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -49,10 +49,11 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            tools:visibility="visible"
-            android:visibility="gone"
             android:src="@drawable/dashboard_arrow"
-            tools:ignore="ContentDescription" />
+            android:visibility="gone"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
         <com.rescribe.doctor.ui.customesViews.SwitchButton
             android:id="@+id/radioSwitch"
             style="@style/SwitchButtonStyle"
@@ -61,15 +62,17 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            app:kswAnimationDuration="0"
+            android:checked="true"
             android:visibility="gone"
+            app:kswAnimationDuration="0"
             app:kswTextOff="OFF"
             app:kswTextOn="ON" />
     </RelativeLayout>
+
     <ImageView
-        android:layout_marginTop="@dimen/dp17"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp17"
         android:background="@color/divider"
         tools:ignore="ContentDescription" />
 </LinearLayout>
