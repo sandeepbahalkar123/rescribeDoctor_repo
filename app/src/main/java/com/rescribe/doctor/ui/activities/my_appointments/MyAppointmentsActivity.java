@@ -59,9 +59,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private Bundle bundle;
     private String month;
     private String year;
-    private BottomSheetDialog dialog;
-    private RecyclerView recyclerView;
-    private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
+    private boolean isLongPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +154,11 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
 
     @Override
     public void onBackPressed() {
-
-        super.onBackPressed();
+        isLongPressed = mMyAppointmentsFragment.callOnBackPressed();
+        if (isLongPressed) {
+            mMyAppointmentsFragment.removeCheckBox();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

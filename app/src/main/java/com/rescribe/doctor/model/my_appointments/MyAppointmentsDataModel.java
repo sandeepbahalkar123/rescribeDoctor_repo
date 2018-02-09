@@ -23,7 +23,7 @@ public class MyAppointmentsDataModel implements Parcelable
     private String emailTemplate;
     @SerializedName("clinicList")
     @Expose
-    private List<ClinicList> clinicList = new ArrayList<ClinicList>();
+    private ArrayList<ClinicList> clinicList = new ArrayList<ClinicList>();
     public final static Creator<MyAppointmentsDataModel> CREATOR = new Creator<MyAppointmentsDataModel>() {
 
 
@@ -75,11 +75,11 @@ public class MyAppointmentsDataModel implements Parcelable
         this.emailTemplate = emailTemplate;
     }
 
-    public List<ClinicList> getClinicList() {
+    public ArrayList<ClinicList> getClinicList() {
         return clinicList;
     }
 
-    public void setClinicList(List<ClinicList> clinicList) {
+    public void setClinicList(ArrayList<ClinicList> clinicList) {
         this.clinicList = clinicList;
     }
 

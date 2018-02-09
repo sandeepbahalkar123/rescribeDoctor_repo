@@ -26,12 +26,15 @@ import android.widget.LinearLayout;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.dashboard.WaitingOrAppointmentListAdapter;
+import com.rescribe.doctor.bottom_menus.BottomMenu;
+import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -52,7 +55,7 @@ import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
  */
 
 @RuntimePermissions
-public class HomePageActivity extends AppCompatActivity implements HelperResponse {
+public class HomePageActivity extends BottomMenuActivity implements HelperResponse {
 
     private static final long MANAGE_ACCOUNT = 121;
     private static final long ADD_ACCOUNT = 122;
@@ -135,6 +138,8 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
         activeRequest.setId(Integer.parseInt(docId));
         loginHelper.doActiveStatus(activeRequest);
         initialize();
+        setCurrentActivtyTab(getString(R.string.home));
+
 
         //drawerConfiguration();
     }
@@ -523,6 +528,7 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
         }
     }
 
+
     private void setRadioSwitchStatus() {
 
         radioSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -551,4 +557,19 @@ public class HomePageActivity extends AppCompatActivity implements HelperRespons
             radioSwitch.setChecked(true);
         }
     }
+
+    @Override
+    public void onBottomMenuClick(BottomMenu bottomMenu) {
+
+        if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.support))) {
+            Intent intent = new Intent(this, SupportActivity.class);
+            startActivity(intent);
+        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.settings))) {
+          /*  Intent intent = new Intent(this, SettingsActivity.class);
+            intent.putExtra(RescribeConstants.BOTTOM_MENUS, dashboardBottomMenuLists);
+            startActivity(intent);
+            finish();*/
+        }
+    }
+
 }

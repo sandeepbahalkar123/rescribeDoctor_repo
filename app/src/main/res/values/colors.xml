@@ -34,7 +34,7 @@
     <color name="vitals_name">#737373</color>
     <color name="login_bg_color">#54d8c8</color>
     <color name="accent">#FF4081</color>
-    <color name="hint_color_my_appointment">#66ffffff</color>
+    <color name="hint_color_my_appointment">#99ffffff</color>
     <color name="range_yellow">#ff9500</color>
     <color name="otp_background_layout">#EDF1F4</color>
     <color name="Gray">#736F6E</color>
@@ -42,6 +42,7 @@
     <color name="range_green">#178a00</color>
     <color name="green_light">#0fd20b</color>
     <color name="grey_300">#dcdcdc</color>
+    <color name="grey_shade">#878787</color>
     <color name="view_detail_color">#737373</color>
     <color name="divider">#e5e5e5</color>
     <color name="rating_color">#3676a3</color>

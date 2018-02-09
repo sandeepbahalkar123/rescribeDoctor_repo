@@ -2,7 +2,7 @@
 package com.rescribe.doctor.helpers.doctor_patients;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
@@ -23,7 +23,7 @@ public class PatientDataModel implements Parcelable
     private String emailTemplate;
     @SerializedName("patientList")
     @Expose
-    private List<PatientList> patientList = new ArrayList<PatientList>();
+    private ArrayList<PatientList> patientList = new ArrayList<PatientList>();
     public final static Creator<PatientDataModel> CREATOR = new Creator<PatientDataModel>() {
 
 
@@ -75,11 +75,11 @@ public class PatientDataModel implements Parcelable
         this.emailTemplate = emailTemplate;
     }
 
-    public List<PatientList> getPatientList() {
+    public ArrayList<PatientList> getPatientList() {
         return patientList;
     }
 
-    public void setPatientList(List<PatientList> patientList) {
+    public void setPatientList(ArrayList<PatientList> patientList) {
         this.patientList = patientList;
     }
 
