@@ -124,7 +124,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 return true;
             }
         });
-     /*   expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
                 if (lastExpandedPosition != -1
@@ -134,7 +134,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 lastExpandedPosition = groupPosition;
             }
         });
-*/
+
         mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList);
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 4));
@@ -225,7 +225,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             }
 
             mAppointmentAdapter.notifyDataSetChanged();
-            for(int i = 0;i< mBottomMenuAppointmentAdapter.getList().size();i++){
+            for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                 mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
             }
             mBottomMenuAppointmentAdapter.notifyDataSetChanged();
@@ -242,6 +242,18 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             emptyListView.setVisibility(View.GONE);
         }
 
+    }
+
+    @Override
+    public void onCheckUncheckRemoveSelectAllSelection(boolean ischecked) {
+        if (!ischecked) {
+            for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+                if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
+                    mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
+                }
+            }
+            mBottomMenuAppointmentAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -280,9 +292,12 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 mAppointmentAdapter.notifyDataSetChanged();
             }
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_mail))) {
-            if(bottomMenu.isSelected()) {
+            if (bottomMenu.isSelected()) {
                 ArrayList<String> mEmailPatinetsList = new ArrayList<>();
                 for (int groupIndex = 0; groupIndex < mAppointmentAdapter.getGroupList().size(); groupIndex++) {
+                    if (mAppointmentAdapter.getGroupList().get(groupIndex).getPatientHeader().isSelected()) {
+                        mEmailPatinetsList.add(mAppointmentAdapter.getGroupList().get(groupIndex).getPatientHeader().getPatientEmail());
+                    }
                     for (int childIndex = 0; childIndex < mAppointmentAdapter.getGroupList().get(groupIndex).getPatientList().size(); childIndex++) {
                         PatientList patientList = mAppointmentAdapter.getGroupList().get(groupIndex).getPatientList().get(childIndex);
                         if (patientList.isSelected()) {
@@ -292,15 +307,21 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 }
                 int count = mEmailPatinetsList.size();
                 String[] emailList = new String[count];
-                for(int emailIndex = 0;emailIndex<mEmailPatinetsList.size();emailIndex++){
+                for (int emailIndex = 0; emailIndex < mEmailPatinetsList.size(); emailIndex++) {
                     emailList[emailIndex] = mEmailPatinetsList.get(emailIndex);
                 }
                 if (!mEmailPatinetsList.isEmpty()) {
                     Intent intent = null;
                     intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("plain/text");
-                    intent.putExtra(Intent.EXTRA_EMAIL,emailList);
+                    intent.putExtra(Intent.EXTRA_EMAIL, emailList);
                     startActivity(intent);
+                    for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+                        if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_mail))) {
+                            mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
+                        }
+                    }
+                    mBottomMenuAppointmentAdapter.notifyDataSetChanged();
 
                 } else {
                     CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
@@ -308,29 +329,40 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             }
 
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
-          /*  ArrayList<String> mEmailPatinetsList = new ArrayList<>();
+            ArrayList<String> mSmsList = new ArrayList<>();
             for (int groupIndex = 0; groupIndex < mAppointmentAdapter.getGroupList().size(); groupIndex++) {
+                if (mAppointmentAdapter.getGroupList().get(groupIndex).getPatientHeader().isSelected()) {
+                    mSmsList.add(mAppointmentAdapter.getGroupList().get(groupIndex).getPatientHeader().getPatientPhone());
+                }
                 for (int childIndex = 0; childIndex < mAppointmentAdapter.getGroupList().get(groupIndex).getPatientList().size(); childIndex++) {
                     PatientList patientList = mAppointmentAdapter.getGroupList().get(groupIndex).getPatientList().get(childIndex);
                     if (patientList.isSelected()) {
-                        mEmailPatinetsList.add(patientList.getPatientEmail());
+                        mSmsList.add(patientList.getPatientPhone());
                     }
                 }
             }
-            if (!mEmailPatinetsList.isEmpty()) {
-                Intent emailLauncher = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                emailLauncher.setType("message/rfc822");
-                emailLauncher.putExtra(Intent.EXTRA_EMAIL, mEmailPatinetsList);
-                emailLauncher.putExtra(Intent.EXTRA_SUBJECT, "Enter Subject Line");
-                emailLauncher.putExtra(Intent.EXTRA_TEXT, "Enter Message body!");
-                try {
-                    startActivity(emailLauncher);
-                } catch (ActivityNotFoundException e) {
-
+            int count = mSmsList.size();
+            String emailList = "";
+            for (int emailIndex = 0; emailIndex < mSmsList.size(); emailIndex++) {
+                emailList += mSmsList.get(emailIndex) + ";";
+            }
+            if (!mSmsList.isEmpty()) {
+                Uri smsToUri = Uri.parse("smsto:" + emailList);
+                Intent intent = new Intent(
+                        android.content.Intent.ACTION_SENDTO, smsToUri);
+                String message = "hello";
+                // message = message.replace("%s", StoresMessage.m_storeName);
+                intent.putExtra("sms_body", message);
+                startActivity(intent);
+                for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+                    if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
+                        mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
+                    }
                 }
+                mBottomMenuAppointmentAdapter.notifyDataSetChanged();
             } else {
                 CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
-            }*/
+            }
 
         }
     }

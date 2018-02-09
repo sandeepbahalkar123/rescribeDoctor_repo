@@ -10,13 +10,19 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.login.LoginHelper;
@@ -53,7 +59,7 @@ import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
  * Created by jeetal on 5/9/17.
  */
 
-public class PatientConnectActivity extends AppCompatActivity implements HelperResponse{
+public class PatientConnectActivity extends AppCompatActivity implements HelperResponse,SearchView.OnQueryTextListener{
 
     private final static String TAG = "DoctorConnect";
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -88,16 +94,15 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     TabLayout mTabsPatientConnect;
     @BindView(R.id.doctorConnectViewpager)
     ViewPager mPatientConnectViewpager;
-    String[] mFragmentTitleList = new String[3];
+    String[] mFragmentTitleList = new String[1];
     @BindView(R.id.title)
     CustomTextView title;
     @BindView(R.id.searchView)
     EditTextWithDeleteButton mSearchView;
     @BindView(R.id.whiteUnderLine)
     TextView whiteUnderLine;
-
-    @BindView(R.id.radioButton)
-    SwitchButton radioButton;
+    @BindView(R.id.toolbar)
+    android.support.v7.widget.Toolbar toolbar;
 
     private LoginHelper loginHelper;
 
@@ -118,16 +123,25 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_connect);
         ButterKnife.bind(this);
-        radioButton.setChecked(true);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, PatientConnectActivity.this);
         title.setText("" + getString(R.string.patient_connect));
+
         mFragmentTitleList[0] = getString(R.string.chats);
-        mFragmentTitleList[1] = getString(R.string.connect);
-        mFragmentTitleList[2] = getString(R.string.search);
         setupViewPager();
         mTabsPatientConnect.setupWithViewPager(mPatientConnectViewpager);
         initialize();
     }
+
+
 
     private void initialize() {
         loginHelper = new LoginHelper(this, this);
@@ -136,48 +150,44 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         mTabsPatientConnect.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
+             /*   int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
                     mSearchView.setVisibility(View.VISIBLE);
                     whiteUnderLine.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
-                    radioButton.setVisibility(View.GONE);
                 } else {
                     mSearchView.setVisibility(View.GONE);
                     title.setVisibility(View.VISIBLE);
-                    radioButton.setVisibility(View.VISIBLE);
-                }
+                }*/
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
+                /*int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
                     whiteUnderLine.setVisibility(View.VISIBLE);
 
                     mSearchView.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
-                    radioButton.setVisibility(View.GONE);
                 } else {
                     mSearchView.setVisibility(View.GONE);
                     title.setVisibility(View.VISIBLE);
-                    radioButton.setVisibility(View.VISIBLE);
-                }
+
+                }*/
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
+                /*int tabPosition = mTabsPatientConnect.getSelectedTabPosition();
                 if (tabPosition == 2) {
                     whiteUnderLine.setVisibility(View.VISIBLE);
                     mSearchView.setVisibility(View.VISIBLE);
                     title.setVisibility(View.GONE);
-                    radioButton.setVisibility(View.GONE);
+
                 } else {
                     mSearchView.setVisibility(View.GONE);
                     title.setVisibility(View.VISIBLE);
-                    radioButton.setVisibility(View.VISIBLE);
-                }
+                }*/
             }
         });
 
@@ -218,11 +228,11 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         //Doctor connect , chat and search fragment loaded here
         mAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         mPatientConnectChatFragment = PatientConnectChatFragment.newInstance();
-        mPatientConnectFragment = PatientConnectFragment.newInstance();
-        mPatientSearchFragment = PatientSearchFragment.newInstance();
+       /* mPatientConnectFragment = PatientConnectFragment.newInstance();
+        mPatientSearchFragment = PatientSearchFragment.newInstance();*/
         mAdapter.addFragment(mPatientConnectChatFragment, getString(R.string.chats));
-        mAdapter.addFragment(mPatientConnectFragment, getString(R.string.connect));
-        mAdapter.addFragment(mPatientSearchFragment, getString(R.string.search));
+      /*  mAdapter.addFragment(mPatientConnectFragment, getString(R.string.connect));
+        mAdapter.addFragment(mPatientSearchFragment, getString(R.string.search));*/
         mPatientConnectViewpager.setAdapter(mAdapter);
     }
 
@@ -230,6 +240,18 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     public void onViewClicked() {
         mSearchView.setText("");
         onBackPressed();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+       //mPatientSearchFragment.setOnClickOfSearchBar(newText);
+        mPatientConnectChatFragment.setOnClickOfSearchBar(newText);
+        return true;
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -273,6 +295,31 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         this.mReceivedConnectedPatientDataList = mReceivedConnectedPatientDataList;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main, menu);
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+
+       searchView.setOnQueryTextListener(this);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+
+        if (id == R.id.action_search) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     // Recent
 
     @Override
@@ -303,15 +350,6 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.radioButton:
-                if (radioButton.isChecked()) {
-                    ActiveRequest activeRequest = new ActiveRequest();
-                    activeRequest.setId(Integer.parseInt(docId));
-                    loginHelper.doActiveStatus(activeRequest);
-                } else {
-                    ActiveRequest activeRequest = new ActiveRequest();
-                    activeRequest.setId(Integer.parseInt(docId));
-                    loginHelper.doLogout(activeRequest);
-                }
                 break;
             case R.id.searchView:
                 break;

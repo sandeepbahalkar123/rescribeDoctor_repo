@@ -161,13 +161,13 @@ public class AppointmentNewTrialAdapter extends BaseExpandableListAdapter {
         patientGenderTextView.setText(" " + mPatientList.getGender());
         if (mPatientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.booked))) {
             opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
-            opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + mPatientList.getAppointmentStatus());
+            opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mPatientList.getAppointmentStatus());
         } else if (mPatientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
-            opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + mPatientList.getAppointmentStatus());
+            opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mPatientList.getAppointmentStatus());
             opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
 
         } else if (mPatientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.follow))) {
-            opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + mPatientList.getAppointmentStatus());
+            opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mPatientList.getAppointmentStatus());
             opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
 
         }
@@ -328,13 +328,13 @@ public class AppointmentNewTrialAdapter extends BaseExpandableListAdapter {
         mPatientGenderTextView.setText(" " + _listDataHeader.get(groupPosition).getPatientList().get(0).getGender());
         if (_listDataHeader.get(groupPosition).getPatientList().get(0).getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.booked))) {
             mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
-            mOpdTypeTextView.setText(mContext.getString(R.string.opd) + " " + _listDataHeader.get(groupPosition).getPatientList().get(0).getAppointmentStatus());
+            mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + _listDataHeader.get(groupPosition).getPatientList().get(0).getAppointmentStatus());
         } else if (_listDataHeader.get(groupPosition).getPatientList().get(0).getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
-            mOpdTypeTextView.setText(mContext.getString(R.string.opd) + " " + _listDataHeader.get(groupPosition).getPatientList().get(0).getAppointmentStatus());
+            mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + _listDataHeader.get(groupPosition).getPatientList().get(0).getAppointmentStatus());
             mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
 
         } else if (_listDataHeader.get(groupPosition).getPatientList().get(0).getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.follow))) {
-            mOpdTypeTextView.setText(mContext.getString(R.string.opd) + " " + _listDataHeader.get(groupPosition).getPatientList().get(0).getAppointmentStatus());
+            mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + _listDataHeader.get(groupPosition).getPatientList().get(0).getAppointmentStatus());
             mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
 
         }

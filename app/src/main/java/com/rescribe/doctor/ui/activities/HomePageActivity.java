@@ -34,6 +34,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.activities.dashboard.SettingsActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
@@ -202,7 +203,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, PatientConnectActivity.class);
+                Intent intent = new Intent(mContext, ConnectSplashActivity.class);
                 startActivity(intent);
             }
         });
@@ -318,11 +319,13 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+/*
 
 //        //noinspection SimplifiableIfStatement
-        if (id == R.id.notification) {
+        if (id == R.id.action_search) {
 
         }
+*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -565,11 +568,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             Intent intent = new Intent(this, SupportActivity.class);
             startActivity(intent);
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.settings))) {
-          /*  Intent intent = new Intent(this, SettingsActivity.class);
-            intent.putExtra(RescribeConstants.BOTTOM_MENUS, dashboardBottomMenuLists);
+            Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
-            finish();*/
         }
     }
-
 }

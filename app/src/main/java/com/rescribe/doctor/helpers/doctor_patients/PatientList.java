@@ -66,7 +66,7 @@ public class PatientList implements Parcelable , Comparable<PatientList>
     @SerializedName("patientEmail")
     @Expose
     private String patientEmail;
-
+    private String spannableString;
     private boolean selected;
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
@@ -258,6 +258,14 @@ public class PatientList implements Parcelable , Comparable<PatientList>
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public String getSpannableString() {
+        return spannableString;
+    }
+
+    public void setSpannableString(String spannableString) {
+        this.spannableString = spannableString;
     }
 
     public void writeToParcel(Parcel dest, int flags) {

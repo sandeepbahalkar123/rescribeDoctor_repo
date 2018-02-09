@@ -1,0 +1,68 @@
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginTop="@dimen/dp56"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:id="@+id/selectMenuLayout"
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <ImageView
+                android:id="@+id/menuIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp8"
+                android:layout_marginStart="@dimen/dp8"
+                android:adjustViewBounds="true"
+                android:visibility="invisible"
+                android:src="@drawable/dashboard_arrow"
+                android:padding="@dimen/dp8" />
+
+            <com.rescribe.doctor.ui.customesViews.CustomTextView
+                android:id="@+id/logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/menuIcon"
+                android:layout_toRightOf="@+id/menuIcon"
+                android:paddingEnd="@dimen/dp8"
+                android:paddingStart="@dimen/dp8"
+                android:text="@string/logout"
+                android:textColor="@color/tagColor"
+                android:textSize="@dimen/sp16"
+                app:customFont="@string/roboto_medium" />
+
+            <ImageView
+                android:id="@+id/dashboardArrowIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dp16"
+                android:layout_marginRight="@dimen/dp16"
+                android:src="@drawable/layer_5" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp1"
+        android:background="@color/divider" />
+
+</LinearLayout>

@@ -82,16 +82,10 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
     @Override
     public void onBottomMenuClick(BottomMenu bottomMenu) {
 
-        if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.profile))) {
-         /*   Intent intent = new Intent(this, ProfileActivity.class);
-            intent.putExtra(RescribeConstants.BOTTOM_MENUS, dashboardBottomMenuLists);
+        if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.settings))) {
+           Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
-            finish();*/
-        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.settings))) {
-          /*  Intent intent = new Intent(this, SettingsActivity.class);
-            intent.putExtra(RescribeConstants.BOTTOM_MENUS, dashboardBottomMenuLists);
-            startActivity(intent);
-            finish();*/
+            finish();
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.home))) {
             finish();
         }

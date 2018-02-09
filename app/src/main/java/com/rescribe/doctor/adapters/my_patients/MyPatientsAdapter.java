@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +22,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
-import com.rescribe.doctor.model.my_appointments.ClinicList;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -28,7 +29,8 @@ import com.rescribe.doctor.util.CommonMethods;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,21 +65,78 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     @Override
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
         final PatientList patientObject = mDataList.get(position);
-        //TODO : NEED TO IMPLEMENT
-        //  holder.timeSlot.setText(doctorObject.ge);
-        SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
-        patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-        holder.patientIdTextView.setText(patientID);
+
+        String patientName = "";
         if (patientObject.getSalutation() == 1) {
-            holder.patientNameTextView.setText(mContext.getString(R.string.mr) + " " + patientObject.getPatientName());
+            patientName = mContext.getString(R.string.mr) + " " + patientObject.getPatientName();
         } else if (patientObject.getSalutation() == 2) {
-            holder.patientNameTextView.setText(mContext.getString(R.string.mrs) + " " + patientObject.getPatientName());
+            patientName = mContext.getString(R.string.mrs) + " " + patientObject.getPatientName();
 
         } else if (patientObject.getSalutation() == 3) {
-            holder.patientNameTextView.setText(mContext.getString(R.string.miss) + " " + patientObject.getPatientName());
+            patientName = mContext.getString(R.string.miss) + " " + patientObject.getPatientName();
 
         } else if (patientObject.getSalutation() == 4) {
-            holder.patientNameTextView.setText(patientObject.getPatientName());
+            patientName = patientObject.getPatientName();
+        }
+
+
+        if (patientObject.getSpannableString() != null) {
+            //Spannable condition for PatientName
+            if (patientObject.getPatientName().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
+                SpannableString spannableString = new SpannableString(patientName);
+                Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(patientName);
+                while (matcher.find()) {
+                    spannableString.setSpan(new ForegroundColorSpan(
+                                    ContextCompat.getColor(mContext, R.color.tagColor)),
+                            matcher.start(), matcher.end(),//hightlight mSearchString
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                holder.patientNameTextView.setText(spannableString);
+            } else {
+                holder.patientNameTextView.setText(patientName);
+            }
+            //Spannable condition for PatientPhoneNomber
+
+            if (patientObject.getPatientPhone().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
+                SpannableString spannablePhoneString = new SpannableString(patientObject.getPatientPhone());
+                Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(patientObject.getPatientPhone());
+                while (matcher.find()) {
+                    spannablePhoneString.setSpan(new ForegroundColorSpan(
+                                    ContextCompat.getColor(mContext, R.color.tagColor)),
+                            matcher.start(), matcher.end(),//hightlight mSearchString
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                holder.patientPhoneNumber.setText(spannablePhoneString);
+            } else {
+                holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
+            }
+            //TODO:
+            //Spannable condition for PatientId
+          /*  if (String.valueOf(patientObject.getPatientId()).toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
+                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getPatientId()));
+                patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+                SpannableString spannableIdString = new SpannableString(patientID);
+                Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(patientID);
+
+                while (matcher.find()) {
+                    spannableIdString.setSpan(new ForegroundColorSpan(
+                                    ContextCompat.getColor(mContext, R.color.tagColor)),
+                            0, spannableIdString.length(),//hightlight mSearchString
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                holder.patientIdTextView.setText(patientID);
+            } else {
+                holder.patientIdTextView.setText(String.valueOf(patientObject.getPatientId()));
+            }*/
+        } else {
+            holder.patientNameTextView.setText(patientName);
+            holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
+            SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
+            patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+           // holder.patientIdTextView.setText(patientID);
         }
 
         if (patientObject.getAge() == 0) {
@@ -90,21 +149,23 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.patientAgeTextView.setText(patientObject.getAge() + " " + mContext.getString(R.string.years));
 
         }
-
+        SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getPatientId()));
+        patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+        holder.patientIdTextView.setText(patientID);
         holder.patientGenderTextView.setText(" " + patientObject.getGender());
         if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.booked))) {
             holder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
-            holder.opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + patientObject.getAppointmentStatus());
+            holder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
         } else if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
-            holder.opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + patientObject.getAppointmentStatus());
+            holder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
             holder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
 
         } else if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.follow))) {
-            holder.opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + patientObject.getAppointmentStatus());
+            holder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
             holder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
 
         }
-        holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
+
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (patientObject.getOutStandingAmount() == 0) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
@@ -134,6 +195,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             @Override
             public void onClick(View v) {
                patientObject.setSelected(holder.checkbox.isChecked());
+               mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(holder.checkbox.isChecked());
                 notifyDataSetChanged();
             }
         });
@@ -208,6 +270,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
         void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
         void onRecordFound(boolean isListEmpty);
+        void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
     }
     public boolean isLongPressed() {
         return isLongPressed;
@@ -228,7 +291,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 ArrayList<PatientList> mTempPatientListToIterate = new ArrayList<>(mOriginalPatientList);
 
                 if (charString.isEmpty()) {
-                    mListToShowAfterFilter = new ArrayList<>(mTempPatientListToIterate);
+                    mListToShowAfterFilter = new ArrayList<>();
+                    for (PatientList patientListObject : mTempPatientListToIterate) {
+                        //--------
+                            patientListObject.setSpannableString(null);
+                            mListToShowAfterFilter.add(patientListObject);
+
+                    }
                 } else {
                     mListToShowAfterFilter = new ArrayList<>();
                     for (PatientList patientListObject : mTempPatientListToIterate) {
@@ -237,6 +306,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                                     || patientListObject.getPatientPhone().contains(charString)
                                     || String.valueOf(patientListObject.getPatientId()).contains(charString)) {
                                 //--------
+                               patientListObject.setSpannableString(charString);
                                mListToShowAfterFilter.add(patientListObject);
                             }
                     }

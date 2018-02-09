@@ -150,7 +150,7 @@
     <string name="outstanding_amount">Outstanding Amount:</string>
     <string name="id">ID:</string>
     <string name="years">yrs -</string>
-    <string name="opd">OPD</string>
+    <string name="opd_appointment">Appointment</string>
     <string name="nil">NIL</string>
     <string name="booked">booked</string>
     <string name="completed">completed</string>
@@ -183,6 +183,7 @@
     <string name="address">ADDRESS</string>
     <string name="please_select_patients">Please select patients</string>
     <string name="my_patients">My Patients</string>
+    <string name="do_you_logout">Do you want to logout?</string>
 
 
 </resources>

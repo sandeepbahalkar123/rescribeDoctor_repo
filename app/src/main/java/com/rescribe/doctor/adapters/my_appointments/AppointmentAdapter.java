@@ -97,10 +97,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
         final PatientList patientObject = mClinicListTemp.get(groupPosition).getPatientList().get(childPosition);
 
-
-        SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
-        patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-        viewHolder.patientIdTextView.setText(patientID);
         String patientName = "";
         if (patientObject.getSalutation() == 1) {
             patientName = mContext.getString(R.string.mr) + " " + patientObject.getPatientName();
@@ -115,6 +111,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
 
         if (patientObject.getSpannableString() != null) {
+            //Spannable condition for PatientName
             if (patientObject.getPatientName().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
                 SpannableString spannableString = new SpannableString(patientName);
                 Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
@@ -125,34 +122,50 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                             matcher.start(), matcher.end(),//hightlight mSearchString
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
-
                 viewHolder.patientNameTextView.setText(spannableString);
             } else {
                 viewHolder.patientNameTextView.setText(patientName);
-
             }
+            //Spannable condition for PatientPhoneNomber
 
             if (patientObject.getPatientPhone().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
-                if (patientObject.getPatientPhone().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
-                    SpannableString spannablePhoneString = new SpannableString(patientObject.getPatientPhone());
-                    Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
-                    Matcher matcher = pattern.matcher(patientObject.getPatientPhone());
-                    while (matcher.find()) {
-                        spannablePhoneString.setSpan(new ForegroundColorSpan(
-                                        ContextCompat.getColor(mContext, R.color.tagColor)),
-                                matcher.start(), matcher.end(),//hightlight mSearchString
-                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    viewHolder.patientPhoneNumber.setText(spannablePhoneString);
-                } else {
-                    viewHolder.patientPhoneNumber.setText(patientObject.getPatientPhone());
-
+                SpannableString spannablePhoneString = new SpannableString(patientObject.getPatientPhone());
+                Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(patientObject.getPatientPhone());
+                while (matcher.find()) {
+                    spannablePhoneString.setSpan(new ForegroundColorSpan(
+                                    ContextCompat.getColor(mContext, R.color.tagColor)),
+                            matcher.start(), matcher.end(),//hightlight mSearchString
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
+                viewHolder.patientPhoneNumber.setText(spannablePhoneString);
+            } else {
+                viewHolder.patientPhoneNumber.setText(patientObject.getPatientPhone());
+            }
+            //Spannable condition for PatientId
+            if (String.valueOf(patientObject.getPatientId()).toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
+                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getPatientId()));
+                patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+                SpannableString spannableIdString = new SpannableString(patientID);
+                Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(patientID);
+
+                while (matcher.find()) {
+                    spannableIdString.setSpan(new ForegroundColorSpan(
+                                    ContextCompat.getColor(mContext, R.color.tagColor)),
+                            0, spannableIdString.length(),//hightlight mSearchString
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                viewHolder.patientIdTextView.setText(patientID);
+            } else {
+                viewHolder.patientIdTextView.setText(String.valueOf(patientObject.getPatientId()));
             }
         } else {
             viewHolder.patientNameTextView.setText(patientName);
             viewHolder.patientPhoneNumber.setText(patientObject.getPatientPhone());
+            SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
+            patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+            viewHolder.patientIdTextView.setText(patientID);
         }
 
         if (patientObject.getAge() == 0) {
@@ -169,13 +182,13 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.patientGenderTextView.setText(" " + patientObject.getGender());
         if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.booked))) {
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
-            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + patientObject.getAppointmentStatus());
+            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
         } else if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
-            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + patientObject.getAppointmentStatus());
+            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
 
         } else if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.follow))) {
-            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + patientObject.getAppointmentStatus());
+            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
 
         }
@@ -211,6 +224,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 patientObject.setSelected(viewHolder.checkbox.isChecked());
                 int selected = getSelectedCount(mClinicListTemp.get(groupPosition).getPatientList());
                 mClinicListTemp.get(groupPosition).setSelectedGroupCheckbox(selected == mClinicListTemp.get(groupPosition).getPatientList().size() && mClinicListTemp.get(groupPosition).getPatientHeader().isSelected());
+                mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(viewHolder.checkbox.isChecked());
                 notifyDataSetChanged();
             }
         });
@@ -304,7 +318,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder = (GroupViewHolder) convertView.getTag();
         }
 
-
         viewHolder.mClinicNameTextView.setText(mClinicListTemp.get(groupPosition).getClinicName() + " - ");
         viewHolder.mClinicAddress.setText(mClinicListTemp.get(groupPosition).getArea() + ", " + mClinicListTemp.get(groupPosition).getCity());
         viewHolder.mClinicPatientCount.setText(mClinicListTemp.get(groupPosition).getPatientList().size() + "");
@@ -336,13 +349,13 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.mPatientGenderTextView.setText(" " + mClinicListTemp.get(groupPosition).getPatientHeader().getGender());
         if (mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.booked))) {
             viewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
-            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus());
+            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus());
         } else if (mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
-            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus());
+            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus());
             viewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
 
         } else if (mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.follow))) {
-            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus());
+            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus());
             viewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
 
         }
@@ -396,6 +409,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 mClinicListTemp.get(groupPosition).getPatientHeader().setSelected(viewHolder.mCheckbox.isChecked());
                 int selected = getSelectedCount(mClinicListTemp.get(groupPosition).getPatientList());
                 mClinicListTemp.get(groupPosition).setSelectedGroupCheckbox(selected == mClinicListTemp.get(groupPosition).getPatientList().size() && mClinicListTemp.get(groupPosition).getPatientHeader().isSelected());
+                mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(viewHolder.mCheckbox.isChecked());
+
                 notifyDataSetChanged();
             }
         });
@@ -418,6 +433,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
                 for (PatientList patient : mClinicListTemp.get(groupPosition).getPatientList())
                     patient.setSelected(viewHolder.mGroupCheckbox.isChecked());
+                mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(viewHolder.mGroupCheckbox.isChecked());
 
                 notifyDataSetChanged();
             }
@@ -457,6 +473,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
 
         void onRecordFound(boolean isListEmpty);
+        void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
     }
 
     public boolean isLongPressed() {

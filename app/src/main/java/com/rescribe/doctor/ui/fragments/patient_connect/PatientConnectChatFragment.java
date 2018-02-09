@@ -19,6 +19,7 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient_connect.PatientData;
+import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -32,7 +33,7 @@ import butterknife.Unbinder;
  * Created by jeetal on 6/9/17.
  */
 
-public class PatientConnectChatFragment extends Fragment implements HelperResponse {
+public class PatientConnectChatFragment extends Fragment implements HelperResponse,PatientConnectActivity.OnClickOfSearchBar {
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
     @BindView(R.id.emptyListView)
@@ -196,6 +197,13 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
             mReceivedPatientDataList.add(0, patientData);
 
             mPatientConnectAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setOnClickOfSearchBar(String searchText) {
+
+        if (mPatientConnectAdapter != null)
+            mPatientConnectAdapter.getFilter().filter(searchText);
     }
 }
 

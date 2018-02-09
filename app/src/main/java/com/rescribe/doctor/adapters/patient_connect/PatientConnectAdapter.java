@@ -23,6 +23,7 @@ import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.fragments.patient_connect.PatientConnectChatFragment;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -64,12 +65,8 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         @BindView(R.id.onlineStatusIcon)
         ImageView onlineStatusIcon;
 
-        @BindView(R.id.paidStatusTextView)
-        TextView paidStatusTextView;
         @BindView(R.id.imageOfDoctor)
         ImageView imageOfDoctor;
-        @BindView(R.id.badgeView)
-        TextView badgeView;
 
         View view;
 
@@ -101,7 +98,6 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
     public ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.global_connect_chats_row_item, parent, false);
-
         return new ListViewHolder(itemView);
     }
 
@@ -110,9 +106,9 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         final PatientData doctorConnectChatModel = dataList.get(position);
 
         //-----------
-        holder.onlineStatusIcon.setVisibility(View.GONE);
+        holder.onlineStatusIcon.setVisibility(View.VISIBLE);
 
-        if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(ONLINE)) {
+       /* if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(ONLINE)) {
             holder.onlineStatusIcon.setVisibility(View.VISIBLE);
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.green_light));
         } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(IDLE)) {
@@ -122,15 +118,15 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         }
         //-----------
 
-        holder.onlineStatusTextView.setText(doctorConnectChatModel.getOnlineStatus());
+        holder.onlineStatusTextView.setText(doctorConnectChatModel.getOnlineStatus());*/
 
         /*if (doctorConnectChatModel.getLastChatTime() != null) {
             String time = CommonMethods.formatDateTime(doctorConnectChatModel.getLastChatTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.TIME);
             holder.paidStatusTextView.setText(time);
             holder.paidStatusTextView.setVisibility(View.VISIBLE);
-        } else */holder.paidStatusTextView.setVisibility(View.GONE);
+        } else */
 
-        holder.doctorType.setVisibility(View.GONE);
+        holder.doctorType.setVisibility(View.VISIBLE);
 
         //---------
         String patientName = doctorConnectChatModel.getPatientName();
@@ -172,13 +168,6 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
 
         int count = appDBHelper.unreadMessageCountById(doctorConnectChatModel.getId());
         doctorConnectChatModel.setUnreadMessages(count);
-
-        if (doctorConnectChatModel.getUnreadMessages() > 0) {
-            holder.badgeView.setVisibility(View.VISIBLE);
-            holder.badgeView.setText(String.valueOf(doctorConnectChatModel.getUnreadMessages()));
-        } else {
-            holder.badgeView.setVisibility(View.GONE);
-        }
 
         //---------
 
@@ -225,10 +214,10 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 dataList = (ArrayList<PatientData>) filterResults.values;
                 if (dataList.size() == 0) {
-                    PatientSearchFragment temp = (PatientSearchFragment) mCalledParentFragment;
+                    PatientConnectChatFragment temp = (PatientConnectChatFragment) mCalledParentFragment;
                     temp.isDataListViewVisible(false);
                 } else {
-                    PatientSearchFragment temp = (PatientSearchFragment) mCalledParentFragment;
+                    PatientConnectChatFragment temp = (PatientConnectChatFragment) mCalledParentFragment;
                     temp.isDataListViewVisible(true);
                 }
                 notifyDataSetChanged();

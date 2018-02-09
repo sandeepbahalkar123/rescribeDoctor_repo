@@ -9,48 +9,56 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
-
-        <LinearLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:orientation="horizontal">
-
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
             <ImageView
                 android:id="@+id/backButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp16"
+                android:padding="@dimen/dp10"
+                android:visibility="gone"
                 android:src="@drawable/ic_arrow_back_white_24dp"
                 tools:ignore="VectorDrawableCompat" />
-
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:gravity="center|left"
                 android:text="@string/patient_connect"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp16"
+                android:textSize="@dimen/sp18"
                 android:visibility="visible"
                 app:customFont="@string/roboto_bold" />
-<RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-            <com.rescribe.doctor.ui.customesViews.SwitchButton
-                android:id="@+id/radioButton"
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:orientation="horizontal">
+
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/SwitchButtonStyle"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                app:kswAnimationDuration="0"
-                app:kswTextOff="OFF"
-                app:kswTextOn="ON"
-                android:padding="@dimen/dp12"
-                android:visibility="visible" />
-</RelativeLayout>
+                android:layout_height="wrap_content">
+
+                <com.rescribe.doctor.ui.customesViews.SwitchButton
+                    android:id="@+id/radioButton"
+                    style="@style/SwitchButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/dp12"
+                    android:visibility="invisible"
+                    app:kswAnimationDuration="0"
+                    app:kswTextOff="OFF"
+                    app:kswTextOn="ON" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -88,6 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabGravity="fill"
+            android:visibility="gone"
             app:tabMaxWidth="500dp"
             app:tabMode="fixed" />
     </android.support.design.widget.AppBarLayout>
