@@ -64,7 +64,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
         try {
             this.itemListener = ((ItemListener) context);
         } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement ItemClickListener..");
+            throw new ClassCastException("Activity must implement ItemClickListener...");
         }
     }
 
