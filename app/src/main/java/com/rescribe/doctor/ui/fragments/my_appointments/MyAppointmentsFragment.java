@@ -1,15 +1,12 @@
 package com.rescribe.doctor.ui.fragments.my_appointments;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,13 +14,10 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.AppointmentAdapter;
@@ -32,6 +26,7 @@ import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.model.my_appointments.ClinicList;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
 import com.rescribe.doctor.model.my_appointments.PatientList;
+import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -41,6 +36,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -53,8 +49,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     EditTextWithDeleteButton searchEditText;
     @BindView(R.id.whiteUnderLine)
     ImageView whiteUnderLine;
-    @BindView(R.id.historyExpandableListView)
-    ExpandableListView expandableListView;
+    public static ExpandableListView expandableListView;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.appointmentLayoutContainer)
@@ -68,12 +63,12 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     @BindView(R.id.recyclerViewBottom)
     RecyclerView recyclerViewBottom;
     Unbinder unbinder;
-    private AppointmentAdapter mAppointmentAdapter;
+    private static AppointmentAdapter mAppointmentAdapter;
     private MyAppointmentsDataModel mMyAppointmentsDataModel;
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
     private int mGroupPosition;
     private ArrayList<BottomMenu> mBottomMenuList;
-    private String[] mMenuNames = {"Select All", "Send SMS", "Send Email", "Waiting List"};
+    private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
     private int lastExpandedPosition = -1;
 
     @Override
@@ -81,6 +76,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                              @Nullable Bundle savedInstanceState) {
         View mRootView = inflater.inflate(R.layout.my_appointments_layout, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
+        expandableListView = (ExpandableListView) mRootView.findViewById(R.id.historyExpandableListView);
         init();
         return mRootView;
     }
@@ -124,7 +120,8 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 return true;
             }
         });
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+       /* expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
                 if (lastExpandedPosition != -1
@@ -133,11 +130,10 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 }
                 lastExpandedPosition = groupPosition;
             }
-        });
+        });*/
 
         mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList);
-        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+        recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);
         searchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
@@ -154,11 +150,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
                 mAppointmentAdapter.getFilter().filter(s);
                 //expand view
-                if (!s.toString().trim().isEmpty()) {
-                    expandAll();
-                } else {
-                    collapseAll();
-                }
+
                 // doConfigureDataListViewVisibility(false, false);
                    /* else {
                     recentDoctorLayout.setVisibility(View.VISIBLE);
@@ -183,14 +175,14 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         return fragment;
     }
 
-    private void expandAll() {
+    public static void expandAll() {
         int count = mAppointmentAdapter.getGroupCount();
         for (int i = 0; i < count; i++) {
             expandableListView.expandGroup(i);
         }
     }
 
-    private void collapseAll() {
+    public static void collapseAll() {
         int count = mAppointmentAdapter.getGroupCount();
         for (int i = 0; i < count; i++) {
             expandableListView.collapseGroup(i);
@@ -291,7 +283,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 }
                 mAppointmentAdapter.notifyDataSetChanged();
             }
-        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_mail))) {
+        } /*else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_mail))) {
             if (bottomMenu.isSelected()) {
                 ArrayList<String> mEmailPatinetsList = new ArrayList<>();
                 for (int groupIndex = 0; groupIndex < mAppointmentAdapter.getGroupList().size(); groupIndex++) {
@@ -328,7 +320,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 }
             }
 
-        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
+        } */else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
             ArrayList<String> mSmsList = new ArrayList<>();
             for (int groupIndex = 0; groupIndex < mAppointmentAdapter.getGroupList().size(); groupIndex++) {
                 if (mAppointmentAdapter.getGroupList().get(groupIndex).getPatientHeader().isSelected()) {
@@ -349,7 +341,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             if (!mSmsList.isEmpty()) {
                 Uri smsToUri = Uri.parse("smsto:" + emailList);
                 Intent intent = new Intent(
-                        android.content.Intent.ACTION_SENDTO, smsToUri);
+                        Intent.ACTION_SENDTO, smsToUri);
                 String message = "hello";
                 // message = message.replace("%s", StoresMessage.m_storeName);
                 intent.putExtra("sms_body", message);
@@ -362,6 +354,12 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 mBottomMenuAppointmentAdapter.notifyDataSetChanged();
             } else {
                 CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
+                for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+                    if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
+                        mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
+                    }
+                }
+                mBottomMenuAppointmentAdapter.notifyDataSetChanged();
             }
 
         }
@@ -385,5 +383,17 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             }
         }
         mAppointmentAdapter.notifyDataSetChanged();
+    }
+
+    @OnClick({R.id.rightFab, R.id.leftFab})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.rightFab:
+                MyAppointmentsActivity activity = (MyAppointmentsActivity) getActivity();
+                activity.getActivityDrawerLayout().openDrawer(GravityCompat.END);
+                break;
+            case R.id.leftFab:
+                break;
+        }
     }
 }

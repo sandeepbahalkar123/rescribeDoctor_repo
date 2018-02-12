@@ -60,4 +60,5 @@
     <dimen name="dp24">24dp</dimen>
     <dimen name="dp62">62dp</dimen>
     <dimen name="sp20">20sp</dimen>
+    <dimen name="dp44">44dp</dimen>
 </resources>

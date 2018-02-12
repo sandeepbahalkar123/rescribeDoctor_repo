@@ -184,6 +184,7 @@
     <string name="please_select_patients">Please select patients</string>
     <string name="my_patients">My Patients</string>
     <string name="do_you_logout">Do you want to logout?</string>
+    <string name="transgender">Transgender</string>
 
 
 </resources>

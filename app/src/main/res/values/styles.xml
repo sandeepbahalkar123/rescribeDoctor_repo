@@ -111,6 +111,14 @@
         <item name="android:adjustViewBounds">true</item>
         <item name="android:padding">@dimen/dp8</item>
     </style>
+    <style name="drawer_filter_gender_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:padding">@dimen/dp8</item>
+    </style>
+
     <style name="AppLoginNewMainStyle">
         <item name="android:textCursorDrawable">@drawable/cursor_color_white</item>
         <item name="android:cursorVisible">true</item>
@@ -133,7 +141,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:paddingStart">@dimen/dp8</item>
         <item name="android:textColor">@color/tagColor</item>
-        <item name="android:textSize">@dimen/sp16</item>
+        <item name="android:textSize">@dimen/sp14</item>
     </style>
 
     <style name="drawer_filter_header_direction_icon_layout">

@@ -2,6 +2,8 @@ package com.rescribe.doctor.ui.activities.my_patients;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,7 +17,9 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.fragments.my_appointments.DrawerForMyAppointment;
 import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
+import com.rescribe.doctor.ui.fragments.my_patients.DrawerForMyPatients;
 import com.rescribe.doctor.ui.fragments.my_patients.MyPatientsFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -28,7 +32,7 @@ import butterknife.OnClick;
  * Created by jeetal on 31/1/18.
  */
 
-public class MyPatientsActivity extends AppCompatActivity implements HelperResponse {
+public class MyPatientsActivity extends AppCompatActivity implements HelperResponse, DrawerForMyPatients.OnDrawerInteractionListener {
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -48,6 +52,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     private Bundle bundle;
     private MyPatientsFragment mMyPatientsFragment;
     private boolean isLongPressed;
+    private DrawerForMyPatients mDrawerForMyPatients;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,51 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
         titleTextView.setText(getString(R.string.my_patients));
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetMyPatients();
+        setUpNavigationDrawer();
+    }
+
+    private void setUpNavigationDrawer() {
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                //Called when a drawer's position changes.
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                //Called when a drawer has settled in a completely open state.
+                //The drawer is interactive at this point.
+                // If you have 2 drawers (left and right) you can distinguish
+                // them by using id of the drawerView. int id = drawerView.getId();
+                // id will be your layout's id: for example R.id.left_drawer
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // Called when a drawer has settled in a completely closed state.
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                // Called when the drawer motion state changes. The new state will be one of STATE_IDLE, STATE_DRAGGING or STATE_SETTLING.
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mDrawerForMyPatients = DrawerForMyPatients.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_view, mDrawerForMyPatients).commit();
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+        }, 100);
+
+    }
+
+    public DrawerLayout getActivityDrawerLayout() {
+        return drawerLayout;
     }
 
     @Override
@@ -81,18 +131,18 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
 
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
-        CommonMethods.showToast(mContext,errorMessage);
+        CommonMethods.showToast(mContext, errorMessage);
 
     }
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
-        CommonMethods.showToast(mContext,serverErrorMessage);
+        CommonMethods.showToast(mContext, serverErrorMessage);
     }
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-        CommonMethods.showToast(mContext,serverErrorMessage);
+        CommonMethods.showToast(mContext, serverErrorMessage);
     }
 
     @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
@@ -113,14 +163,29 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
                 break;
         }
     }
+
     @Override
     public void onBackPressed() {
-        isLongPressed = mMyPatientsFragment.callOnBackPressed();
-        if(isLongPressed){
-            mMyPatientsFragment.removeCheckBox();
-        }else{
-            super.onBackPressed();
+        if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END);
+        } else {
+            isLongPressed = mMyPatientsFragment.callOnBackPressed();
+            if (isLongPressed) {
+                mMyPatientsFragment.removeCheckBox();
+            } else {
+                super.onBackPressed();
+            }
+
         }
+    }
+
+    @Override
+    public void onApply(Bundle b, boolean drawerRequired) {
+        drawerLayout.closeDrawers();
+    }
+
+    @Override
+    public void onReset(boolean drawerRequired) {
 
     }
 }

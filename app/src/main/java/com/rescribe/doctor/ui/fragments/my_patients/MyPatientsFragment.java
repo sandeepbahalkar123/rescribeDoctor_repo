@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +26,9 @@ import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter
 import com.rescribe.doctor.adapters.my_patients.MyPatientsAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
-import com.rescribe.doctor.model.my_appointments.PatientList;
+import com.rescribe.doctor.helpers.doctor_patients.PatientList;
+import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
+import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -64,7 +68,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private MyPatientBaseModel myPatientBaseModel;
     private MyPatientsAdapter mMyPatientsAdapter;
     private ArrayList<BottomMenu> mBottomMenuList;
-    private String[] mMenuNames = {"Select All", "Send SMS", "Send Email"};
+    private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
 
     @Override
@@ -156,7 +160,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     @Override
     public void onCheckUncheckRemoveSelectAllSelection(boolean ischecked) {
-        if(!ischecked){
+        if (!ischecked) {
             for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                 if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
                     mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
@@ -192,13 +196,13 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 }
                 mMyPatientsAdapter.notifyDataSetChanged();
             }
-        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_mail))) {
+        } /*else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_mail))) {
 
             if (bottomMenu.isSelected()) {
                 ArrayList<String> mEmailPatinetsList = new ArrayList<>();
                 for (int groupIndex = 0; groupIndex < mMyPatientsAdapter.getGroupList().size(); groupIndex++) {
 
-                    com.rescribe.doctor.helpers.doctor_patients.PatientList patientList = mMyPatientsAdapter.getGroupList().get(groupIndex);
+                    PatientList patientList = mMyPatientsAdapter.getGroupList().get(groupIndex);
                     if (patientList.isSelected()) {
                         mEmailPatinetsList.add(patientList.getPatientEmail());
                     }
@@ -227,11 +231,11 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 }
             }
 
-        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
+        }*/ else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
             ArrayList<String> mSmsList = new ArrayList<>();
 
             for (int childIndex = 0; childIndex < mMyPatientsAdapter.getGroupList().size(); childIndex++) {
-                com.rescribe.doctor.helpers.doctor_patients.PatientList patientList = mMyPatientsAdapter.getGroupList().get(childIndex);
+                PatientList patientList = mMyPatientsAdapter.getGroupList().get(childIndex);
                 if (patientList.isSelected()) {
                     mSmsList.add(patientList.getPatientPhone());
                 }
@@ -245,7 +249,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             if (!mSmsList.isEmpty()) {
                 Uri smsToUri = Uri.parse("smsto:" + emailList);
                 Intent intent = new Intent(
-                        android.content.Intent.ACTION_SENDTO, smsToUri);
+                        Intent.ACTION_SENDTO, smsToUri);
                 String message = "hello";
                 // message = message.replace("%s", StoresMessage.m_storeName);
                 intent.putExtra("sms_body", message);
@@ -258,6 +262,12 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 mBottomMenuAppointmentAdapter.notifyDataSetChanged();
             } else {
                 CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
+                for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+                    if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
+                        mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
+                    }
+                }
+                mBottomMenuAppointmentAdapter.notifyDataSetChanged();
             }
 
         }
@@ -276,4 +286,15 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         mMyPatientsAdapter.notifyDataSetChanged();
     }
 
+    @OnClick({R.id.rightFab, R.id.leftFab})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.rightFab:
+                MyPatientsActivity activity = (MyPatientsActivity) getActivity();
+                activity.getActivityDrawerLayout().openDrawer(GravityCompat.END);
+                break;
+            case R.id.leftFab:
+                break;
+        }
+    }
 }

@@ -86,7 +86,7 @@
                         <ImageView
                             style="@style/drawer_filter_header_icon_layout"
                             android:layout_gravity="center"
-                            android:src="@drawable/sorting_icon"
+                            android:src="@drawable/filtersortingicon"
                             tools:ignore="ContentDescription" />
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -163,7 +163,7 @@
                         <ImageView
                             style="@style/drawer_filter_header_icon_layout"
                             android:layout_gravity="center"
-                            android:src="@drawable/gender_icon"
+                            android:src="@drawable/filtergendericon"
                             tools:ignore="ContentDescription" />
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -177,6 +177,7 @@
                         style="@style/drawer_filter_header_layout"
                         android:background="@color/otp_background_layout"
                         android:gravity="center"
+                        android:id="@+id/selectStatus"
                         android:padding="@dimen/dp5"
                         android:text="@string/select_status"
                         app:customFont="@string/roboto_regular" />
@@ -188,7 +189,7 @@
                         android:background="@color/otp_background_layout"
                         android:focusable="false"
                         android:paddingBottom="@dimen/dp20"
-                        android:paddingTop="@dimen/dp20"
+                        android:paddingTop="@dimen/dp10"
                         android:visibility="visible" />
                 </LinearLayout>
 
@@ -227,13 +228,12 @@
                         android:gravity="center"
                         android:orientation="vertical"
                         android:paddingBottom="@dimen/dp20"
-                        android:paddingLeft="@dimen/dp20"
-                        android:paddingStart="@dimen/dp20"
                         android:visibility="visible"
                         tools:ignore="RtlSymmetry">
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
                             style="@style/drawer_filter_header_layout"
+                            android:id="@+id/selectClinic"
                             android:background="@color/otp_background_layout"
                             android:gravity="center"
                             android:padding="@dimen/dp5"
@@ -248,7 +248,7 @@
                             android:background="@color/otp_background_layout"
                             android:focusable="false"
                             android:paddingBottom="@dimen/dp20"
-                            android:paddingTop="@dimen/dp20"
+                            android:paddingTop="@dimen/dp10"
                             android:visibility="visible" />
 
                     </LinearLayout>
@@ -318,7 +318,7 @@
             <ImageView
                 style="@style/drawer_filter_header_icon_layout"
                 android:layout_gravity="center"
-                android:src="@drawable/sorting_icon"
+                android:src="@drawable/filtersortingicon"
                 tools:ignore="ContentDescription" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView

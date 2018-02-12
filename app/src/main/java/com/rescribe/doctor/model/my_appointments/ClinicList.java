@@ -3,6 +3,7 @@ package com.rescribe.doctor.model.my_appointments;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -10,7 +11,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList> {
+public class ClinicList implements Parcelable, Cloneable, Comparable<ClinicList> {
     @SerializedName("clinic_name")
     @Expose
     private String clinicName;
@@ -33,12 +34,11 @@ public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList>
     private PatientList patientHeader;
     private boolean selectedGroupCheckbox;
 
-
     public final static Creator<ClinicList> CREATOR = new Creator<ClinicList>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public ClinicList createFromParcel(Parcel in) {
             return new ClinicList(in);
@@ -126,6 +126,7 @@ public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList>
         this.selectedGroupCheckbox = selectedGroupCheckbox;
     }
 
+
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
@@ -140,7 +141,7 @@ public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList>
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
     @Override

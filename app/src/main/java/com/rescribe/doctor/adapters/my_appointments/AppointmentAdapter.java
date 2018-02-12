@@ -26,6 +26,7 @@ import com.rescribe.doctor.model.my_appointments.ClinicList;
 import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -153,12 +154,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 while (matcher.find()) {
                     spannableIdString.setSpan(new ForegroundColorSpan(
                                     ContextCompat.getColor(mContext, R.color.tagColor)),
-                            0, spannableIdString.length(),//hightlight mSearchString
+                            matcher.start(), matcher.end(),//hightlight mSearchString
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
-                viewHolder.patientIdTextView.setText(patientID);
+                viewHolder.patientIdTextView.setText(spannableIdString);
             } else {
-                viewHolder.patientIdTextView.setText(String.valueOf(patientObject.getPatientId()));
+                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
+                patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+                viewHolder.patientIdTextView.setText(patientID);
             }
         } else {
             viewHolder.patientNameTextView.setText(patientName);
@@ -448,6 +451,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 return false;
             }
         });
+
         if (isExpanded) {
             viewHolder.cardView.setVisibility(View.GONE);
         } else {
@@ -473,6 +477,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
 
         void onRecordFound(boolean isListEmpty);
+
         void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
     }
 
@@ -509,6 +514,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                         } catch (CloneNotSupportedException e) {
                             e.printStackTrace();
                         }
+
                         //-----------------
                         for (PatientList patientListObject : patientLists) {
                             patientListObject.setSpannableString(null);
@@ -533,6 +539,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                         } catch (CloneNotSupportedException e) {
                             e.printStackTrace();
                         }
+
                         //-----------------
                         for (PatientList patientListObject : patientLists) {
                             if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
@@ -562,9 +569,19 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 mClinicListTemp.addAll((ArrayList<ClinicList>) filterResults.values);
 
                 if (mClinicListTemp.isEmpty()) {
+                    notifyDataSetChanged();
                     mOnDownArrowClicked.onRecordFound(true);
-                } else mOnDownArrowClicked.onRecordFound(false);
-                notifyDataSetChanged();
+
+                } else {
+                    notifyDataSetChanged();
+                    mOnDownArrowClicked.onRecordFound(false);
+                    if (charSequence.toString().isEmpty()) {
+                        MyAppointmentsFragment.collapseAll();
+                    } else {
+                        MyAppointmentsFragment.expandAll();
+                    }
+                }
+
             }
         };
     }

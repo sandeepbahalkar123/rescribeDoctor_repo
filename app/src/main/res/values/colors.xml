@@ -50,4 +50,6 @@
     <color name="view_line">#f4f4f4</color>
     <color name="grey">#b3b3b3</color>
     <color name="range_label_color">#545353</color>
+    <color name="seek_bar_progress">#01aeff</color>
+    <color name="seek_bar_default">#4a4a4a</color>
 </resources>

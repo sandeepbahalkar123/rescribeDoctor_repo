@@ -114,7 +114,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             }
             //TODO:
             //Spannable condition for PatientId
-          /*  if (String.valueOf(patientObject.getPatientId()).toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
+            if (String.valueOf(patientObject.getPatientId()).toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
                 SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getPatientId()));
                 patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
                 SpannableString spannableIdString = new SpannableString(patientID);
@@ -124,19 +124,22 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 while (matcher.find()) {
                     spannableIdString.setSpan(new ForegroundColorSpan(
                                     ContextCompat.getColor(mContext, R.color.tagColor)),
-                            0, spannableIdString.length(),//hightlight mSearchString
+                            matcher.start(), matcher.end(),//hightlight mSearchString
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
-                holder.patientIdTextView.setText(patientID);
+                holder.patientIdTextView.setText(spannableIdString);
             } else {
-                holder.patientIdTextView.setText(String.valueOf(patientObject.getPatientId()));
-            }*/
+                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
+                patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+                holder.patientIdTextView.setText(patientID);
+            }
+
         } else {
             holder.patientNameTextView.setText(patientName);
             holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
             SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
             patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-           // holder.patientIdTextView.setText(patientID);
+            holder.patientIdTextView.setText(patientID);
         }
 
         if (patientObject.getAge() == 0) {
