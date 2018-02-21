@@ -18,7 +18,6 @@
     <string name="appointments">Appointments</string>
     <string name="select_all">Select All</string>
     <string name="send_sms">Send SMS</string>
-    <string name="send_mail">Send Email</string>
     <string name="waiting_list">Waiting List</string>
     <string name="please_select_patients">Please select patients</string>
     <string name="my_patients">My Patients</string>
@@ -30,7 +29,5 @@
     <string name="select_report">Select Report</string>
     <string name="just_now">Just Now</string>
     <string name="services">Services</string>
-    <string name="practices_at_locations">Practices at $$ locations</string>
     <string name="about_doctor"><u>About Doctor :</u></string>
-    <string name="to">To:</string>
 </resources>

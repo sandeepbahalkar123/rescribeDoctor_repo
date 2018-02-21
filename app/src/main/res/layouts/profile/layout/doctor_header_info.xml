@@ -290,7 +290,6 @@
                 android:layout_height="match_parent"
                 android:spinnerMode="dropdown" />
             <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:id="@+id/textViewspin"
                 style="@style/SpinnerTheme"
                 android:paddingLeft="@dimen/dp16"
                 android:layout_width="wrap_content"

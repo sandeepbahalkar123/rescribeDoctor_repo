@@ -144,7 +144,6 @@
         android:focusable="true" />
 
     <io.codetail.widget.RevealFrameLayout
-        android:id="@+id/revealFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/messageTypeLayout"

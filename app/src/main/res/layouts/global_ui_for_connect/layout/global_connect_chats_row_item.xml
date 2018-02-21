@@ -104,7 +104,6 @@
                 android:layout_height="wrap_content"
                 tools:text="yesterday"
                 android:visibility="visible"
-                android:id="@+id/showLastMsgTime"
                 android:textColor="@color/grey_shade"
                 android:textSize="@dimen/sp11"
                 android:layout_marginRight="@dimen/dp12"/>

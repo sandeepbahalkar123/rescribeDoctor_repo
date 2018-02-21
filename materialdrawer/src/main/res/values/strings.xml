@@ -31,7 +31,6 @@
 
     <string name="md_content_description_open_profile_list">Secondary Avatar</string>
 
-    <string name="md_content_description_drawer_open">Menu open</string>
     <string name="md_content_description_drawer_close">Menu closed</string>
 
     <string name="md_label_plus">+%1$d</string>

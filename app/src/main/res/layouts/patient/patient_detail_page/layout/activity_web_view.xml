@@ -37,7 +37,6 @@
                 tools:text="Title" />
 
             <ImageView
-                android:id="@+id/bookMarkIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -48,7 +47,6 @@
         </LinearLayout>
 
         <ProgressBar
-            android:id="@+id/progressBar"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp7"
