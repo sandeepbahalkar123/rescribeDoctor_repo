@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
@@ -19,7 +20,6 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.patient.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
-import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -33,14 +33,14 @@ import butterknife.Unbinder;
  * Created by jeetal on 6/9/17.
  */
 
-public class PatientConnectChatFragment extends Fragment implements HelperResponse,PatientConnectActivity.OnClickOfSearchBar {
+public class PatientConnectChatFragment extends Fragment implements HelperResponse {
+
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
     @BindView(R.id.emptyListView)
     RelativeLayout mEmptyListView;
+    
     Unbinder unbinder;
-    private View mRootView;
-    private PatientConnectHelper mPatientConnectHelper;
     private ArrayList<PatientData> mReceivedPatientDataList = new ArrayList<>();
     private PatientConnectAdapter mPatientConnectAdapter;
 
@@ -58,7 +58,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.global_connect_recycle_view_layout, container, false);
+        View mRootView = inflater.inflate(R.layout.global_connect_recycle_view_layout, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
 
         initialize();
@@ -66,7 +66,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     }
 
     private void initialize() {
-        mPatientConnectHelper = new PatientConnectHelper(getActivity(), this);
+        PatientConnectHelper mPatientConnectHelper = new PatientConnectHelper(getActivity(), this);
 
         mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -124,8 +124,8 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
     public void notifyDataChanged() {
         if (mPatientConnectAdapter != null)
-        if (!mReceivedPatientDataList.isEmpty()) {
-            mPatientConnectAdapter.notifyDataSetChanged();
+            if (!mReceivedPatientDataList.isEmpty()) {
+                mPatientConnectAdapter.notifyDataSetChanged();
                 isDataListViewVisible(true);
             } else {
                 isDataListViewVisible(false);
@@ -196,12 +196,10 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         if (!isThere)
             mReceivedPatientDataList.add(0, patientData);
 
-            mPatientConnectAdapter.notifyDataSetChanged();
+        mPatientConnectAdapter.notifyDataSetChanged();
     }
 
-    @Override
     public void setOnClickOfSearchBar(String searchText) {
-
         if (mPatientConnectAdapter != null)
             mPatientConnectAdapter.getFilter().filter(searchText);
     }

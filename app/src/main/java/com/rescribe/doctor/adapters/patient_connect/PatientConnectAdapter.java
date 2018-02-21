@@ -24,17 +24,12 @@ import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.patient.patient_connect.PatientConnectChatFragment;
-import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.IDLE;
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
 
 
 /**
@@ -49,7 +44,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
     private String mIdle, mOnline, mOffline;
     private Context mContext;
     private ArrayList<PatientData> dataList;
-    String searchString = "";
+    private String searchString = "";
 
     private final AppDBHelper appDBHelper;
 
@@ -67,6 +62,9 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
 
         @BindView(R.id.imageOfDoctor)
         ImageView imageOfDoctor;
+
+        @BindView(R.id.badgeText)
+        TextView badgeText;
 
         View view;
 
@@ -151,11 +149,11 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
                     0, searchString.length(),
                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
-        if (spannableStringSearch != null) {
+
+        if (spannableStringSearch != null)
             holder.doctorName.setText(spannableStringSearch);
-        } else {
+        else
             holder.doctorName.setText(doctorConnectChatModel.getPatientName());
-        }
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,8 +164,12 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             }
         });
 
-        int count = appDBHelper.unreadMessageCountById(doctorConnectChatModel.getId());
-        doctorConnectChatModel.setUnreadMessages(count);
+        doctorConnectChatModel.setUnreadMessages(appDBHelper.unreadMessageCountById(doctorConnectChatModel.getId()));
+        if (doctorConnectChatModel.getUnreadMessages() > 0) {
+            holder.badgeText.setText(String.valueOf(doctorConnectChatModel.getUnreadMessages()));
+            holder.badgeText.setVisibility(View.VISIBLE);
+        } else
+            holder.badgeText.setVisibility(View.GONE);
 
         //---------
 

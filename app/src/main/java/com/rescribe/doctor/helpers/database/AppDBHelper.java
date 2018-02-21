@@ -19,6 +19,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.READ;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.UNREAD;
+
 public class AppDBHelper extends SQLiteOpenHelper {
 
     private final String TAG = "DrRescribe/AppDBHelper";
@@ -173,10 +176,91 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     // All About Chat
 
+    public interface CHAT_MESSAGES {
+        String CHAT_MESSAGES_TABLE = "chat_messages";
+
+        String MSGID = "msgId";
+        String MSG = "msg";
+        String MSGTIME = "msgTime";
+        String SENDER = "sender";
+        String USER2ID = "user2id";
+        String USER1ID = "user1id";
+        String SENDERNAME = "senderName";
+        String SPECIALITY = "speciality";
+        String MSGSTATUS = "msgStatus";
+        String SENDERIMGURL = "senderImgUrl";
+        String FILEURL = "fileUrl";
+        String FILETYPE = "fileType";
+        String UPLOADSTATUS = "uploadStatus";
+        String DOWNLOADSTATUS = "downloadStatus";
+        String READSTATUS = "readStatus";
+    }
+
+    // New
+    
+    public boolean deleteChatMessageByMsgId(int messageId) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.MSGID + "=" + messageId, null) > 0;
+    }
+
+    public boolean deleteChatMessageByDoctorId(int doctorId) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.USER1ID + "=" + doctorId, null) > 0;
+    }
+
+    public boolean deleteChatMessageByPatientId(int patientId) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.USER2ID + "=" + patientId, null) > 0;
+    }
+
+    // New End
+    
+    // Old
+
     public boolean deleteUnreadMessage(int id) {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(MESSAGE_TABLE, CHAT_USER_ID + "=" + id, null) > 0;
     }
+
+    // Old End
+
+    // New
+
+    public ArrayList<MQTTMessage> insertChatMessage(MQTTMessage mqttMessage) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(CHAT_MESSAGES.MSGID, mqttMessage.getMsgId());
+        contentValues.put(CHAT_MESSAGES.MSG, mqttMessage.getMsg());
+        contentValues.put(CHAT_MESSAGES.MSGTIME, mqttMessage.getMsgTime());
+        contentValues.put(CHAT_MESSAGES.SENDER, mqttMessage.getSender());
+        contentValues.put(CHAT_MESSAGES.USER2ID, mqttMessage.getPatId());
+        contentValues.put(CHAT_MESSAGES.USER1ID, mqttMessage.getDocId());
+        contentValues.put(CHAT_MESSAGES.SENDERNAME, mqttMessage.getName());
+        contentValues.put(CHAT_MESSAGES.SPECIALITY, mqttMessage.getSpecialization());
+        contentValues.put(CHAT_MESSAGES.MSGSTATUS, mqttMessage.getMsgStatus());
+        contentValues.put(CHAT_MESSAGES.SENDERIMGURL, mqttMessage.getImageUrl());
+        contentValues.put(CHAT_MESSAGES.FILEURL, mqttMessage.getFileUrl());
+        contentValues.put(CHAT_MESSAGES.FILETYPE, mqttMessage.getFileType());
+        contentValues.put(CHAT_MESSAGES.UPLOADSTATUS, mqttMessage.getUploadStatus());
+        contentValues.put(CHAT_MESSAGES.DOWNLOADSTATUS, mqttMessage.getDownloadStatus());
+        contentValues.put(CHAT_MESSAGES.READSTATUS, mqttMessage.getReadStatus());
+
+        db.insert(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, null, contentValues);
+
+        return getUnreadMessagesByPatientId(mqttMessage.getPatId());
+    }
+
+    public int markAsAReadChatMessageByPatientId(String patientId) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CHAT_MESSAGES.READSTATUS, READ);
+        return db.update(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, contentValues, CHAT_MESSAGES.USER2ID + " = ? AND " + CHAT_MESSAGES.READSTATUS + " = ? ", new String[]{patientId, String.valueOf(UNREAD)});
+    }
+
+    // New End
+    
+    // Old
 
     public ArrayList<MQTTMessage> insertUnreadMessage(int id, String message) {
         SQLiteDatabase db = getWritableDatabase();
@@ -190,6 +274,24 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return getUnreadMessagesById(id);
     }
 
+    // Old End
+
+    // New
+    
+    public int unreadChatMessageCountByPatientId(int patientId) {
+        // Return Total Count
+        SQLiteDatabase db = getReadableDatabase();
+        String countQuery = "select * from " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " where " + CHAT_MESSAGES.USER2ID + " = " + patientId + " AND " + CHAT_MESSAGES.READSTATUS + " = " + UNREAD;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int cnt = cursor.getCount();
+        cursor.close();
+        return cnt;
+    }
+    
+    // New End
+    
+    // Old
+
     public int unreadMessageCountById(int id) {
         // Return Total Count
         SQLiteDatabase db = getReadableDatabase();
@@ -200,6 +302,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return cnt;
     }
 
+    // Old End
+
     /*public int unreadMessageCount() {
         // Return Total Count
         SQLiteDatabase db = getReadableDatabase();
@@ -209,6 +313,50 @@ public class AppDBHelper extends SQLiteOpenHelper {
         cursor.close();
         return cnt;
     }*/
+
+    // New
+    
+    public ArrayList<MQTTMessage> getUnreadMessagesByPatientId(int user2Id) {
+        SQLiteDatabase db = getReadableDatabase();
+        String countQuery = "select * from " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " where " + CHAT_MESSAGES.USER2ID + " = " + user2Id + " AND " + CHAT_MESSAGES.READSTATUS + " = " + UNREAD;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        ArrayList<MQTTMessage> chatDoctors = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                MQTTMessage mqttMessage = new MQTTMessage();
+
+                mqttMessage.setMsgId(cursor.getString(cursor.getColumnIndex(CHAT_MESSAGES.MSGID)));
+                mqttMessage.setMsg(cursor.getString(cursor.getColumnIndex(CHAT_MESSAGES.MSG)));
+                mqttMessage.setMsgTime(cursor.getString(cursor.getColumnIndex(CHAT_MESSAGES.MSGTIME)));
+                mqttMessage.setSender(cursor.getString(cursor.getColumnIndex(CHAT_MESSAGES.SENDER)));
+                mqttMessage.setPatId(cursor.getInt(cursor.getColumnIndex(CHAT_MESSAGES.USER2ID)));
+                mqttMessage.setDocId(cursor.getInt(cursor.getColumnIndex(CHAT_MESSAGES.USER1ID)));
+                mqttMessage.setName(cursor.getString(cursor.getColumnIndex(CHAT_MESSAGES.SENDERNAME)));
+
+                mqttMessage.setSpecialization(cursor.getString(cursor.getColumnIndex(CHAT_MESSAGES.SPECIALITY)));
+                mqttMessage.setMsgStatus(cursor.getString(cursor.getColumnIndex(CHAT_MESSAGES.MSGSTATUS)));
+                mqttMessage.setImageUrl(cursor.getString(cursor.getColumnIndex(CHAT_MESSAGES.SENDERIMGURL)));
+                mqttMessage.setFileUrl(cursor.getString(cursor.getColumnIndex(CHAT_MESSAGES.FILEURL)));
+                mqttMessage.setFileType(cursor.getString(cursor.getColumnIndex(CHAT_MESSAGES.FILETYPE)));
+
+                mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(CHAT_MESSAGES.UPLOADSTATUS)));
+                mqttMessage.setDownloadStatus(cursor.getInt(cursor.getColumnIndex(CHAT_MESSAGES.DOWNLOADSTATUS)));
+                mqttMessage.setReadStatus(cursor.getInt(cursor.getColumnIndex(CHAT_MESSAGES.READSTATUS)));
+
+                chatDoctors.add(mqttMessage);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+
+        return chatDoctors;
+    }
+    
+    // New
+    
+    // Old
 
     public ArrayList<MQTTMessage> getUnreadMessagesById(int id) {
         SQLiteDatabase db = getReadableDatabase();
@@ -229,6 +377,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
         return chatDoctors;
     }
+    
+    // Old End
 
     /*public int unreadMessageUsersCount() {
         SQLiteDatabase db = getReadableDatabase();

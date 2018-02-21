@@ -14,11 +14,11 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_marginTop="@dimen/dp10"
-        android:layout_marginBottom="@dimen/dp10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dp10"
+        android:layout_marginTop="@dimen/dp10"
         android:background="@color/white"
         android:orientation="horizontal">
         <!--  ListRow Left sied Thumbnail image -->
@@ -28,15 +28,15 @@
             android:layout_marginEnd="@dimen/dp5"
             android:layout_marginLeft="@dimen/dp16"
             android:layout_marginRight="@dimen/dp5"
-            android:gravity="center"
             android:layout_marginStart="@dimen/dp16"
+            android:gravity="center"
             android:padding="3dip">
 
             <ImageView
                 android:id="@+id/imageOfDoctor"
                 android:layout_width="@dimen/dp50"
-                android:layout_centerInParent="true"
                 android:layout_height="@dimen/dp50"
+                android:layout_centerInParent="true"
                 android:src="@drawable/layer_12" />
 
             <ImageView
@@ -47,8 +47,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:visibility="gone"
-                tools:visibility="visible"
-                app:srcCompat="@drawable/online_icon" />
+                app:srcCompat="@drawable/online_icon"
+                tools:visibility="visible" />
 
         </RelativeLayout>
 
@@ -74,15 +74,39 @@
                 app:customFont="@string/roboto_bold"
                 tools:visibility="visible" />
 
-            <!-- Artist Name -->
-            <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:id="@+id/doctorName"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp17"
-                app:customFont="@string/roboto_bold"
-                tools:text="dfgfdg" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <!-- Artist Name -->
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/doctorName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp17"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="Sagar Patil" />
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/badgeText"
+                    android:layout_width="@dimen/dp21"
+                    android:layout_height="@dimen/dp21"
+                    android:layout_marginEnd="@dimen/dp14"
+                    android:layout_marginStart="@dimen/dp14"
+                    android:background="@drawable/chat_badge"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp12"
+                    android:visibility="gone"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="1"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
 
             <!-- Rightend Duration -->
             <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -90,26 +114,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
+                android:text="Last OPD - 03rd Nov'17"
                 android:textColor="@color/tagColor"
                 android:textSize="@dimen/sp12"
-                app:customFont="@string/roboto_medium"
-                android:text="Last OPD - 03rd Nov'17" />
+                app:customFont="@string/roboto_medium" />
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="yesterday"
-                android:visibility="visible"
+                android:layout_marginRight="@dimen/dp12"
                 android:textColor="@color/grey_shade"
                 android:textSize="@dimen/sp11"
-                android:layout_marginRight="@dimen/dp12"/>
+                android:visibility="visible"
+                tools:text="yesterday" />
         </RelativeLayout>
-
-
     </LinearLayout>
 
 </LinearLayout>

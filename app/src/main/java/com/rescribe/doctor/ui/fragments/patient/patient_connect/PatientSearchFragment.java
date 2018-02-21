@@ -28,13 +28,12 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Created by jeetal on 8/9/17.
  */
 
-public class PatientSearchFragment extends Fragment implements PatientConnectActivity.OnClickOfSearchBar {
+public class PatientSearchFragment extends Fragment {
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
     @BindView(R.id.emptyListView)
     RelativeLayout mEmptyListView;
     Unbinder unbinder;
-    private View mRootView;
     private ArrayList<PatientData> mReceivedPatientDataList;
     private PatientConnectChatAdapter mPatientConnectAdapter;
 
@@ -52,7 +51,7 @@ public class PatientSearchFragment extends Fragment implements PatientConnectAct
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.global_connect_recycle_view_layout, container, false);
+        View mRootView = inflater.inflate(R.layout.global_connect_recycle_view_layout, container, false);
         Bundle arguments = getArguments();
         unbinder = ButterKnife.bind(this, mRootView);
         initialize();
@@ -79,11 +78,11 @@ public class PatientSearchFragment extends Fragment implements PatientConnectAct
     }
 
 
-    @Override
+   /* @Override
     public void setOnClickOfSearchBar(String searchText) {
         if (mPatientConnectAdapter != null)
             mPatientConnectAdapter.getFilter().filter(searchText);
-    }
+    }*/
 
     public void setAdapter() {
         if (mReceivedPatientDataList != null) {

@@ -9,20 +9,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" >
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
             <ImageView
                 android:id="@+id/backButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp10"
-                android:visibility="gone"
                 android:src="@drawable/ic_arrow_back_white_24dp"
+                android:visibility="gone"
                 tools:ignore="VectorDrawableCompat" />
+
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
@@ -36,10 +39,10 @@
         </android.support.v7.widget.Toolbar>
 
         <LinearLayout
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -90,21 +93,12 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabsDoctorConnect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="fill"
-            android:visibility="gone"
-            app:tabMaxWidth="500dp"
-            app:tabMode="fixed" />
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/doctorConnectViewpager"
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>

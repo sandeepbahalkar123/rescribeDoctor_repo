@@ -163,6 +163,9 @@ public class RescribeConstants {
         public static final String SEEN = "seen";
         public static final String REACHED = "reached";
         public static final String SENT = "sent";
+
+        public static final int READ = 1;
+        public static final int UNREAD = 0;
     }
 
     public static class PRESCRIPTION_LIST_PARAMS {
