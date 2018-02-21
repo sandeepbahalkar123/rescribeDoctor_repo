@@ -31,6 +31,6 @@
     <string name="just_now">Just Now</string>
     <string name="services">Services</string>
     <string name="practices_at_locations">Practices at $$ locations</string>
-    <string name="about_doctor"><![CDATA[<u>About Doctor :</u>]]></string>
+    <string name="about_doctor"><u>About Doctor :</u></string>
     <string name="to">To:</string>
 </resources>

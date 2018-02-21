@@ -6,6 +6,8 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +38,10 @@ import butterknife.ButterKnife;
 public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<CalenderDayOfMonthGridAdapter.ListViewHolder> {
 
     private final OnDayClickListener mListener;
+
     private Context mContext;
     private ArrayList<PatientHistoryInfo> mDays;
-    public  boolean longPressed;
+    public boolean longPressed;
     private SimpleDateFormat mDateFormat;
 
     public CalenderDayOfMonthGridAdapter(Context mContext, ArrayList<PatientHistoryInfo> days, OnDayClickListener listener) {
@@ -80,10 +83,11 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         }
 
         if (position % 2 == 0) {
-            holder.parentDataContainer.setBackgroundColor(Color.WHITE);
+            holder.parentDataContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bg_white_color));
             holder.sideBarView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.tagColor));
+
         } else {
-            holder.parentDataContainer.setBackgroundColor(Color.LTGRAY);
+            holder.parentDataContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bg_grey_color));
             holder.sideBarView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.statusbar));
 
         }
@@ -108,6 +112,40 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
                 return false;
             }
         });
+      /*  holder.patientOpdInfoLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate());
+            }
+        });*/
+
+        holder.doctorName.setText(patientHistoryInfoObject.getOpdName());
+
+        SpannableString patientID = new SpannableString("VIEW MORE");
+        patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+        holder.viewMore.setText(patientID);
+
+        if (position == 0) {
+            holder.circularBulletMainElement.setVisibility(View.VISIBLE);
+            holder.circularBulletChildElement.setVisibility(View.GONE);
+            holder.upperLine.setVisibility(View.INVISIBLE);
+            holder.circularBulletMainElement.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.blue_dot));
+
+        } else {
+            holder.circularBulletMainElement.setVisibility(View.GONE);
+            holder.circularBulletChildElement.setVisibility(View.VISIBLE);
+            holder.upperLine.setVisibility(View.VISIBLE);
+            holder.circularBulletChildElement.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.dark_blue_circle));
+
+        }
+        holder.viewMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate());
+
+            }
+        });
+
        /* if (day.getDate() != 0) {
             holder.day.setText("" + day.getDate());
             holder.day.setTag(day);
@@ -210,6 +248,10 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         CustomTextView doctorAddress;
         @BindView(R.id.patientOpdInfoLayout)
         LinearLayout patientOpdInfoLayout;
+        @BindView(R.id.time)
+        CustomTextView time;
+        @BindView(R.id.viewMore)
+        CustomTextView viewMore;
         @BindView(R.id.parentDataContainer)
         LinearLayout parentDataContainer;
         @BindView(R.id.clickOnDoctorVisitLinearLayout)
@@ -226,6 +268,8 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
 
     public interface OnDayClickListener {
         public void onLongClicked(boolean longpressed);
+
+        public void onClickOFLayout(String visitDate);
 
     }
 }

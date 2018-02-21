@@ -304,8 +304,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 activity.getActivityDrawerLayout().openDrawer(GravityCompat.END);
                 break;
             case R.id.leftFab:
-                Intent intent = new Intent(getActivity(), AddRecordsActivity.class);
-                getActivity().startActivity(intent);
+
                 break;
         }
     }

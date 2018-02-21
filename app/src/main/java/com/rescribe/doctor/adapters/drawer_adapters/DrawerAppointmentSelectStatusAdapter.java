@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
 import com.rescribe.doctor.model.my_appointments.StatusList;
 
 import java.util.ArrayList;
@@ -21,11 +23,16 @@ import butterknife.ButterKnife;
 
 public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<DrawerAppointmentSelectStatusAdapter.ListViewHolder> {
 
+    private final MyAppointmentsDataModel myAppointmentsDataModel;
     private Context mContext;
     private ArrayList<StatusList> mStatusLists;
-    public DrawerAppointmentSelectStatusAdapter(Context mContext, ArrayList<StatusList> statusList) {
+
+    private OnClickOfFilterComponents mOnClickOfFilterComponents;
+    public DrawerAppointmentSelectStatusAdapter(Context mContext, MyAppointmentsDataModel myAppointmentsDataModel, OnClickOfFilterComponents mOnClickOfFilterComponents) {
         this.mContext = mContext;
-        this.mStatusLists = statusList;
+        this.myAppointmentsDataModel = myAppointmentsDataModel;
+        this.mStatusLists = myAppointmentsDataModel.getStatusList();
+        this.mOnClickOfFilterComponents = mOnClickOfFilterComponents;
     }
 
     @Override
@@ -37,9 +44,23 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
     }
 
     @Override
-    public void onBindViewHolder(final ListViewHolder holder, int position) {
+    public void onBindViewHolder(final ListViewHolder holder, final int position) {
 
         holder.menuName.setText(mStatusLists.get(position).getStatusName());
+        holder.menuName.setChecked(mStatusLists.get(position).isSelected());
+        holder.menuName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mStatusLists.get(position).isSelected()){
+
+                    mStatusLists.get(position).setSelected(false);
+                }else{
+                    mStatusLists.get(position).setSelected(true);
+                }
+                notifyDataSetChanged();
+                mOnClickOfFilterComponents.onClickofSelectStatus(mStatusLists);
+            }
+        });
 
     }
 
@@ -59,5 +80,10 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
             ButterKnife.bind(this, view);
             this.view = view;
         }
+    }
+
+    public interface OnClickOfFilterComponents{
+        public void onClickofSelectStatus(ArrayList<StatusList> mStatusLists);
+
     }
 }

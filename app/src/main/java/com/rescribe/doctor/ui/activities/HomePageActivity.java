@@ -148,8 +148,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private void initialize() {
         //Set values for upper dashboard blocks
         todayFollowAppointmentCount.setText("21");
-        todayNewAppointmentCount.setText("21");
-        todayWaitingListOrAppointmentCount.setText("21");
+        todayNewAppointmentCount.setText("10");
+        todayWaitingListOrAppointmentCount.setText("25");
         todayFollowAppointmentTextView.setText("Today's Follow Ups");
         todayNewAppointmentTextView.setText("Today's New Patients");
         todayWaitingListOrAppointmentTextView.setText("Today's Appoinments");

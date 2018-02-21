@@ -112,7 +112,7 @@
             android:layout_marginLeft="@dimen/fab_margin"
             android:layout_marginTop="@dimen/dp5"
             android:src="@drawable/ic_add_action"
-            android:visibility="visible"
+            android:visibility="gone"
             app:backgroundTint="@color/floating_blue_color" />
 
     </FrameLayout>

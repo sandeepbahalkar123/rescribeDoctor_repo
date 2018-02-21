@@ -144,6 +144,7 @@ public class RescribeConstants {
     public static final String LONGPRESSED = "long_pressed";
     public static final String DATES_LIST = "dates_list";
     public static final String DATES_INFO = "dates_info";
+    public static final String FILTER_STATUS_LIST = "filter_status_list";
 
 
     public static String HEADER_COLOR = "#E4422C";

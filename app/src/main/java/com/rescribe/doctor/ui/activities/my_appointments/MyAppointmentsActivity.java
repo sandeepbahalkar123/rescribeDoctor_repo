@@ -23,8 +23,11 @@ import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
+import com.rescribe.doctor.model.my_appointments.PatientList;
+import com.rescribe.doctor.model.my_appointments.StatusList;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.my_appointments.DrawerForMyAppointment;
@@ -32,6 +35,7 @@ import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -66,6 +70,10 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private String year;
     private boolean isLongPressed;
     private DrawerForMyAppointment mDrawerForMyAppointment;
+    private Bundle bundleOnApply;
+    private ArrayList<StatusList> mStatusLists;
+    private MyAppointmentsDataModel myAppointmentsBaseModelObject;
+    private MyAppointmentsBaseModel myAppointmentsBaseMainModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,9 +165,9 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_APPOINTMENT_DATA)) {
 
             if (customResponse != null) {
-                MyAppointmentsBaseModel myAppointmentsBaseModel = (MyAppointmentsBaseModel) customResponse;
+              myAppointmentsBaseMainModel = (MyAppointmentsBaseModel) customResponse;
                 bundle = new Bundle();
-                bundle.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsBaseModel.getMyAppointmentsDataModel());
+                bundle.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsBaseMainModel.getMyAppointmentsDataModel());
                 mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
                 setUpNavigationDrawer();
@@ -222,6 +230,40 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     @Override
     public void onApply(Bundle b, boolean drawerRequired) {
         drawerLayout.closeDrawers();
+        bundleOnApply = new Bundle();
+
+        mStatusLists = new ArrayList<>();
+        mStatusLists = b.getParcelableArrayList(RescribeConstants.FILTER_STATUS_LIST);
+        myAppointmentsBaseModelObject = b.getParcelable(RescribeConstants.APPOINTMENT_DATA);
+        ArrayList<AppointmentList> mAppointmentLists = new ArrayList<>();
+        MyAppointmentsDataModel myAppointmentsDataModel = new MyAppointmentsDataModel();
+        ArrayList<AppointmentList> appointmentLists = myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentList();
+        for (StatusList statusName : mStatusLists) {
+            for (AppointmentList appointmentObject : appointmentLists) {
+                ArrayList<PatientList> mPatientListArrayList = new ArrayList<>();
+                for (PatientList patientList : appointmentObject.getPatientList()) {
+                    if(statusName.isSelected())
+                    if (statusName.getStatusName().equalsIgnoreCase(patientList.getAppointmentStatus())) {
+                        mPatientListArrayList.add(patientList);
+                        appointmentObject.setPatientList(mPatientListArrayList);
+                    }
+
+                }
+                if(!mPatientListArrayList.isEmpty()) {
+                    mAppointmentLists.add(appointmentObject);
+                }
+            }
+
+        }
+
+            myAppointmentsDataModel.setAppointmentList(mAppointmentLists);
+            myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
+            myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
+            bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
+            mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
+            getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
+            setUpNavigationDrawer();
+
     }
 
     @Override

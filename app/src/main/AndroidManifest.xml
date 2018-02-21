@@ -58,6 +58,10 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.fragments.patient.patient_history_fragment.ComplaintsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.activities.add_records.AddRecordsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -132,6 +136,9 @@
         <activity
             android:name=".ui.activities.ChatActivity"
             android:label="@string/title_activity_chat"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.activities.patient_details.SingleVisitDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".services.MQTTService" />

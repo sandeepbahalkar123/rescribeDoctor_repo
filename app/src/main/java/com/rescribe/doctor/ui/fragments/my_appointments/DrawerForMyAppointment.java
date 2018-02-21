@@ -21,12 +21,16 @@ import com.rescribe.doctor.adapters.drawer_adapters.DrawerAppointmetClinicNameAd
 import com.rescribe.doctor.adapters.drawer_adapters.SortByPriceFilterAdapter;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.my_appointments.FilterSortByHighLowList;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
+import com.rescribe.doctor.model.my_appointments.PatientList;
+import com.rescribe.doctor.model.my_appointments.StatusList;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.DoubleAdder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +41,7 @@ import butterknife.Unbinder;
  * Created by jeetal on 12/2/18.
  */
 
-public class DrawerForMyAppointment extends Fragment implements HelperResponse, SortByPriceFilterAdapter.onSortByAmountMenuClicked {
+public class DrawerForMyAppointment extends Fragment implements HelperResponse, SortByPriceFilterAdapter.onSortByAmountMenuClicked , DrawerAppointmentSelectStatusAdapter.OnClickOfFilterComponents {
 
 
     private static Bundle bundle;
@@ -99,6 +103,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
             "Outstanding Amt" + highToLow};
     private int mSortByAmountAdapterPosition;
     private MyAppointmentsDataModel mMyAppointmentsDataModel;
+    private ArrayList<StatusList> statusLists = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,7 +135,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
         selectClinicString.setSpan(new UnderlineSpan(), 0, selectClinicString.length(), 0);
         selectClinic.setText(selectClinicString);
         //select status recyelerview
-        mDrawerAppointmentSelectStatusAdapter = new DrawerAppointmentSelectStatusAdapter(getActivity(),mMyAppointmentsDataModel.getStatusList());
+        mDrawerAppointmentSelectStatusAdapter = new DrawerAppointmentSelectStatusAdapter(getActivity(),mMyAppointmentsDataModel,this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         statusNameRecyclerView.setLayoutManager(layoutManager);
         statusNameRecyclerView.setHasFixedSize(true);
@@ -180,7 +185,10 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.applyButton:
-                mListener.onApply(null, true);
+                Bundle b = new Bundle();
+                b.putParcelable(RescribeConstants.APPOINTMENT_DATA,mMyAppointmentsDataModel);
+                b.putParcelableArrayList(RescribeConstants.FILTER_STATUS_LIST,statusLists);
+                mListener.onApply(b, true);
                 break;
             case R.id.titleTextView:
                 break;
@@ -231,6 +239,32 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     @Override
     public void onClickOfSortMenu(FilterSortByHighLowList filterSortByHighLowObject, int groupPosition) {
         mSortByAmountAdapterPosition = groupPosition;
+    }
+
+    @Override
+    public void onClickofSelectStatus(ArrayList<StatusList> mStatusLists) {
+         statusLists = mStatusLists;
+/*
+        for(int statusIndex = 0;statusIndex<mStatusLists.size();statusIndex++){
+            ArrayList<AppointmentList> mAppointmentLists = new ArrayList<>();
+            for(int parentlistIndex = 0;parentlistIndex<mMyAppointmentsDataModel.getAppointmentList().size();parentlistIndex++){
+              AppointmentList appointmentListObject = mMyAppointmentsDataModel.getAppointmentList().get(parentlistIndex);
+                ArrayList<PatientList> mPatientList = new ArrayList<>();
+                for(int childPatientListIndex = 0;childPatientListIndex<mMyAppointmentsDataModel.getAppointmentList().get(parentlistIndex).getPatientList().size();childPatientListIndex++){
+                    PatientList patientListOriginalObject = mMyAppointmentsDataModel.getAppointmentList().get(parentlistIndex).getPatientList().get(childPatientListIndex);
+                   if(mStatusLists.get(statusIndex).isSelected()){
+                       if(mStatusLists.get(statusIndex).getStatusName().equalsIgnoreCase(patientListOriginalObject.getAppointmentStatus())){
+                           mPatientList.add(patientListOriginalObject);
+                       }
+                   }
+
+                }
+                appointmentListObject.setPatientList(mPatientList);
+                mAppointmentLists.add(appointmentListObject);
+            }
+
+        }*/
+
     }
 
     public interface OnDrawerInteractionListener {

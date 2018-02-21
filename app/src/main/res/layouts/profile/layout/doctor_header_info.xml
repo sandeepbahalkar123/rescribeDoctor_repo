@@ -55,7 +55,7 @@
                     android:background="@drawable/ruppee_tag"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     tools:visibility="visible">
 
                     <LinearLayout
@@ -79,7 +79,7 @@
                             android:textColor="@color/rating_color"
                             android:textSize="@dimen/sp13"
                             app:customFont="@string/roboto_bold"
-                            tools:text="123" />
+                           android:text="123" />
 
                     </LinearLayout>
 
@@ -115,7 +115,7 @@
                 android:layout_gravity="center"
                 app:border="true"
                 app:shadow="true"
-                tools:src="@drawable/layer_12" />
+                android:src="@drawable/layer_12" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -135,9 +135,9 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp16"
                     android:textStyle="bold"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:customFont="@string/roboto_bold"
-                    tools:text="Cardilogist" />
+                   android:text="Neurology" />
 
                 <!-- Artist Name -->
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -148,7 +148,7 @@
                     android:textSize="@dimen/sp16"
                     android:typeface="sans"
                     app:customFont="@string/roboto_bold"
-                    tools:text="Dr. Sandeep Patil" />
+                   android:text="Dr. Rahul Kalyanpur" />
 
                 <!-- Rightend Duration -->
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -156,11 +156,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:textColor="@color/grey"
+                    android:textColor="@color/about_doctor_color"
                     android:textSize="@dimen/sp13"
                     android:textStyle="bold"
                     app:customFont="@string/roboto_medium"
-                    tools:text="MBBS, MD - Medicine, Neurology" />
+                   android:text="MBBS, MD - Medicine, Neurology" />
             </LinearLayout>
 
         </LinearLayout>
@@ -187,7 +187,7 @@
                     android:textColor="@color/tagColor"
                     android:textSize="@dimen/sp16"
                     app:customFont="@string/roboto_regular"
-                    tools:text="4.5" />
+                   android:text="4.5" />
 
                 <RatingBar
                     android:id="@+id/docRatingBar"
@@ -248,7 +248,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp14"
                 app:customFont="@string/roboto_regular"
-                tools:text="@string/practices_at_locations" />
+               android:text="Practices at 1 location" />
 
             <ImageView
                 android:id="@+id/viewAllClinicsOnMap"
@@ -285,9 +285,17 @@
             <Spinner
                 android:id="@+id/clinicNameSpinner"
                 style="@style/SpinnerTheme"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:spinnerMode="dropdown" />
+            <com.rescribe.doctor.ui.customesViews.CustomTextView
+                android:id="@+id/textViewspin"
+                style="@style/SpinnerTheme"
+                android:paddingLeft="@dimen/dp16"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+               android:text="Kapila Hospital, Kothrud, Pune" />
 
         </LinearLayout>
 
@@ -324,7 +332,7 @@
                     android:textColor="@color/tagColor"
                     android:textSize="@dimen/sp12"
                     app:customFont="@string/roboto_bold"
-                    tools:text="12" />
+                   android:text="12" />
             </FrameLayout>
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -338,7 +346,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp15"
                 app:customFont="@string/roboto_regular"
-                tools:text="text" />
+               android:text="12 years of experience" />
 
         </LinearLayout>
 

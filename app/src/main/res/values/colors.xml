@@ -58,4 +58,6 @@
     <color name="seek_bar_default">#4a4a4a</color>
     <color name="patient_history_calender_days">#3677a3</color>
     <color name="orange">#f28930</color>
+    <color name="bg_white_color">#f4f4f4</color>
+    <color name="bg_grey_color">#eaeaea</color>
 </resources>

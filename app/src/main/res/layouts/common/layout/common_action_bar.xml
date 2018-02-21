@@ -71,7 +71,7 @@
             android:visibility="gone"
             app:customFont="@string/roboto_medium"
             tools:text="27th Dec '17"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
         <Spinner
             android:id="@+id/year"
             android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
             android:textSize="@dimen/sp16"
             android:textStyle="bold"
             android:visibility="gone"
-            tools:visibility="gone"
+            tools:visibility="visible"
             app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
 
         <ImageView

@@ -165,6 +165,11 @@
     <string name="booked">Booked</string>
     <string name="completed">completed</string>
     <string name="capitalcompleted">Completed</string>
+    <string name="file_extension">file_extension</string>
+    <string name="doctor_image">Doctor Image</string>
+    <string name="title_activity_selected_docs">Selected Documents</string>
+    <string name="one_day_visit_date">VISIT_DATE</string>
+    <string name="opd_id">OPDID</string>
     <string name="follow">follow</string>
     <string name="mr">Mr.</string>
     <string name="mrs">Mrs.</string>
@@ -215,7 +220,7 @@
     <string name="just_now">Just Now</string>
     <string name="services">Services</string>
     <string name="practices_at_locations">Practices at $$ locations</string>
-    <string name="about_doctor"><![CDATA[<u>About Doctor :</u>]]></string>
+    <string name="about_doctor"><u>About Doctor :</u></string>
     <string name="to">To:</string>
 
 </resources>

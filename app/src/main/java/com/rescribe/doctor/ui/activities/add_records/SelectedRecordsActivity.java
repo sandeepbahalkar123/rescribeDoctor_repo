@@ -346,7 +346,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         selectedRecordsAdapter.notifyDataSetChanged();
     }
 
-    @OnClick({R.id.coachmark, R.id.uploadButton, R.id.addImageView})
+    @OnClick({R.id.coachmark, R.id.uploadButton, R.id.addImageView,R.id.backImageView})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.coachmark:
@@ -369,6 +369,9 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                 break;
             case R.id.addImageView:
                 dialog.show();
+                break;
+            case R.id.backImageView:
+                onBackPressed();
                 break;
         }
     }
@@ -432,12 +435,12 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     }
     @Override
     public void onBackPressed() {
-        if (!uploadButton.isEnabled()) {
+      /*  if (!uploadButton.isEnabled()) {
             Intent intent = new Intent(SelectedRecordsActivity.this, HomePageActivity.class);
             intent.putExtra(RescribeConstants.ALERT, false);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-        }
+        }*/
         super.onBackPressed();
     }
     @Override

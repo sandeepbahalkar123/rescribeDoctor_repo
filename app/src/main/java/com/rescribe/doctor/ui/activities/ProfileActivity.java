@@ -10,6 +10,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,6 +27,7 @@ import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
 import com.rescribe.doctor.ui.customesViews.BottomSheetDialog;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.util.CommonMethods;
 
 import java.util.ArrayList;
 
@@ -128,6 +130,11 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     private void initialize() {
         mContext = ProfileActivity.this;
         titleTextView.setText(getString(R.string.profile));
+        DocServicesListAdapter mServicesAdapter = new DocServicesListAdapter(mContext, null);
+        servicesListView.setAdapter(mServicesAdapter);
+       /* ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.global_item_simple_spinner, mClickedDoctorObject.getClinicDataList());
+
+        mClinicNameSpinner.setAdapter(arrayAdapter);*/
     }
 
     @Override
@@ -228,5 +235,46 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             return view;
         }
     }
+
+    public class DocServicesListAdapter extends BaseAdapter {
+        Context mContext;
+        private ArrayList<String> mDocServiceList;
+        private String[] mStringList = {"Memory Loss","Parkinson","Alzheimer"};
+
+
+        DocServicesListAdapter(Context context, ArrayList<String> items) {
+            this.mContext = context;
+        }
+
+        @Override
+        public int getCount() {
+            return mStringList.length;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return i;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup viewGroup) {
+            View view = convertView;
+
+
+            if (convertView == null) {
+                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                view = layoutInflater.inflate(R.layout.global_item_simple_spinner, null);
+            }
+            CustomTextView dataView = (CustomTextView) view.findViewById(R.id.servicestextView);
+            dataView.setText("" + mStringList[position]);
+            return view;
+        }
+    }
+
 
 }

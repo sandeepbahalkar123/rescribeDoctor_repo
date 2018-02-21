@@ -47,7 +47,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
 
-    public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList,OnDownArrowClicked mOnDownArrowClicked) {
+    public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked) {
         this.mDataList = new ArrayList<>(dataList);
         this.mOriginalPatientList = new ArrayList<>(dataList);
         this.mContext = mContext;
@@ -114,7 +114,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             }
             //TODO:
             //Spannable condition for PatientId
-            if (String.valueOf(patientObject.getPatientId()).toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
+            if (String.valueOf(patientObject.getPatientId()).contains(patientObject.getSpannableString())) {
                 SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getPatientId()));
                 patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
                 SpannableString spannableIdString = new SpannableString(patientID);
@@ -133,7 +133,6 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
                 holder.patientIdTextView.setText(patientID);
             }
-
         } else {
             holder.patientNameTextView.setText(patientName);
             holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
@@ -197,8 +196,8 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               patientObject.setSelected(holder.checkbox.isChecked());
-               mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(holder.checkbox.isChecked());
+                patientObject.setSelected(holder.checkbox.isChecked());
+                mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(holder.checkbox.isChecked());
                 notifyDataSetChanged();
             }
         });
@@ -218,7 +217,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnDownArrowClicked.onClickOfPatientDetails(patientObject,holder.patientAgeTextView.getText().toString()+holder.patientGenderTextView.getText().toString());
+                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString());
             }
         });
 
@@ -228,7 +227,8 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     public int getItemCount() {
         return mDataList.size();
     }
-    public ArrayList<PatientList> getGroupList(){
+
+    public ArrayList<PatientList> getGroupList() {
         return mDataList;
     }
 
@@ -283,6 +283,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     public void setLongPressed(boolean longPressed) {
         isLongPressed = longPressed;
     }
+
     @Override
     public Filter getFilter() {
 
@@ -298,8 +299,8 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                     mListToShowAfterFilter = new ArrayList<>();
                     for (PatientList patientListObject : mTempPatientListToIterate) {
                         //--------
-                            patientListObject.setSpannableString(null);
-                            mListToShowAfterFilter.add(patientListObject);
+                        patientListObject.setSpannableString(null);
+                        mListToShowAfterFilter.add(patientListObject);
 
                     }
                 } else {
@@ -307,12 +308,12 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                     for (PatientList patientListObject : mTempPatientListToIterate) {
 
                         if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
-                                    || patientListObject.getPatientPhone().contains(charString)
-                                    || String.valueOf(patientListObject.getPatientId()).contains(charString)) {
-                                //--------
-                               patientListObject.setSpannableString(charString);
-                               mListToShowAfterFilter.add(patientListObject);
-                            }
+                                || patientListObject.getPatientPhone().contains(charString)
+                                || String.valueOf(patientListObject.getPatientId()).contains(charString)) {
+                            //--------
+                            patientListObject.setSpannableString(charString);
+                            mListToShowAfterFilter.add(patientListObject);
+                        }
                     }
                 }
 
@@ -326,19 +327,22 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 mDataList.clear();
                 mDataList.addAll((ArrayList<PatientList>) filterResults.values);
 
-                if(mDataList.isEmpty()){
+                if (mDataList.isEmpty()) {
                     mOnDownArrowClicked.onRecordFound(true);
-                }
-                else mOnDownArrowClicked.onRecordFound(false);
+                } else mOnDownArrowClicked.onRecordFound(false);
                 notifyDataSetChanged();
             }
         };
     }
+
     public interface OnDownArrowClicked {
 
         void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
+
         void onRecordFound(boolean isListEmpty);
+
         void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
+
         void onClickOfPatientDetails(PatientList patientListObject, String text);
 
     }

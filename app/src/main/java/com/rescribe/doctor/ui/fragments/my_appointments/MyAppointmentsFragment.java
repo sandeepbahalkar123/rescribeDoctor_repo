@@ -69,6 +69,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
     private int lastExpandedPosition = -1;
     private String charString = "";
+    private List<PatientList> mPatientLists;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -88,7 +89,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             mBottomMenuList.add(bottomMenu);
         }
         mMyAppointmentsDataModel = args.getParcelable(RescribeConstants.APPOINTMENT_DATA);
-        if (mMyAppointmentsDataModel.getClinicList().size() > 0) {
+        if (mMyAppointmentsDataModel.getAppointmentList().size() > 0||!mMyAppointmentsDataModel.getAppointmentList().isEmpty()) {
             expandableListView.setVisibility(View.VISIBLE);
             expandableListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
             expandableListView.setClipToPadding(false);
@@ -96,12 +97,18 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
             for (int i = 0; i < mMyAppointmentsDataModel.getAppointmentList().size(); i++) {
                 AppointmentList clinicList = mMyAppointmentsDataModel.getAppointmentList().get(i);
-                List<PatientList> mPatientLists = mMyAppointmentsDataModel.getAppointmentList().get(i).getPatientList();
-                clinicList.setPatientHeader(mPatientLists.get(0));
+                mPatientLists = mMyAppointmentsDataModel.getAppointmentList().get(i).getPatientList();
+                if(!mPatientLists.isEmpty()&&mPatientLists.size()>0) {
+                    clinicList.setPatientHeader(mPatientLists.get(0));
+                }
             }
-
-            mAppointmentAdapter = new AppointmentAdapter(getActivity(), mMyAppointmentsDataModel.getAppointmentList(), this);
-            expandableListView.setAdapter(mAppointmentAdapter);
+            if(!mPatientLists.isEmpty()) {
+                mAppointmentAdapter = new AppointmentAdapter(getActivity(), mMyAppointmentsDataModel.getAppointmentList(), this);
+                expandableListView.setAdapter(mAppointmentAdapter);
+            }else{
+                expandableListView.setVisibility(View.GONE);
+                emptyListView.setVisibility(View.VISIBLE);
+            }
         } else {
             expandableListView.setVisibility(View.GONE);
             emptyListView.setVisibility(View.VISIBLE);

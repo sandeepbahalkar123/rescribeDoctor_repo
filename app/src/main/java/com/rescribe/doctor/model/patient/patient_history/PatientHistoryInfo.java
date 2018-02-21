@@ -21,6 +21,18 @@ public class PatientHistoryInfo {
     @SerializedName("visitDate")
     @Expose
     private String visitDate;
+    @SerializedName("opdName")
+    @Expose
+    private String opdName;
+
+    public String getOpdName() {
+        return opdName;
+    }
+
+    public void setOpdName(String opdName) {
+        this.opdName = opdName;
+    }
+
     private boolean longpressed;
 
 

@@ -78,7 +78,7 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void doGetAppointmentData() {
-      /*  try {
+       try {
             InputStream is = mContext.getAssets().open("my_appointments.json");
             int size = is.available();
             byte[] buffer = new byte[size];
@@ -93,8 +93,8 @@ public class AppointmentHelper implements ConnectionListener {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-        }*/
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_APPOINTMENT_DATA, Request.Method.POST, true);
+        }
+      /*  ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_APPOINTMENT_DATA, Request.Method.POST, true);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID,mContext)));
         String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(),RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
@@ -102,7 +102,7 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setPostParams(mRequestAppointmentData);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_MY_APPOINTMENTS_LIST);
-        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_APPOINTMENT_DATA);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_APPOINTMENT_DATA);*/
     }
 
     public void doGetMyPatients() {

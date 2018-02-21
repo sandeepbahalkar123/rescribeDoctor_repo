@@ -96,10 +96,24 @@ public class PatientDetailHelper implements ConnectionListener {
 
     //get case study list
     public void doGetOneDayVisit(String opdId) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ONE_DAY_VISIT, Request.Method.GET, false);
+        /*ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ONE_DAY_VISIT, Request.Method.GET, false);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.ONE_DAY_VISIT_URL + opdId + mContext.getString(R.string.and_sign) + RescribeConstants.PATIENT_ID + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_ID, mContext));
-        mConnectionFactory.createConnection(RescribeConstants.TASK_ONE_DAY_VISIT);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_ONE_DAY_VISIT);*/
+        try {
+            InputStream is = mContext.getAssets().open("patient_details.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            String json = new String(buffer, "UTF-8");
+
+            CaseDetailsModel data = new Gson().fromJson(json, CaseDetailsModel.class);
+            onResponse(ConnectionListener.RESPONSE_OK,data,RescribeConstants.TASK_ONE_DAY_VISIT);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void doGetPatientHistory(String year) {

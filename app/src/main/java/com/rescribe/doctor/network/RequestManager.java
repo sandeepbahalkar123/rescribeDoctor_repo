@@ -32,6 +32,7 @@ import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.Connector;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
+import com.rescribe.doctor.model.case_details.CaseDetailsModel;
 import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
 import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
@@ -498,6 +499,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_GET_PATIENT_DATA: //This is for get archived list
                         MyPatientBaseModel mMyPatientBaseModel = new Gson().fromJson(data, MyPatientBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mMyPatientBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_ONE_DAY_VISIT: //This is for get archived list
+                        CaseDetailsModel mCaseDetailsModel = new Gson().fromJson(data, CaseDetailsModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mCaseDetailsModel, mOldDataTag);
                         break;
 
                     default:

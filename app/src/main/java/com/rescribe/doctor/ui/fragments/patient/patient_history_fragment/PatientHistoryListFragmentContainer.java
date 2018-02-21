@@ -71,8 +71,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     CustomTextView titleTextView;
     @BindView(R.id.userInfoTextView)
     CustomTextView userInfoTextView;
-    @BindView(R.id.opdStatusDetails)
-    FrameLayout opdStatusDetails;
+
     private YearSpinnerAdapter mYearSpinnerAdapter;
     @BindView(R.id.year)
     Spinner mYearSpinnerView;
@@ -80,8 +79,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     CustomTextView mYearSpinnerSingleItem;
     @BindView(R.id.noRecords)
     ImageView noRecords;
-    @BindView(R.id.opdStatusGridView)
-    RecyclerView mOpdStatusGridView;
+
     @BindView(R.id.addRecordButton)
     Button mAddRecordButton;
     //----------
@@ -143,8 +141,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mCurrentSelectedTimePeriodTab.setMonthName(new SimpleDateFormat("MMM", Locale.US).format(new Date()));
         mCurrentSelectedTimePeriodTab.setYear(new SimpleDateFormat("yyyy", Locale.US).format(new Date()));
         //---------
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
-        mOpdStatusGridView.setLayoutManager(mLayoutManager);
+
 //        mOpdStatusGridView.addItemDecoration(new GridSpacingItemDecoration(2,
 //                getResources().getDimensionPixelSize(R.dimen.dp5), true));
         //---------
@@ -173,7 +170,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         for (Year data :
                 mTimePeriodList) {
             mPatientHistoryCalenderListFragment = new PatientHistoryCalenderListFragment();
-            fragment = mPatientHistoryCalenderListFragment.createNewFragment(data); // pass data here
+            fragment = mPatientHistoryCalenderListFragment.createNewFragment(data,args); // pass data here
             fragment.setTargetFragment(PatientHistoryListFragmentContainer.this, REQUEST_CODE);
             mViewPagerAdapter.addFragment(fragment, data); // pass title here
         }
@@ -210,7 +207,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                     mYearSpinnerView.setVisibility(View.GONE);
                     SpannableString contentViewAllFavorite = new SpannableString(mYearList.get(0).toString());
                     contentViewAllFavorite.setSpan(new UnderlineSpan(), 0, contentViewAllFavorite.length(), 0);
-                    mYearSpinnerSingleItem.setText(contentViewAllFavorite);
+                    mYearSpinnerSingleItem.setText(mYearList.get(0).toString());
                 } else {
                     mYearSpinnerSingleItem.setVisibility(View.GONE);
                     mYearSpinnerView.setVisibility(View.VISIBLE);
@@ -403,7 +400,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     public void setOPDStatusGridViewAdapter(ArrayList<String> list) {
         OPDStatusShowAdapter baseAdapter = new OPDStatusShowAdapter(getContext(), list);
-        mOpdStatusGridView.setAdapter(baseAdapter);
+       // mOpdStatusGridView.setAdapter(baseAdapter);
     }
     public boolean callOnBackPressed() {
         return longpressed;

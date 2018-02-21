@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,8 +17,7 @@ import com.rescribe.doctor.helpers.patient_detail.PatientDetailHelper;
 import com.rescribe.doctor.model.login.Year;
 import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
-import com.rescribe.doctor.ui.customesViews.GridSpacingItemDecoration;
-import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.ui.activities.patient_details.SingleVisitDetailsActivity;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -32,9 +30,10 @@ import butterknife.ButterKnife;
 
 public class PatientHistoryCalenderListFragment extends Fragment implements CalenderDayOfMonthGridAdapter.OnDayClickListener {
 
+    private static String patientName;
+    private static String patientInfo;
     @BindView(R.id.calenderDays)
     RecyclerView mCalenderDays;
-
     private Context mContext;
     private String mMonthName;
     private String mYear;
@@ -68,11 +67,13 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
     }
 
 
-    public static PatientHistoryCalenderListFragment createNewFragment(Year dataString) {
+    public static PatientHistoryCalenderListFragment createNewFragment(Year dataString,Bundle b) {
         PatientHistoryCalenderListFragment fragment = new PatientHistoryCalenderListFragment();
         Bundle args = new Bundle();
         args.putString(RescribeConstants.MONTH, dataString.getMonthName());
         args.putString(RescribeConstants.YEAR, dataString.getYear());
+        patientName = b.getString(RescribeConstants.PATIENT_NAME);
+        patientInfo = b.getString(RescribeConstants.PATIENT_INFO);
         fragment.setArguments(args);
         return fragment;
     }
@@ -128,6 +129,16 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
             PatientHistoryListFragmentContainer parentFragment = (PatientHistoryListFragmentContainer) getParentFragment();
             parentFragment.getAddRecordButton().setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onClickOFLayout(String visitDate) {
+        Intent intent = new Intent(getActivity(),SingleVisitDetailsActivity.class);
+        intent.putExtra(RescribeConstants.PATIENT_NAME,patientName);
+        intent.putExtra(RescribeConstants.PATIENT_INFO,patientInfo);
+        intent.putExtra(RescribeConstants.DATE,visitDate);
+        startActivity(intent);
+
     }
 
     // To find unique status from list, and set list in recycleview of parent fragment.

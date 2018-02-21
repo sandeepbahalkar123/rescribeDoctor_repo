@@ -47,36 +47,39 @@
 
                 <TextView
                     android:id="@+id/upperLine"
-                    android:layout_width="@dimen/dp1"
+                    android:layout_width="0.5dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="-3dp"
                     android:layout_weight="1"
-                    android:background="@color/recentblue" />
+                    android:background="#50a9da"
+                    tools:ignore="Suspicious0dp" />
 
                 <ImageView
                     android:id="@+id/circularBulletMainElement"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp28"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/blue_dot"
-                    android:visibility="visible" />
+                    tools:src="@drawable/blue_dot"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/circularBulletChildElement"
-                    android:layout_width="@dimen/dp16"
-                    android:layout_height="@dimen/dp16"
+                    android:layout_width="20dp"
+                    android:layout_height="26dp"
+                    android:src="@drawable/dark_blue_circle"
                     android:layout_gravity="center_horizontal"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
 
                 <TextView
                     android:id="@+id/lowerLine"
-                    android:layout_width="@dimen/dp1"
+                    android:layout_width="0.5dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="-3dp"
                     android:layout_weight="1"
-                    android:background="@color/recentblue" />
+                    android:background="#50a9da" />
             </LinearLayout>
 
             <LinearLayout
@@ -93,7 +96,7 @@
                     android:layout_marginLeft="@dimen/dp5"
                     android:layout_marginRight="@dimen/dp5"
                     android:padding="3dip"
-                    android:visibility="invisible">
+                    android:visibility="gone">
 
                     <com.rescribe.doctor.ui.customesViews.CircularImageView
                         android:id="@+id/docProfileImage"
@@ -106,11 +109,14 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:gravity="center|left"
+                    android:layout_marginTop="@dimen/dp8"
                     android:id="@+id/patientOpdInfoLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginStart="@dimen/dp10"
+                    android:gravity="center|left"
                     android:orientation="vertical"
                     android:paddingEnd="@dimen/dp12"
                     android:paddingRight="@dimen/dp12">
@@ -118,12 +124,13 @@
                     <!-- Title Of Song-->
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/doctorType"
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dip"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp16"
                         android:textStyle="bold"
+                        android:visibility="gone"
                         tools:text="Just gona stand there and  " />
 
                     <!-- Artist Name -->
@@ -131,26 +138,67 @@
                         android:id="@+id/doctorName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/recentblue"
-                        android:textSize="@dimen/sp18"
-                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp17"
                         android:typeface="sans"
-                        android:text="Complaints"
-                        tools:text="Rihanna Love the way lie" />
+                        app:customFont="@string/roboto_bold"
+                        tools:text="Complaints" />
 
                     <!-- Rightend Duration -->
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/doctorAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp8"
                         android:ellipsize="end"
                         android:gravity="left"
                         android:maxLines="3"
+                        android:textColor="@color/vitals_name"
+                        android:textSize="@dimen/sp13"
+                        app:customFont="@string/roboto_medium"
+                        android:text="Pneumonia" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_marginTop="@dimen/dp8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:text="10:30 am"
+                        android:paddingEnd="@dimen/dp12"
+                        android:paddingRight="@dimen/dp12"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp12"
-                        android:textStyle="bold"
-                        tools:text="5:45asdasdasdasd\nsfsdfsdfs\nsdfsfsdfsfsdfsdfsdfsdfsfsdfs\n11111" />
-                </LinearLayout>
+                        android:typeface="sans"
+                        app:customFont="@string/roboto_medium" />
+
+                    <!-- Rightend Duration -->
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/viewMore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/time"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="3"
+                        android:paddingStart="@dimen/dp12"
+                        android:paddingEnd="@dimen/dp12"
+                        android:layout_marginTop="@dimen/dp8"
+                        android:text="VIEW MORE"
+                        android:textColor="@color/tagColor"
+                        android:textSize="@dimen/sp10"
+                        app:customFont="@string/roboto_medium" />
+                </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
