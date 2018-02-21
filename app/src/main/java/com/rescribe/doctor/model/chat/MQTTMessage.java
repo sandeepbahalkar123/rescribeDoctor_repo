@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.util.RescribeConstants.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.UNREAD;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
 
 public class MQTTMessage implements Parcelable {
@@ -72,6 +73,7 @@ public class MQTTMessage implements Parcelable {
     @Expose
     private int downloadStatus = FAILED;
 
+    private int readStatus = UNREAD;
     private boolean isDateVisible;
 
     // Added End
@@ -103,6 +105,7 @@ public class MQTTMessage implements Parcelable {
 
             instance.uploadStatus = ((int) in.readValue((int.class.getClassLoader())));
             instance.downloadStatus = ((int) in.readValue((int.class.getClassLoader())));
+            instance.readStatus = ((int) in.readValue((int.class.getClassLoader())));
 
             instance.isDateVisible = ((boolean) in.readValue((int.class.getClassLoader())));
             return instance;
@@ -254,6 +257,14 @@ public class MQTTMessage implements Parcelable {
         this.downloadStatus = downloadStatus;
     }
 
+    public int getReadStatus() {
+        return readStatus;
+    }
+
+    public void setReadStatus(int readStatus) {
+        this.readStatus = readStatus;
+    }
+
     public boolean isDateVisible() {
         return isDateVisible;
     }
@@ -281,6 +292,8 @@ public class MQTTMessage implements Parcelable {
 
         dest.writeValue(uploadStatus);
         dest.writeValue(downloadStatus);
+
+        dest.writeValue(readStatus);
 
         dest.writeValue(isDateVisible);
     }

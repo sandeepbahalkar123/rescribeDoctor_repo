@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/menuOptionLinearLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -40,6 +40,24 @@
             android:textSize="@dimen/sp16"
             app:customFont="@string/roboto_regular"
             tools:ignore="RtlSymmetry"
+            tools:text="Today's Appointments" />
+        <com.rescribe.doctor.ui.customesViews.CustomTextView
+            android:id="@+id/menuNameTextView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/menuImageView"
+            android:layout_toRightOf="@id/menuImageView"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/dp23"
+            android:paddingStart="@dimen/dp23"
+            android:text="@string/welcome"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp16"
+            app:customFont="@string/roboto_bold"
+            tools:ignore="RtlSymmetry"
+            android:visibility="gone"
             tools:text="Today's Appointments" />
 
         <ImageView

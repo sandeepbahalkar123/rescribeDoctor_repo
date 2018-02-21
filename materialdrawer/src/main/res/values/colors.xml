@@ -34,14 +34,10 @@
     <!-- 12% opacity -->
     <color name="md_selected_dark">#1effffff</color>
     <!-- 12% opacity -->
-    <color name="md_ripple_light">#42000000</color>
     <!-- 26% opacity -->
-    <color name="md_ripple_dark">#4dffffff</color>
     <!-- 30% opacity -->
 
-    <color name="md_scrim_start">#00000000</color>
     <!-- 0% opacity -->
-    <color name="md_scrim_end">#8a000000</color>
     <!-- 54% opacity -->
 
     <color name="md_fixed_list_shadow_start">#00000000</color>

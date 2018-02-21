@@ -22,10 +22,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.model.my_appointments.ClinicList;
+import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -44,21 +45,21 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
     private OnDownArrowClicked mOnDownArrowClicked;
     public static boolean isLongPressed;
-    private ArrayList<ClinicList> mClinicListTemp;
+    private ArrayList<AppointmentList> mAppointmentListTemp;
     private Context mContext;
-    private ArrayList<ClinicList> mDataList;
+    private ArrayList<AppointmentList> mDataList;
 
-    public AppointmentAdapter(Context context, ArrayList<ClinicList> mClinicList, OnDownArrowClicked mOnDownArrowClicked) {
+    public AppointmentAdapter(Context context, ArrayList<AppointmentList> mAppointmentList, OnDownArrowClicked mOnDownArrowClicked) {
         this.mContext = context;
-        this.mDataList = new ArrayList<>(mClinicList);
-        this.mClinicListTemp = new ArrayList<>(mClinicList);
+        this.mDataList = new ArrayList<>(mAppointmentList);
+        this.mAppointmentListTemp = new ArrayList<>(mAppointmentList);
 
         this.mOnDownArrowClicked = mOnDownArrowClicked;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-        return this.mClinicListTemp.get(groupPosition).getPatientList().get(childPosititon);
+        return this.mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosititon);
     }
 
     @Override
@@ -95,12 +96,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         } else {
             viewHolder = (ChildViewHolder) convertView.getTag();
         }
-        final PatientList patientObject = mClinicListTemp.get(groupPosition).getPatientList().get(childPosition);
+        final PatientList patientObject = mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition);
 
-
-        SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
-        patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-        viewHolder.patientIdTextView.setText(patientID);
         String patientName = "";
         if (patientObject.getSalutation() == 1) {
             patientName = mContext.getString(R.string.mr) + " " + patientObject.getPatientName();
@@ -115,6 +112,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
 
         if (patientObject.getSpannableString() != null) {
+            //Spannable condition for PatientName
             if (patientObject.getPatientName().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
                 SpannableString spannableString = new SpannableString(patientName);
                 Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
@@ -125,34 +123,52 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                             matcher.start(), matcher.end(),//hightlight mSearchString
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
-
                 viewHolder.patientNameTextView.setText(spannableString);
             } else {
                 viewHolder.patientNameTextView.setText(patientName);
-
             }
+            //Spannable condition for PatientPhoneNomber
 
             if (patientObject.getPatientPhone().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
-                if (patientObject.getPatientPhone().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
-                    SpannableString spannablePhoneString = new SpannableString(patientObject.getPatientPhone());
-                    Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
-                    Matcher matcher = pattern.matcher(patientObject.getPatientPhone());
-                    while (matcher.find()) {
-                        spannablePhoneString.setSpan(new ForegroundColorSpan(
-                                        ContextCompat.getColor(mContext, R.color.tagColor)),
-                                matcher.start(), matcher.end(),//hightlight mSearchString
-                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    viewHolder.patientPhoneNumber.setText(spannablePhoneString);
-                } else {
-                    viewHolder.patientPhoneNumber.setText(patientObject.getPatientPhone());
-
+                SpannableString spannablePhoneString = new SpannableString(patientObject.getPatientPhone());
+                Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(patientObject.getPatientPhone());
+                while (matcher.find()) {
+                    spannablePhoneString.setSpan(new ForegroundColorSpan(
+                                    ContextCompat.getColor(mContext, R.color.tagColor)),
+                            matcher.start(), matcher.end(),//hightlight mSearchString
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
+                viewHolder.patientPhoneNumber.setText(spannablePhoneString);
+            } else {
+                viewHolder.patientPhoneNumber.setText(patientObject.getPatientPhone());
+            }
+            //Spannable condition for PatientId
+            if (String.valueOf(patientObject.getPatientId()).toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
+                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getPatientId()));
+                patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+                SpannableString spannableIdString = new SpannableString(patientID);
+                Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(patientID);
+
+                while (matcher.find()) {
+                    spannableIdString.setSpan(new ForegroundColorSpan(
+                                    ContextCompat.getColor(mContext, R.color.tagColor)),
+                            matcher.start(), matcher.end(),//hightlight mSearchString
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                viewHolder.patientIdTextView.setText(spannableIdString);
+            } else {
+                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
+                patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+                viewHolder.patientIdTextView.setText(patientID);
             }
         } else {
             viewHolder.patientNameTextView.setText(patientName);
             viewHolder.patientPhoneNumber.setText(patientObject.getPatientPhone());
+            SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
+            patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
+            viewHolder.patientIdTextView.setText(patientID);
         }
 
         if (patientObject.getAge() == 0) {
@@ -167,17 +183,15 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
 
         viewHolder.patientGenderTextView.setText(" " + patientObject.getGender());
-        if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.booked))) {
+        if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
-            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + patientObject.getAppointmentStatus());
+            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.booked));
         } else if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
-            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + patientObject.getAppointmentStatus());
+            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.capitalcompleted));
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
-
-        } else if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.follow))) {
-            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd) + " " + patientObject.getAppointmentStatus());
-            viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
-
+        } else {
+            viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
+            viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.black));
         }
         viewHolder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (patientObject.getOutStandingAmount() == 0) {
@@ -209,8 +223,9 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public void onClick(View v) {
                 patientObject.setSelected(viewHolder.checkbox.isChecked());
-                int selected = getSelectedCount(mClinicListTemp.get(groupPosition).getPatientList());
-                mClinicListTemp.get(groupPosition).setSelectedGroupCheckbox(selected == mClinicListTemp.get(groupPosition).getPatientList().size() && mClinicListTemp.get(groupPosition).getPatientHeader().isSelected());
+                int selected = getSelectedCount(mAppointmentListTemp.get(groupPosition).getPatientList());
+                mAppointmentListTemp.get(groupPosition).setSelectedGroupCheckbox(selected == mAppointmentListTemp.get(groupPosition).getPatientList().size() && mAppointmentListTemp.get(groupPosition).getPatientHeader().isSelected());
+                mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(viewHolder.checkbox.isChecked());
                 notifyDataSetChanged();
             }
         });
@@ -228,6 +243,12 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 return false;
             }
         });
+        viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnDownArrowClicked.onClickOfPatientDetails(mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition), viewHolder.patientAgeTextView.getText().toString() + viewHolder.patientGenderTextView.getText().toString());
+            }
+        });
         return convertView;
 
     }
@@ -243,21 +264,21 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return mClinicListTemp.get(groupPosition).getPatientList().size();
+        return mAppointmentListTemp.get(groupPosition).getPatientList().size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return this.mClinicListTemp.get(groupPosition);
+        return this.mAppointmentListTemp.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return this.mClinicListTemp.size();
+        return this.mAppointmentListTemp.size();
     }
 
-    public ArrayList<ClinicList> getGroupList() {
-        return mClinicListTemp;
+    public ArrayList<AppointmentList> getGroupList() {
+        return mAppointmentListTemp;
     }
 
     @Override
@@ -304,63 +325,60 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder = (GroupViewHolder) convertView.getTag();
         }
 
-
-        viewHolder.mClinicNameTextView.setText(mClinicListTemp.get(groupPosition).getClinicName() + " - ");
-        viewHolder.mClinicAddress.setText(mClinicListTemp.get(groupPosition).getArea() + ", " + mClinicListTemp.get(groupPosition).getCity());
-        viewHolder.mClinicPatientCount.setText(mClinicListTemp.get(groupPosition).getPatientList().size() + "");
-        SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getPatientId() + "");
+        viewHolder.mClinicNameTextView.setText(mAppointmentListTemp.get(groupPosition).getClinicName() + " - ");
+        viewHolder.mClinicAddress.setText(mAppointmentListTemp.get(groupPosition).getArea() + ", " + mAppointmentListTemp.get(groupPosition).getCity());
+        viewHolder.mClinicPatientCount.setText(mAppointmentListTemp.get(groupPosition).getPatientList().size() + "");
+        SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientId() + "");
         patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
         viewHolder.mPatientIdTextView.setText(patientID);
 
-        if (mClinicListTemp.get(groupPosition).getPatientHeader().getSalutation() == 1) {
-            viewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mr) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getPatientName());
-        } else if (mClinicListTemp.get(groupPosition).getPatientHeader().getSalutation() == 2) {
-            viewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mrs) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getPatientName());
+        if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getSalutation() == 1) {
+            viewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mr) + " " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientName());
+        } else if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getSalutation() == 2) {
+            viewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mrs) + " " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientName());
 
-        } else if (mClinicListTemp.get(groupPosition).getPatientHeader().getSalutation() == 3) {
-            viewHolder.mPatientNameTextView.setText(mContext.getString(R.string.miss) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getPatientName());
+        } else if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getSalutation() == 3) {
+            viewHolder.mPatientNameTextView.setText(mContext.getString(R.string.miss) + " " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientName());
 
-        } else if (mClinicListTemp.get(groupPosition).getPatientHeader().getSalutation() == 4) {
-            viewHolder.mPatientNameTextView.setText(mClinicListTemp.get(groupPosition).getPatientHeader().getPatientName());
+        } else if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getSalutation() == 4) {
+            viewHolder.mPatientNameTextView.setText(mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientName());
         }
-        if (mClinicListTemp.get(groupPosition).getPatientHeader().getAge() == 0) {
+        if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getAge() == 0) {
             String getTodayDate = CommonMethods.getCurrentDate();
-            String getBirthdayDate = mClinicListTemp.get(groupPosition).getPatientHeader().getDateOfBirth();
+            String getBirthdayDate = mAppointmentListTemp.get(groupPosition).getPatientHeader().getDateOfBirth();
             DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate);
             DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate);
             viewHolder.mPatientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
         } else {
-            viewHolder.mPatientAgeTextView.setText(mClinicListTemp.get(groupPosition).getPatientHeader().getAge() + " " + mContext.getString(R.string.years));
+            viewHolder.mPatientAgeTextView.setText(mAppointmentListTemp.get(groupPosition).getPatientHeader().getAge() + " " + mContext.getString(R.string.years));
 
         }
-        viewHolder.mPatientGenderTextView.setText(" " + mClinicListTemp.get(groupPosition).getPatientHeader().getGender());
-        if (mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.booked))) {
+        viewHolder.mPatientGenderTextView.setText(" " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getGender());
+        if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
             viewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
-            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus());
-        } else if (mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
-            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus());
+            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.booked));
+        } else if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
+            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.capitalcompleted));
             viewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
-
-        } else if (mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.follow))) {
-            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd) + " " + mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus());
-            viewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
-
+        } else {
+            viewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus());
+            viewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.black));
         }
-        viewHolder.mPatientPhoneNumber.setText(mClinicListTemp.get(groupPosition).getPatientHeader().getPatientPhone());
+        viewHolder.mPatientPhoneNumber.setText(mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientPhone());
         viewHolder.mOutstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-        if (mClinicListTemp.get(groupPosition).getPatientHeader().getOutStandingAmount() == 0) {
+        if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getOutStandingAmount() == 0) {
             viewHolder.mPayableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             viewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
 
         } else {
-            viewHolder.mPayableAmountTextView.setText(" Rs." + mClinicListTemp.get(groupPosition).getPatientHeader().getOutStandingAmount() + "/-");
+            viewHolder.mPayableAmountTextView.setText(" Rs." + mAppointmentListTemp.get(groupPosition).getPatientHeader().getOutStandingAmount() + "/-");
             viewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
 
         }
 
         viewHolder.mAppointmentTime.setVisibility(View.VISIBLE);
-        viewHolder.mAppointmentTime.setText(CommonMethods.formatDateTime(mClinicListTemp.get(groupPosition).getPatientHeader().getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
-        TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, mClinicListTemp.get(groupPosition).getPatientHeader().getPatientName());
+        viewHolder.mAppointmentTime.setText(CommonMethods.formatDateTime(mAppointmentListTemp.get(groupPosition).getPatientHeader().getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
+        TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientName());
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
@@ -369,7 +387,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         requestOptions.error(textDrawable);
 
         Glide.with(mContext)
-                .load(mClinicListTemp.get(groupPosition).getPatientHeader().getPatientImageUrl())
+                .load(mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientImageUrl())
                 .apply(requestOptions).thumbnail(0.5f)
                 .into(viewHolder.mPatientImageView);
 
@@ -386,16 +404,18 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
             }
         });
-        viewHolder.mGroupCheckbox.setChecked(mClinicListTemp.get(groupPosition).isSelectedGroupCheckbox());
+        viewHolder.mGroupCheckbox.setChecked(mAppointmentListTemp.get(groupPosition).isSelectedGroupCheckbox());
 
-        viewHolder.mCheckbox.setChecked(mClinicListTemp.get(groupPosition).getPatientHeader().isSelected());
+        viewHolder.mCheckbox.setChecked(mAppointmentListTemp.get(groupPosition).getPatientHeader().isSelected());
 
         viewHolder.mCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClinicListTemp.get(groupPosition).getPatientHeader().setSelected(viewHolder.mCheckbox.isChecked());
-                int selected = getSelectedCount(mClinicListTemp.get(groupPosition).getPatientList());
-                mClinicListTemp.get(groupPosition).setSelectedGroupCheckbox(selected == mClinicListTemp.get(groupPosition).getPatientList().size() && mClinicListTemp.get(groupPosition).getPatientHeader().isSelected());
+                mAppointmentListTemp.get(groupPosition).getPatientHeader().setSelected(viewHolder.mCheckbox.isChecked());
+                int selected = getSelectedCount(mAppointmentListTemp.get(groupPosition).getPatientList());
+                mAppointmentListTemp.get(groupPosition).setSelectedGroupCheckbox(selected == mAppointmentListTemp.get(groupPosition).getPatientList().size() && mAppointmentListTemp.get(groupPosition).getPatientHeader().isSelected());
+                mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(viewHolder.mCheckbox.isChecked());
+
                 notifyDataSetChanged();
             }
         });
@@ -412,12 +432,13 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.mGroupCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClinicListTemp.get(groupPosition).setSelectedGroupCheckbox(viewHolder.mGroupCheckbox.isChecked());
+                mAppointmentListTemp.get(groupPosition).setSelectedGroupCheckbox(viewHolder.mGroupCheckbox.isChecked());
 
-                mClinicListTemp.get(groupPosition).getPatientHeader().setSelected(viewHolder.mGroupCheckbox.isChecked());
+                mAppointmentListTemp.get(groupPosition).getPatientHeader().setSelected(viewHolder.mGroupCheckbox.isChecked());
 
-                for (PatientList patient : mClinicListTemp.get(groupPosition).getPatientList())
+                for (PatientList patient : mAppointmentListTemp.get(groupPosition).getPatientList())
                     patient.setSelected(viewHolder.mGroupCheckbox.isChecked());
+                mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(viewHolder.mGroupCheckbox.isChecked());
 
                 notifyDataSetChanged();
             }
@@ -432,6 +453,13 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 return false;
             }
         });
+        viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnDownArrowClicked.onClickOfPatientDetails(mAppointmentListTemp.get(groupPosition).getPatientHeader(), viewHolder.mPatientAgeTextView.getText().toString() + viewHolder.mPatientGenderTextView.getText().toString());
+            }
+        });
+
         if (isExpanded) {
             viewHolder.cardView.setVisibility(View.GONE);
         } else {
@@ -457,6 +485,10 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
 
         void onRecordFound(boolean isListEmpty);
+
+        void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
+
+        void onClickOfPatientDetails(PatientList patientListObject, String text);
     }
 
     public boolean isLongPressed() {
@@ -476,46 +508,48 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             protected FilterResults performFiltering(CharSequence charSequence) {
                 String charString = charSequence.toString();
 
-                ArrayList<ClinicList> mListToShowAfterFilter;
-                ArrayList<ClinicList> mTempClinicListToIterate = new ArrayList<>(mDataList);
+                ArrayList<AppointmentList> mListToShowAfterFilter;
+                ArrayList<AppointmentList> mTempAppointmentListToIterate = new ArrayList<>(mDataList);
 
                 if (charString.isEmpty()) {
                     mListToShowAfterFilter = new ArrayList<>();
-                    for (ClinicList clinicListObj : mTempClinicListToIterate) {
+                    for (AppointmentList AppointmentListObj : mTempAppointmentListToIterate) {
 
-                        List<PatientList> patientLists = clinicListObj.getPatientList();
+                        List<PatientList> patientLists = AppointmentListObj.getPatientList();
                         ArrayList<PatientList> sortedPatientLists = new ArrayList<>();
                         //--------------
-                        ClinicList tempClinicListObject = null;
+                        AppointmentList tempAppointmentListObject = null;
                         try {
-                            tempClinicListObject = (ClinicList) clinicListObj.clone();
+                            tempAppointmentListObject = (AppointmentList) AppointmentListObj.clone();
                         } catch (CloneNotSupportedException e) {
                             e.printStackTrace();
                         }
+
                         //-----------------
                         for (PatientList patientListObject : patientLists) {
                             patientListObject.setSpannableString(null);
                             sortedPatientLists.add(patientListObject);
                         }
                         if (!sortedPatientLists.isEmpty()) {
-                            tempClinicListObject.setPatientList(sortedPatientLists);
-                            mListToShowAfterFilter.add(tempClinicListObject);
+                            tempAppointmentListObject.setPatientList(sortedPatientLists);
+                            mListToShowAfterFilter.add(tempAppointmentListObject);
                         }
                     }
 
                 } else {
                     mListToShowAfterFilter = new ArrayList<>();
-                    for (ClinicList clinicListObj : mTempClinicListToIterate) {
+                    for (AppointmentList AppointmentListObj : mTempAppointmentListToIterate) {
 
-                        List<PatientList> patientLists = clinicListObj.getPatientList();
+                        List<PatientList> patientLists = AppointmentListObj.getPatientList();
                         ArrayList<PatientList> sortedPatientLists = new ArrayList<>();
                         //--------------
-                        ClinicList tempClinicListObject = null;
+                        AppointmentList tempAppointmentListObject = null;
                         try {
-                            tempClinicListObject = (ClinicList) clinicListObj.clone();
+                            tempAppointmentListObject = (AppointmentList) AppointmentListObj.clone();
                         } catch (CloneNotSupportedException e) {
                             e.printStackTrace();
                         }
+
                         //-----------------
                         for (PatientList patientListObject : patientLists) {
                             if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
@@ -528,8 +562,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                         }
 
                         if (!sortedPatientLists.isEmpty()) {
-                            tempClinicListObject.setPatientList(sortedPatientLists);
-                            mListToShowAfterFilter.add(tempClinicListObject);
+                            tempAppointmentListObject.setPatientList(sortedPatientLists);
+                            mListToShowAfterFilter.add(tempAppointmentListObject);
                         }
                     }
                 }
@@ -541,19 +575,29 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                mClinicListTemp.clear();
-                mClinicListTemp.addAll((ArrayList<ClinicList>) filterResults.values);
+                mAppointmentListTemp.clear();
+                mAppointmentListTemp.addAll((ArrayList<AppointmentList>) filterResults.values);
 
-                if (mClinicListTemp.isEmpty()) {
+                if (mAppointmentListTemp.isEmpty()) {
+                    notifyDataSetChanged();
                     mOnDownArrowClicked.onRecordFound(true);
-                } else mOnDownArrowClicked.onRecordFound(false);
-                notifyDataSetChanged();
+
+                } else {
+                    notifyDataSetChanged();
+                    mOnDownArrowClicked.onRecordFound(false);
+                    if (charSequence.toString().isEmpty()) {
+                        MyAppointmentsFragment.collapseAll();
+                    } else {
+                        MyAppointmentsFragment.expandAll();
+                    }
+                }
+
             }
         };
     }
 
-    /*  private ArrayList<ClinicList> cloneList() {
-          return mClinicListTemp = (ArrayList<ClinicList>) mDataList.clone();
+    /*  private ArrayList<AppointmentList> cloneList() {
+          return mAppointmentListTemp = (ArrayList<AppointmentList>) mDataList.clone();
       }
   */
     static class ChildViewHolder {

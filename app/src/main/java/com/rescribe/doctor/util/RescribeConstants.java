@@ -94,6 +94,10 @@ public class RescribeConstants {
     public static final String TASK_GET_APPOINTMENT_DATA = BLANK + 16;
     public static final String TASK_GET_PATIENT_DATA = BLANK + 17;
     public static final String TASK_ONE_DAY_VISIT = BLANK + 18;
+    public static final String MY_RECORDS_DOCTOR_LIST = RescribeConstants.BLANK + 19;
+    public static final String MY_RECORDS_ADD_DOCTOR = RescribeConstants.BLANK + 20;
+    public static final String TASK_PATIENT_HISTORY = RescribeConstants.BLANK + 21;
+
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -133,13 +137,21 @@ public class RescribeConstants {
     public static final String PATIENT_VISIT_DATE = "patient_visit_date";
     public static final String PATIENT_ID = "patient_id";
     public static final String NO = "no";
+    public static final String DOCTORS_ID = "doctor_id";
+    public static final String VISIT_DATE = "visitDate";
+    public static final String PATIENT_OBJECT = "patient_object";
+    public static final String PATIENT_NAME = "patient_name";
+    public static final String LONGPRESSED = "long_pressed";
+    public static final String DATES_LIST = "dates_list";
+    public static final String DATES_INFO = "dates_info";
+    public static final String FILTER_STATUS_LIST = "filter_status_list";
 
 
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
 
-    public static class USER_STATUS{
+    public static class USER_STATUS {
         public static final String ONLINE = "Online";
         public static final String OFFLINE = "Offline";
         public static final String TYPING = "Typing";
@@ -151,6 +163,9 @@ public class RescribeConstants {
         public static final String SEEN = "seen";
         public static final String REACHED = "reached";
         public static final String SENT = "sent";
+
+        public static final int READ = 1;
+        public static final int UNREAD = 0;
     }
 
     public static class PRESCRIPTION_LIST_PARAMS {
@@ -166,6 +181,8 @@ public class RescribeConstants {
     public static class DATE_PATTERN {
         public static String YYYY_MM_DD_hh_mm_a = "yyyy-MM-dd hh:mm a";
         public static String DD_MM = "dd/MM";
+        public static final String MM = "MM";
+        public static final String MMM = "MMM";
         public static final String UTC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         public final static String YYYY_MM_DD = "yyyy-MM-dd";
         public final static String DD_MM_YYYY = "dd-MM-yyyy";
@@ -215,6 +232,13 @@ public class RescribeConstants {
         public static final String INVESTIGATION_NOTIFICATION_ID = "investigation_notification_id";
         public static final String IMAGE_ID = "imgId";
         public static final String INV_ID = "invId";
+    }
+
+    public class PATIENT_OPDS_STATUS {
+        public static final String OPD_COMPLETED = "opd completed";
+        public static final String OPD_SAVED = "opd saved";
+        public static final String ONLY_ATTACHMENTS = "only attachments";
+        public static final String NO_SHOW = "no show";
     }
 }
 

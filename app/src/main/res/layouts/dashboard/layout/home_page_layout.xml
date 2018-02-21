@@ -143,6 +143,7 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right">
@@ -189,7 +190,7 @@
                 android:layout_height="@dimen/dp100"
                 android:layout_marginBottom="@dimen/dp30"
                 android:layout_marginTop="@dimen/dp54"
-                android:src="@drawable/grey_female" />
+                android:src="@drawable/filtergrayfemaleicon" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"

@@ -32,6 +32,7 @@ import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.Connector;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
+import com.rescribe.doctor.model.case_details.CaseDetailsModel;
 import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
 import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
@@ -41,8 +42,8 @@ import com.rescribe.doctor.model.login.ActiveStatusModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
-import com.rescribe.doctor.model.patient_connect.ChatPatientConnectModel;
-import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
+import com.rescribe.doctor.model.patient.patient_connect.ChatPatientConnectModel;
+import com.rescribe.doctor.model.patient.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
@@ -51,15 +52,12 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class RequestManager extends ConnectRequest implements Connector, RequestTimer.RequestTimerListener {
@@ -501,6 +499,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_GET_PATIENT_DATA: //This is for get archived list
                         MyPatientBaseModel mMyPatientBaseModel = new Gson().fromJson(data, MyPatientBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mMyPatientBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_ONE_DAY_VISIT: //This is for get archived list
+                        CaseDetailsModel mCaseDetailsModel = new Gson().fromJson(data, CaseDetailsModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mCaseDetailsModel, mOldDataTag);
                         break;
 
                     default:

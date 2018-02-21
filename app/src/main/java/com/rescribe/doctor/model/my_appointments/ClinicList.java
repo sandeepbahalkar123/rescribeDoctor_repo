@@ -1,17 +1,16 @@
 
 package com.rescribe.doctor.model.my_appointments;
 
-import java.util.ArrayList;
-import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList> {
-    @SerializedName("clinic_name")
+public class ClinicList implements Parcelable
+{
+
+    @SerializedName("clinicName")
     @Expose
     private String clinicName;
     @SerializedName("locationId")
@@ -23,22 +22,18 @@ public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList>
     @SerializedName("city")
     @Expose
     private String city;
-    @SerializedName("address")
+    @SerializedName("cityId")
     @Expose
-    private String address;
-    @SerializedName("patientList")
+    private Integer cityId;
+    @SerializedName("clinicId")
     @Expose
-    private List<PatientList> patientList = new ArrayList<PatientList>();
+    private Integer clinicId;
 
-    private PatientList patientHeader;
-    private boolean selectedGroupCheckbox;
-
-
-    public final static Creator<ClinicList> CREATOR = new Creator<ClinicList>() {
+    public final static Parcelable.Creator<ClinicList> CREATOR = new Creator<ClinicList>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public ClinicList createFromParcel(Parcel in) {
             return new ClinicList(in);
@@ -48,15 +43,16 @@ public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList>
             return (new ClinicList[size]);
         }
 
-    };
+    }
+            ;
 
     protected ClinicList(Parcel in) {
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.area = ((String) in.readValue((String.class.getClassLoader())));
         this.city = ((String) in.readValue((String.class.getClassLoader())));
-        this.address = ((String) in.readValue((String.class.getClassLoader())));
-        in.readList(this.patientList, (PatientList.class.getClassLoader()));
+        this.cityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public ClinicList() {
@@ -86,6 +82,7 @@ public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList>
         this.area = area;
     }
 
+
     public String getCity() {
         return city;
     }
@@ -94,40 +91,19 @@ public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList>
         this.city = city;
     }
 
-    public String getAddress() {
-        return address;
+    public Integer getCityId() {
+        return cityId;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
+    public Integer getClinicId() {
+        return clinicId;
     }
 
-    public List<PatientList> getPatientList() {
-        return patientList;
-    }
-
-    public void setPatientList(List<PatientList> patientList) {
-        this.patientList = patientList;
-    }
-
-    public PatientList getPatientHeader() {
-        return patientHeader;
-    }
-
-    public void setPatientHeader(PatientList patientHeader) {
-        this.patientHeader = patientHeader;
-    }
-
-    public boolean isSelectedGroupCheckbox() {
-        return selectedGroupCheckbox;
-    }
-
-    public void setSelectedGroupCheckbox(boolean selectedGroupCheckbox) {
-        this.selectedGroupCheckbox = selectedGroupCheckbox;
-    }
-
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public void setClinicId(Integer clinicId) {
+        this.clinicId = clinicId;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
@@ -135,16 +111,12 @@ public class ClinicList implements Parcelable, Cloneable ,Comparable<ClinicList>
         dest.writeValue(locationId);
         dest.writeValue(area);
         dest.writeValue(city);
-        dest.writeValue(address);
-        dest.writeList(patientList);
+        dest.writeValue(cityId);
+        dest.writeValue(clinicId);
     }
 
     public int describeContents() {
-        return  0;
-    }
-
-    @Override
-    public int compareTo(@NonNull ClinicList o) {
         return 0;
     }
+
 }

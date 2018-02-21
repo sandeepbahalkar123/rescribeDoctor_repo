@@ -44,12 +44,16 @@ android {
                             'src/main/res/layouts/login',
                             'src/main/res/layouts/global_ui_for_connect',
                             'src/main/res/layouts/doctor',
-                            'src/main/res/layouts/patient',
+                            'src/main/res/layouts/patient/patient_connect',
+                            'src/main/res/layouts/patient/patient_appointment',
+                            'src/main/res/layouts/patient/patient_detail_page',
+                            'src/main/res/layouts/patient/patient_history',
                             'src/main/res/layouts/dashboard',
                             'src/main/res/layouts/common',
-                            'src/main/res/layouts/patient_appointment',
                             'src/main/res/layouts/bottom_menu',
-                            'src/main/res/layouts/patient_detail_page'
+                            'src/main/res/layouts/add_records',
+                            'src/main/res/layouts/profile'
+
                     ]
         }
     }
@@ -78,6 +82,7 @@ dependencies {
     compile project(':uploadservice')
     compile project(':slideview')
     compile project(':crystalrangeseekbar')
+    compile project(':fabmenu')
 
 
     compile "com.android.support:gridlayout-v7:${project.ANDROID_SUPPORT_LIBRARY_VERSION}"

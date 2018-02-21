@@ -1,0 +1,223 @@
+{
+  "common": {
+    "success": true,
+    "statusCode": 200,
+    "statusMessage": "USER AUTHENTICATED"
+  },
+  "data": {
+    "patientHistory": [
+      {
+        "caseDetailId": 1,
+        "caseDetailName": "complaints",
+        "caseDetailData": [
+          {
+            "id": 75306,
+            "name": " lower abdominal pain"
+          },
+          {
+            "id": 75183,
+            "name": "Acute post traumatic (HaathGaadi ran over foot), mild swelling"
+          }
+        ]
+      },
+      {
+        "caseDetailId": 3,
+        "caseDetailName": "vitals",
+        "vitals": [
+          {
+            "unitName": "BpMax",
+            "category": "Severe",
+            "ranges": [
+              {
+                "min": "90",
+                "max": "120",
+                "operator": "equal",
+                "value": "0",
+                "category": "Normal",
+                "color": "blue"
+              },
+              {
+                "min": "0",
+                "max": "0",
+                "operator": "less",
+                "value": "70",
+                "category": "Severe",
+                "color": "Red"
+              },
+              {
+                "min": "0",
+                "max": "0",
+                "operator": "greater",
+                "value": "160",
+                "category": "Severe",
+                "color": "Red"
+              },
+              {
+                "min": "120",
+                "max": "160",
+                "operator": "equal",
+                "value": "0",
+                "category": "moderate",
+                "color": "Yellow"
+              },
+              {
+                "min": "70",
+                "max": "90",
+                "operator": "equal",
+                "value": "0",
+                "category": "moderate",
+                "color": "#673AB7"
+              }
+            ],
+            "displayName": "Systolic",
+            "icon": "bp",
+            "unitValue": "11 mm Hg"
+          },
+          {
+            "unitName": "BpMin",
+            "category": "",
+            "ranges": [
+              {
+                "min": "60",
+                "max": "80",
+                "operator": "equal",
+                "value": "0",
+                "category": "Normal",
+                "color": "blue"
+              },
+              {
+                "min": "0",
+                "max": "0",
+                "operator": "greater",
+                "value": "90",
+                "category": "Severe",
+                "color": "Red"
+              },
+              {
+                "min": "80",
+                "max": "89",
+                "operator": "equal",
+                "value": "0",
+                "category": "Moderate",
+                "color": "Yellow"
+              }
+            ],
+            "displayName": "Diastolic",
+            "icon": "bp",
+            "unitValue": "11 mm Hg"
+          },
+          {
+            "unitName": "Weight",
+            "category": "Max",
+            "ranges": [
+              {
+                "min": "0",
+                "max": "0",
+                "operator": "less",
+                "value": "500",
+                "category": "Max",
+                "color": "#673AB7"
+              }
+            ],
+            "displayName": "Weight",
+            "icon": "weight",
+            "unitValue": "11 kgs"
+          },
+          {
+            "unitName": "BMI",
+            "category": "",
+            "ranges": [
+              {
+                "min": "18",
+                "max": "24",
+                "operator": "equal",
+                "value": "0",
+                "category": "Normal",
+                "color": "#673AB7"
+              },
+              {
+                "min": "0",
+                "max": "0",
+                "operator": "greater",
+                "value": "30",
+                "category": "severe",
+                "color": "Red"
+              },
+              {
+                "min": "25",
+                "max": "29",
+                "operator": "equal",
+                "value": "0",
+                "category": "Moderate",
+                "color": "Yellow"
+              }
+            ],
+            "displayName": "BMI",
+            "icon": "bmi",
+            "unitValue": "1.1 "
+          }
+        ]
+      },
+      {
+        "caseDetailId": 6,
+        "caseDetailName": "remarks",
+        "caseDetailData": []
+      },
+      {
+        "caseDetailId": 4,
+        "caseDetailName": "diagnosis",
+        "caseDetailData": [
+          {
+            "id": 7064,
+            "name": "Right C56"
+          },
+          {
+            "id": 7065,
+            "name": "Radiculopathy C5-6"
+          }
+        ]
+      },
+      {
+        "caseDetailId": 5,
+        "caseDetailName": "prescription",
+        "caseDetailData": []
+      },
+      {
+        "caseDetailId": 7,
+        "caseDetailName": "investigations",
+        "caseDetailData": []
+      },
+      {
+        "caseDetailId": 9,
+        "caseDetailName": "advice",
+        "caseDetailData": []
+      },
+      {
+        "caseDetailId": 10,
+        "caseDetailName": "pain scale",
+        "caseDetailData": [
+          {
+            "id": 0,
+            "name": "0.00"
+          }
+        ]
+      },
+      {
+        "caseDetailId": 11,
+        "caseDetailName": "operative procedures",
+        "caseDetailData": []
+      },
+      {
+        "caseDetailId": 2,
+        "caseDetailName": "allergies",
+        "caseDetailData": []
+      },
+      {
+        "caseDetailId": 12,
+        "caseDetailName": "attachments",
+        "caseDetailData": []
+      }
+
+    ]
+  }
+}

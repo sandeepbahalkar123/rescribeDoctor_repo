@@ -5,17 +5,13 @@
     <color name="placeHolder">#55000000</color>
     <item name="errorColor" type="color">#BD362F</item>
     <color name="recentblue">#04abdf</color>
+    <color name="light_green">#6cbb8e</color>
     <color name="clinic_address_color">#5f5f5f</color>
     <color name="menu_blue_dot">#499bc8</color>
-    <color name="drawer_menu_text_color">#646464</color>
     <color name="black">#000000</color>
     <color name="floating_blue_color">#3676A2</color>
-    <color name="drawer_bg">#edf1f4</color>
     <color name="Red">#FF0000</color>
     <color name="tagColor">#04abdf</color>
-    <color name="opd_completed">#6cbb8e</color>
-    <color name="opd_booked">#63c3d7</color>
-    <color name="opd_follow_up">#04abdf</color>
     <color name="timing_bg_color">#50a9da</color>
     <color name="statusbar">#0077a7</color>
     <color name="switch_button_color">#9B9B9B</color>
@@ -29,7 +25,6 @@
     <color name="dashboard_divider_color">#98abb3</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="color_dashboard_count_bg">#98ABB3</color>
     <color name="colorAccent">#FF4081</color>
     <color name="vitals_name">#737373</color>
     <color name="login_bg_color">#54d8c8</color>
@@ -43,11 +38,18 @@
     <color name="green_light">#0fd20b</color>
     <color name="grey_300">#dcdcdc</color>
     <color name="grey_shade">#878787</color>
+    <color name="greyish">#4f4f4f</color>
     <color name="view_detail_color">#737373</color>
     <color name="divider">#e5e5e5</color>
     <color name="rating_color">#3676a3</color>
     <color name="toolbar_divider_color">#d5d5d5</color>
     <color name="view_line">#f4f4f4</color>
     <color name="grey">#b3b3b3</color>
+    <color name="about_doctor_color">#575757</color>
     <color name="range_label_color">#545353</color>
+    <color name="seek_bar_progress">#01aeff</color>
+    <color name="seek_bar_default">#4a4a4a</color>
+    <color name="patient_history_calender_days">#3677a3</color>
+    <color name="bg_white_color">#f4f4f4</color>
+    <color name="bg_grey_color">#eaeaea</color>
 </resources>

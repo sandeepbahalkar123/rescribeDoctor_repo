@@ -13,6 +13,7 @@ public class Config {
     public static final String VERIFY_SIGN_UP_OTP = "authApi/authenticate/verifyOTP";
     public static final String SIGN_UP_URL = "authApi/authenticate/signUp";
     public static final String ONE_DAY_VISIT_URL = "";
+    public static final String GET_MY_APPOINTMENTS_LIST = "doctor/api/appointment/getAppointmentList";
     public static boolean DEV_BUILD = true;
     //Declared all URL used in app here
 
@@ -20,6 +21,8 @@ public class Config {
     public static final String BROKER = "tcp://52.66.154.249:1883"; // Dr Rescribe IP
 
     public static String BASE_URL = "http://drrescribe.com:3003/";
+    public static final String MY_RECORDS_DOCTOR_LIST = "api/doctors/getDoctorsWithPatientVisits";
+    public static final String MY_RECORDS_ADD_DOCTOR = "api/doctors/addDoctor";
 //            public static String BASE_URL = "http://192.168.0.182:3003/";
 
     public Context mContext;

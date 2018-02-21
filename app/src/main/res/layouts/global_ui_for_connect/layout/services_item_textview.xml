@@ -1,0 +1,13 @@
+<com.rescribe.doctor.ui.customesViews.CustomTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp8"
+    android:drawablePadding="@dimen/dp16"
+    android:textColor="@color/about_doctor_color"
+    android:textSize="@dimen/sp16"
+    android:textStyle="normal"
+    app:customFont="@string/roboto_medium"
+    tools:text="@string/select_date_text" />

@@ -67,7 +67,7 @@ import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.StatusInfo;
 import com.rescribe.doctor.model.chat.history.ChatHistory;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
-import com.rescribe.doctor.model.patient_connect.PatientData;
+import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;

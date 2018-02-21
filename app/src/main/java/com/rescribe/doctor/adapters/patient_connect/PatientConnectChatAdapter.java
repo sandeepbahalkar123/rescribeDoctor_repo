@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.model.patient_connect.PatientData;
+import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -62,8 +62,6 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
         @BindView(R.id.onlineStatusIcon)
         ImageView onlineStatusIcon;
 
-        @BindView(R.id.paidStatusTextView)
-        TextView paidStatusTextView;
         @BindView(R.id.imageOfDoctor)
         ImageView imageOfDoctor;
 
@@ -102,18 +100,20 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
 
         holder.onlineStatusIcon.setVisibility(View.GONE);
 
-        if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(ONLINE)) {
+       /* if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(ONLINE)) {
             holder.onlineStatusIcon.setVisibility(View.VISIBLE);
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.green_light));
         } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(IDLE)) {
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.range_yellow));
         } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(OFFLINE)) {
             holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.grey_500));
-        }
+        }*/
         //-----------
 
+/*
         holder.onlineStatusTextView.setText(doctorConnectChatModel.getOnlineStatus());
-        holder.paidStatusTextView.setVisibility(View.GONE);
+*/
+
         holder.doctorType.setVisibility(View.GONE);
 
         //---------

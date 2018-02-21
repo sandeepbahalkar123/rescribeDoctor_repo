@@ -4,7 +4,6 @@
     <string name="log_in">Login</string>
     <string name="enter_full_name">Name</string>
     <string name="enter_email_id">Email ID</string>
-    <string name="action_settings">Settings</string>
     <string name="internet">Please check your Internet Connection</string>
     <string name="timeout">Timeout error</string>
     <string name="break_fast">BREAKFAST</string>
@@ -25,18 +24,24 @@
     <string name="roboto_bold">roboto_bold.ttf</string>
     <string name="roboto_medium">roboto_medium.ttf</string>
     <string name="roboto_regular">roboto_regular.ttf</string>
+    <string name="bill_invoices">Bill Invoices</string>
+    <string name="case_encounter">Case Encounter</string>
+    <string name="gallery">Gallery</string>
+    <string name="title_activity_report_selection">Report Selection</string>
+    <string name="files">Files</string>
+    <string name="adddocs">Add Documents</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="enter_otp">Enter OTP</string>
     <string name="enter">Enter&#160;</string>
     <string name="read_more"><u>more</u></string>
     <string name="read_less">&#160;<u>
         less</u></string>
     <string name="done">Done</string>
-
+    <string name="others">Others</string>
+    <string name="prescriptionModels">Prescriptions</string>
     <string name="title_activity_zoomview">Zoom View</string>
     <string name="type">type</string>
-
+    <string name="investigations">Investigations</string>
     <string name="name">Name</string>
     <string name="details">&#160;Details</string>
     <string name="forgot_password">Forgot  password?</string>
@@ -53,6 +58,7 @@
     <string name="error_too_small_password">Password should be 8 characters long. </string>
     <string name="title">Title</string>
     <string name="server_error">Server Error</string>
+    <string name="add_caption">Add Caption</string>
 
 
     <!--//*** Google Map key-->
@@ -82,7 +88,6 @@
     <string name="dummy_normal">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
     <string name="patient_connect">Patient Connect</string>
     <string name="chats">Chats</string>
-    <string name="connect">Connect</string>
     <string name="search">Search</string>
     <string name="pick_speciality">Pick Speciality</string>
     <string name="details_note"><![CDATA[Your details will remain 100% private & secure. If you think you have medical emergency, contact your doctor immediately.]]></string>
@@ -150,39 +155,51 @@
     <string name="outstanding_amount">Outstanding Amount:</string>
     <string name="id">ID:</string>
     <string name="years">yrs -</string>
-    <string name="opd">OPD</string>
+    <string name="opd_appointment">Appointment</string>
     <string name="nil">NIL</string>
-    <string name="booked">booked</string>
+    <string name="book">book</string>
+    <string name="booked">Booked</string>
     <string name="completed">completed</string>
+    <string name="capitalcompleted">Completed</string>
+    <string name="file_extension">file_extension</string>
+    <string name="title_activity_selected_docs">Selected Documents</string>
     <string name="follow">follow</string>
     <string name="mr">Mr.</string>
     <string name="mrs">Mrs.</string>
     <string name="miss">Miss.</string>
     <string name="appointments">Appointments</string>
-    <string name="apsotrophe">\'</string>
     <string name="normalRange">normal</string>
     <string name="moderateRange">Moderate</string>
     <string name="severeRange">Severe</string>
     <string name="select_all">Select All</string>
     <string name="send_sms">Send SMS</string>
-    <string name="send_mail">Send Email</string>
     <string name="waiting_list">Waiting List</string>
     <string name="bp_max">BpMax</string>
     <string name="bp">BP</string>
     <string name="colon_sign">:</string>
     <string name="bp_min">BpMin</string>
     <string name="dash">-</string>
-    <string name="and_sign"><![CDATA[&]]></string>
     <string name="systolic_pressure">Systolic BP</string>
     <string name="diastolic_pressure">Diastolic BP</string>
     <string name="normal">Normal Level :</string>
     <string name="moderate">Moderate Level :</string>
     <string name="severe">Severe Level :</string>
-    <string name="visit_details">Visit Details</string>
-    <string name="specialization">SPECIALIZATION</string>
-    <string name="address">ADDRESS</string>
     <string name="please_select_patients">Please select patients</string>
     <string name="my_patients">My Patients</string>
-
+    <string name="do_you_logout">Do you want to logout?</string>
+    <string name="transgender">Transgender</string>
+    <string name="add_record">Add Records</string>
+    <string name="select_doctor_name">Doctor Name</string>
+    <string name="select_date_text">Select Date</string>
+    <string name="enter_date">Enter Date</string>
+    <string name="enter_address">Enter Address</string>
+    <string name="next">Next</string>
+    <string name="addrecords">Add Records</string>
+    <string name="retry">Retry</string>
+    <string name="upload">Upload</string>
+    <string name="select_report">Select Report</string>
+    <string name="just_now">Just Now</string>
+    <string name="services">Services</string>
+    <string name="about_doctor"><u>About Doctor :</u></string>
 
 </resources>

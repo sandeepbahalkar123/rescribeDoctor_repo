@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="false"
+    android:orientation="vertical">
+
+    <CheckBox
+        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+        android:id="@+id/menuName"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp40"
+        android:padding="@dimen/dp5"
+        android:focusable="false"
+        android:text="Nagpur"
+        android:drawableTint="@color/tagColor"
+        android:button="@null"
+        android:layout_marginLeft="@dimen/dp16"
+        android:layout_marginStart="@dimen/dp16"
+        android:layout_marginEnd="@dimen/dp14"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp16"
+        android:layout_marginRight="@dimen/dp14" />
+</LinearLayout>

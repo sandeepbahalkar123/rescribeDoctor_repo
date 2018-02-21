@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -126,12 +127,9 @@ public class BottomMenuActivity extends AppCompatActivity implements BottomMenuA
         createBottomMenu();
     }
 
-
-
     public void createBottomMenu() {
         bottomMenuAdapter = new BottomMenuAdapter(this, mBottomMenuList);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
         recyclerView.setAdapter(bottomMenuAdapter);
 
 

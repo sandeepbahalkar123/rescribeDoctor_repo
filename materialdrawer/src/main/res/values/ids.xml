@@ -46,13 +46,11 @@
     <item name="mdProfileName" type="id" />
     <item name="mdProfileDescription" type="id" />
 
-    <item name="mdOpenProfileListContainer" type="id" />
     <item name="mdOpenProfileListIcon" type="id" />
 
     <item name="mdProfileList" type="id" />
 
 
-    <item name="mdListContainer" type="id" />
     <item name="mdList" type="id" />
 
     <item name="mdFixedShadow" type="id" />

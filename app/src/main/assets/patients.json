@@ -26,7 +26,8 @@
         "appointmentStatus": "Follow up",
         "area": "Hadapasar",
         "city": "Pune",
-        "address": "Near Magarpatta It park,Hadapsar,Pune"
+        "address": "Near Magarpatta It park,Hadapsar,Pune",
+        "patientEmail":"ritesh.pandhurkar@scorgtechnologies.com"
       },
       {
         "salutation": 2,
@@ -45,7 +46,8 @@
         "appointmentStatus": "Booked",
         "area": "Hadapasar",
         "city": "Pune",
-        "address": "Near Magarpatta It park,Hadapsar,Pune"
+        "address": "Near Magarpatta It park,Hadapsar,Pune",
+        "patientEmail":"sudhir.patil@scorgtechnologies.com"
       },
       {
         "salutation": 3,
@@ -64,7 +66,8 @@
         "appointmentStatus": "Booked",
         "area": "Hadapasar",
         "city": "Pune",
-        "address": "Near Magarpatta It park,Hadapsar,Pune"
+        "address": "Near Magarpatta It park,Hadapsar,Pune",
+        "patientEmail":"ajit.desai@scorgtechnologies.com"
       }
     ]
   }
