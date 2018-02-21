@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.model.patient_connect.PatientData;
+import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;

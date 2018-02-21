@@ -3,6 +3,7 @@ package com.rescribe.doctor.helpers.myappointments;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.Request;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
@@ -10,8 +11,12 @@ import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
+import com.rescribe.doctor.model.my_appointments.RequestAppointmentData;
 import com.rescribe.doctor.network.ConnectRequest;
+import com.rescribe.doctor.network.ConnectionFactory;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.io.IOException;
@@ -73,7 +78,7 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void doGetAppointmentData() {
-        try {
+      /*  try {
             InputStream is = mContext.getAssets().open("my_appointments.json");
             int size = is.available();
             byte[] buffer = new byte[size];
@@ -88,7 +93,16 @@ public class AppointmentHelper implements ConnectionListener {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-        }
+        }*/
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_APPOINTMENT_DATA, Request.Method.POST, true);
+        RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
+        mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID,mContext)));
+        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(),RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+        mRequestAppointmentData.setDate(date);
+        mConnectionFactory.setPostParams(mRequestAppointmentData);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.GET_MY_APPOINTMENTS_LIST);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_APPOINTMENT_DATA);
     }
 
     public void doGetMyPatients() {

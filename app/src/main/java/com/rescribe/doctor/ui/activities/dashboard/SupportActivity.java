@@ -15,6 +15,7 @@ import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.bottom_menus.BottomMenuAdapter;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.ui.activities.ProfileActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 
 import butterknife.BindView;
@@ -87,6 +88,10 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
             startActivity(intent);
             finish();
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.home))) {
+            finish();
+        }else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.profile))) {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
             finish();
         }
         super.onBottomMenuClick(bottomMenu);

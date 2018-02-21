@@ -24,6 +24,7 @@ import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.HomePageActivity;
 import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
+import com.rescribe.doctor.ui.activities.ProfileActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -84,6 +85,10 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
             startActivity(intent);
             finish();
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.home))) {
+            finish();
+        }else  if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.profile))) {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
             finish();
         }
         super.onBottomMenuClick(bottomMenu);

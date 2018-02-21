@@ -41,8 +41,8 @@ import com.rescribe.doctor.model.login.ActiveStatusModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
-import com.rescribe.doctor.model.patient_connect.ChatPatientConnectModel;
-import com.rescribe.doctor.model.patient_connect.PatientConnectBaseModel;
+import com.rescribe.doctor.model.patient.patient_connect.ChatPatientConnectModel;
+import com.rescribe.doctor.model.patient.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
@@ -51,15 +51,12 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class RequestManager extends ConnectRequest implements Connector, RequestTimer.RequestTimerListener {

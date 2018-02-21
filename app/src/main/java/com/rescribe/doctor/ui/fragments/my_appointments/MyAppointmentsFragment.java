@@ -18,22 +18,20 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.AppointmentAdapter;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
-import com.rescribe.doctor.model.my_appointments.ClinicList;
+import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
 import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
+import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -70,6 +68,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     private ArrayList<BottomMenu> mBottomMenuList;
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
     private int lastExpandedPosition = -1;
+    private String charString = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -95,13 +94,13 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             expandableListView.setClipToPadding(false);
             emptyListView.setVisibility(View.GONE);
 
-            for (int i = 0; i < mMyAppointmentsDataModel.getClinicList().size(); i++) {
-                ClinicList clinicList = mMyAppointmentsDataModel.getClinicList().get(i);
-                List<PatientList> mPatientLists = mMyAppointmentsDataModel.getClinicList().get(i).getPatientList();
+            for (int i = 0; i < mMyAppointmentsDataModel.getAppointmentList().size(); i++) {
+                AppointmentList clinicList = mMyAppointmentsDataModel.getAppointmentList().get(i);
+                List<PatientList> mPatientLists = mMyAppointmentsDataModel.getAppointmentList().get(i).getPatientList();
                 clinicList.setPatientHeader(mPatientLists.get(0));
             }
 
-            mAppointmentAdapter = new AppointmentAdapter(getActivity(), mMyAppointmentsDataModel.getClinicList(), this);
+            mAppointmentAdapter = new AppointmentAdapter(getActivity(), mMyAppointmentsDataModel.getAppointmentList(), this);
             expandableListView.setAdapter(mAppointmentAdapter);
         } else {
             expandableListView.setVisibility(View.GONE);
@@ -121,16 +120,20 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             }
         });
 
-       /* expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                if (lastExpandedPosition != -1
-                        && groupPosition != lastExpandedPosition) {
-                    expandableListView.collapseGroup(lastExpandedPosition);
+                if (charString.equals("")) {
+                    if (lastExpandedPosition != -1
+                            && groupPosition != lastExpandedPosition) {
+                        expandableListView.collapseGroup(lastExpandedPosition);
+                    }
+                    lastExpandedPosition = groupPosition;
+                } else {
+                    //CommonMethods.showToast(getActivity(), "all expand");
                 }
-                lastExpandedPosition = groupPosition;
             }
-        });*/
+        });
 
         mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList);
         recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
@@ -147,6 +150,8 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
             @Override
             public void afterTextChanged(Editable s) {
+
+                charString = s.toString();
 
                 mAppointmentAdapter.getFilter().filter(s);
                 //expand view
@@ -207,7 +212,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             recyclerViewBottom.setVisibility(View.VISIBLE);
         } else {
             for (int index = 0; index < mAppointmentAdapter.getGroupList().size(); index++) {
-                for (ClinicList clinicList : mAppointmentAdapter.getGroupList()) {
+                for (AppointmentList clinicList : mAppointmentAdapter.getGroupList()) {
                     clinicList.setSelectedGroupCheckbox(false);
                     clinicList.getPatientHeader().setSelected(false);
                     for (int patientListIndex = 0; patientListIndex < mAppointmentAdapter.getGroupList().get(index).getPatientList().size(); patientListIndex++) {
@@ -249,6 +254,16 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     }
 
     @Override
+    public void onClickOfPatientDetails(PatientList patientListObject,String patientDetails) {
+        Bundle b = new Bundle();
+        b.putString(RescribeConstants.PATIENT_NAME,patientListObject.getPatientName());
+        b.putString(RescribeConstants.PATIENT_INFO,patientDetails);
+        Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
+        intent.putExtra(RescribeConstants.PATIENT_INFO,b);
+        startActivity(intent);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -260,7 +275,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             if (bottomMenu.isSelected()) {
 
                 for (int index = 0; index < mAppointmentAdapter.getGroupList().size(); index++) {
-                    for (ClinicList clinicList : mAppointmentAdapter.getGroupList()) {
+                    for (AppointmentList clinicList : mAppointmentAdapter.getGroupList()) {
                         clinicList.setSelectedGroupCheckbox(true);
                         clinicList.getPatientHeader().setSelected(true);
 
@@ -273,7 +288,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
             } else {
                 for (int index = 0; index < mAppointmentAdapter.getGroupList().size(); index++) {
-                    for (ClinicList clinicList : mAppointmentAdapter.getGroupList()) {
+                    for (AppointmentList clinicList : mAppointmentAdapter.getGroupList()) {
                         clinicList.setSelectedGroupCheckbox(false);
                         clinicList.getPatientHeader().setSelected(false);
                         for (int patientListIndex = 0; patientListIndex < mAppointmentAdapter.getGroupList().get(index).getPatientList().size(); patientListIndex++) {
@@ -320,7 +335,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 }
             }
 
-        } */else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
+        } */ else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
             ArrayList<String> mSmsList = new ArrayList<>();
             for (int groupIndex = 0; groupIndex < mAppointmentAdapter.getGroupList().size(); groupIndex++) {
                 if (mAppointmentAdapter.getGroupList().get(groupIndex).getPatientHeader().isSelected()) {
@@ -374,7 +389,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         mAppointmentAdapter.setLongPressed(false);
         for (int index = 0; index < mAppointmentAdapter.getGroupList().size(); index++) {
 
-            for (ClinicList clinicList : mAppointmentAdapter.getGroupList()) {
+            for (AppointmentList clinicList : mAppointmentAdapter.getGroupList()) {
                 clinicList.setSelectedGroupCheckbox(false);
                 clinicList.getPatientHeader().setSelected(false);
                 for (int patientListIndex = 0; patientListIndex < mAppointmentAdapter.getGroupList().get(index).getPatientList().size(); patientListIndex++) {

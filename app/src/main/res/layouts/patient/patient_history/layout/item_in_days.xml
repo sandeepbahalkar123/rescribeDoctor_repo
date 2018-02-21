@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp12"
+    android:orientation="vertical">
+
+    <com.rescribe.doctor.ui.customesViews.CustomTextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="100"
+        android:textColor="@color/patient_history_calender_days"
+        android:textSize="@dimen/sp14"
+        android:textStyle="normal"
+        app:customFont="@string/roboto_regular" />
+
+    <TextView
+        android:id="@+id/otherStatusView"
+        android:layout_width="@dimen/dp10"
+        android:layout_height="@dimen/dp10"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp2"
+        android:background="@drawable/opd_saved_circle"
+        android:gravity="center"
+        android:visibility="gone" />
+</LinearLayout>

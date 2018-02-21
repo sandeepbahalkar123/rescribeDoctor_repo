@@ -156,7 +156,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
         holder.patientIdTextView.setText(patientID);
         holder.patientGenderTextView.setText(" " + patientObject.getGender());
-        if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.booked))) {
+        if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
             holder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
             holder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
         } else if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
@@ -215,6 +215,12 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 return false;
             }
         });
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnDownArrowClicked.onClickOfPatientDetails(patientObject,holder.patientAgeTextView.getText().toString()+holder.patientGenderTextView.getText().toString());
+            }
+        });
 
     }
 
@@ -269,12 +275,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             this.view = view;
         }
     }
-    public interface OnDownArrowClicked {
 
-        void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
-        void onRecordFound(boolean isListEmpty);
-        void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
-    }
     public boolean isLongPressed() {
         return isLongPressed;
     }
@@ -332,5 +333,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 notifyDataSetChanged();
             }
         };
+    }
+    public interface OnDownArrowClicked {
+
+        void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
+        void onRecordFound(boolean isListEmpty);
+        void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
+        void onClickOfPatientDetails(PatientList patientListObject, String text);
+
     }
 }

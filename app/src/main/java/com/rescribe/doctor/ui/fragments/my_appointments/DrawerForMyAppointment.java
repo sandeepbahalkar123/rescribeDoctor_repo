@@ -21,7 +21,12 @@ import com.rescribe.doctor.adapters.drawer_adapters.DrawerAppointmetClinicNameAd
 import com.rescribe.doctor.adapters.drawer_adapters.SortByPriceFilterAdapter;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.my_appointments.FilterSortByHighLowList;
+import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.util.RescribeConstants;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,9 +37,10 @@ import butterknife.Unbinder;
  * Created by jeetal on 12/2/18.
  */
 
-public class DrawerForMyAppointment extends Fragment implements HelperResponse {
+public class DrawerForMyAppointment extends Fragment implements HelperResponse, SortByPriceFilterAdapter.onSortByAmountMenuClicked {
 
 
+    private static Bundle bundle;
     @BindView(R.id.applyButton)
     Button applyButton;
     @BindView(R.id.titleTextView)
@@ -86,6 +92,13 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse {
     private DrawerAppointmetClinicNameAdapter mDrawerAppointmetClinicNameAdapter;
     private OnDrawerInteractionListener mListener;
     private SortByPriceFilterAdapter mSortByPriceFilterAdapter;
+    private String lowToHigh = "(low to high)";
+    private String highToLow = "(high to low)";
+    private ArrayList<FilterSortByHighLowList> filterSortByHighLowLists = new ArrayList<>();
+    private String[] sortOptions = new String[]{"Outstanding Amt" + lowToHigh,
+            "Outstanding Amt" + highToLow};
+    private int mSortByAmountAdapterPosition;
+    private MyAppointmentsDataModel mMyAppointmentsDataModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,11 +111,17 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse {
     }
 
     private void initialize() {
+        for (String amtString : sortOptions) {
+            FilterSortByHighLowList filterSortByHighLowListObject = new FilterSortByHighLowList();
+            filterSortByHighLowListObject.setAmountHighOrLow(amtString);
+            filterSortByHighLowLists.add(filterSortByHighLowListObject);
+        }
         // mSelectedDays = new HashMap<>();
         configureDrawerFieldsData();
     }
 
     private void configureDrawerFieldsData() {
+        mMyAppointmentsDataModel = bundle.getParcelable(RescribeConstants.APPOINTMENT_DATA);
         chooseOptionForSort.setText(getString(R.string.choose_one_option));
         SpannableString selectStatusString = new SpannableString("Select Status");
         selectStatusString.setSpan(new UnderlineSpan(), 0, selectStatusString.length(), 0);
@@ -111,7 +130,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse {
         selectClinicString.setSpan(new UnderlineSpan(), 0, selectClinicString.length(), 0);
         selectClinic.setText(selectClinicString);
         //select status recyelerview
-        mDrawerAppointmentSelectStatusAdapter = new DrawerAppointmentSelectStatusAdapter(getActivity());
+        mDrawerAppointmentSelectStatusAdapter = new DrawerAppointmentSelectStatusAdapter(getActivity(),mMyAppointmentsDataModel.getStatusList());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         statusNameRecyclerView.setLayoutManager(layoutManager);
         statusNameRecyclerView.setHasFixedSize(true);
@@ -119,7 +138,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse {
         statusNameRecyclerView.setAdapter(mDrawerAppointmentSelectStatusAdapter);
 
         // clinic names recyclerview
-        mDrawerAppointmetClinicNameAdapter = new DrawerAppointmetClinicNameAdapter(getActivity());
+        mDrawerAppointmetClinicNameAdapter = new DrawerAppointmetClinicNameAdapter(getActivity(),mMyAppointmentsDataModel.getClinicList());
         LinearLayoutManager layoutManagerClinicList = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         clinicNameRecyclerView.setLayoutManager(layoutManagerClinicList);
         clinicNameRecyclerView.setHasFixedSize(true);
@@ -128,9 +147,10 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse {
 
     }
 
-    public static DrawerForMyAppointment newInstance() {
+    public static DrawerForMyAppointment newInstance(Bundle b) {
         DrawerForMyAppointment fragment = new DrawerForMyAppointment();
-        Bundle bundle = new Bundle();
+        bundle = new Bundle();
+        bundle = b;
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -156,11 +176,11 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse {
 
     }
 
-    @OnClick({R.id.applyButton, R.id.titleTextView, R.id.resetButton, R.id.sortingHeaderView, R.id.chooseOptionForSort, R.id.chooseOptionToSort, R.id.genderHeaderView, R.id.selectStatus, R.id.statusNameRecyclerView, R.id.clinicFeesHeaderView, R.id.selectClinic, R.id.clinicNameRecyclerView, R.id.clinicFeesContentView, R.id.clinicFeesView, R.id.nestedScroll, R.id.hideMainLayout, R.id.doneButton, R.id.sortingTitleTextView, R.id.resetSortingButton, R.id.sortingView, R.id.sortRecyclerView, R.id.showSortLayout, R.id.mainParentLayout})
+    @OnClick({R.id.applyButton, R.id.titleTextView, R.id.resetButton, R.id.sortingHeaderView, R.id.genderHeaderView, R.id.selectStatus, R.id.statusNameRecyclerView, R.id.clinicFeesHeaderView, R.id.selectClinic, R.id.clinicNameRecyclerView, R.id.clinicFeesContentView, R.id.clinicFeesView, R.id.nestedScroll, R.id.hideMainLayout, R.id.doneButton, R.id.sortingTitleTextView, R.id.resetSortingButton, R.id.sortingView, R.id.sortRecyclerView, R.id.showSortLayout, R.id.mainParentLayout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.applyButton:
-                mListener.onApply(null,true);
+                mListener.onApply(null, true);
                 break;
             case R.id.titleTextView:
                 break;
@@ -168,24 +188,6 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse {
                 configureDrawerFieldsData();
                 break;
             case R.id.sortingHeaderView:
-                break;
-            case R.id.chooseOptionForSort:
-                hideMainLayout.setVisibility(View.GONE);
-                showSortLayout.setVisibility(View.VISIBLE);
-                mSortByPriceFilterAdapter = new SortByPriceFilterAdapter(getActivity());
-                LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                sortRecyclerView.setLayoutManager(linearlayoutManager);
-                sortRecyclerView.setHasFixedSize(true);
-                sortRecyclerView.setAdapter(mSortByPriceFilterAdapter);
-                break;
-            case R.id.chooseOptionToSort:
-                hideMainLayout.setVisibility(View.GONE);
-                showSortLayout.setVisibility(View.VISIBLE);
-                mSortByPriceFilterAdapter = new SortByPriceFilterAdapter(getActivity());
-                LinearLayoutManager linearlayoutManagerChooseOption = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                sortRecyclerView.setLayoutManager(linearlayoutManagerChooseOption);
-                sortRecyclerView.setHasFixedSize(true);
-                sortRecyclerView.setAdapter(mSortByPriceFilterAdapter);
                 break;
             case R.id.genderHeaderView:
                 break;
@@ -210,7 +212,6 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse {
             case R.id.doneButton:
                 hideMainLayout.setVisibility(View.VISIBLE);
                 showSortLayout.setVisibility(View.GONE);
-                chooseOptionForSort.setText(mSortByPriceFilterAdapter.getSelectedSortedOptionLabel());
                 break;
             case R.id.sortingTitleTextView:
                 break;
@@ -225,6 +226,11 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse {
             case R.id.mainParentLayout:
                 break;
         }
+    }
+
+    @Override
+    public void onClickOfSortMenu(FilterSortByHighLowList filterSortByHighLowObject, int groupPosition) {
+        mSortByAmountAdapterPosition = groupPosition;
     }
 
     public interface OnDrawerInteractionListener {

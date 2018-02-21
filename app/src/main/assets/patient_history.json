@@ -1,0 +1,187 @@
+{
+  "common": {
+    "success": true,
+    "statusCode": 200,
+    "statusMessage": "USER AUTHENTICATED"
+  },
+  "data": {
+    "yearsMonthsData": [
+      {
+        "year": "2018",
+        "months": [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Jul"
+        ]
+      }
+    ],
+    "docList": {
+      "year": 2018,
+      "months": {
+        "Jan": [
+          {
+            "id": 1,
+            "whichDate": 2,
+            "opdStatus": "OPD Completed",
+            "opdId": 623077,
+            "visitDate": "2018-01-02T15:52:31.000Z"
+          },
+          {
+            "id": 2,
+            "whichDate": 8,
+            "opdStatus": "OPD Saved",
+            "opdId": 623078,
+            "visitDate": "2018-01-08T15:52:31.000Z"
+          },
+          {
+            "id": 3,
+            "whichDate": 11,
+            "opdStatus": "OPD Completed",
+            "opdId": 623079,
+            "visitDate": "2018-01-11T15:52:31.000Z"
+          },
+          {
+            "id": 4,
+            "whichDate": 15,
+            "opdStatus": "Only Attachments",
+            "opdId": 623080,
+            "visitDate": "2018-01-15T15:52:31.000Z"
+          },
+          {
+            "id": 5,
+            "whichDate": 20,
+            "opdStatus": "No Show",
+            "opdId": 623081,
+            "visitDate": "2018-01-20T15:52:31.000Z"
+          }
+        ],
+        "Feb": [
+          {
+            "id": 1,
+            "whichDate": 4,
+            "opdStatus": "OPD Completed",
+            "opdId": 623077,
+            "visitDate": "2018-02-04T15:52:31.000Z"
+          },
+          {
+            "id": 2,
+            "whichDate": 8,
+            "opdStatus": "OPD Saved",
+            "opdId": 623078,
+            "visitDate": "2018-02-08T15:52:31.000Z"
+          },
+          {
+            "id": 3,
+            "whichDate": 11,
+            "opdStatus": "OPD Completed",
+            "opdId": 623079,
+            "visitDate": "2018-02-11T15:52:31.000Z"
+          },
+          {
+            "id": 4,
+            "whichDate": 15,
+            "opdStatus": "Only Attachments",
+            "opdId": 623080,
+            "visitDate": "2018-02-15T15:52:31.000Z"
+          },
+          {
+            "id": 5,
+            "whichDate": 20,
+            "opdStatus": "No Show",
+            "opdId": 623081,
+            "visitDate": "2018-02-20T15:52:31.000Z"
+          },
+          {
+            "id": 6,
+            "whichDate": 22,
+            "opdStatus": "No Show",
+            "opdId": 623082,
+            "visitDate": "2018-02-22T15:52:31.000Z"
+          }
+        ],
+        "Mar": [
+          {
+            "id": 1,
+            "whichDate": 2,
+            "opdStatus": "OPD Completed",
+            "opdId": 623077,
+            "visitDate": "2018-01-02T15:52:31.000Z"
+          },
+          {
+            "id": 2,
+            "whichDate": 8,
+            "opdStatus": "OPD Saved",
+            "opdId": 623078,
+            "visitDate": "2018-01-08T15:52:31.000Z"
+          },
+          {
+            "id": 3,
+            "whichDate": 11,
+            "opdStatus": "OPD Completed",
+            "opdId": 623079,
+            "visitDate": "2018-01-11T15:52:31.000Z"
+          },
+          {
+            "id": 4,
+            "whichDate": 15,
+            "opdStatus": "Only Attachments",
+            "opdId": 623080,
+            "visitDate": "2018-01-15T15:52:31.000Z"
+          },
+          {
+            "id": 5,
+            "whichDate": 20,
+            "opdStatus": "No Show",
+            "opdId": 623081,
+            "visitDate": "2018-01-20T15:52:31.000Z"
+          }
+        ],
+        "Jul": [
+          {
+            "id": 1,
+            "whichDate": 4,
+            "opdStatus": "OPD Completed",
+            "opdId": 623077,
+            "visitDate": "2018-02-04T15:52:31.000Z"
+          },
+          {
+            "id": 2,
+            "whichDate": 8,
+            "opdStatus": "OPD Saved",
+            "opdId": 623078,
+            "visitDate": "2018-02-08T15:52:31.000Z"
+          },
+          {
+            "id": 3,
+            "whichDate": 11,
+            "opdStatus": "OPD Completed",
+            "opdId": 623079,
+            "visitDate": "2018-02-11T15:52:31.000Z"
+          },
+          {
+            "id": 4,
+            "whichDate": 15,
+            "opdStatus": "Only Attachments",
+            "opdId": 623080,
+            "visitDate": "2018-02-15T15:52:31.000Z"
+          },
+          {
+            "id": 5,
+            "whichDate": 20,
+            "opdStatus": "No Show",
+            "opdId": 623081,
+            "visitDate": "2018-02-20T15:52:31.000Z"
+          },
+          {
+            "id": 6,
+            "whichDate": 22,
+            "opdStatus": "No Show",
+            "opdId": 623082,
+            "visitDate": "2018-02-22T15:52:31.000Z"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -19,4 +19,8 @@
     <dimen name="dp62">62dp</dimen>
     <dimen name="sp20">20sp</dimen>
     <dimen name="dp44">44dp</dimen>
+    <dimen name="dp35">35dp</dimen>
+    <dimen name="dp26">26dp</dimen>
+    <dimen name="dp120">120dp</dimen>
+    <dimen name="dp80">80dp</dimen>
 </resources>

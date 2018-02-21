@@ -29,6 +29,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.CheckIpConnection;
 import com.rescribe.doctor.interfaces.DatePickerDialogListener;
+import com.rescribe.doctor.model.patient.patient_history.DatesData;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -40,6 +41,7 @@ import org.joda.time.Weeks;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,6 +76,26 @@ public class CommonMethods {
                 result.append(Character.toLowerCase(currentChar));
         }
         return result.toString();
+    }
+    // 1ˢᵗ, 2ⁿᵈ, 3ʳᵈ, 4ᵗʰ
+    public static String ordinal(String number) {
+        try {
+
+            int i = Integer.parseInt(number);
+            String[] sufixes = new String[]{"ᵗʰ", "ˢᵗ", "ⁿᵈ", "ʳᵈ", "ᵗʰ", "ᵗʰ", "ᵗʰ", "ᵗʰ", "ᵗʰ", "ᵗʰ"};
+            switch (i % 100) {
+                case 11:
+                case 12:
+                case 13:
+                    return i + "ᵗʰ";
+                default:
+                    return i + sufixes[i % 10];
+            }
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static void showSnack(View mViewById, String msg) {
@@ -735,6 +757,69 @@ public class CommonMethods {
     public static float spToPx(int sp, Context context) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
                 context.getResources().getDisplayMetrics());
+    }
+
+    public static ArrayList<DatesData> getDaysInMonth(String year, String monthName) {
+        ArrayList<DatesData> datesDataList = new ArrayList<>();
+//  String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+        // Get a calendar instance
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, Integer.parseInt(year));
+        int count = 0;
+        for (int i = 0; i < monthNames.length; i++) {
+            if (monthNames[i].equalsIgnoreCase(monthName)) {
+                count = i;
+            }
+        }
+        calendar.set(Calendar.MONTH, count);
+
+        // Get the last date of the current month. To get the last date for a
+        // specific month you can set the calendar month using calendar object
+        // calendar.set(Calendar.MONTH, theMonth) method.
+        //-----------
+        int lastDate = calendar.getActualMaximum(Calendar.DATE);
+        int startDate = calendar.getActualMinimum(Calendar.DATE);
+
+        Log.e("getActualMaximum ", "getActualMaximum : " + lastDate);
+        //-----------
+        // Set the calendar date to the last date of the month so then we can
+        // get the last day of the month
+        calendar.set(Calendar.DATE, lastDate);
+        int lastDay = calendar.get(Calendar.DAY_OF_WEEK);
+        //-----------
+        // Set the calendar date to the last date of the month so then we can
+        // get the last day of the month
+        calendar.set(Calendar.DATE, startDate);
+        int startDay = calendar.get(Calendar.DAY_OF_WEEK);
+        //--------------
+
+        // Print the current date and the last date of the month
+        Log.e("Last Date: ", "Last Date: " + calendar.getTime());
+
+        // The lastDay will be in a value from 1 to 7 where 1 = Sunday and 7 =
+        // Saturday. The first day of the week is based on the locale.
+        Log.e("Start Day", "Start Day : " + startDay);
+        Log.e("Last Day", "Last Day : " + lastDay);
+
+        // Get weekday name
+        DateFormatSymbols dfs = new DateFormatSymbols();
+        Log.e("Start Day", "Start Day : " + dfs.getWeekdays()[startDay]);
+        Log.e("Last Day", "Last Day : " + dfs.getWeekdays()[lastDay]);
+
+        ArrayList<Integer> daysArray = new ArrayList<>();
+        for (int i = 1; i <= (startDay - 1); i++) {
+            DatesData datesData = new DatesData();
+            datesData.setDate(0);
+            datesDataList.add(datesData);
+        }
+        for (int i = 1; i <= lastDate; i++) {
+            DatesData datesData = new DatesData();
+            datesData.setDate(i);
+            datesDataList.add(datesData);
+        }
+        return datesDataList;
     }
 }
 

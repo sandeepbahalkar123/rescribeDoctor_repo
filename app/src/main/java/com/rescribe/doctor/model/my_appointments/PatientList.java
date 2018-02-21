@@ -21,7 +21,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     @SerializedName("age")
     @Expose
     private Integer age;
-    @SerializedName("dateOfBirth")
+    @SerializedName("patientDob")
     @Expose
     private String dateOfBirth;
     @SerializedName("gender")
@@ -54,11 +54,22 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     @SerializedName("appointmentStatus")
     @Expose
     private String appointmentStatus;
-    @SerializedName("patientEmail")
+
+    @SerializedName("docId")
     @Expose
-    private String patientEmail;
+    private Integer docId;
+    @SerializedName("hospitalPatId")
+    @Expose
+    private Integer hospitalPatId;
+    @SerializedName("appointmentEndTime")
+    @Expose
+    private String appointmentEndTime;
+    @SerializedName("appointmentStatusId")
+    @Expose
+    private Integer appointmentStatusId;
     private String spannableString;
     private boolean selected;
+    private String patientEmail;
 
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
@@ -74,11 +85,12 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
             return (new PatientList[size]);
         }
 
-    }
-    ;
+    };
 
     protected PatientList(Parcel in) {
         this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.docId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientName = ((String) in.readValue((String.class.getClassLoader())));
         this.age = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.dateOfBirth = ((String) in.readValue((String.class.getClassLoader())));
@@ -92,7 +104,8 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         this.appointmentDate = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentTime = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentStatus = ((String) in.readValue((String.class.getClassLoader())));
-        this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
+        this.appointmentEndTime = ((String) in.readValue((String.class.getClassLoader())));
+        this.appointmentStatusId = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -161,6 +174,21 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     public void setAptId(Integer aptId) {
         this.aptId = aptId;
     }
+    public Integer getDocId() {
+        return docId;
+    }
+
+    public void setDocId(Integer docId) {
+        this.docId = docId;
+    }
+
+    public Integer getHospitalPatId() {
+        return hospitalPatId;
+    }
+
+    public void setHospitalPatId(Integer hospitalPatId) {
+        this.hospitalPatId = hospitalPatId;
+    }
 
     public Integer getOpdId() {
         return opdId;
@@ -201,6 +229,21 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     public void setAppointmentTime(String appointmentTime) {
         this.appointmentTime = appointmentTime;
     }
+    public String getAppointmentEndTime() {
+        return appointmentEndTime;
+    }
+
+    public void setAppointmentEndTime(String appointmentEndTime) {
+        this.appointmentEndTime = appointmentEndTime;
+    }
+
+    public Integer getAppointmentStatusId() {
+        return appointmentStatusId;
+    }
+
+    public void setAppointmentStatusId(Integer appointmentStatusId) {
+        this.appointmentStatusId = appointmentStatusId;
+    }
 
     public String getAppointmentStatus() {
         return appointmentStatus;
@@ -236,6 +279,8 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
         dest.writeValue(patientName);
+        dest.writeValue(docId);
+        dest.writeValue(hospitalPatId);
         dest.writeValue(age);
         dest.writeValue(dateOfBirth);
         dest.writeValue(gender);
@@ -247,8 +292,9 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         dest.writeValue(patientImageUrl);
         dest.writeValue(appointmentDate);
         dest.writeValue(appointmentTime);
+        dest.writeValue(appointmentEndTime);
+        dest.writeValue(appointmentStatusId);
         dest.writeValue(appointmentStatus);
-        dest.writeValue(patientEmail);
     }
 
 

@@ -1,6 +1,7 @@
 package com.rescribe.doctor.ui.activities.my_appointments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
+import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.my_appointments.DrawerForMyAppointment;
 import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
@@ -80,7 +82,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         //Call api for AppointmentData
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetAppointmentData();
-        setUpNavigationDrawer();
+
 
     }
 
@@ -113,10 +115,10 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             }
         });
 
-   new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mDrawerForMyAppointment = DrawerForMyAppointment.newInstance();
+                mDrawerForMyAppointment = DrawerForMyAppointment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_view, mDrawerForMyAppointment).commit();
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
@@ -160,6 +162,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                 bundle.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsBaseModel.getMyAppointmentsDataModel());
                 mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
+                setUpNavigationDrawer();
             }
 
         }
@@ -190,6 +193,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             case R.id.userInfoTextView:
                 break;
             case R.id.dateTextview:
+
                 break;
             case R.id.viewContainer:
                 break;
@@ -205,6 +209,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.closeDrawer(GravityCompat.END);
         } else {
+
             isLongPressed = mMyAppointmentsFragment.callOnBackPressed();
             if (isLongPressed) {
                 mMyAppointmentsFragment.removeCheckBox();

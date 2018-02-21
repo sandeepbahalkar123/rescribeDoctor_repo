@@ -7,8 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.my_appointments.FilterSortByHighLowList;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -18,20 +23,19 @@ import butterknife.ButterKnife;
 
 public class SortByPriceFilterAdapter extends RecyclerView.Adapter<SortByPriceFilterAdapter.ListViewHolder> {
 
-    private String lowToHigh = "(low to high)";
-    private String highToLow = "(high to low)";
-    private String ratings = " Ratings ";
+   /* private String ratings = " Ratings ";
     private String fees = " Fees ";
     private String asc = "asc";
     private String desc = "desc";
-    private String selectedSortedOptionLabel = "";//
-
-    private String[] sortOptions = new String[]{"Outstanding Amt" + lowToHigh,
-            "Outstanding Amt" + highToLow};
+    private String selectedSortedOptionLabel = "";*/
+    private ArrayList<FilterSortByHighLowList> mFilterSortByHighLowLists;
     private Context mContext;
+    private onSortByAmountMenuClicked mOnSortByAmountMenuClicked;
 
-    public SortByPriceFilterAdapter(Context mContext) {
+    public SortByPriceFilterAdapter(Context mContext, ArrayList<FilterSortByHighLowList> mFilterSortByHighLowLists, onSortByAmountMenuClicked mOnSortByAmountMenuClicked) {
         this.mContext = mContext;
+        this.mFilterSortByHighLowLists = mFilterSortByHighLowLists;
+        this.mOnSortByAmountMenuClicked = mOnSortByAmountMenuClicked;
 
     }
 
@@ -44,40 +48,50 @@ public class SortByPriceFilterAdapter extends RecyclerView.Adapter<SortByPriceFi
     }
 
     @Override
-    public void onBindViewHolder(final ListViewHolder holder, int position) {
-        String sortOption = sortOptions[position];
-        holder.sortName.setText(sortOption);
+    public void onBindViewHolder(final ListViewHolder holder, final int position) {
+        final FilterSortByHighLowList filterSortByHighLowListObj = mFilterSortByHighLowLists.get(position);
+        holder.sortName.setText(filterSortByHighLowListObj.getAmountHighOrLow());
+
 
         holder.recyclerViewClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String receivedTitle = "" + v.getTag();
+                for (FilterSortByHighLowList object : mFilterSortByHighLowLists) {
+                    object.setSelected(false);
+                }
+                if (filterSortByHighLowListObj.isSelected()) {
+                    filterSortByHighLowListObj.setSelected(false);
 
-                if (receivedTitle.equalsIgnoreCase(selectedSortedOptionLabel)) {
-                    selectedSortedOptionLabel = "";
+                } else {
+                    filterSortByHighLowListObj.setSelected(true);
+                }
+                notifyDataSetChanged();
+                mOnSortByAmountMenuClicked.onClickOfSortMenu(filterSortByHighLowListObj,position);
+
+               /* if (receivedTitle.equalsIgnoreCase(selectedSortedOptionLabel)) {
+                    seglectedSortedOptionLabel = "";
                     holder.serviceIcon.setVisibility(View.GONE);
                 } else {
                     selectedSortedOptionLabel = receivedTitle;
                     holder.serviceIcon.setVisibility(View.VISIBLE);
                     notifyDataSetChanged();
                 }
-
+*/
             }
         });
 
-        if (sortOption.equalsIgnoreCase(selectedSortedOptionLabel)) {
-            selectedSortedOptionLabel = sortOption;
+        if (filterSortByHighLowListObj.isSelected()) {
             holder.serviceIcon.setVisibility(View.VISIBLE);
         } else {
             holder.serviceIcon.setVisibility(View.GONE);
         }
 
-        holder.recyclerViewClick.setTag(sortOption);
     }
 
     @Override
     public int getItemCount() {
-        return sortOptions.length;
+        return mFilterSortByHighLowLists.size();
     }
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
@@ -97,26 +111,15 @@ public class SortByPriceFilterAdapter extends RecyclerView.Adapter<SortByPriceFi
         }
     }
 
-    // sortBy|sortOrder
-    public String getSelectedSortedOption() {
-        String temp;
-        if (selectedSortedOptionLabel.toLowerCase().contains(ratings.toLowerCase())) {
-            temp = ratings.trim();
-        } else {
-            temp = fees.trim();
-        }
-        //-------
-        //-------
-
-        if (selectedSortedOptionLabel.toLowerCase().endsWith(lowToHigh.toLowerCase())) {
-            temp = temp + "|" + asc.trim();
-        } else {
-            temp = temp + "|" + desc.trim();
-        }
-        return temp;
+    public ArrayList<FilterSortByHighLowList> getAmountSortList(){
+        return mFilterSortByHighLowLists;
     }
 
-    public String getSelectedSortedOptionLabel() {
-        return selectedSortedOptionLabel;
+    public interface onSortByAmountMenuClicked {
+
+        void onClickOfSortMenu(FilterSortByHighLowList filterSortByHighLowObject, int groupPosition);
+
+
     }
+
 }

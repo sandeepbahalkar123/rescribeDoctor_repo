@@ -25,6 +25,13 @@
     <string name="roboto_bold">roboto_bold.ttf</string>
     <string name="roboto_medium">roboto_medium.ttf</string>
     <string name="roboto_regular">roboto_regular.ttf</string>
+    <string name="no_investigation">Investigation not available</string>
+    <string name="bill_invoices">Bill Invoices</string>
+    <string name="case_encounter">Case Encounter</string>
+    <string name="gallery">Gallery</string>
+    <string name="title_activity_report_selection">Report Selection</string>
+    <string name="files">Files</string>
+    <string name="adddocs">Add Documents</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="enter_otp">Enter OTP</string>
@@ -33,10 +40,11 @@
     <string name="read_less">&#160;<u>
         less</u></string>
     <string name="done">Done</string>
-
+    <string name="others">Others</string>
+    <string name="prescriptionModels">Prescriptions</string>
     <string name="title_activity_zoomview">Zoom View</string>
     <string name="type">type</string>
-
+    <string name="investigations">Investigations</string>
     <string name="name">Name</string>
     <string name="details">&#160;Details</string>
     <string name="forgot_password">Forgot  password?</string>
@@ -53,6 +61,7 @@
     <string name="error_too_small_password">Password should be 8 characters long. </string>
     <string name="title">Title</string>
     <string name="server_error">Server Error</string>
+    <string name="add_caption">Add Caption</string>
 
 
     <!--//*** Google Map key-->
@@ -152,8 +161,10 @@
     <string name="years">yrs -</string>
     <string name="opd_appointment">Appointment</string>
     <string name="nil">NIL</string>
-    <string name="booked">booked</string>
+    <string name="book">book</string>
+    <string name="booked">Booked</string>
     <string name="completed">completed</string>
+    <string name="capitalcompleted">Completed</string>
     <string name="follow">follow</string>
     <string name="mr">Mr.</string>
     <string name="mrs">Mrs.</string>
@@ -185,6 +196,26 @@
     <string name="my_patients">My Patients</string>
     <string name="do_you_logout">Do you want to logout?</string>
     <string name="transgender">Transgender</string>
-
+    <string name="add_record">Add Records</string>
+    <string name="select_doctor_name">Doctor Name</string>
+    <string name="my_records">My Records</string>
+    <string name="select_date_text">Select Date</string>
+    <string name="enter_date">Enter Date</string>
+    <string name="enter_address">Enter Address</string>
+    <string name="next">Next</string>
+    <string name="addrecords">Add Records</string>
+    <string name="please_select_doctor_name">Please enter Doctor Name</string>
+    <string name="please_enter_date">Please enter Date</string>
+    <string name="please_enter_doctor_address">Please enter Doctor Address</string>
+    <string name="please_select_at_least_one_document">Please select at least one Document.</string>
+    <string name="gmail_application_not_found">Gmail application not found</string>
+    <string name="retry">Retry</string>
+    <string name="upload">Upload</string>
+    <string name="select_report">Select Report</string>
+    <string name="just_now">Just Now</string>
+    <string name="services">Services</string>
+    <string name="practices_at_locations">Practices at $$ locations</string>
+    <string name="about_doctor"><![CDATA[<u>About Doctor :</u>]]></string>
+    <string name="to">To:</string>
 
 </resources>

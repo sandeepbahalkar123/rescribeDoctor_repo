@@ -19,8 +19,9 @@ import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.my_appointments.DrawerForMyAppointment;
 import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
-import com.rescribe.doctor.ui.fragments.my_patients.DrawerForMyPatients;
-import com.rescribe.doctor.ui.fragments.my_patients.MyPatientsFragment;
+
+import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
+import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 

@@ -30,14 +30,15 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.login.ActiveRequest;
-import com.rescribe.doctor.model.patient_connect.PatientData;
+
+import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.SwitchButton;
-import com.rescribe.doctor.ui.fragments.patient_connect.PatientConnectChatFragment;
-import com.rescribe.doctor.ui.fragments.patient_connect.PatientConnectFragment;
+import com.rescribe.doctor.ui.fragments.patient.patient_connect.PatientConnectChatFragment;
+import com.rescribe.doctor.ui.fragments.patient.patient_connect.PatientConnectFragment;
 import com.rescribe.doctor.ui.fragments.patient_connect.PatientSearchFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;

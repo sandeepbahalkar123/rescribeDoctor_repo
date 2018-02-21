@@ -1,0 +1,104 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:focusableInTouchMode="true"
+    android:layout_marginTop="@dimen/dp56"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants"
+            android:orientation="vertical">
+
+            <include layout="@layout/doctor_header_info" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/servicesLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dp10">
+
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/servicesHeaderView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/services"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp16"
+                        app:customFont="@string/roboto_medium" />
+
+                    <ListView
+                        android:id="@+id/servicesListView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:divider="@null"
+                        android:listSelector="@android:color/transparent"
+                        android:dividerHeight="0dp"
+                        android:visibility="visible" />
+
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/readMoreDocServices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/read_more"
+                        android:textColor="@color/tagColor"
+                        android:visibility="gone"
+                        app:customFont="@string/roboto_medium" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp1"
+                    android:id="@+id/servicesLine"
+                    android:background="@color/divider"
+                    android:paddingBottom="@dimen/dp10"
+                    android:paddingTop="@dimen/dp10" />
+
+                <LinearLayout
+                    android:id="@+id/aboutLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dp10"
+                    android:visibility="gone">
+
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/aboutDoctor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/about_doctor"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp16"
+                        app:customFont="@string/roboto_medium" />
+
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/aboutDoctorDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/dp10"
+                        android:textColor="@color/about_doctor_color"
+                        android:textSize="@dimen/sp14"
+                        app:customFont="@string/roboto_regular"
+                        tools:text="Lorem \n\n" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</RelativeLayout>

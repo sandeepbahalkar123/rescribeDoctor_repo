@@ -9,9 +9,9 @@
     <string name="years">yrs -</string>
     <string name="opd_appointment">Appointment</string>
     <string name="nil">NIL</string>
-    <string name="booked">Booked</string>
+    <string name="book">book</string>
     <string name="completed">completed</string>
-    <string name="follow">Follow</string>
+    <string name="follow">follow</string>
     <string name="mr">Mr.</string>
     <string name="mrs">Mrs.</string>
     <string name="miss">Miss.</string>
@@ -24,4 +24,13 @@
     <string name="my_patients">My Patients</string>
     <string name="do_you_logout">Do you want to logout?</string>
     <string name="transgender">Transgender</string>
+    <string name="addrecords">Add Records</string>
+    <string name="retry">Retry</string>
+    <string name="upload">Upload</string>
+    <string name="select_report">Select Report</string>
+    <string name="just_now">Just Now</string>
+    <string name="services">Services</string>
+    <string name="practices_at_locations">Practices at $$ locations</string>
+    <string name="about_doctor"><![CDATA[<u>About Doctor :</u>]]></string>
+    <string name="to">To:</string>
 </resources>

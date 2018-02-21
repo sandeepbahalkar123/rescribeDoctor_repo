@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.my_appointments.ClinicList;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,10 +22,10 @@ import butterknife.ButterKnife;
 public class DrawerAppointmetClinicNameAdapter extends RecyclerView.Adapter<DrawerAppointmetClinicNameAdapter.ListViewHolder> {
 
     private Context mContext;
-    private String[] mClinicList = {"Sai Clinic, Mumbai", "Pain Clinic, Pune", "Hinduja Hospital, Banglore", "Apollo Hospital, Chennai"};
-
-    public DrawerAppointmetClinicNameAdapter(Context mContext) {
+    private ArrayList<ClinicList> mClinicList ;
+    public DrawerAppointmetClinicNameAdapter(Context mContext, ArrayList<ClinicList> clinicList) {
         this.mContext = mContext;
+        this.mClinicList = clinicList;
     }
 
     @Override
@@ -36,13 +39,13 @@ public class DrawerAppointmetClinicNameAdapter extends RecyclerView.Adapter<Draw
     @Override
     public void onBindViewHolder(final DrawerAppointmetClinicNameAdapter.ListViewHolder holder, int position) {
 
-        holder.menuName.setText(mClinicList[position]);
+        holder.menuName.setText(mClinicList.get(position).getClinicName()+", "+mClinicList.get(position).getCity());
 
     }
 
     @Override
     public int getItemCount() {
-        return mClinicList.length;
+        return mClinicList.size();
     }
 
     static class ListViewHolder extends RecyclerView.ViewHolder {

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:ignore="MissingTranslation">
+
+    <LinearLayout
+        android:id="@+id/clickOnDoctorVisitLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp120"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/sideBarView"
+            android:layout_width="@dimen/dp4"
+            android:layout_height="match_parent"
+            android:background="@color/tagColor" />
+
+        <LinearLayout
+            android:id="@+id/parentDataContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp6"
+            android:paddingStart="@dimen/dp6">
+
+            <com.rescribe.doctor.ui.customesViews.CustomTextView
+                android:id="@+id/date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.14"
+                android:gravity="center"
+                android:text="12th\nJust\now"
+                android:textColor="@color/recentblue"
+                android:textSize="@dimen/sp16"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="@dimen/dp32"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/upperLine"
+                    android:layout_width="@dimen/dp1"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="-3dp"
+                    android:layout_weight="1"
+                    android:background="@color/recentblue" />
+
+                <ImageView
+                    android:id="@+id/circularBulletMainElement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp28"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/blue_dot"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/circularBulletChildElement"
+                    android:layout_width="@dimen/dp16"
+                    android:layout_height="@dimen/dp16"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/lowerLine"
+                    android:layout_width="@dimen/dp1"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="-3dp"
+                    android:layout_weight="1"
+                    android:background="@color/recentblue" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="0.9"
+                android:orientation="horizontal">
+                <!--  ListRow Left sied Thumbnail image -->
+                <LinearLayout
+                    android:id="@+id/thumbnail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp5"
+                    android:layout_marginRight="@dimen/dp5"
+                    android:padding="3dip"
+                    android:visibility="invisible">
+
+                    <com.rescribe.doctor.ui.customesViews.CircularImageView
+                        android:id="@+id/docProfileImage"
+                        android:layout_width="@dimen/dp50"
+                        android:layout_height="@dimen/dp50"
+                        android:layout_gravity="center"
+                        app:border="true"
+                        app:shadow="true" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center|left"
+                    android:id="@+id/patientOpdInfoLayout"
+                    android:orientation="vertical"
+                    android:paddingEnd="@dimen/dp12"
+                    android:paddingRight="@dimen/dp12">
+
+                    <!-- Title Of Song-->
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/doctorType"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dip"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp16"
+                        android:textStyle="bold"
+                        tools:text="Just gona stand there and  " />
+
+                    <!-- Artist Name -->
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/doctorName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/recentblue"
+                        android:textSize="@dimen/sp18"
+                        android:textStyle="bold"
+                        android:typeface="sans"
+                        android:text="Complaints"
+                        tools:text="Rihanna Love the way lie" />
+
+                    <!-- Rightend Duration -->
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/doctorAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="left"
+                        android:maxLines="3"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp12"
+                        android:textStyle="bold"
+                        tools:text="5:45asdasdasdasd\nsfsdfsdfs\nsdfsfsdfsfsdfsdfsdfsdfsfsdfs\n11111" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

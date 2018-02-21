@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.my_appointments.StatusList;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,10 +22,10 @@ import butterknife.ButterKnife;
 public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<DrawerAppointmentSelectStatusAdapter.ListViewHolder> {
 
     private Context mContext;
-    private String[] mSelectStatusList = {"Follow Up", "Booked", "Confirmed", "Completed", "Cancelled", "Other", "No Show"};
-
-    public DrawerAppointmentSelectStatusAdapter(Context mContext) {
+    private ArrayList<StatusList> mStatusLists;
+    public DrawerAppointmentSelectStatusAdapter(Context mContext, ArrayList<StatusList> statusList) {
         this.mContext = mContext;
+        this.mStatusLists = statusList;
     }
 
     @Override
@@ -36,13 +39,13 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
     @Override
     public void onBindViewHolder(final ListViewHolder holder, int position) {
 
-        holder.menuName.setText(mSelectStatusList[position]);
+        holder.menuName.setText(mStatusLists.get(position).getStatusName());
 
     }
 
     @Override
     public int getItemCount() {
-        return mSelectStatusList.length;
+        return mStatusLists.size();
     }
 
     static class ListViewHolder extends RecyclerView.ViewHolder {

@@ -570,6 +570,9 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.settings))) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
+        }else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.profile))) {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
         }
     }
 }
