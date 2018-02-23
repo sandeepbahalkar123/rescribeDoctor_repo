@@ -6,8 +6,12 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,20 +53,23 @@ import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder> {
 
-    private final Context context;
+    private final Context mContext;
     private final ItemListener itemListener;
+    private final String searchedMessageString;
     private TextDrawable mReceiverTextDrawable;
     private TextDrawable mSelfTextDrawable;
     private ArrayList<MQTTMessage> mqttMessages;
 
-    public ChatAdapter(ArrayList<MQTTMessage> mqttMessages, TextDrawable mSelfTextDrawable, TextDrawable mReceiverTextDrawable, Context context) {
+
+    public ChatAdapter(ArrayList<MQTTMessage> mqttMessages, TextDrawable mSelfTextDrawable, TextDrawable mReceiverTextDrawable, Context mContext, String searchedMessageString) {
         this.mqttMessages = mqttMessages;
         this.mSelfTextDrawable = mSelfTextDrawable;
         this.mReceiverTextDrawable = mReceiverTextDrawable;
-        this.context = context;
+        this.searchedMessageString = searchedMessageString;
+        this.mContext = mContext;
 
         try {
-            this.itemListener = ((ItemListener) context);
+            this.itemListener = ((ItemListener) mContext);
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement ItemClickListener.");
         }
@@ -143,7 +150,23 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
             }
 
             if (message.getFileUrl().isEmpty()) {
-                holder.senderMessage.setText(message.getMsg());
+
+                if (searchedMessageString != null) {
+                    String lowerCaseSearchString = searchedMessageString.toLowerCase();
+                    String loweCaseMsg = message.getMsg().toLowerCase();
+                    int startIndex = loweCaseMsg.indexOf(lowerCaseSearchString);
+                    if (startIndex != -1) {
+                        SpannableString spannableStringSearch = new SpannableString(message.getMsg());
+                        spannableStringSearch.setSpan(new ForegroundColorSpan(
+                                        ContextCompat.getColor(mContext, R.color.tagColor)), startIndex
+                                , startIndex + searchedMessageString.length(),
+                                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        holder.senderMessage.setText(spannableStringSearch);
+                    } else
+                        holder.senderMessage.setText(message.getMsg());
+                } else
+                    holder.senderMessage.setText(message.getMsg());
+
                 holder.senderPhotoLayout.setVisibility(View.GONE);
                 holder.senderFileLayout.setVisibility(View.GONE);
                 holder.senderMessage.setVisibility(View.VISIBLE);
@@ -257,7 +280,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                                 RelativeLayout.LayoutParams.MATCH_PARENT,
                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-                        senderPhotoLayoutParams.setMargins(context.getResources().getDimensionPixelOffset(R.dimen.margin_imageview), 0, 0, 0);
+                        senderPhotoLayoutParams.setMargins(mContext.getResources().getDimensionPixelOffset(R.dimen.margin_imageview), 0, 0, 0);
                         senderPhotoLayoutParams.addRule(RelativeLayout.LEFT_OF, R.id.senderProfilePhoto);
                         holder.senderLayoutChild.setLayoutParams(senderPhotoLayoutParams);
 
@@ -286,10 +309,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                                     Uri gmmIntentUri = Uri.parse("geo:" + message.getFileUrl() + "?q=(" + (!message.getSender().equals(DOCTOR) ? "Patient Location" : "Doctor Location") + ")@" + message.getFileUrl());
                                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                     mapIntent.setPackage("com.google.android.apps.maps");
-                                    if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
-                                        context.startActivity(mapIntent);
+                                    if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                        mContext.startActivity(mapIntent);
                                     } else {
-                                        CommonMethods.showToast(context, "GoogleMap application not installed on your device.");
+                                        CommonMethods.showToast(mContext, "GoogleMap application not installed on your device.");
                                     }
                                 }
                             });
@@ -303,7 +326,23 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                                 holder.senderMessageWithImage.setVisibility(View.GONE);
                             else {
                                 holder.senderMessageWithImage.setVisibility(View.VISIBLE);
-                                holder.senderMessageWithImage.setText(message.getMsg());
+
+                                if (searchedMessageString != null) {
+                                    String lowerCaseSearchString = searchedMessageString.toLowerCase();
+                                    String loweCaseMsg = message.getMsg().toLowerCase();
+                                    int startIndex = loweCaseMsg.indexOf(lowerCaseSearchString);
+                                    if (startIndex != -1) {
+                                        SpannableString spannableStringSearch = new SpannableString(message.getMsg());
+                                        spannableStringSearch.setSpan(new ForegroundColorSpan(
+                                                        ContextCompat.getColor(mContext, R.color.tagColor)), startIndex
+                                                , startIndex + searchedMessageString.length(),
+                                                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                                        holder.senderMessage.setText(spannableStringSearch);
+                                    } else
+                                        holder.senderMessage.setText(message.getMsg());
+                                } else
+                                    holder.senderMessageWithImage.setText(message.getMsg());
+
                             }
 
                             final boolean isUrl;
@@ -345,10 +384,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                                         message.setUploadStatus(UPLOADING);
                                         notifyItemChanged(position);
                                     } else if (message.getUploadStatus() == COMPLETED) {
-                                        Intent intent = new Intent(context, ZoomImageViewActivity.class);
+                                        Intent intent = new Intent(mContext, ZoomImageViewActivity.class);
                                         intent.putExtra(RescribeConstants.DOCUMENTS, message.getFileUrl());
                                         intent.putExtra(RescribeConstants.IS_URL, isUrl);
-                                        context.startActivity(intent);
+                                        mContext.startActivity(intent);
                                     }
                                 }
                             });
@@ -524,7 +563,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
                         receiverPhotoLayoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.receiverProfilePhoto);
-                        receiverPhotoLayoutParams.setMargins(0, 0, context.getResources().getDimensionPixelOffset(R.dimen.margin_imageview), 0);
+                        receiverPhotoLayoutParams.setMargins(0, 0, mContext.getResources().getDimensionPixelOffset(R.dimen.margin_imageview), 0);
                         holder.receiverLayoutChild.setLayoutParams(receiverPhotoLayoutParams);
 
                         if (message.getMsg().isEmpty())
@@ -583,16 +622,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                                     Uri gmmIntentUri = Uri.parse("geo:" + message.getFileUrl() + "?q=(" + (!message.getSender().equals(DOCTOR) ? "Patient Location" : "Doctor Location") + ")@" + message.getFileUrl());
                                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                     mapIntent.setPackage("com.google.android.apps.maps");
-                                    if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
-                                        context.startActivity(mapIntent);
+                                    if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                        mContext.startActivity(mapIntent);
                                     } else {
-                                        CommonMethods.showToast(context, "GoogleMap application not installed on your device.");
+                                        CommonMethods.showToast(mContext, "GoogleMap application not installed on your device.");
                                     }
                                 } else {
-                                    Intent intent = new Intent(context, ZoomImageViewActivity.class);
+                                    Intent intent = new Intent(mContext, ZoomImageViewActivity.class);
                                     intent.putExtra(RescribeConstants.DOCUMENTS, message.getFileUrl());
                                     intent.putExtra(RescribeConstants.IS_URL, true);
-                                    context.startActivity(intent);
+                                    mContext.startActivity(intent);
                                 }
                             }
                         });

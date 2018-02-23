@@ -57,6 +57,7 @@ import rx.functions.Func1;
 import static com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver.MESSAGE_LIST;
 import static com.rescribe.doctor.util.Config.BROKER;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.READ;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 
 public class MQTTService extends Service {
@@ -83,7 +84,7 @@ public class MQTTService extends Service {
     public static final String DELIVERED = "delivered";
 
     public static final String DOCTOR = "user1";
-//    public static final String PATIENT = "user2";
+    public static final String PATIENT = "user2";
 
     private MqttAsyncClient mqttClient;
 
@@ -227,7 +228,7 @@ public class MQTTService extends Service {
                                             if (currentChatUser != messageL.getPatId()) {
 
                                                 ArrayList<MQTTMessage> messagesTemp = new ArrayList<>();
-                                                ArrayList<MQTTMessage> messages = appDBHelper.insertUnreadMessage(messageL.getPatId(), payloadString); // Change
+                                                ArrayList<MQTTMessage> messages = appDBHelper.insertChatMessage(messageL); // Change
 
                                                 if (messages.size() > 6) {
                                                     for (int index = messages.size() - 6; index < messages.size(); index++)
@@ -237,9 +238,11 @@ public class MQTTService extends Service {
                                                 // change
                                                 statusInfo.setMessageStatus(REACHED);
 
-                                                MessageNotification.notify(mContext, messagesTemp, messageL.getName(), getProfilePhotoBitmap(messageL), appDBHelper.unreadMessageCountById(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
+                                                MessageNotification.notify(mContext, messagesTemp, messageL.getName(), getProfilePhotoBitmap(messageL), appDBHelper.unreadChatMessageCountByPatientId(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
                                             } else {
                                                 // change
+                                                messageL.setReadStatus(READ);
+                                                appDBHelper.insertChatMessage(messageL); // Change
                                                 statusInfo.setMessageStatus(SEEN);
                                             }
 
@@ -408,6 +411,8 @@ public class MQTTService extends Service {
         } catch (MqttException e) {
             e.printStackTrace();
         }
+
+        appDBHelper.insertChatMessage(mqttMessage);
     }
 
     @Override

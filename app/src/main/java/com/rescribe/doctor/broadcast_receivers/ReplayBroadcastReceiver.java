@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.rescribe.doctor.helpers.database.AppDBHelper;
-import com.rescribe.doctor.interfaces.CustomResponse;
-import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
-import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
@@ -21,7 +18,7 @@ import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
 import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 
-public class ReplayBroadcastReceiver extends BroadcastReceiver implements HelperResponse {
+public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements HelperResponse*/ {
     public static final String MESSAGE_LIST = "message_list";
     private MQTTMessage recievedMessage;
     private Context context;
@@ -49,8 +46,7 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
 
             MQTTMessage messageL = new MQTTMessage();
             messageL.setTopic(MQTTService.TOPIC[MESSAGE_TOPIC]);
-            messageL.setMsg(message.toString());
-
+            messageL.setMsg(message != null ? message.toString() : "");
             String generatedId = recievedMessage.getDocId() + "_" + 0 + System.nanoTime();
             messageL.setMsgId(generatedId);
 
@@ -87,12 +83,12 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
             intentService.putExtra(MESSAGE_LIST, messageL);
             context.startService(intentService);
             MessageNotification.cancel(context, recievedMessage.getPatId()); // Change
-            appDBHelper.deleteUnreadMessage(recievedMessage.getPatId()); // Change
+            appDBHelper.markAsAReadChatMessageByPatientId(recievedMessage.getPatId()); // Change
 
         }
     }
 
-    @Override
+   /* @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (customResponse instanceof SendMessageModel) {
             if (recievedMessage != null) {
@@ -115,5 +111,5 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver implements Helper
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
 
-    }
+    }*/
 }

@@ -57,13 +57,11 @@ import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.chat.ChatAdapter;
 import com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver;
-import com.rescribe.doctor.helpers.chat.ChatHelper;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTData;
 import com.rescribe.doctor.model.chat.MQTTMessage;
-import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.StatusInfo;
 import com.rescribe.doctor.model.chat.history.ChatHistory;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
@@ -127,7 +125,6 @@ import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
-import static com.rescribe.doctor.util.RescribeConstants.SEND_MESSAGE;
 import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.IDLE;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
@@ -139,6 +136,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
     // Audio
     private static final String LOG_TAG = "AudioRecordTest";
+    public static final String SEARCHED_TEXT = "searched_string";
     private static String mFileName = null;
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
@@ -230,6 +228,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     private boolean mPressed = false;
     private SupportAnimator mAnimator;
     private boolean hidden = true;
+    private String searchedMessageString;
 
     private void typingStatus() {
         StatusInfo statusInfo = new StatusInfo();
@@ -290,7 +289,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                             // Other user message
                             CommonMethods.Log(TAG, "Other user message");
                         }
-                    }  else if (topic.equals(TOPIC[MESSAGE_STATUS_TOPIC])) {
+                    } else if (topic.equals(TOPIC[MESSAGE_STATUS_TOPIC])) {
 
                         // Message Status
                         CommonMethods.Log(TAG, "message status");
@@ -300,8 +299,10 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                             switch (statusInfo.getMessageStatus()) {
                                 case SEEN:
                                     // change message status as a read
-                                    for (MQTTMessage mqttMessage : mqttMessage)
-                                        mqttMessage.setMsgStatus(SEEN);
+                                    for (MQTTMessage mqttMessage : mqttMessage) {
+                                        if (mqttMessage.getMsgStatus().equals(REACHED))
+                                            mqttMessage.setMsgStatus(SEEN);
+                                    }
 
                                     chatAdapter.notifyDataSetChanged();
 
@@ -309,7 +310,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                                 case REACHED:
                                     // change message status as a reached
                                     for (MQTTMessage mqttMessage : mqttMessage) {
-                                        if (!mqttMessage.getMsgStatus().equals(SEEN))
+                                        if (mqttMessage.getMsgStatus().equals(SENT) && statusInfo.getMsgId().equals(mqttMessage.getMsgId()))
                                             mqttMessage.setMsgStatus(REACHED);
                                     }
 
@@ -381,7 +382,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         }
     }
 
-    private ChatHelper chatHelper;
+    //    private ChatHelper chatHelper;
     private boolean isExistInChat = false;
 
     private static final String TAG = "ChatActivity";
@@ -396,7 +397,6 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     int next = 1;
 
     private AppDBHelper appDBHelper;
-    private int isFirstTime = 0;
     private String docName;
     private String imageUrl = "";
     private String speciality = "";
@@ -449,20 +449,21 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
         downloadInit();
 
-        if (getIntent().getAction() != null) {
-            if (getIntent().getAction().equals(REPLY_ACTION)) {
+        Intent gotIntent = getIntent();
+
+        if (gotIntent.getAction() != null) {
+            if (gotIntent.getAction().equals(REPLY_ACTION)) {
                 chatList = new PatientData();
-                MQTTMessage mqttMessage = getIntent().getParcelableExtra(ReplayBroadcastReceiver.MESSAGE_LIST);
+                MQTTMessage mqttMessage = gotIntent.getParcelableExtra(ReplayBroadcastReceiver.MESSAGE_LIST);
                 chatList.setPatientName(mqttMessage.getName());
                 chatList.setId(mqttMessage.getPatId());
                 chatList.setOnlineStatus(ONLINE);
                 chatList.setUnreadMessages(0);
-            } else {
-                chatList = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
-            }
-        } else {
-            chatList = getIntent().getParcelableExtra(RescribeConstants.PATIENT_INFO);
-        }
+                searchedMessageString = gotIntent.getStringExtra(SEARCHED_TEXT);
+            } else
+                chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
+        } else
+            chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
 
         receiverName.setText(chatList.getPatientName());
         String patientName = chatList.getPatientName();
@@ -517,8 +518,9 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         else
             onlineStatusIcon.setVisibility(View.GONE);
 
-        chatHelper = new ChatHelper(this, this);
+//        chatHelper = new ChatHelper(this, this);
 
+        mqttMessage.addAll(appDBHelper.getChatMessagesByPatientId(chatList.getId()));
         final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         chatRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -581,15 +583,15 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             }
         });
 
-        chatAdapter = new ChatAdapter(mqttMessage, mSelfDrawable, mReceiverDrawable, ChatActivity.this);
+        chatAdapter = new ChatAdapter(mqttMessage, mSelfDrawable, mReceiverDrawable, ChatActivity.this, searchedMessageString);
         chatRecyclerView.setAdapter(chatAdapter);
 
-        chatHelper.getChatHistory(next, Integer.parseInt(docId), chatList.getId());
+//        chatHelper.getChatHistory(next, Integer.parseInt(docId), chatList.getId());
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                chatHelper.getChatHistory(next, Integer.parseInt(docId), chatList.getId());
+//                chatHelper.getChatHistory(next, Integer.parseInt(docId), chatList.getId());
             }
         });
 
@@ -1240,17 +1242,8 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
         registerReceiver(receiver, new IntentFilter(
                 ACTION_DOWNLOAD_COMPLETE));
 
-        if (isFirstTime > 0) {
-            ArrayList<MQTTMessage> unreadMessages = appDBHelper.getUnreadMessagesById(chatList.getId());
-            if (unreadMessages.size() > 0) {
-                mqttMessage.addAll(unreadMessages);
-                chatAdapter.notifyItemRangeInserted(mqttMessage.size() - 1, unreadMessages.size());
-                MessageNotification.cancel(this, chatList.getId());
-                appDBHelper.deleteUnreadMessage(chatList.getId());
-            }
-        }
-
-        isFirstTime += 1;
+        MessageNotification.cancel(this, chatList.getId());
+        appDBHelper.markAsAReadChatMessageByPatientId(chatList.getId());
     }
 
     @Override
@@ -1272,7 +1265,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (customResponse instanceof SendMessageModel) {
+        /*if (customResponse instanceof SendMessageModel) {
             SendMessageModel sendMessageModel = (SendMessageModel) customResponse;
             if (sendMessageModel.getCommon().getStatusCode().equals(RescribeConstants.SUCCESS)) {
                 // message sent
@@ -1284,7 +1277,9 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                 }
                 CommonMethods.showToast(ChatActivity.this, sendMessageModel.getCommon().getStatusMessage());
             }
-        } else if (customResponse instanceof ChatHistoryModel) {
+        } else */
+
+        if (customResponse instanceof ChatHistoryModel) {
             ChatHistoryModel chatHistoryModel = (ChatHistoryModel) customResponse;
             if (chatHistoryModel.getCommon().getStatusCode().equals(RescribeConstants.SUCCESS)) {
                 final List<ChatHistory> chatHistory = chatHistoryModel.getHistoryData().getChatHistory();
@@ -1348,7 +1343,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
                     chatAdapter.notifyDataSetChanged();
 
                     // cancel notification
-                    appDBHelper.deleteUnreadMessage(chatList.getId());
+                    appDBHelper.markAsAReadChatMessageByPatientId(chatList.getId());
                     MessageNotification.cancel(this, chatList.getId());
 
                     // send message seen reply when open chat screen
@@ -1399,34 +1394,34 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
         swipeLayout.setRefreshing(false);
-        if (mOldDataTag.equals(SEND_MESSAGE)) {
+        /*if (mOldDataTag.equals(SEND_MESSAGE)) {
             if (chatAdapter != null) {
                 mqttMessage.remove(mqttMessage.size() - 1);
                 chatAdapter.notifyItemRemoved(mqttMessage.size() - 1);
             }
-        }
+        }*/
     }
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
         swipeLayout.setRefreshing(false);
-        if (mOldDataTag.equals(SEND_MESSAGE)) {
+       /* if (mOldDataTag.equals(SEND_MESSAGE)) {
             if (chatAdapter != null) {
                 mqttMessage.remove(mqttMessage.size() - 1);
                 chatAdapter.notifyItemRemoved(mqttMessage.size() - 1);
             }
-        }
+        }*/
     }
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
         swipeLayout.setRefreshing(false);
-        if (mOldDataTag.equals(SEND_MESSAGE)) {
+       /* if (mOldDataTag.equals(SEND_MESSAGE)) {
             if (chatAdapter != null) {
                 mqttMessage.remove(mqttMessage.size() - 1);
                 chatAdapter.notifyItemRemoved(mqttMessage.size() - 1);
             }
-        }
+        }*/
     }
 
     // Uploading
@@ -1494,7 +1489,7 @@ public class ChatActivity extends AppCompatActivity implements HelperResponse, C
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            Uri uri = null;
+            Uri uri;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);

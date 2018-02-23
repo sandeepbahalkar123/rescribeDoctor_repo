@@ -10,10 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
+import com.rescribe.doctor.adapters.patient_connect.SearchedMessagesAdapter;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.patient_connect.PatientConnectHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -35,11 +36,13 @@ import butterknife.Unbinder;
 
 public class PatientConnectChatFragment extends Fragment implements HelperResponse {
 
-    @BindView(R.id.listView)
+    @BindView(R.id.patientRecyclerView)
     RecyclerView mRecyclerView;
+    @BindView(R.id.searchRecyclerView)
+    RecyclerView searchRecyclerView;
     @BindView(R.id.emptyListView)
     RelativeLayout mEmptyListView;
-    
+
     Unbinder unbinder;
     private ArrayList<PatientData> mReceivedPatientDataList = new ArrayList<>();
     private PatientConnectAdapter mPatientConnectAdapter;
@@ -58,7 +61,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View mRootView = inflater.inflate(R.layout.global_connect_recycle_view_layout, container, false);
+        View mRootView = inflater.inflate(R.layout.patient_connect_fragment, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
 
         initialize();
@@ -68,8 +71,12 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     private void initialize() {
         PatientConnectHelper mPatientConnectHelper = new PatientConnectHelper(getActivity(), this);
 
+        mRecyclerView.setNestedScrollingEnabled(false);
+        searchRecyclerView.setNestedScrollingEnabled(false);
+
         mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setAutoMeasureEnabled(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
@@ -202,6 +209,40 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     public void setOnClickOfSearchBar(String searchText) {
         if (mPatientConnectAdapter != null)
             mPatientConnectAdapter.getFilter().filter(searchText);
+
+        if (searchText.isEmpty()) {
+
+            searchRecyclerView.setVisibility(View.GONE);
+
+            if (mReceivedPatientDataList.isEmpty()) {
+                mEmptyListView.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            } else {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mEmptyListView.setVisibility(View.GONE);
+            }
+        } else {
+
+            searchRecyclerView.setVisibility(View.VISIBLE);
+
+            AppDBHelper appDBHelper = new AppDBHelper(getContext());
+            ArrayList<MQTTMessage> mqttMessages = appDBHelper.searchChatMessagesByChars(searchText);
+            if (!mqttMessages.isEmpty()) {
+
+                mEmptyListView.setVisibility(View.GONE);
+
+                SearchedMessagesAdapter searchedMessagesAdapter = new SearchedMessagesAdapter(getContext(), mqttMessages, searchText);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                mLayoutManager.setAutoMeasureEnabled(true);
+                searchRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(searchRecyclerView.getContext(),
+                        DividerItemDecoration.VERTICAL);
+                searchRecyclerView.addItemDecoration(dividerItemDecoration);
+                searchRecyclerView.setLayoutManager(mLayoutManager);
+                searchRecyclerView.setAdapter(searchedMessagesAdapter);
+            } else
+                mEmptyListView.setVisibility(View.VISIBLE);
+        }
     }
 }
 

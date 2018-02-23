@@ -31,10 +31,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.IDLE;
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
-
 
 /**
  * Created by jeetal on 6/9/17.
@@ -56,7 +52,7 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
         CustomTextView doctorName;
         @BindView(R.id.doctorType)
         TextView doctorType;
-        @BindView(R.id.onlineStatusTextView)
+        @BindView(R.id.messageTextView)
         TextView onlineStatusTextView;
 
         @BindView(R.id.onlineStatusIcon)
