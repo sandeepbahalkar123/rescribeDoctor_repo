@@ -344,11 +344,10 @@ public class MQTTService extends Service {
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
-            if (mqttClient.isConnected()) {
+            if (mqttClient.isConnected())
                 mqttClient.publish(TOPIC[INTERNET_TOPIC], message);
-            } else {
+            else
                 mqttClient.reconnect();
-            }
             CommonMethods.Log("passInternetStatus: ", content);
         } catch (MqttException e) {
             e.printStackTrace();
@@ -365,11 +364,10 @@ public class MQTTService extends Service {
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
-            if (mqttClient.isConnected()) {
+            if (mqttClient.isConnected())
                 mqttClient.publish(TOPIC[MESSAGE_STATUS_TOPIC], message);
-            } else {
+            else
                 mqttClient.reconnect();
-            }
             CommonMethods.Log("passMessageStatus: ", content);
         } catch (MqttException e) {
             e.printStackTrace();
@@ -385,11 +383,10 @@ public class MQTTService extends Service {
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
-            if (mqttClient.isConnected()) {
+            if (mqttClient.isConnected())
                 mqttClient.publish(TOPIC[USER_TYPING_STATUS_TOPIC], message);
-            } else {
+            else
                 mqttClient.reconnect();
-            }
             CommonMethods.Log("passTypeStatus: ", content);
         } catch (MqttException e) {
             e.printStackTrace();
@@ -402,11 +399,10 @@ public class MQTTService extends Service {
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
-            if (mqttClient.isConnected()) {
+            if (mqttClient.isConnected())
                 mqttClient.publish(TOPIC[MESSAGE_TOPIC], message);
-            } else {
+            else
                 mqttClient.reconnect();
-            }
             CommonMethods.Log("passMessage: ", content);
         } catch (MqttException e) {
             e.printStackTrace();

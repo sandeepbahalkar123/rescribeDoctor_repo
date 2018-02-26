@@ -42,7 +42,7 @@ import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessagesAdapter.ListViewHolder> {
 
     private final ColorGenerator mColorGenerator;
-    private final String searchString;
+    private String searchString;
     private Context mContext;
     private ArrayList<MQTTMessage> mqttMessages;
 
@@ -70,11 +70,14 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
         }
     }
 
-    public SearchedMessagesAdapter(Context mContext, ArrayList<MQTTMessage> mqttMessages, String searchString) {
+    public SearchedMessagesAdapter(Context mContext, ArrayList<MQTTMessage> mqttMessages) {
         this.mqttMessages = mqttMessages;
-        this.searchString = searchString;
         this.mContext = mContext;
         mColorGenerator = ColorGenerator.MATERIAL;
+    }
+
+    public void setSearch(String searchString) {
+        this.searchString = searchString;
     }
 
     @Override

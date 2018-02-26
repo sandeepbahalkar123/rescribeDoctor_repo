@@ -1,5 +1,6 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_connect;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -34,7 +35,7 @@ import butterknife.Unbinder;
  * Created by jeetal on 6/9/17.
  */
 
-public class PatientConnectChatFragment extends Fragment implements HelperResponse {
+public class PatientConnectChatFragment extends Fragment implements HelperResponse, PatientConnectAdapter.FilterListener {
 
     @BindView(R.id.patientRecyclerView)
     RecyclerView mRecyclerView;
@@ -46,6 +47,9 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     Unbinder unbinder;
     private ArrayList<PatientData> mReceivedPatientDataList = new ArrayList<>();
     private PatientConnectAdapter mPatientConnectAdapter;
+    private DividerItemDecoration dividerItemDecoration;
+    private SearchedMessagesAdapter searchedMessagesAdapter;
+    private ArrayList<MQTTMessage> mqttMessages = new ArrayList<>();
 
     public static PatientConnectChatFragment newInstance() {
         PatientConnectChatFragment fragment = new PatientConnectChatFragment();
@@ -75,13 +79,16 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         searchRecyclerView.setNestedScrollingEnabled(false);
 
         mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setAutoMeasureEnabled(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+        dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+
         mRecyclerView.setAdapter(mPatientConnectAdapter);
 
         if (mReceivedPatientDataList.isEmpty()) {
@@ -89,6 +96,13 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         } else {
             notifyDataChanged();
         }
+
+        searchedMessagesAdapter = new SearchedMessagesAdapter(getContext(), mqttMessages);
+        searchRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        searchRecyclerView.addItemDecoration(dividerItemDecoration);
+        LinearLayoutManager mLayoutM = new LinearLayoutManager(getActivity());
+        searchRecyclerView.setLayoutManager(mLayoutM);
+        searchRecyclerView.setAdapter(searchedMessagesAdapter);
     }
 
     @Override
@@ -105,9 +119,10 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
             if (patientListData.getPatientDataList().isEmpty()) {
                 mEmptyListView.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
+            } else {
+                mReceivedPatientDataList.addAll(patientListData.getPatientDataList());
+                notifyDataChanged();
             }
-            mReceivedPatientDataList.addAll(patientListData.getPatientDataList());
-            notifyDataChanged();
         }
     }
 
@@ -131,12 +146,8 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
     public void notifyDataChanged() {
         if (mPatientConnectAdapter != null)
-            if (!mReceivedPatientDataList.isEmpty()) {
+            if (!mReceivedPatientDataList.isEmpty())
                 mPatientConnectAdapter.notifyDataSetChanged();
-                isDataListViewVisible(true);
-            } else {
-                isDataListViewVisible(false);
-            }
     }
 
     @Override
@@ -145,7 +156,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         notifyDataChanged();
     }
 
-    public void isDataListViewVisible(boolean flag) {
+    /*public void isDataListViewVisible(boolean flag) {
         if (mEmptyListView != null) {
             if (flag) {
                 mEmptyListView.setVisibility(View.GONE);
@@ -155,7 +166,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                 mRecyclerView.setVisibility(View.GONE);
             }
         }
-    }
+    }*/
 
     public void notifyCount(MQTTMessage message) {
         boolean isThere = false;
@@ -207,13 +218,12 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     }
 
     public void setOnClickOfSearchBar(String searchText) {
+
         if (mPatientConnectAdapter != null)
             mPatientConnectAdapter.getFilter().filter(searchText);
 
         if (searchText.isEmpty()) {
-
             searchRecyclerView.setVisibility(View.GONE);
-
             if (mReceivedPatientDataList.isEmpty()) {
                 mEmptyListView.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
@@ -221,28 +231,64 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                 mRecyclerView.setVisibility(View.VISIBLE);
                 mEmptyListView.setVisibility(View.GONE);
             }
-        } else {
-
-            searchRecyclerView.setVisibility(View.VISIBLE);
-
-            AppDBHelper appDBHelper = new AppDBHelper(getContext());
-            ArrayList<MQTTMessage> mqttMessages = appDBHelper.searchChatMessagesByChars(searchText);
-            if (!mqttMessages.isEmpty()) {
-
-                mEmptyListView.setVisibility(View.GONE);
-
-                SearchedMessagesAdapter searchedMessagesAdapter = new SearchedMessagesAdapter(getContext(), mqttMessages, searchText);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                mLayoutManager.setAutoMeasureEnabled(true);
-                searchRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(searchRecyclerView.getContext(),
-                        DividerItemDecoration.VERTICAL);
-                searchRecyclerView.addItemDecoration(dividerItemDecoration);
-                searchRecyclerView.setLayoutManager(mLayoutManager);
-                searchRecyclerView.setAdapter(searchedMessagesAdapter);
-            } else
-                mEmptyListView.setVisibility(View.VISIBLE);
         }
+    }
+
+
+    @Override
+    public void result(String searchText, ArrayList<PatientData> dataList) {
+        searchRecyclerView.setVisibility(View.VISIBLE);
+
+        mqttMessages.clear();
+
+        AppDBHelper appDBHelper = new AppDBHelper(getContext());
+        Cursor cursor = appDBHelper.searchChatMessagesByChars(searchText);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    MQTTMessage mqttMessage = new MQTTMessage();
+
+                    mqttMessage.setMsgId(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSGID)));
+                    mqttMessage.setMsg(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG)));
+                    mqttMessage.setMsgTime(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSGTIME)));
+                    mqttMessage.setSender(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER)));
+                    mqttMessage.setPatId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER2ID)));
+                    mqttMessage.setDocId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER1ID)));
+                    mqttMessage.setName(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDERNAME)));
+
+                    mqttMessage.setSpecialization(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SPECIALITY)));
+                    mqttMessage.setMsgStatus(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSGSTATUS)));
+                    mqttMessage.setImageUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDERIMGURL)));
+                    mqttMessage.setFileUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILEURL)));
+                    mqttMessage.setFileType(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILETYPE)));
+
+                    mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.UPLOADSTATUS)));
+                    mqttMessage.setDownloadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.DOWNLOADSTATUS)));
+                    mqttMessage.setReadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.READSTATUS)));
+
+                    mqttMessages.add(mqttMessage);
+                    cursor.moveToNext();
+                }
+
+                cursor.close();
+            }
+
+            appDBHelper.close();
+        }
+
+        if (!mqttMessages.isEmpty()) {
+            mEmptyListView.setVisibility(View.GONE);
+            searchedMessagesAdapter.setSearch(searchText);
+        } else {
+            if (dataList.isEmpty())
+                mEmptyListView.setVisibility(View.VISIBLE);
+            else mEmptyListView.setVisibility(View.GONE);
+
+            searchRecyclerView.setVisibility(View.GONE);
+        }
+
+        searchedMessagesAdapter.notifyDataSetChanged();
     }
 }
 

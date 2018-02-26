@@ -2,7 +2,6 @@ package com.rescribe.doctor.adapters.patient_connect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -40,6 +39,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
 
     private final ArrayList<PatientData> mArrayList;
     private final ColorGenerator mColorGenerator;
+    private final FilterListener filterListener;
     private Context mContext;
     private ArrayList<PatientData> dataList;
     private String searchString = "";
@@ -79,10 +79,10 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
         }
     }
 
-    public PatientConnectAdapter(Context mContext, ArrayList<PatientData> appointmentsList, Fragment parentFragment) {
+    public PatientConnectAdapter(Context mContext, ArrayList<PatientData> appointmentsList, FilterListener filterListener) {
 
         appDBHelper = new AppDBHelper(mContext);
-
+        this.filterListener = filterListener;
         this.dataList = appointmentsList;
         mArrayList = appointmentsList;
         this.mContext = mContext;
@@ -145,7 +145,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
                     .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
             holder.imageOfDoctor.setImageDrawable(drawable);
         }
-        //---------
+
         SpannableString spannableStringSearch = null;
 
         if ((searchString != null) && (!searchString.isEmpty())) {
@@ -176,9 +176,6 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             holder.badgeText.setVisibility(View.VISIBLE);
         } else
             holder.badgeText.setVisibility(View.GONE);
-
-        //---------
-
     }
 
     @Override
@@ -218,9 +215,14 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 dataList = (ArrayList<PatientData>) filterResults.values;
+                filterListener.result(charSequence.toString(), dataList);
                 notifyDataSetChanged();
             }
         };
+    }
+
+    public interface FilterListener {
+        void result(String searchText, ArrayList<PatientData> dataList);
     }
 
 }
