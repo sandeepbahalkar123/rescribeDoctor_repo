@@ -38,7 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp56"
                 android:background="@color/tagColor"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginBottom="@dimen/dp7">
 
                 <com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton
                     android:id="@+id/searchEditText"
@@ -61,7 +62,6 @@
                     android:layout_marginTop="@dimen/dp8"
                     android:background="@color/white"
                     android:visibility="visible"
-                    tools:ignore="TextViewEdits"
                     tools:visibility="visible" />
             </LinearLayout>
 
@@ -82,7 +82,8 @@
                 android:layout_height="wrap_content"
                 android:divider="@null"
                 android:visibility="gone"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:clipToPadding="false"/>
         </LinearLayout>
 
         <include layout="@layout/common_no_records_found" />

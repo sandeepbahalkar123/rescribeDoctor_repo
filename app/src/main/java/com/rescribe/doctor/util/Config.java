@@ -12,8 +12,14 @@ public class Config {
     public static final String LOGIN_URL = "authApi/authenticate/doctorLogin";
     public static final String VERIFY_SIGN_UP_OTP = "authApi/authenticate/verifyOTP";
     public static final String SIGN_UP_URL = "authApi/authenticate/signUp";
-    public static final String ONE_DAY_VISIT_URL = "";
+    public static final String ONE_DAY_VISIT_URL = "api/patient/getPatientOneDayVisit?opdId=";
     public static final String GET_MY_APPOINTMENTS_LIST = "doctor/api/appointment/getAppointmentList";
+    public static final String GET_SMS_TEMPLATE = "doctor/api/appointment/getDoctorSmsTemplate?docId=";
+    public static final String GET__WAITING_LIST = "doctor/api/appointment/getWaitingList";
+    public static final String GET_MY_PATIENTS_LIST = "doctor/api/patient/getPatientList";
+    public static final String GET_PATIENT_HISTORY = "doctor/api/patient/getPatientOpdHistory";
+    public static final String ADD_TO_WAITING_LIST = "doctor/api/appointment/addToWaitingList";
+    public static final String GET_CLINIC_LOCATION_LIST = "doctor/api/appointment/getDoctorLocationList?docId=";
     public static boolean DEV_BUILD = true;
     //Declared all URL used in app here
 
@@ -23,6 +29,7 @@ public class Config {
     public static String BASE_URL = "http://drrescribe.com:3003/";
     public static final String MY_RECORDS_DOCTOR_LIST = "api/doctors/getDoctorsWithPatientVisits";
     public static final String MY_RECORDS_ADD_DOCTOR = "api/doctors/addDoctor";
+    public static final String REQUEST_SEND_SMS = "doctor/api/appointment/sendSmsToPatients";
 //            public static String BASE_URL = "http://192.168.0.182:3003/";
 
     public Context mContext;

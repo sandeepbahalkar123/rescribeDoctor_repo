@@ -97,7 +97,12 @@ public class RescribeConstants {
     public static final String MY_RECORDS_DOCTOR_LIST = RescribeConstants.BLANK + 19;
     public static final String MY_RECORDS_ADD_DOCTOR = RescribeConstants.BLANK + 20;
     public static final String TASK_PATIENT_HISTORY = RescribeConstants.BLANK + 21;
-
+    public static final String TASK_GET_DOCTOR_SMS_TEMPLATE = RescribeConstants.BLANK + 22;
+    public static final String TASK_REQUEST_SEND_SMS = RescribeConstants.BLANK + 23;
+    public static final String TASK_GET_WAITING_LIST = RescribeConstants.BLANK + 24;
+    public static final String TASK_GET_SEARCH_RESULT_MY_PATIENT = RescribeConstants.BLANK + 25;
+    public static final String TASK_ADD_TO_WAITING_LIST = RescribeConstants.BLANK + 26;
+    public static final String TASK_GET_LOCATION_LIST = RescribeConstants.BLANK + 27;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -145,6 +150,19 @@ public class RescribeConstants {
     public static final String DATES_LIST = "dates_list";
     public static final String DATES_INFO = "dates_info";
     public static final String FILTER_STATUS_LIST = "filter_status_list";
+    public static final String FILTER_CLINIC_LIST = "filter_clinic_list";
+    public static final String APPOINTMENT_LIST = "appointment_list";
+    public static final String SMS_DETAIL_LIST = "sms_detail_list";
+    public static final String WAITING_LIST_INFO = "waiting_list_info";
+    public static final String SMS_PATIENT_LIST_TO_SHOW = "sms_list_to_show";
+    public static final String CLINIC_LIST = "clinic_list";
+    public static final String PATIENT_HOS_PAT_ID = "hos_pat_id";
+    public static final String PATIENT_OPDID = "patient_opdid";
+    public static final String PATIENT_LIST = "patient_list";
+    public static final String LOCATION_ID = "location_id";
+    public static final String TEMPLATE_OBJECT = "template_object";
+    public static final String CLINIC_ID = "clinic_id";
+    public static final String CLINIC_NAME = "clinic_name";
 
 
     public static String HEADER_COLOR = "#E4422C";

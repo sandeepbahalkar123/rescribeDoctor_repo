@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/dp56"
+    android:background="@drawable/background_sms"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.rescribe.doctor.ui.customesViews.CustomTextView
+            android:id="@+id/toTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp16"
+            android:text="To"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dp16"
+            app:customFont="@string/roboto_bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="@dimen/dp8"
+            android:layout_toRightOf="@id/toTextView"
+            android:clipToPadding="false"
+            android:padding="@dimen/dp16"></android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+<LinearLayout
+    android:layout_marginTop="@dimen/dp30"
+    android:layout_gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/editTextSmsContent"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp8"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/dp8"
+        android:background="@drawable/curve_edges_background"
+        android:inputType="textMultiLine"
+        android:padding="@dimen/dp8"
+        android:textCursorDrawable="@drawable/cursor" />
+    <ImageView
+        android:id="@+id/sendSmsButton"
+        android:layout_gravity="center_vertical"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/send_button"/>
+
+</LinearLayout>
+
+
+</LinearLayout>

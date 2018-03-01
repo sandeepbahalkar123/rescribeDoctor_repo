@@ -28,16 +28,20 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.dashboard.WaitingOrAppointmentListAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
+import com.rescribe.doctor.helpers.dashboard.DashboardHelper;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.doctor_location.DoctorLocationBaseModel;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.dashboard.SettingsActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
+import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.SwitchButton;
 import com.rescribe.doctor.util.CommonMethods;
@@ -124,6 +128,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private LoginHelper loginHelper;
     private WaitingOrAppointmentListAdapter mWaitingOrAppointmentListAdapter;
     private LinearLayout menuOptionLinearLayout;
+    private DashboardHelper mDashboardHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +152,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     private void initialize() {
         //Set values for upper dashboard blocks
+        mDashboardHelper = new DashboardHelper(this,this);
+        mDashboardHelper.doDoctorGetLocationList();
         todayFollowAppointmentCount.setText("21");
         todayNewAppointmentCount.setText("10");
         todayWaitingListOrAppointmentCount.setText("25");
@@ -216,7 +223,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         LayoutInflater inflaterWaitingList = LayoutInflater.from(mContext);
         View inflatedLayoutWaitingList = inflaterWaitingList.inflate(R.layout.dashboard_menu_common_layout, null, false);
         hostViewsLayout.addView(inflatedLayoutWaitingList);
-
+        menuOptionLinearLayout = (LinearLayout) inflatedLayoutWaitingList.findViewById(R.id.menuOptionLinearLayout);
         menuImageWaitingList = (ImageView) inflatedLayoutWaitingList.findViewById(R.id.menuImageView);
         menuNameTextView = (CustomTextView) inflatedLayoutWaitingList.findViewById(R.id.menuNameTextView);
         dashboardArrowImageView = (ImageView) inflatedLayoutWaitingList.findViewById(R.id.dashboardArrowImageView);
@@ -224,6 +231,13 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.waitinglist_icon));
         menuNameTextView.setText("Waiting List - 6");
         dashboardArrowImageView.setVisibility(View.VISIBLE);
+        menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, WaitingMainListActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setLayoutForWaitingOrAppointment() {
@@ -483,8 +497,12 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             } else {
                 logout();
             }
-        else if (mOldDataTag.equals(ACTIVE_STATUS))
+        else if (mOldDataTag.equals(ACTIVE_STATUS)) {
             CommonMethods.Log(ACTIVE_STATUS, "active");
+        }else if(mOldDataTag.equals(RescribeConstants.TASK_GET_LOCATION_LIST)){
+            DoctorLocationBaseModel  doctorLocationBaseModel = (DoctorLocationBaseModel)customResponse;
+            RescribeApplication.setDoctorLocationModels(doctorLocationBaseModel.getDoctorLocationModel());
+        }
 
     }
 

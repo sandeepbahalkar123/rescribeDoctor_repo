@@ -1,4 +1,4 @@
-package com.rescribe.doctor.ui.fragments.patient_connect;
+package com.rescribe.doctor.ui.fragments.patient.patient_connect;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

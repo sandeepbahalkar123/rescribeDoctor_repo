@@ -13,8 +13,11 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.Common;
+import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
+import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.util.CommonMethods;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -24,6 +27,7 @@ public class RescribeApplication extends MultiDexApplication {
     public  final String TAG = this.getClass().getName();
     private static final Hashtable<String, Typeface> cache = new Hashtable<String, Typeface>();
     private static RescribeApplication singleton;
+    private static ArrayList<DoctorLocationModel> doctorLocationModels = new ArrayList<>();
 
     public static RescribeApplication getInstance() {
         return singleton;
@@ -50,4 +54,14 @@ public class RescribeApplication extends MultiDexApplication {
         AppEventsLogger.activateApp(this);
         //--------------
     }
+    public static ArrayList<DoctorLocationModel> getDoctorLocationModels() {
+        return doctorLocationModels;
+    }
+
+    public static void setDoctorLocationModels(ArrayList<DoctorLocationModel> doctorLocationModels) {
+        RescribeApplication.doctorLocationModels = doctorLocationModels;
+    }
+
+
+
 }

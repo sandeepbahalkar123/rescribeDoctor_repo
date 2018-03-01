@@ -86,4 +86,7 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
         public void onClickofSelectStatus(ArrayList<StatusList> mStatusLists);
 
     }
+    public ArrayList<StatusList> getAdapterStatusList(){
+        return mStatusLists;
+    }
 }

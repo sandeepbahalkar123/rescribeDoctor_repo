@@ -42,6 +42,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
     private boolean mIsLongPressed;
     public CalenderDayOfMonthGridAdapter mCalenderDayOfMonthGridAdapter;
     private ArrayList<DatesData> mAdapterListToNotifyOnBackPress;
+    private static String patientID;
 
     public PatientHistoryCalenderListFragment() {
         // Required empty public constructor
@@ -74,12 +75,9 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         args.putString(RescribeConstants.YEAR, dataString.getYear());
         patientName = b.getString(RescribeConstants.PATIENT_NAME);
         patientInfo = b.getString(RescribeConstants.PATIENT_INFO);
+        patientID = b.getString(RescribeConstants.PATIENT_ID);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public boolean isLongPressed() {
-        return mIsLongPressed;
     }
 
 
@@ -102,38 +100,18 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
                     mCalenderDays.setLayoutManager(linearlayoutManager);
                     mCalenderDays.setAdapter(mCalenderDayOfMonthGridAdapter);
 
-                    setOPDStatusGridViewAdapter(parentFragment, formattedDoctorList);
+                    //setOPDStatusGridViewAdapter(parentFragment, formattedDoctorList);
                 }
             }
         }
     }
 
-    @Override
-    public void onLongClicked(boolean longpressed) {
-       // mAdapterListToNotifyOnBackPress = mCalenderDayOfMonthGridAdapter.getAdapterList();
-        Intent intent = new Intent();
-
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(RescribeConstants.LONGPRESSED,longpressed);
-       // bundle.putParcelableArrayList(RescribeConstants.DATES_LIST,mCalenderDayOfMonthGridAdapter.getAdapterList());
-        getTargetFragment().onActivityResult(
-                getTargetRequestCode(),
-                Activity.RESULT_OK,
-                intent.putExtra(RescribeConstants.DATES_INFO, bundle)
-        );
-        mIsLongPressed = longpressed;
-        if (longpressed) {
-            PatientHistoryListFragmentContainer parentFragment = (PatientHistoryListFragmentContainer) getParentFragment();
-            parentFragment.getAddRecordButton().setVisibility(View.VISIBLE);
-        } else {
-            PatientHistoryListFragmentContainer parentFragment = (PatientHistoryListFragmentContainer) getParentFragment();
-            parentFragment.getAddRecordButton().setVisibility(View.GONE);
-        }
-    }
 
     @Override
-    public void onClickOFLayout(String visitDate) {
+    public void onClickOFLayout(String visitDate, String opdId) {
         Intent intent = new Intent(getActivity(),SingleVisitDetailsActivity.class);
+        intent.putExtra(RescribeConstants.PATIENT_OPDID,opdId);
+        intent.putExtra(RescribeConstants.PATIENT_ID,patientID);
         intent.putExtra(RescribeConstants.PATIENT_NAME,patientName);
         intent.putExtra(RescribeConstants.PATIENT_INFO,patientInfo);
         intent.putExtra(RescribeConstants.DATE,visitDate);
@@ -141,32 +119,10 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
 
     }
 
-    // To find unique status from list, and set list in recycleview of parent fragment.
-    private void setOPDStatusGridViewAdapter(PatientHistoryListFragmentContainer parent, ArrayList<PatientHistoryInfo> formattedDoctorList) {
+    // To find nique status from list, and set list in recycleview of parent fragment.
 
-        LinkedHashSet<String> linkedHashSet = new LinkedHashSet();
-        for (PatientHistoryInfo obj :
-                formattedDoctorList) {
-            linkedHashSet.add(obj.getOpdStatus());
-        }
-        ArrayList<String> strings = new ArrayList<>(linkedHashSet);
-        parent.setOPDStatusGridViewAdapter(strings);
-    }
 
-    private PatientHistoryInfo findWhichDate(int dateNumber) {
-        for (PatientHistoryInfo obj :
-                formattedDoctorList) {
-            if (obj.getWhichDate() == dateNumber) {
-                return obj;
-            }
-        }
-        return null;
-    }
 
-    public void removeSelectedDate(ArrayList<DatesData> datesDataArrayList) {
-        for (DatesData datesData : datesDataArrayList) {
-            datesData.setLongPressed(false);
-        }
-       // mCalenderDayOfMonthGridAdapter.notifyDataSetChanged();
-    }
+
+
 }

@@ -28,6 +28,7 @@ public class ClinicList implements Parcelable
     @SerializedName("clinicId")
     @Expose
     private Integer clinicId;
+    private boolean selected;
 
     public final static Parcelable.Creator<ClinicList> CREATOR = new Creator<ClinicList>() {
 
@@ -46,6 +47,7 @@ public class ClinicList implements Parcelable
     }
             ;
 
+
     protected ClinicList(Parcel in) {
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -53,6 +55,7 @@ public class ClinicList implements Parcelable
         this.city = ((String) in.readValue((String.class.getClassLoader())));
         this.cityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.selected = ((boolean) in.readValue((String.class.getClassLoader())));
     }
 
     public ClinicList() {
@@ -106,6 +109,14 @@ public class ClinicList implements Parcelable
         this.clinicId = clinicId;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(clinicName);
         dest.writeValue(locationId);
@@ -113,10 +124,12 @@ public class ClinicList implements Parcelable
         dest.writeValue(city);
         dest.writeValue(cityId);
         dest.writeValue(clinicId);
+        dest.writeValue(selected);
     }
 
     public int describeContents() {
         return 0;
     }
+
 
 }

@@ -77,6 +77,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String month;
     private String mYear;
     private String mDateSelected;
+    private String patientID;
+    private String opdID;
 
 
     @Override
@@ -95,6 +97,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         userInfoTextView.setVisibility(View.VISIBLE);
         dateTextview.setVisibility(View.VISIBLE);
         if (intent.getExtras() != null) {
+            patientID = intent.getStringExtra(RescribeConstants.PATIENT_ID);
+            opdID = intent.getStringExtra(RescribeConstants.PATIENT_OPDID);
             titleTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_NAME));
             userInfoTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_INFO));
             mDateSelected = intent.getStringExtra(RescribeConstants.DATE);
@@ -116,7 +120,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         }
 
         PatientDetailHelper mSingleVisitDetailHelper = new PatientDetailHelper(this, this);
-        mSingleVisitDetailHelper.doGetOneDayVisit(/*mIntent.getStringExtra(getString(R.string.opd_id)),*/ mDocId);
+        mSingleVisitDetailHelper.doGetOneDayVisit(opdID,patientID);
 
         // title.setText(getString(R.string.visit_details));
 

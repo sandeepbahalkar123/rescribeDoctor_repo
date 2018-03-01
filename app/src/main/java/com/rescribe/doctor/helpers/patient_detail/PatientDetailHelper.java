@@ -2,7 +2,6 @@ package com.rescribe.doctor.helpers.patient_detail;
 
 import android.content.Context;
 import com.android.volley.Request;
-import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -12,6 +11,7 @@ import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryDataModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfoMonthContainer;
+import com.rescribe.doctor.model.patient.patient_history.RequestForPatientHistory;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.network.ConnectionFactory;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -19,8 +19,6 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -60,6 +58,7 @@ public class PatientDetailHelper implements ConnectionListener {
 
                         if (patientHistoryInfoMonthContainer != null) {
                             Map<String, ArrayList<PatientHistoryInfo>> monthWiseSortedPatientHistory = patientHistoryInfoMonthContainer.getMonthWiseSortedPatientHistory();
+                            if(monthWiseSortedPatientHistory.size()>0)
                             yearWiseSortedPatientHistoryInfo.put(patientHistoryInfoMonthContainer.getYear(), monthWiseSortedPatientHistory);
                         }
                         mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
@@ -95,12 +94,12 @@ public class PatientDetailHelper implements ConnectionListener {
     }
 
     //get case study list
-    public void doGetOneDayVisit(String opdId) {
-        /*ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ONE_DAY_VISIT, Request.Method.GET, false);
+    public void doGetOneDayVisit(String opdId, String patientID) {
+       ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ONE_DAY_VISIT, Request.Method.GET, false);
         mConnectionFactory.setHeaderParams();
-        mConnectionFactory.setUrl(Config.ONE_DAY_VISIT_URL + opdId + mContext.getString(R.string.and_sign) + RescribeConstants.PATIENT_ID + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_ID, mContext));
-        mConnectionFactory.createConnection(RescribeConstants.TASK_ONE_DAY_VISIT);*/
-        try {
+        mConnectionFactory.setUrl(Config.ONE_DAY_VISIT_URL + opdId + "&patientId="+ patientID);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_ONE_DAY_VISIT);
+       /* try {
             InputStream is = mContext.getAssets().open("patient_details.json");
             int size = is.available();
             byte[] buffer = new byte[size];
@@ -113,11 +112,11 @@ public class PatientDetailHelper implements ConnectionListener {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-        }
+        }*/
     }
 
-    public void doGetPatientHistory(String year) {
-        try {
+    public void doGetPatientHistory(String patientID , String year) {
+      /*  try {
             InputStream is = mContext.getAssets().open("patient_history.json");
             int size = is.available();
             byte[] buffer = new byte[size];
@@ -130,7 +129,17 @@ public class PatientDetailHelper implements ConnectionListener {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-        }
+        }*/
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_PATIENT_HISTORY, Request.Method.POST, true);
+        RequestForPatientHistory mRequestForPatientHistory = new RequestForPatientHistory();
+        mRequestForPatientHistory.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+        mRequestForPatientHistory.setPatientId(Integer.valueOf(patientID));
+        mRequestForPatientHistory.setYear(year);
+        mConnectionFactory.setPostParams(mRequestForPatientHistory);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.GET_PATIENT_HISTORY);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_PATIENT_HISTORY);
     }
 }
 

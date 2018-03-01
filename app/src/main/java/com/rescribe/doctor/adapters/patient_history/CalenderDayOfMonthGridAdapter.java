@@ -92,35 +92,11 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
 
         }
 
-        holder.patientOpdInfoLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                for (PatientHistoryInfo datesData : mDays) {
-                    datesData.setLongpressed(false);
-                }
-                if (patientHistoryInfoObject.isLongpressed()) {
-
-                    patientHistoryInfoObject.setLongpressed(false);
-
-                } else {
-
-                    patientHistoryInfoObject.setLongpressed(true);
-
-                }
-                notifyDataSetChanged();
-                mListener.onLongClicked(patientHistoryInfoObject.isLongpressed());
-                return false;
-            }
-        });
-      /*  holder.patientOpdInfoLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate());
-            }
-        });*/
-
-        holder.doctorName.setText(patientHistoryInfoObject.getOpdName());
-
+        String opdLabel = patientHistoryInfoObject.getOpdLabel();
+        String opdLabelToShow = opdLabel.substring(0, 1).toUpperCase() + opdLabel.substring(1);
+        holder.doctorName.setText(opdLabelToShow);
+        holder.doctorAddress.setText(patientHistoryInfoObject.getOpdValue());
+        holder.time.setText(CommonMethods.formatDateTime(patientHistoryInfoObject.getOpdTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
         SpannableString patientID = new SpannableString("VIEW MORE");
         patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
         holder.viewMore.setText(patientID);
@@ -141,75 +117,11 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         holder.viewMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate());
+                mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate(), String.valueOf(patientHistoryInfoObject.getOpdId()));
 
             }
         });
 
-       /* if (day.getDate() != 0) {
-            holder.day.setText("" + day.getDate());
-            holder.day.setTag(day);
-        } else {
-            holder.day.setText("");
-
-        }
-*/
-       /* if (day != null) {
-            switch (day.getOpdStatus().toLowerCase()) {
-                case RescribeConstants.PATIENT_OPDS_STATUS.OPD_COMPLETED:
-                    holder.day.setBackgroundResource(R.drawable.opd_completed_patch);
-                    holder.day.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-                    holder.otherStatusView.setVisibility(View.GONE);
-                    break;
-                case RescribeConstants.PATIENT_OPDS_STATUS.OPD_SAVED:
-                    holder.otherStatusView.setBackgroundResource(R.drawable.saved_circle);
-                    holder.otherStatusView.setVisibility(View.VISIBLE);
-                    break;
-                case RescribeConstants.PATIENT_OPDS_STATUS.ONLY_ATTACHMENTS:
-                    holder.otherStatusView.setBackgroundResource(R.drawable.attachments_circle);
-                    holder.otherStatusView.setVisibility(View.VISIBLE);
-                    break;
-                case RescribeConstants.PATIENT_OPDS_STATUS.NO_SHOW:
-                    holder.otherStatusView.setBackgroundResource(R.drawable.no_show);
-                    holder.otherStatusView.setVisibility(View.VISIBLE);
-                    break;
-            }
-        }
-*/
-        /*holder.day.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                for (PatientHistoryInfo datesData : mDays) {
-                    datesData.setLongPressed(false);
-                }
-                if (day.isLongPressed()) {
-
-                    day.setLongPressed(false);
-
-                } else {
-
-                    day.setLongPressed(true);
-
-                }
-                notifyDataSetChanged();
-                mListener.onLongClicked(day.isLongPressed());
-
-                return false;
-            }
-        });
-        if (day.getOpdStatus().toLowerCase().equalsIgnoreCase(RescribeConstants.PATIENT_OPDS_STATUS.OPD_COMPLETED)) {
-            if (day.isLongPressed()) {
-                holder.day.setTextColor(ContextCompat.getColor(mContext, R.color.orange));
-
-            } else {
-                holder.day.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-
-            }
-
-        }*/
-
-
-        //--------
 
     }
 
@@ -267,9 +179,6 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
     }
 
     public interface OnDayClickListener {
-        public void onLongClicked(boolean longpressed);
-
-        public void onClickOFLayout(String visitDate);
-
+        public void onClickOFLayout(String visitDate, String opdId);
     }
 }

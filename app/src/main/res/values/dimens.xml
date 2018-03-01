@@ -56,4 +56,6 @@
     <dimen name="dp120">120dp</dimen>
     <dimen name="dp80">80dp</dimen>
     <dimen name="dp58">58dp</dimen>
+    <dimen name="dp60">60dp</dimen>
+    <dimen name="dp22">22dp</dimen>
 </resources>

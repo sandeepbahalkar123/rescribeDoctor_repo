@@ -49,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <android.support.design.widget.FloatingActionButton
+          <!--  <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
                 android:src="@drawable/ic_add_action"
                 app:backgroundTint="@color/floating_blue_color"
                 android:layout_alignParentRight="true" />
-
+-->
         </RelativeLayout>
 
         <Button
@@ -71,7 +71,7 @@
             android:background="@drawable/button_selector"
             android:text="@string/add_record"
             android:textColor="@color/white"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:visibility="visible"/>
 
     </RelativeLayout>

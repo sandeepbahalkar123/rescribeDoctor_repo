@@ -201,5 +201,15 @@
     <string name="just_now">Just Now</string>
     <string name="services">Services</string>
     <string name="about_doctor"><u>About Doctor :</u></string>
+    <string name="template_list">Template List</string>
+    <string name="active">ACTIVE</string>
+    <string name="view_all">VIEW ALL</string>
+    <string name="in_time">In Time</string>
+    <string name="select_clinic_location">Select Clinic Location</string>
+    <string name="all_patients_exists">All patients exists in waiting list!</string>
+    <string name="patients_added_to_waiting_list">Patients added to waiting list!</string>
+    <string name="patient_limit_exceeded">Patient limit exceeded!</string>
+    <string name="already_exists_in_waiting_list">already exists in waiting list!</string>
+    <string name="added_to_waiting_list">added to waiting list!</string>
 
 </resources>

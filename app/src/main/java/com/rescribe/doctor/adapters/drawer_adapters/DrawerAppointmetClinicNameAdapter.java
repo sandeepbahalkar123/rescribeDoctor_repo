@@ -9,6 +9,8 @@ import android.widget.CheckBox;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.my_appointments.ClinicList;
+import com.rescribe.doctor.model.my_appointments.StatusList;
+import com.rescribe.doctor.ui.fragments.my_appointments.DrawerForMyAppointment;
 
 import java.util.ArrayList;
 
@@ -23,9 +25,11 @@ public class DrawerAppointmetClinicNameAdapter extends RecyclerView.Adapter<Draw
 
     private Context mContext;
     private ArrayList<ClinicList> mClinicList ;
-    public DrawerAppointmetClinicNameAdapter(Context mContext, ArrayList<ClinicList> clinicList) {
+    private OnClickOfFilterClinic mOnClickOfFilterClinic;
+    public DrawerAppointmetClinicNameAdapter(Context mContext, ArrayList<ClinicList> clinicList, DrawerForMyAppointment drawerForMyAppointment) {
         this.mContext = mContext;
         this.mClinicList = clinicList;
+        this.mOnClickOfFilterClinic = drawerForMyAppointment;
     }
 
     @Override
@@ -37,10 +41,23 @@ public class DrawerAppointmetClinicNameAdapter extends RecyclerView.Adapter<Draw
     }
 
     @Override
-    public void onBindViewHolder(final DrawerAppointmetClinicNameAdapter.ListViewHolder holder, int position) {
+    public void onBindViewHolder(final DrawerAppointmetClinicNameAdapter.ListViewHolder holder, final int position) {
 
         holder.menuName.setText(mClinicList.get(position).getClinicName()+", "+mClinicList.get(position).getCity());
+        holder.menuName.setChecked(mClinicList.get(position).isSelected());
+        holder.menuName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mClinicList.get(position).isSelected()){
 
+                    mClinicList.get(position).setSelected(false);
+                }else{
+                    mClinicList.get(position).setSelected(true);
+                }
+                notifyDataSetChanged();
+                mOnClickOfFilterClinic.onClickofClinic(mClinicList);
+            }
+        });
     }
 
     @Override
@@ -59,5 +76,12 @@ public class DrawerAppointmetClinicNameAdapter extends RecyclerView.Adapter<Draw
             ButterKnife.bind(this, view);
             this.view = view;
         }
+    }
+    public interface OnClickOfFilterClinic{
+        public void onClickofClinic(ArrayList<ClinicList> mClinicList);
+
+    }
+    public ArrayList<ClinicList> getAdapterClinicList(){
+        return mClinicList;
     }
 }

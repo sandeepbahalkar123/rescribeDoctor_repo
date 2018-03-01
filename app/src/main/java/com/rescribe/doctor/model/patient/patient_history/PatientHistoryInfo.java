@@ -6,58 +6,46 @@ import com.google.gson.annotations.SerializedName;
 
 public class PatientHistoryInfo {
 
-    @SerializedName("id")
-    @Expose
-    private int id;
-    @SerializedName("whichDate")
-    @Expose
-    private int whichDate;
-    @SerializedName("opdStatus")
-    @Expose
-    private String opdStatus;
     @SerializedName("opdId")
     @Expose
     private int opdId;
-    @SerializedName("visitDate")
+    @SerializedName("opdDate")
     @Expose
     private String visitDate;
-    @SerializedName("opdName")
+
+    @SerializedName("opdTime")
     @Expose
-    private String opdName;
-
-    public String getOpdName() {
-        return opdName;
-    }
-
-    public void setOpdName(String opdName) {
-        this.opdName = opdName;
-    }
-
+    private String opdTime;
+    @SerializedName("opdLabel")
+    @Expose
+    private String opdLabel;
+    @SerializedName("opdValue")
+    @Expose
+    private String opdValue;
     private boolean longpressed;
 
-
-    public int getId() {
-        return id;
+    public String getOpdTime() {
+        return opdTime;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setOpdTime(String opdTime) {
+        this.opdTime = opdTime;
     }
 
-    public int getWhichDate() {
-        return whichDate;
+    public String getOpdLabel() {
+        return opdLabel;
     }
 
-    public void setWhichDate(int whichDate) {
-        this.whichDate = whichDate;
+    public void setOpdLabel(String opdLabel) {
+        this.opdLabel = opdLabel;
     }
 
-    public String getOpdStatus() {
-        return opdStatus;
+    public String getOpdValue() {
+        return opdValue;
     }
 
-    public void setOpdStatus(String opdStatus) {
-        this.opdStatus = opdStatus;
+    public void setOpdValue(String opdValue) {
+        this.opdValue = opdValue;
     }
 
     public int getOpdId() {

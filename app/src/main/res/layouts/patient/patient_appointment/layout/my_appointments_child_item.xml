@@ -11,7 +11,9 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp7"
+        android:layout_marginStart="@dimen/dp7"
+        android:layout_marginEnd="@dimen/dp7"
+        android:layout_marginBottom="@dimen/dp7"
         android:background="@drawable/result_white_box"
         android:orientation="vertical">
 
@@ -145,6 +147,15 @@
                     android:textSize="@dimen/sp12"
                     app:customFont="@string/roboto_medium"
                     tools:text="OPD Completed" />
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/patientClinicAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp12"
+                    android:visibility="gone"
+                    app:customFont="@string/roboto_medium"
+                    tools:text="OPD Completed" />
             </LinearLayout>
 
             <CheckBox
@@ -219,7 +230,7 @@
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/outstandingAmountTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="16dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp11"
@@ -235,7 +246,6 @@
                     android:layout_gravity="center"
                     app:customFont="@string/roboto_bold"
                     tools:text=" Rs.450/-" />
-
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

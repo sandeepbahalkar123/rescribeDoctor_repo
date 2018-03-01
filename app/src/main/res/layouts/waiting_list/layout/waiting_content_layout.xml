@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/divider"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp6"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/clinicListSpinner"
+            style="@style/SpinnerTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"></Spinner>
+
+        <RelativeLayout
+            android:id="@+id/hospitalDetailsLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp8"
+            android:visibility="gone">
+
+            <com.rescribe.doctor.ui.customesViews.CircularImageView
+                android:id="@+id/bulletImageView"
+                android:layout_width="@dimen/dp8"
+                android:layout_height="@dimen/dp8"
+                android:layout_margin="@dimen/dp10"
+                android:background="@drawable/circular_bullet" />
+
+            <com.rescribe.doctor.ui.customesViews.CustomTextView
+                android:id="@+id/clinicNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/bulletImageView"
+                android:layout_toRightOf="@id/bulletImageView"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp16"
+                app:customFont="@string/roboto_bold"
+                tools:text="Shree Clinic - " />
+
+            <com.rescribe.doctor.ui.customesViews.CustomTextView
+                android:id="@+id/clinicAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/clinicNameTextView"
+                android:layout_toRightOf="@id/clinicNameTextView"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingTop="@dimen/dp3"
+                android:textColor="@color/clinic_address_color"
+                android:textSize="@dimen/sp13"
+                app:customFont="@string/roboto_medium"
+                tools:text="Worli, Mumbaifgfdgfdgfgf" />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp16"
+            android:src="@drawable/appointment_count_arrow_copy_2"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:ignore="ObsoleteLayoutParam"
+        tools:visibility="visible" />
+
+</LinearLayout>
