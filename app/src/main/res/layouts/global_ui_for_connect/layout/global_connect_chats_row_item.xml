@@ -4,45 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp10"
-    android:layout_marginEnd="@dimen/dp6"
-    android:layout_marginLeft="@dimen/dp16"
-    android:layout_marginRight="@dimen/dp6"
-    android:layout_marginTop="@dimen/dp10"
     android:background="@color/white"
     android:clickable="true"
+    android:focusable="true"
     android:orientation="vertical">
 
-    <LinearLayout
+    <com.rescribe.doctor.ui.customesViews.CustomTextView
+        android:id="@+id/headingText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/dp10"
-        android:layout_marginTop="@dimen/dp10"
+        android:layout_marginTop="@dimen/dp2"
+        android:background="@color/grey_300"
+        android:gravity="center_vertical"
+        android:padding="@dimen/dp14"
+        android:text="Chat"
+        android:textColor="@color/tagColor"
+        android:textSize="@dimen/sp17"
+        android:visibility="gone"
+        app:customFont="@string/roboto_bold"
+        tools:visibility="visible" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal">
-        <!--  ListRow Left sied Thumbnail image -->
+
         <RelativeLayout
-            android:layout_width="@dimen/dp50"
-            android:layout_height="@dimen/dp50"
-            android:layout_marginEnd="@dimen/dp5"
-            android:layout_marginLeft="@dimen/dp16"
-            android:layout_marginRight="@dimen/dp5"
-            android:layout_marginStart="@dimen/dp16"
-            android:gravity="center"
-            android:padding="3dip">
+            android:id="@+id/profilePhotoLayout"
+            android:layout_width="@dimen/dp40"
+            android:layout_height="@dimen/dp40"
+            android:layout_margin="@dimen/dp14">
 
             <ImageView
                 android:id="@+id/imageOfDoctor"
-                android:layout_width="@dimen/dp50"
-                android:layout_height="@dimen/dp50"
+                android:layout_width="@dimen/dp40"
+                android:layout_height="@dimen/dp40"
                 android:layout_centerInParent="true"
                 android:src="@drawable/layer_12" />
 
             <ImageView
                 android:id="@+id/onlineStatusIcon"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/dp10"
+                android:layout_height="@dimen/dp10"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
@@ -53,26 +57,14 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="217dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/dp10"
-            android:layout_marginStart="@dimen/dp10"
-            android:layout_weight="1"
-            android:gravity="center|left"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/profilePhotoLayout"
+            android:layout_toLeftOf="@+id/dateTimeText"
+            android:layout_toRightOf="@+id/profilePhotoLayout"
+            android:layout_toStartOf="@+id/dateTimeText"
             android:orientation="vertical">
-
-            <!-- Title Of Song-->
-            <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:id="@+id/doctorType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dip"
-                android:text="Sai Clinic"
-                android:textColor="@color/vitals_name"
-                android:textSize="@dimen/sp15"
-                app:customFont="@string/roboto_bold"
-                tools:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -110,29 +102,28 @@
 
             <!-- Rightend Duration -->
             <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:id="@+id/onlineStatusTextView"
+                android:id="@+id/messageTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Last OPD - 03rd Nov'17"
-                android:textColor="@color/tagColor"
+                android:text="Hello"
+                android:paddingTop="@dimen/dp4"
                 android:textSize="@dimen/sp12"
+                android:visibility="gone"
+                tools:visibility="visible"
                 app:customFont="@string/roboto_medium" />
         </LinearLayout>
 
-        <RelativeLayout
+        <com.rescribe.doctor.ui.customesViews.CustomTextView
+            android:id="@+id/dateTimeText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/dp14"
+            android:textSize="@dimen/sp12"
+            android:visibility="visible"
+            tools:text="yesterday" />
 
-            <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp12"
-                android:textColor="@color/grey_shade"
-                android:textSize="@dimen/sp11"
-                android:visibility="visible"
-                tools:text="yesterday" />
-        </RelativeLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

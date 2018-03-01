@@ -33,6 +33,7 @@ import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 import com.rescribe.doctor.util.rxnetwork.RxNetwork;
 
@@ -56,8 +57,11 @@ import rx.functions.Func1;
 
 import static com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver.MESSAGE_LIST;
 import static com.rescribe.doctor.util.Config.BROKER;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.PENDING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.READ;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 
 public class MQTTService extends Service {
 
@@ -83,7 +87,7 @@ public class MQTTService extends Service {
     public static final String DELIVERED = "delivered";
 
     public static final String DOCTOR = "user1";
-//    public static final String PATIENT = "user2";
+    public static final String PATIENT = "user2";
 
     private MqttAsyncClient mqttClient;
 
@@ -164,19 +168,8 @@ public class MQTTService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
-            if (intent.getBooleanExtra(SEND_MESSAGE, false)) {
-                if (!mqttClient.isConnected()) {
-                    try {
-                        mqttClient.reconnect();
-                    } catch (MqttException e) {
-                        e.printStackTrace();
-                    }
-                } else {// change
-                    if (intent.getBooleanExtra(MESSAGE, true)) {
-                        passMessage((MQTTMessage) intent.getParcelableExtra(MESSAGE_LIST));
-                    } else messageStatus((StatusInfo) intent.getParcelableExtra(STATUS_INFO));
-                }
-            }
+            if (intent.getBooleanExtra(SEND_MESSAGE, false))
+                passMessage((MQTTMessage) intent.getParcelableExtra(MESSAGE_LIST));
         }
         return START_STICKY;
     }
@@ -227,7 +220,7 @@ public class MQTTService extends Service {
                                             if (currentChatUser != messageL.getPatId()) {
 
                                                 ArrayList<MQTTMessage> messagesTemp = new ArrayList<>();
-                                                ArrayList<MQTTMessage> messages = appDBHelper.insertUnreadMessage(messageL.getPatId(), payloadString); // Change
+                                                ArrayList<MQTTMessage> messages = appDBHelper.insertChatMessage(messageL); // Change
 
                                                 if (messages.size() > 6) {
                                                     for (int index = messages.size() - 6; index < messages.size(); index++)
@@ -237,9 +230,11 @@ public class MQTTService extends Service {
                                                 // change
                                                 statusInfo.setMessageStatus(REACHED);
 
-                                                MessageNotification.notify(mContext, messagesTemp, messageL.getName(), getProfilePhotoBitmap(messageL), appDBHelper.unreadMessageCountById(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
+                                                MessageNotification.notify(mContext, messagesTemp, messageL.getName(), getProfilePhotoBitmap(messageL), (int) appDBHelper.unreadChatMessageCountByPatientId(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
                                             } else {
                                                 // change
+                                                messageL.setReadStatus(READ);
+                                                appDBHelper.insertChatMessage(messageL); // Change
                                                 statusInfo.setMessageStatus(SEEN);
                                             }
 
@@ -320,21 +315,23 @@ public class MQTTService extends Service {
     // change
     private void broadcastStatus(String payloadString, String topic) {
         StatusInfo statusInfo = gson.fromJson(payloadString, StatusInfo.class);
-        if (!statusInfo.getSender().equals(MQTTService.DOCTOR)) {
+        if (statusInfo.getSender().equals(MQTTService.PATIENT)) {
             Intent intent = new Intent(NOTIFY);
             intent.putExtra(MESSAGE, statusInfo);
             intent.putExtra(TOPIC_KEY, topic);
             sendBroadcast(intent);
+
+            if (TOPIC[MESSAGE_STATUS_TOPIC].equals(topic))
+                appDBHelper.updateChatMessageStatus(statusInfo);
         }
     }
 
     private void passInternetConnect() {
         try {
-
-            String myid = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+            String myId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
 
             InternetConnect internetConnect = new InternetConnect();
-            internetConnect.setUserId(Integer.parseInt(myid));
+            internetConnect.setUserId(Integer.parseInt(myId));
             internetConnect.setSender(DOCTOR);
 
             String content = gson.toJson(internetConnect, InternetConnect.class);
@@ -343,9 +340,12 @@ public class MQTTService extends Service {
             message.setRetained(true);
             if (mqttClient.isConnected()) {
                 mqttClient.publish(TOPIC[INTERNET_TOPIC], message);
-            } else {
-                mqttClient.reconnect();
+                ArrayList<MQTTMessage> chatMessageByMessageStatus = appDBHelper.getChatMessageByMessageStatus(PENDING);
+                for (MQTTMessage mqttMessage : chatMessageByMessageStatus)
+                    passMessage(mqttMessage);
             }
+            else
+                mqttClient.reconnect();
             CommonMethods.Log("passInternetStatus: ", content);
         } catch (MqttException e) {
             e.printStackTrace();
@@ -362,11 +362,10 @@ public class MQTTService extends Service {
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
-            if (mqttClient.isConnected()) {
+            if (mqttClient.isConnected())
                 mqttClient.publish(TOPIC[MESSAGE_STATUS_TOPIC], message);
-            } else {
+            else
                 mqttClient.reconnect();
-            }
             CommonMethods.Log("passMessageStatus: ", content);
         } catch (MqttException e) {
             e.printStackTrace();
@@ -382,11 +381,10 @@ public class MQTTService extends Service {
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
-            if (mqttClient.isConnected()) {
+            if (mqttClient.isConnected())
                 mqttClient.publish(TOPIC[USER_TYPING_STATUS_TOPIC], message);
-            } else {
+            else
                 mqttClient.reconnect();
-            }
             CommonMethods.Log("passTypeStatus: ", content);
         } catch (MqttException e) {
             e.printStackTrace();
@@ -394,19 +392,30 @@ public class MQTTService extends Service {
     }
 
     public void passMessage(MQTTMessage mqttMessage) {
-        try {
-            String content = gson.toJson(mqttMessage, MQTTMessage.class);
-            MqttMessage message = new MqttMessage(content.getBytes());
-            message.setQos(1);
-            message.setRetained(true);
-            if (mqttClient.isConnected()) {
-                mqttClient.publish(TOPIC[MESSAGE_TOPIC], message);
-            } else {
-                mqttClient.reconnect();
+
+        if (NetworkUtil.getConnectivityStatusBoolean(this)) {
+            try {
+                mqttMessage.setDateVisible(false);
+                String content = gson.toJson(mqttMessage, MQTTMessage.class);
+                MqttMessage message = new MqttMessage(content.getBytes());
+                message.setQos(1);
+                message.setRetained(true);
+                if (mqttClient.isConnected()) {
+                    mqttMessage.setMsgStatus(SENT);
+                    mqttClient.publish(TOPIC[MESSAGE_TOPIC], message);
+                } else {
+                    mqttClient.reconnect();
+                    CommonMethods.Log("passMessage: ", content);
+                    mqttMessage.setMsgStatus(PENDING);
+                }
+            } catch (MqttException e) {
+                mqttMessage.setMsgStatus(PENDING);
+            } finally {
+                appDBHelper.insertChatMessage(mqttMessage);
             }
-            CommonMethods.Log("passMessage: ", content);
-        } catch (MqttException e) {
-            e.printStackTrace();
+        } else {
+            mqttMessage.setMsgStatus(PENDING);
+            appDBHelper.insertChatMessage(mqttMessage);
         }
     }
 
@@ -414,19 +423,6 @@ public class MQTTService extends Service {
     public void onDestroy() {
         super.onDestroy();
         if (mqttClient.isConnected()) {
-
-            // change
-
-            /*String myid = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
-            // send user status via mqtt
-            StatusInfo statusInfo = new StatusInfo();
-            statusInfo.setPatId(-2);
-            statusInfo.setDocId(Integer.parseInt(myid));
-            statusInfo.setUserStatus(OFFLINE);
-            String generatedId = CHAT + 0 + "_" + System.nanoTime();
-            statusInfo.setMsgId(generatedId);
-            messageStatus(statusInfo);*/
-
             try {
                 mqttClient.disconnect();
                 CommonMethods.Log(TAG, "disconnect");

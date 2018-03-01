@@ -7,10 +7,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
-import static com.rescribe.doctor.util.RescribeConstants.FAILED;
+import static com.rescribe.doctor.util.RescribeConstants.FileStatus.FAILED;
+import static com.rescribe.doctor.util.RescribeConstants.FileStatus.UPLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.UNREAD;
-import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
 
 public class MQTTMessage implements Parcelable {
 
@@ -74,7 +74,7 @@ public class MQTTMessage implements Parcelable {
     private int downloadStatus = FAILED;
 
     private int readStatus = UNREAD;
-    private boolean isDateVisible;
+    private Boolean isDateVisible = false;
 
     // Added End
 
@@ -107,7 +107,7 @@ public class MQTTMessage implements Parcelable {
             instance.downloadStatus = ((int) in.readValue((int.class.getClassLoader())));
             instance.readStatus = ((int) in.readValue((int.class.getClassLoader())));
 
-            instance.isDateVisible = ((boolean) in.readValue((int.class.getClassLoader())));
+            instance.isDateVisible = ((Boolean) in.readValue((int.class.getClassLoader())));
             return instance;
         }
 
@@ -265,11 +265,11 @@ public class MQTTMessage implements Parcelable {
         this.readStatus = readStatus;
     }
 
-    public boolean isDateVisible() {
+    public Boolean isDateVisible() {
         return isDateVisible;
     }
 
-    public void setDateVisible(boolean dateVisible) {
+    public void setDateVisible(Boolean dateVisible) {
         isDateVisible = dateVisible;
     }
 

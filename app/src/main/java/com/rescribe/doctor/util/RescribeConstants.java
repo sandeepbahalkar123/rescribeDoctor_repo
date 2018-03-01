@@ -110,11 +110,6 @@ public class RescribeConstants {
     public static final String GMAIL_LOGIN = "gmail_login";
     public static final String FACEBOOK_LOGIN = "facebook_login";
 
-    public static final int UPLOADING = 1;
-    public static final int DOWNLOADING = 1;
-    public static final int FAILED = 0;
-    public static final int COMPLETED = 3;
-
     public static final String UPLOADING_STATUS = "uploading_status";
     public static final String INVESTIGATION_NOTIFICATION_TIME = "9:00 AM";
     public static final String APPOINTMENT_NOTIFICATION_TIME = "9:00 AM";
@@ -163,9 +158,17 @@ public class RescribeConstants {
         public static final String SEEN = "seen";
         public static final String REACHED = "reached";
         public static final String SENT = "sent";
+        public static final String PENDING = "pending";
 
         public static final int READ = 1;
         public static final int UNREAD = 0;
+    }
+
+    public interface FileStatus {
+        public static final int UPLOADING = 1;
+        public static final int DOWNLOADING = 1;
+        public static final int FAILED = 0;
+        public static final int COMPLETED = 3;
     }
 
     public static class PRESCRIPTION_LIST_PARAMS {

@@ -96,7 +96,6 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     //-----
     private PatientConnectChatFragment mPatientConnectChatFragment;
     private ArrayList<PatientData> mReceivedConnectedPatientDataList;
-    private String docId;
     //-----
 
     @Override
@@ -113,7 +112,6 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
                 finish();
             }
         });
-        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, PatientConnectActivity.this);
         title.setText("" + getString(R.string.patient_connect));
 
         initialize();
@@ -121,7 +119,6 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
 
 
     private void initialize() {
-        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, PatientConnectActivity.this);
 
         mPatientConnectChatFragment = PatientConnectChatFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -172,11 +169,8 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
 
         int id = item.getItemId();
 
-        if (id == R.id.action_search) {
-            return true;
-        }
+        return id == R.id.action_search || super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
     }
 
     // Recent

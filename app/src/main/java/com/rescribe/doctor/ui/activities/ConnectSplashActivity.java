@@ -25,6 +25,6 @@ public class ConnectSplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, RescribeConstants.TIME_STAMPS.THREE_SECONDS);
+        }, RescribeConstants.TIME_STAMPS.TWO_SECONDS);
     }
 }

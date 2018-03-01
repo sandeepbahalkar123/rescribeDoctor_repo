@@ -19,9 +19,9 @@ import com.rescribe.doctor.util.RescribeConstants;
 
 public class PatientConnectHelper implements ConnectionListener {
 
-    String TAG = this.getClass().getName();
-    Context mContext;
-    HelperResponse mHelperResponseManager;
+    private String TAG = this.getClass().getName();
+    private Context mContext;
+    private HelperResponse mHelperResponseManager;
 
     public PatientConnectHelper(Context context, HelperResponse doctorConnectActivity) {
         this.mContext = context;

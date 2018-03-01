@@ -19,6 +19,7 @@ import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
 import static com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver.MESSAGE_LIST;
 import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
+import static com.rescribe.doctor.util.RescribeConstants.FileStatus.COMPLETED;
 
 public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
     AppDBHelper instance;
@@ -38,9 +39,8 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
         String doctorId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, context);
 
         String prefix[] = uploadInfo.getUploadId().split("_");
-        if (prefix[0].equals(doctorId)) {
-                instance.updateMessageUpload(uploadInfo.getUploadId(), RescribeConstants.FAILED);
-            }
+        if (prefix[0].equals(doctorId))
+            instance.updateMessageUploadStatus(uploadInfo.getUploadId(), RescribeConstants.FileStatus.FAILED);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(uploadInfo.getNotificationID());
@@ -58,24 +58,23 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
             String prefix[] = uploadInfo.getUploadId().split("_");
             if (prefix[0].equals(doctorId)) {
 
-                MQTTMessage mqttMessage = instance.getMessageUploadById(uploadInfo.getUploadId());
+                MQTTMessage mqttMessage = instance.getChatMessageByMessageId(uploadInfo.getUploadId());
 
-                String response = serverResponse.getBodyAsString();
-                ChatFileUploadModel chatFileUploadModel = gson.fromJson(response, ChatFileUploadModel.class);
-
-                String fileUrl = chatFileUploadModel.getData().getDocUrl();
-                // send via mqtt
                 if (mqttMessage != null) {
+                    String response = serverResponse.getBodyAsString();
+                    ChatFileUploadModel chatFileUploadModel = gson.fromJson(response, ChatFileUploadModel.class);
+
+                    String fileUrl = chatFileUploadModel.getData().getDocUrl();
+                    // send via mqtt
 
                     mqttMessage.setFileUrl(fileUrl);
+                    mqttMessage.setUploadStatus(COMPLETED);
 
                     Intent intentService = new Intent(context, MQTTService.class);
                     intentService.putExtra(SEND_MESSAGE, true);
                     intentService.putExtra(MESSAGE_LIST, mqttMessage);
                     context.startService(intentService);
                 }
-
-                instance.updateMessageUpload(uploadInfo.getUploadId(), RescribeConstants.COMPLETED);
             }
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
