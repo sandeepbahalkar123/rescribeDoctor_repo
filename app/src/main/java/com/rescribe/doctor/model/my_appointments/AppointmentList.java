@@ -1,7 +1,8 @@
 package com.rescribe.doctor.model.my_appointments;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
@@ -10,7 +11,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class AppointmentList  implements Parcelable, Cloneable, Comparable<AppointmentList> {
+public class AppointmentList implements Parcelable, Cloneable, Comparable<AppointmentList> {
     @SerializedName("clinicName")
     @Expose
     private String clinicName;
@@ -35,7 +36,7 @@ public class AppointmentList  implements Parcelable, Cloneable, Comparable<Appoi
     private Integer cityId;
     @SerializedName("patientList")
     @Expose
-    private List<PatientList> patientList = new ArrayList<PatientList>();
+    private ArrayList<PatientList> patientList = new ArrayList<PatientList>();
     private PatientList patientHeader;
     private boolean selectedGroupCheckbox;
 
@@ -110,11 +111,11 @@ public class AppointmentList  implements Parcelable, Cloneable, Comparable<Appoi
         this.address = address;
     }
 
-    public List<PatientList> getPatientList() {
+    public ArrayList<PatientList> getPatientList() {
         return patientList;
     }
 
-    public void setPatientList(List<PatientList> patientList) {
+    public void setPatientList(ArrayList<PatientList> patientList) {
         this.patientList = patientList;
     }
 
@@ -141,6 +142,7 @@ public class AppointmentList  implements Parcelable, Cloneable, Comparable<Appoi
     public void setCityId(Integer cityId) {
         this.cityId = cityId;
     }
+
     public Integer getClinicId() {
         return clinicId;
     }
@@ -150,20 +152,21 @@ public class AppointmentList  implements Parcelable, Cloneable, Comparable<Appoi
     }
 
 
-
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(clinicName);
+        dest.writeValue(clinicId);
         dest.writeValue(locationId);
         dest.writeValue(area);
         dest.writeValue(city);
         dest.writeValue(address);
-        dest.writeList(patientList);
         dest.writeValue(cityId);
-        dest.writeValue(clinicId);
+        dest.writeList(patientList);
+
+
     }
 
     public int describeContents() {

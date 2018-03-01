@@ -33,16 +33,6 @@ public class PatientHistoryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-     /*  isLongPressed = mPatientHistoryListFragmentContainer.callOnBackPressed();
-        if (isLongPressed) {
-            mPatientHistoryListFragmentContainer.removeCheckBox();
-        } else {  }*/
-            super.onBackPressed();
-
-       /* Intent intent = new Intent(MyRecordsActivity.this, HomePageActivity.class);
-        intent.putExtra(RescribeConstants.ALERT, false);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);*/
-
+        super.onBackPressed();
     }
 }

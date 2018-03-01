@@ -7,8 +7,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
-import static com.rescribe.doctor.util.RescribeConstants.FileStatus.FAILED;
-import static com.rescribe.doctor.util.RescribeConstants.FileStatus.UPLOADING;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.UPLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.UNREAD;
 

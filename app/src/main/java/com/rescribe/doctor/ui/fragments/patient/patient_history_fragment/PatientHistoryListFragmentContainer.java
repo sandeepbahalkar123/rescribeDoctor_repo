@@ -5,14 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
@@ -21,10 +20,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.philliphsu.bottomsheetpickers.date.DatePickerDialog;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_history.OPDStatusShowAdapter;
 import com.rescribe.doctor.adapters.patient_history.YearSpinnerAdapter;
@@ -32,12 +31,10 @@ import com.rescribe.doctor.helpers.patient_detail.PatientDetailHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.login.Year;
-import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryDataModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
-import com.rescribe.doctor.ui.activities.add_records.AddRecordsActivity;
 import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -46,6 +43,7 @@ import com.rescribe.doctor.util.RescribeConstants;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -57,7 +55,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class PatientHistoryListFragmentContainer extends Fragment implements HelperResponse {
+public class PatientHistoryListFragmentContainer extends Fragment implements HelperResponse, DatePickerDialog.OnDateSetListener {
 
     private static final int REQUEST_CODE = 111;
     private static Bundle args;
@@ -71,7 +69,6 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     CustomTextView titleTextView;
     @BindView(R.id.userInfoTextView)
     CustomTextView userInfoTextView;
-
     private YearSpinnerAdapter mYearSpinnerAdapter;
     @BindView(R.id.year)
     Spinner mYearSpinnerView;
@@ -79,7 +76,6 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     CustomTextView mYearSpinnerSingleItem;
     @BindView(R.id.noRecords)
     ImageView noRecords;
-
     @BindView(R.id.addRecordButton)
     Button mAddRecordButton;
     //----------
@@ -96,7 +92,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private PatientHistoryCalenderListFragment mPatientHistoryCalenderListFragment;
     private boolean longpressed;
     private Bundle bundle = new Bundle();
-    ArrayList<DatesData> mDatesDataArrayList = new ArrayList<>() ;
+    ArrayList<DatesData> mDatesDataArrayList = new ArrayList<>();
+    private DatePickerDialog datePickerDialog;
 
     public PatientHistoryListFragmentContainer() {
         // Required empty public constructor
@@ -145,22 +142,29 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 //        mOpdStatusGridView.addItemDecoration(new GridSpacingItemDecoration(2,
 //                getResources().getDimensionPixelSize(R.dimen.dp5), true));
         //---------
+
     }
 
     @OnClick({R.id.backImageView, R.id.addRecordButton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
-                if (mAddRecordButton.getVisibility() == View.VISIBLE) {
-                    mAddRecordButton.setVisibility(View.GONE);
-                } else {
-                    mParentActivity.finish();
-                }
+                mParentActivity.finish();
                 break;
             case R.id.addRecordButton:
-                Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
-                getActivity().startActivity(intent);
+                Calendar now = Calendar.getInstance();
+// As of version 2.3.0, `BottomSheetDatePickerDialog` is deprecated.
+                datePickerDialog = DatePickerDialog.newInstance(
+                        this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.setAccentColor(getResources().getColor(R.color.tagColor));
+                datePickerDialog.setMaxDate(Calendar.getInstance());
+                datePickerDialog.show(getActivity().getSupportFragmentManager(), getResources().getString(R.string.select_date_text));
+
                 break;
+
         }
     }
 
@@ -170,7 +174,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         for (Year data :
                 mTimePeriodList) {
             mPatientHistoryCalenderListFragment = new PatientHistoryCalenderListFragment();
-            fragment = mPatientHistoryCalenderListFragment.createNewFragment(data,args); // pass data here
+            fragment = mPatientHistoryCalenderListFragment.createNewFragment(data, args); // pass data here
             fragment.setTargetFragment(PatientHistoryListFragmentContainer.this, REQUEST_CODE);
             mViewPagerAdapter.addFragment(fragment, data); // pass title here
         }
@@ -181,6 +185,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //    datePickerDialog.show(getActivity().getSupportFragmentManager(), getResources().getString(R.string.select_date_text));
 
             }
 
@@ -205,8 +210,6 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 if (mYearList.size() == 1) {
                     mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
                     mYearSpinnerView.setVisibility(View.GONE);
-                    SpannableString contentViewAllFavorite = new SpannableString(mYearList.get(0).toString());
-                    contentViewAllFavorite.setSpan(new UnderlineSpan(), 0, contentViewAllFavorite.length(), 0);
                     mYearSpinnerSingleItem.setText(mYearList.get(0).toString());
                 } else {
                     mYearSpinnerSingleItem.setVisibility(View.GONE);
@@ -219,7 +222,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                     Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedPatientHistoryInfo = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
                     if (yearWiseSortedPatientHistoryInfo.get(year) == null) {
                         mGeneratedRequestForYearList.add(year);
-                        mPatientDetailHelper.doGetPatientHistory(year);
+                        mPatientDetailHelper.doGetPatientHistory(args.getString(RescribeConstants.PATIENT_ID), year);
                     }
                 }
                 //---------
@@ -248,6 +251,14 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             }
         }, 0);
         //---------
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+
+        Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
+        startActivity(intent);
+
     }
 
     //---------------
@@ -344,6 +355,15 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             noRecords.setVisibility(View.GONE);
             mYearSpinnerView.setVisibility(View.VISIBLE);
             mTabLayout.setVisibility(View.VISIBLE);
+            if (mYearList.size() == 1) {
+                mYearSpinnerView.setVisibility(View.GONE);
+                mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
+                mYearSpinnerSingleItem.setText(mYearList.get(0).toString());
+            } else {
+                mYearSpinnerView.setVisibility(View.VISIBLE);
+                mYearSpinnerSingleItem.setVisibility(View.GONE);
+
+            }
         }
 
         if (mTabLayout != null) {
@@ -383,7 +403,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         if (!mGeneratedRequestForYearList.contains(mCurrentSelectedTimePeriodTab.getYear())) {
             Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedMyRecordInfoAndReports = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
             if (yearWiseSortedMyRecordInfoAndReports.get(mCurrentSelectedTimePeriodTab.getYear()) == null) {
-                mPatientDetailHelper.doGetPatientHistory(mCurrentSelectedTimePeriodTab.getYear());
+                mPatientDetailHelper.doGetPatientHistory(args.getString(RescribeConstants.PATIENT_ID), mCurrentSelectedTimePeriodTab.getYear());
                 mGeneratedRequestForYearList.add(mCurrentSelectedTimePeriodTab.getYear());
             }
         }
@@ -400,22 +420,18 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     public void setOPDStatusGridViewAdapter(ArrayList<String> list) {
         OPDStatusShowAdapter baseAdapter = new OPDStatusShowAdapter(getContext(), list);
-       // mOpdStatusGridView.setAdapter(baseAdapter);
+        // mOpdStatusGridView.setAdapter(baseAdapter);
     }
-    public boolean callOnBackPressed() {
-        return longpressed;
-    }
-    public void removeCheckBox() {
-      mPatientHistoryCalenderListFragment.removeSelectedDate(mDatesDataArrayList);
-    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode==REQUEST_CODE && resultCode== Activity.RESULT_OK) {
-           bundle = data.getBundleExtra(RescribeConstants.DATES_INFO);
-           if(bundle!=null){
-               longpressed = bundle.getBoolean(RescribeConstants.LONGPRESSED,false);
-               mDatesDataArrayList = bundle.getParcelableArrayList(RescribeConstants.DATES_LIST);
-           }
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            bundle = data.getBundleExtra(RescribeConstants.DATES_INFO);
+            if (bundle != null) {
+                longpressed = bundle.getBoolean(RescribeConstants.LONGPRESSED, false);
+                mDatesDataArrayList = bundle.getParcelableArrayList(RescribeConstants.DATES_LIST);
+            }
         }
     }
 }

@@ -1,0 +1,218 @@
+{
+  "common": {
+    "success": true,
+    "statusCode": 200,
+    "statusMessage": "USER AUTHENTICATED"
+  },
+  "data": {
+    "clinicList": [
+      {
+        "clinicName": "Sai Clinic",
+        "clinicId": 77,
+        "locationId": 65,
+        "area": "Kothrud",
+        "city": "Pune",
+        "cityId": 2763,
+        "patientList": {
+          "viewAll": [
+            {
+              "waitingId": 1623,
+              "hospitalPatId": 4841,
+              "patientId": 539457,
+              "patientName": "SWATI BHAIP",
+              "patientPhone": "8888699490",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "4",
+              "waitingInTime": "12:12:42",
+              "waitingStatusId": 3,
+              "waitingStatus": "Completed",
+              "appointmentTime": "16:00:00",
+              "appointmentStatusId": ""
+            },
+            {
+              "waitingId": 1622,
+              "hospitalPatId": 5250,
+              "patientId": 539840,
+              "patientName": "SAGAR GURAV",
+              "patientPhone": "8275377545",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "3",
+              "waitingInTime": "12:12:37",
+              "waitingStatusId": 8,
+              "waitingStatus": "In Queue",
+              "appointmentTime": "13:45:00",
+              "appointmentStatusId": "4"
+            }
+          ],
+          "active": [
+            {
+              "waitingId": 1623,
+              "hospitalPatId": 4841,
+              "patientId": 539457,
+              "patientName": "SWATI BHAIP",
+              "patientPhone": "8888699490",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "4",
+              "waitingInTime": "12:12:42",
+              "waitingStatusId": 3,
+              "waitingStatus": "Completed",
+              "appointmentTime": "16:00:00",
+              "appointmentStatusId": ""
+            },
+            {
+              "waitingId": 1623,
+              "hospitalPatId": 4841,
+              "patientId": 539457,
+              "patientName": "Pokemon",
+              "patientPhone": "8888699490",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "4",
+              "waitingInTime": "12:12:42",
+              "waitingStatusId": 3,
+              "waitingStatus": "Completed",
+              "appointmentTime": "16:00:00",
+              "appointmentStatusId": ""
+            },
+            {
+              "waitingId": 1623,
+              "hospitalPatId": 4841,
+              "patientId": 539457,
+              "patientName": "Ninja",
+              "patientPhone": "8888699490",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "4",
+              "waitingInTime": "12:12:42",
+              "waitingStatusId": 3,
+              "waitingStatus": "Completed",
+              "appointmentTime": "16:00:00",
+              "appointmentStatusId": ""
+            }
+          ]
+        }
+      },
+      {
+        "clinicName": "Om Shree Clinic",
+        "clinicId": 77,
+        "locationId": 65,
+        "area": "Kothrud",
+        "city": "Pune",
+        "cityId": 2763,
+        "patientList": {
+          "viewAll": [
+            {
+              "waitingId": 1623,
+              "hospitalPatId": 4841,
+              "patientId": 539457,
+              "patientName": "Ganesh",
+              "patientPhone": "8888699490",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "4",
+              "waitingInTime": "12:12:42",
+              "waitingStatusId": 3,
+              "waitingStatus": "Completed",
+              "appointmentTime": "16:00:00",
+              "appointmentStatusId": ""
+            },
+            {
+              "waitingId": 1622,
+              "hospitalPatId": 5250,
+              "patientId": 539840,
+              "patientName": "Ritesh",
+              "patientPhone": "8275377545",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "3",
+              "waitingInTime": "12:12:37",
+              "waitingStatusId": 8,
+              "waitingStatus": "In Queue",
+              "appointmentTime": "13:45:00",
+              "appointmentStatusId": "4"
+            }
+          ],
+          "active": [
+            {
+              "waitingId": 1623,
+              "hospitalPatId": 4841,
+              "patientId": 539457,
+              "patientName": "Rohit",
+              "patientPhone": "8888699490",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "4",
+              "waitingInTime": "12:12:42",
+              "waitingStatusId": 3,
+              "waitingStatus": "Completed",
+              "appointmentTime": "16:00:00",
+              "appointmentStatusId": ""
+            }
+          ]
+        }
+      },
+      {
+        "clinicName": "Saudagar Clinic",
+        "clinicId": 77,
+        "locationId": 65,
+        "area": "Kothrud",
+        "city": "Pune",
+        "cityId": 2763,
+        "patientList": {
+          "viewAll": [
+            {
+              "waitingId": 1623,
+              "hospitalPatId": 4841,
+              "patientId": 539457,
+              "patientName": "Jeetal",
+              "patientPhone": "8888699490",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "4",
+              "waitingInTime": "12:12:42",
+              "waitingStatusId": 3,
+              "waitingStatus": "Completed",
+              "appointmentTime": "16:00:00",
+              "appointmentStatusId": ""
+            },
+            {
+              "waitingId": 1622,
+              "hospitalPatId": 5250,
+              "patientId": 539840,
+              "patientName": "Amruta",
+              "patientPhone": "8275377545",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "3",
+              "waitingInTime": "12:12:37",
+              "waitingStatusId": 8,
+              "waitingStatus": "In Queue",
+              "appointmentTime": "13:45:00",
+              "appointmentStatusId": "4"
+            }
+          ],
+          "active": [
+            {
+              "waitingId": 1623,
+              "hospitalPatId": 4841,
+              "patientId": 539457,
+              "patientName": "Supriya",
+              "patientPhone": "8888699490",
+              "patientImageUrl": "http://drrescribe.com/medsonit-be/assets/doc_profile/Male_DRAvatar.jpg",
+              "waitingSequence": 2,
+              "tokenNumber": "4",
+              "waitingInTime": "12:12:42",
+              "waitingStatusId": 3,
+              "waitingStatus": "Completed",
+              "appointmentTime": "16:00:00",
+              "appointmentStatusId": ""
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

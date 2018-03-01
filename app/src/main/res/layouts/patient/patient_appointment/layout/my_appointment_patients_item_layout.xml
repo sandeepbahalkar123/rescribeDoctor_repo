@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:textColor="@color/black"
+                android:textColor="@color/tagColor"
                 android:textSize="@dimen/sp16"
                 app:customFont="@string/roboto_bold"
                 tools:ignore="ObsoleteLayoutParam"
@@ -327,7 +327,7 @@
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/outstandingAmountTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="16dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp11"

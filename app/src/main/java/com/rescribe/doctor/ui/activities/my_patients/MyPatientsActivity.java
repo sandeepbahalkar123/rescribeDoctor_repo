@@ -15,10 +15,9 @@ import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
+import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
-import com.rescribe.doctor.ui.fragments.my_appointments.DrawerForMyAppointment;
-import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
 
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
@@ -49,7 +48,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     private Context mContext;
-    private AppointmentHelper mAppointmentHelper;
+    private static AppointmentHelper mAppointmentHelper;
     private Bundle bundle;
     private MyPatientsFragment mMyPatientsFragment;
     private boolean isLongPressed;
@@ -67,7 +66,10 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
         mContext = MyPatientsActivity.this;
         titleTextView.setText(getString(R.string.my_patients));
         mAppointmentHelper = new AppointmentHelper(this, this);
-        mAppointmentHelper.doGetMyPatients();
+        RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
+       // mRequestSearchPatients.setDocId(2462);
+       mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+        mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
         setUpNavigationDrawer();
     }
 
@@ -181,12 +183,18 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     }
 
     @Override
-    public void onApply(Bundle b, boolean drawerRequired) {
+    public void onApply(RequestSearchPatients mRequestSearchPatients, boolean drawerRequired) {
         drawerLayout.closeDrawers();
+        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+        mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
+
+
     }
 
     @Override
     public void onReset(boolean drawerRequired) {
 
     }
+
+
 }

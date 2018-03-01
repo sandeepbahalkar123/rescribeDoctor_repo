@@ -35,7 +35,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0.14"
                 android:gravity="center"
-                android:text="12th\nJust\now"
+                tools:text="12th\nJust\now"
                 android:textColor="@color/recentblue"
                 android:textSize="@dimen/sp16"
                 android:textStyle="bold" />
@@ -147,7 +147,7 @@
                     <!-- Rightend Duration -->
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/doctorAddress"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp8"
                         android:ellipsize="end"
@@ -156,7 +156,7 @@
                         android:textColor="@color/vitals_name"
                         android:textSize="@dimen/sp13"
                         app:customFont="@string/roboto_medium"
-                        android:text="Pneumonia" />
+                        tools:text="Pneumonia" />
                 </LinearLayout>
 
                 <RelativeLayout
@@ -172,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:text="10:30 am"
+                        tools:text="10:30 am"
                         android:paddingEnd="@dimen/dp12"
                         android:paddingRight="@dimen/dp12"
                         android:textColor="@color/black"

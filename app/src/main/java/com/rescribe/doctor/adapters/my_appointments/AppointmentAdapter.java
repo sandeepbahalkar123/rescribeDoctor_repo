@@ -53,7 +53,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         this.mContext = context;
         this.mDataList = new ArrayList<>(mAppointmentList);
         this.mAppointmentListTemp = new ArrayList<>(mAppointmentList);
-
         this.mOnDownArrowClicked = mOnDownArrowClicked;
     }
 
@@ -127,7 +126,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             } else {
                 viewHolder.patientNameTextView.setText(patientName);
             }
-            //Spannable condition for PatientPhoneNomber
+            //Spannable condition for PatientPhoneNumber
 
             if (patientObject.getPatientPhone().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
                 SpannableString spannablePhoneString = new SpannableString(patientObject.getPatientPhone());
@@ -144,8 +143,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 viewHolder.patientPhoneNumber.setText(patientObject.getPatientPhone());
             }
             //Spannable condition for PatientId
-            if (String.valueOf(patientObject.getPatientId()).toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
-                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getPatientId()));
+            if (String.valueOf(patientObject.getHospitalPatId()).toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
+                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
                 patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
                 SpannableString spannableIdString = new SpannableString(patientID);
                 Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
@@ -159,26 +158,30 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 }
                 viewHolder.patientIdTextView.setText(spannableIdString);
             } else {
-                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
+                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getHospitalPatId());
                 patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
                 viewHolder.patientIdTextView.setText(patientID);
             }
         } else {
             viewHolder.patientNameTextView.setText(patientName);
             viewHolder.patientPhoneNumber.setText(patientObject.getPatientPhone());
-            SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
+            SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getHospitalPatId());
             patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
             viewHolder.patientIdTextView.setText(patientID);
         }
 
-        if (patientObject.getAge() == 0) {
+        if (patientObject.getAge().equals("") && !patientObject.getDateOfBirth().equals("")) {
+            viewHolder.patientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate();
             String getBirthdayDate = patientObject.getDateOfBirth();
             DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate);
             DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate);
             viewHolder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
-        } else {
+        } else if (!patientObject.getAge().equals("")) {
+            viewHolder.patientAgeTextView.setVisibility(View.VISIBLE);
             viewHolder.patientAgeTextView.setText(patientObject.getAge() + " " + mContext.getString(R.string.years));
+        } else if (patientObject.getAge().equals("") && patientObject.getDateOfBirth().equals("")) {
+            viewHolder.patientAgeTextView.setVisibility(View.GONE);
 
         }
 
@@ -328,7 +331,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.mClinicNameTextView.setText(mAppointmentListTemp.get(groupPosition).getClinicName() + " - ");
         viewHolder.mClinicAddress.setText(mAppointmentListTemp.get(groupPosition).getArea() + ", " + mAppointmentListTemp.get(groupPosition).getCity());
         viewHolder.mClinicPatientCount.setText(mAppointmentListTemp.get(groupPosition).getPatientList().size() + "");
-        SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientId() + "");
+        SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getHospitalPatId() + "");
         patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
         viewHolder.mPatientIdTextView.setText(patientID);
 
@@ -343,16 +346,21 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         } else if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getSalutation() == 4) {
             viewHolder.mPatientNameTextView.setText(mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientName());
         }
-        if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getAge() == 0) {
+        if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getAge().equals("") && !mAppointmentListTemp.get(groupPosition).getPatientHeader().getDateOfBirth().equals("")) {
+            viewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate();
             String getBirthdayDate = mAppointmentListTemp.get(groupPosition).getPatientHeader().getDateOfBirth();
             DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate);
             DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate);
             viewHolder.mPatientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
-        } else {
+        } else if (!mAppointmentListTemp.get(groupPosition).getPatientHeader().getAge().equals("")) {
+            viewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);
             viewHolder.mPatientAgeTextView.setText(mAppointmentListTemp.get(groupPosition).getPatientHeader().getAge() + " " + mContext.getString(R.string.years));
+        } else if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getAge().equals("") && mAppointmentListTemp.get(groupPosition).getPatientHeader().getDateOfBirth().equals("")) {
+            viewHolder.mPatientAgeTextView.setVisibility(View.GONE);
 
         }
+
         viewHolder.mPatientGenderTextView.setText(" " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getGender());
         if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
             viewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
@@ -554,7 +562,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                         for (PatientList patientListObject : patientLists) {
                             if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
                                     || patientListObject.getPatientPhone().contains(charString)
-                                    || String.valueOf(patientListObject.getPatientId()).contains(charString)) {
+                                    || String.valueOf(patientListObject.getHospitalPatId()).contains(charString)) {
                                 //--------
                                 patientListObject.setSpannableString(charString);
                                 sortedPatientLists.add(patientListObject);

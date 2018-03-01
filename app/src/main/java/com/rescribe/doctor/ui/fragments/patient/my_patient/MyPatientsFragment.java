@@ -1,8 +1,13 @@
 package com.rescribe.doctor.ui.fragments.patient.my_patient;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -13,37 +18,62 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
+import com.rescribe.doctor.adapters.my_appointments.DialogClinicListAdapter;
 import com.rescribe.doctor.adapters.my_patients.MyPatientsAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
-import com.rescribe.doctor.ui.activities.add_records.AddRecordsActivity;
+import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
+import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
+import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
+import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
+import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
+import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.PatientsListAddToWaitingList;
+import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.RequestForWaitingListPatients;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
+import com.rescribe.doctor.ui.activities.my_patients.TemplateListActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
+import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
+import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
+import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.PaginationScrollListener;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+
 /**
  * Created by jeetal on 31/1/18.
  */
 
-public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.OnDownArrowClicked, BottomMenuAppointmentAdapter.OnMenuBottomItemClickListener {
+public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.OnDownArrowClicked, BottomMenuAppointmentAdapter.OnMenuBottomItemClickListener, HelperResponse, DialogClinicListAdapter.OnClickOfRadioButton {
     private static Bundle args;
+    private static AppointmentHelper mAppointmentHelper;
     @BindView(R.id.whiteUnderLine)
     ImageView whiteUnderLine;
     @BindView(R.id.historyExpandableListView)
@@ -68,6 +98,19 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private ArrayList<BottomMenu> mBottomMenuList;
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
+    public int TOTAL_PAGE_COUNT = 1;
+    public boolean isLoading = false;
+    public static final int PAGE_START = 0;
+    public int currentPage = PAGE_START;
+    private String searchText = "";
+    private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
+    private DialogClinicListAdapter mDialogClinicListAdapter;
+    private ArrayList<PatientList> mPatientListsOriginal;
+    private int mLocationId;
+    private ArrayList<PatientsListAddToWaitingList> patientsListAddToWaitingLists;
+    private ArrayList<PatientInfoList> patientInfoLists;
+    private int mClinicId;
+    private String mClinicName = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -82,6 +125,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     private void init() {
         mBottomMenuList = new ArrayList<>();
+        mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
+        mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         for (String mMenuName : mMenuNames) {
             BottomMenu bottomMenu = new BottomMenu();
             bottomMenu.setMenuName(mMenuName);
@@ -103,6 +148,14 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             if (animator instanceof SimpleItemAnimator)
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
             recyclerView.setAdapter(mMyPatientsAdapter);
+            recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+
+                    loadNextPage(page);
+                }
+            });
+
         } else {
             recyclerView.setVisibility(View.GONE);
             emptyListView.setVisibility(View.VISIBLE);
@@ -120,7 +173,13 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
             @Override
             public void afterTextChanged(Editable s) {
-                mMyPatientsAdapter.getFilter().filter(s);
+                searchText = s.toString();
+                if (searchText.length() >= 3) {
+                    serachPatientsUsingSearchBar(getContext(), searchText);
+                } else {
+
+                }
+
             }
         });
         mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList);
@@ -171,13 +230,14 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     @Override
     public void onClickOfPatientDetails(PatientList patientListObject, String text) {
         Bundle b = new Bundle();
-        b.putString(RescribeConstants.PATIENT_NAME,patientListObject.getPatientName());
-        b.putString(RescribeConstants.PATIENT_INFO,text);
+        b.putString(RescribeConstants.PATIENT_NAME, patientListObject.getPatientName());
+        b.putString(RescribeConstants.PATIENT_INFO, text);
+        b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
+        b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
         Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
-        intent.putExtra(RescribeConstants.PATIENT_INFO,b);
+        intent.putExtra(RescribeConstants.PATIENT_INFO, b);
         startActivity(intent);
     }
-
 
 
     public static MyPatientsFragment newInstance(Bundle b) {
@@ -206,64 +266,30 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 }
                 mMyPatientsAdapter.notifyDataSetChanged();
             }
-        } /*else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_mail))) {
 
-            if (bottomMenu.isSelected()) {
-                ArrayList<String> mEmailPatinetsList = new ArrayList<>();
-                for (int groupIndex = 0; groupIndex < mMyPatientsAdapter.getGroupList().size(); groupIndex++) {
-
-                    PatientList patientList = mMyPatientsAdapter.getGroupList().get(groupIndex);
-                    if (patientList.isSelected()) {
-                        mEmailPatinetsList.add(patientList.getPatientEmail());
-                    }
-
-                }
-                int count = mEmailPatinetsList.size();
-                String[] emailList = new String[count];
-                for (int emailIndex = 0; emailIndex < mEmailPatinetsList.size(); emailIndex++) {
-                    emailList[emailIndex] = mEmailPatinetsList.get(emailIndex);
-                }
-                if (!mEmailPatinetsList.isEmpty()) {
-                    Intent intent = null;
-                    intent = new Intent(Intent.ACTION_SEND);
-                    intent.setType("plain/text");
-                    intent.putExtra(Intent.EXTRA_EMAIL, emailList);
-                    startActivity(intent);
-                    for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
-                        if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_mail))) {
-                            mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
-                        }
-                    }
-                    mBottomMenuAppointmentAdapter.notifyDataSetChanged();
-
-                } else {
-                    CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
-                }
-            }
-
-        }*/ else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
-            ArrayList<String> mSmsList = new ArrayList<>();
-
+            //Send SMS
+        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
+            patientInfoLists = new ArrayList<>();
+            ArrayList<PatientList> mPatientListsOriginal = new ArrayList<>();
             for (int childIndex = 0; childIndex < mMyPatientsAdapter.getGroupList().size(); childIndex++) {
                 PatientList patientList = mMyPatientsAdapter.getGroupList().get(childIndex);
                 if (patientList.isSelected()) {
-                    mSmsList.add(patientList.getPatientPhone());
+                    PatientInfoList patientInfoListObject = new PatientInfoList();
+                    patientInfoListObject.setPatientName(patientList.getPatientName());
+                    patientInfoListObject.setPatientId(patientList.getPatientId());
+                    patientInfoListObject.setPatientPhone(patientList.getPatientPhone());
+                    patientInfoListObject.setHospitalPatId(patientList.getHospitalPatId());
+                    patientInfoLists.add(patientInfoListObject);
+                    mPatientListsOriginal.add(patientList);
                 }
             }
 
-            int count = mSmsList.size();
-            String emailList = "";
-            for (int emailIndex = 0; emailIndex < mSmsList.size(); emailIndex++) {
-                emailList += mSmsList.get(emailIndex) + ";";
-            }
-            if (!mSmsList.isEmpty()) {
-                Uri smsToUri = Uri.parse("smsto:" + emailList);
-                Intent intent = new Intent(
-                        Intent.ACTION_SENDTO, smsToUri);
-                String message = "hello";
-                // message = message.replace("%s", StoresMessage.m_storeName);
-                intent.putExtra("sms_body", message);
-                startActivity(intent);
+
+            if (!patientInfoLists.isEmpty()) {
+                showDialogForSmsLocationSelection(mDoctorLocationModel);
+               /* Intent intent = new Intent(getActivity(), TemplateListForMyPatients.class);
+                intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST,patientLists);
+                startActivity(intent);*/
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                     if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
                         mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
@@ -280,11 +306,163 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 mBottomMenuAppointmentAdapter.notifyDataSetChanged();
             }
 
+        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
+
+            patientsListAddToWaitingLists = new ArrayList<>();
+            for (int childIndex = 0; childIndex < mMyPatientsAdapter.getGroupList().size(); childIndex++) {
+                PatientList patientList = mMyPatientsAdapter.getGroupList().get(childIndex);
+                if (patientList.isSelected()) {
+                    PatientsListAddToWaitingList patientInfoListObject = new PatientsListAddToWaitingList();
+                    patientInfoListObject.setPatientName(patientList.getPatientName());
+                    patientInfoListObject.setPatientId(String.valueOf(patientList.getPatientId()));
+                    patientInfoListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
+                    patientsListAddToWaitingLists.add(patientInfoListObject);
+
+                }
+            }
+
+
+            if (!patientsListAddToWaitingLists.isEmpty()) {
+
+                showDialogToSelectLocation(mDoctorLocationModel);
+
+                for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+                    if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
+                        mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
+                    }
+                }
+                mBottomMenuAppointmentAdapter.notifyDataSetChanged();
+            } else {
+                CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
+                for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+                    if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
+                        mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
+                    }
+                }
+                mBottomMenuAppointmentAdapter.notifyDataSetChanged();
+            }
         }
+
     }
 
+    private void showDialogForSmsLocationSelection(ArrayList<DoctorLocationModel> mDoctorLocationModel) {
+        final Dialog dialog = new Dialog(getActivity());
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
+        dialog.setCancelable(true);
+
+        RecyclerView recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerView);
+        mDialogClinicListAdapter = new DialogClinicListAdapter(getActivity(), mDoctorLocationModel, this);
+
+        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearlayoutManager);
+        // off recyclerView Animation
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator)
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        recyclerView.setAdapter(mDialogClinicListAdapter);
+
+        TextView okButton = (TextView) dialog.findViewById(R.id.okButton);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mLocationId != 0) {
+                    Intent intent = new Intent(getActivity(),TemplateListForMyPatients.class);
+                    intent.putExtra(RescribeConstants.LOCATION_ID,mLocationId);
+                    intent.putExtra(RescribeConstants.CLINIC_ID,mClinicId);
+                    intent.putExtra(RescribeConstants.CLINIC_NAME,mClinicName);
+                    intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST,patientInfoLists);
+                    startActivity(intent);
+                    dialog.cancel();
+                } else {
+                    Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+    }
+
+    private void showDialogToSelectLocation(ArrayList<DoctorLocationModel> mPatientListsOriginal) {
+        final Dialog dialog = new Dialog(getActivity());
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
+        dialog.setCancelable(true);
+
+        RecyclerView recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerView);
+        mDialogClinicListAdapter = new DialogClinicListAdapter(getActivity(), mPatientListsOriginal, this);
+
+        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearlayoutManager);
+        // off recyclerView Animation
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator)
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        recyclerView.setAdapter(mDialogClinicListAdapter);
+
+        TextView okButton = (TextView) dialog.findViewById(R.id.okButton);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mLocationId != 0) {
+                    callWaitingListApi();
+                    dialog.cancel();
+                } else {
+                    Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+    }
+
+
+    private void callWaitingListApi() {
+        RequestForWaitingListPatients requestForWaitingListPatients = new RequestForWaitingListPatients();
+        requestForWaitingListPatients.setPatientsListAddToWaitingList(patientsListAddToWaitingLists);
+        requestForWaitingListPatients.setDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+        requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+        requestForWaitingListPatients.setLocationId(mLocationId);
+        mAppointmentHelper.doAddToWaitingList(requestForWaitingListPatients);
+    }
+
+
     public boolean callOnBackPressed() {
-        return mMyPatientsAdapter.isLongPressed;
+        if (mMyPatientsAdapter != null) {
+            return mMyPatientsAdapter.isLongPressed;
+        } else {
+            return false;
+        }
     }
 
     public void removeCheckBox() {
@@ -307,5 +485,98 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
                 break;
         }
+    }
+
+    public void loadNextPage(int currentPage) {
+        if (searchText.length() == 0) {
+            RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
+            //mRequestSearchPatients.setDocId(2462);
+            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+            mRequestSearchPatients.setPageNo(currentPage);
+            mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
+        } else {
+            RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
+            //mRequestSearchPatients.setDocId(2462);
+            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+            mRequestSearchPatients.setPageNo(currentPage);
+            mRequestSearchPatients.setSearchText(searchText);
+            mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
+        }
+    }
+
+    @Override
+    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_PATIENT_DATA)) {
+            if (customResponse != null) {
+                //Paginated items added here
+                MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
+                ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
+                mMyPatientsAdapter.addAll(mLoadedPatientList);
+
+            }
+        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT)) {
+
+            MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
+            ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
+            mMyPatientsAdapter.clear();
+            for (PatientList patientList : mLoadedPatientList) {
+                patientList.setSpannableString(searchText);
+            }
+            mMyPatientsAdapter.addAll(mLoadedPatientList);
+
+        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_ADD_TO_WAITING_LIST)) {
+            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
+            if (templateBaseModel.getCommon().isSuccess()) {
+                if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.all_patients_exists).toLowerCase())) {
+                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase())) {
+                    Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patient_limit_exceeded).toLowerCase())) {
+                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+
+                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.already_exists_in_waiting_list).toLowerCase())) {
+                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+
+                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
+                    Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void onParseError(String mOldDataTag, String errorMessage) {
+
+    }
+
+    @Override
+    public void onServerError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @Override
+    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    public void serachPatientsUsingSearchBar(Context mContext, String searchText) {
+        mAppointmentHelper = new AppointmentHelper(mContext, this);
+        RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
+        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+        mRequestSearchPatients.setSearchText(searchText);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+
+    }
+
+    @Override
+    public void onRadioButtonClick(DoctorLocationModel clinicList) {
+        mLocationId = clinicList.getLocationId();
+        mClinicId = clinicList.getClinicId();
+        mClinicName = clinicList.getClinicName();
     }
 }

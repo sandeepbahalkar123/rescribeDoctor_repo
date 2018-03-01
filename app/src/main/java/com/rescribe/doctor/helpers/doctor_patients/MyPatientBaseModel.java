@@ -15,7 +15,7 @@ public class MyPatientBaseModel implements Parcelable, CustomResponse
     @SerializedName("common")
     @Expose
     private Common common;
-    @SerializedName("patientDataModel")
+    @SerializedName("data")
     @Expose
     private PatientDataModel patientDataModel;
     public final static Creator<MyPatientBaseModel> CREATOR = new Creator<MyPatientBaseModel>() {

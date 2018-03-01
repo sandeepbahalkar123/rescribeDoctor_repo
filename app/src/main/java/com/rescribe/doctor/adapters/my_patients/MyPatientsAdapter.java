@@ -65,7 +65,9 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     @Override
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
         final PatientList patientObject = mDataList.get(position);
-
+        holder.opdTypeTextView.setVisibility(View.GONE);
+        holder.patientClinicAddress.setVisibility(View.VISIBLE);
+        holder.patientClinicAddress.setText(patientObject.getClinicName()+ " - " + patientObject.getPatientCity());
         String patientName = "";
         if (patientObject.getSalutation() == 1) {
             patientName = mContext.getString(R.string.mr) + " " + patientObject.getPatientName();
@@ -114,8 +116,8 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             }
             //TODO:
             //Spannable condition for PatientId
-            if (String.valueOf(patientObject.getPatientId()).contains(patientObject.getSpannableString())) {
-                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getPatientId()));
+            if (String.valueOf(patientObject.getHospitalPatId()).contains(patientObject.getSpannableString())) {
+                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
                 patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
                 SpannableString spannableIdString = new SpannableString(patientID);
                 Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
@@ -129,33 +131,34 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 }
                 holder.patientIdTextView.setText(spannableIdString);
             } else {
-                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
+                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getHospitalPatId());
                 patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
                 holder.patientIdTextView.setText(patientID);
             }
         } else {
             holder.patientNameTextView.setText(patientName);
             holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
-            SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getPatientId());
+            SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getHospitalPatId());
             patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
             holder.patientIdTextView.setText(patientID);
         }
 
-        if (patientObject.getAge() == 0) {
+        if (patientObject.getAge().equals("") && !patientObject.getDateOfBirth().equals("")) {
+            holder.patientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate();
             String getBirthdayDate = patientObject.getDateOfBirth();
             DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate);
             DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate);
             holder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
-        } else {
+        } else if (!patientObject.getAge().equals("")) {
+            holder.patientAgeTextView.setVisibility(View.VISIBLE);
             holder.patientAgeTextView.setText(patientObject.getAge() + " " + mContext.getString(R.string.years));
-
+        } else {
+            holder.patientAgeTextView.setVisibility(View.GONE);
         }
-        SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getPatientId()));
-        patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-        holder.patientIdTextView.setText(patientID);
+
         holder.patientGenderTextView.setText(" " + patientObject.getGender());
-        if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
+        /*if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
             holder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
             holder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
         } else if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
@@ -166,7 +169,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
             holder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
 
-        }
+        }*/
 
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (patientObject.getOutStandingAmount() == 0) {
@@ -221,6 +224,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             }
         });
 
+
     }
 
     @Override
@@ -265,7 +269,8 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         CustomTextView payableAmountTextView;
         @BindView(R.id.cardView)
         LinearLayout cardView;
-
+        @BindView(R.id.patientClinicAddress)
+        CustomTextView patientClinicAddress;
 
         View view;
 
@@ -345,5 +350,57 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
         void onClickOfPatientDetails(PatientList patientListObject, String text);
 
+    }
+
+
+    /* public void addLoadingFooter() {
+         isLoadingAdded = true;
+         add(new PatientList());
+     }
+
+     public void removeLoadingFooter() {
+         isLoadingAdded = false;
+
+         int position = mDataList.size() - 1;
+         PatientList item = getItem(position);
+
+         if (item != null) {
+             mDataList.remove(position);
+             notifyItemRemoved(position);
+         }
+     }
+
+     public void addAll(ArrayList<PatientList> mcList) {
+         for (PatientList mc : mcList) {
+             add(mc);
+         }
+     }
+     public void add(PatientList mc) {
+         mDataList.add(mc);
+         notifyItemInserted(mDataList.size() - 1);
+     }
+     public PatientList getItem(int position) {
+         return mDataList.get(position);
+     }*/
+    public void add(PatientList mc) {
+        mDataList.add(mc);
+        notifyItemInserted(mDataList.size() - 1);
+    }
+
+    public void addAll(ArrayList<PatientList> mcList) {
+
+        for (PatientList mc : mcList) {
+            add(mc);
+        }
+    }
+    public void clear() {
+        final int size = mDataList.size();
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                mDataList.remove(0);
+            }
+
+            notifyItemRangeRemoved(0, size);
+        }
     }
 }

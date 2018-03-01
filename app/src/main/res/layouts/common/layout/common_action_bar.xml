@@ -15,7 +15,7 @@
             android:id="@+id/backImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp10"
+            android:layout_marginTop="@dimen/dp14"
             android:paddingStart="@dimen/dp14"
             android:paddingEnd="@dimen/dp10"
             android:paddingTop="@dimen/dp6"
@@ -27,12 +27,12 @@
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp10"
+            android:layout_marginTop="@dimen/dp14"
             android:layout_toRightOf="@id/backImageView"
             android:paddingLeft="@dimen/dp16"
             android:paddingStart="@dimen/dp16"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp18"
+            android:textSize="@dimen/sp17"
             app:customFont="@string/roboto_bold"
             tools:text="Appointments" />
 
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/dp10"
+            android:layout_marginTop="@dimen/dp14"
             android:layout_toEndOf="@id/userInfoTextView"
             android:layout_toRightOf="@id/userInfoTextView"
             android:gravity="right"
@@ -80,9 +80,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_gravity="right|center_vertical"
-            android:layout_toEndOf="@id/userInfoTextView"
-            android:layout_toRightOf="@id/userInfoTextView"
             android:layout_weight="0.2"
+            android:layout_marginTop="@dimen/dp14"
             android:textColor="@color/white"
             android:textSize="@dimen/sp16"
             android:textStyle="bold"
@@ -96,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/dp10"
+            android:layout_marginTop="@dimen/dp14"
             android:gravity="right"
             android:src="@drawable/bsp_ic_add_circle_24dp"
             android:layout_centerVertical="true"
@@ -106,8 +105,5 @@
             android:visibility="gone"
             tools:visibility="visible" />
     </RelativeLayout>
-
-
-
 
 </LinearLayout>

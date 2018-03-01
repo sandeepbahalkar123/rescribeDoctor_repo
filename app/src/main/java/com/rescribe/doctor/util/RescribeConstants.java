@@ -97,7 +97,12 @@ public class RescribeConstants {
     public static final String MY_RECORDS_DOCTOR_LIST = RescribeConstants.BLANK + 19;
     public static final String MY_RECORDS_ADD_DOCTOR = RescribeConstants.BLANK + 20;
     public static final String TASK_PATIENT_HISTORY = RescribeConstants.BLANK + 21;
-
+    public static final String TASK_GET_DOCTOR_SMS_TEMPLATE = RescribeConstants.BLANK + 22;
+    public static final String TASK_REQUEST_SEND_SMS = RescribeConstants.BLANK + 23;
+    public static final String TASK_GET_WAITING_LIST = RescribeConstants.BLANK + 24;
+    public static final String TASK_GET_SEARCH_RESULT_MY_PATIENT = RescribeConstants.BLANK + 25;
+    public static final String TASK_ADD_TO_WAITING_LIST = RescribeConstants.BLANK + 26;
+    public static final String TASK_GET_LOCATION_LIST = RescribeConstants.BLANK + 27;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -140,13 +145,26 @@ public class RescribeConstants {
     public static final String DATES_LIST = "dates_list";
     public static final String DATES_INFO = "dates_info";
     public static final String FILTER_STATUS_LIST = "filter_status_list";
+    public static final String FILTER_CLINIC_LIST = "filter_clinic_list";
+    public static final String APPOINTMENT_LIST = "appointment_list";
+    public static final String SMS_DETAIL_LIST = "sms_detail_list";
+    public static final String WAITING_LIST_INFO = "waiting_list_info";
+    public static final String SMS_PATIENT_LIST_TO_SHOW = "sms_list_to_show";
+    public static final String CLINIC_LIST = "clinic_list";
+    public static final String PATIENT_HOS_PAT_ID = "hos_pat_id";
+    public static final String PATIENT_OPDID = "patient_opdid";
+    public static final String PATIENT_LIST = "patient_list";
+    public static final String LOCATION_ID = "location_id";
+    public static final String TEMPLATE_OBJECT = "template_object";
+    public static final String CLINIC_ID = "clinic_id";
+    public static final String CLINIC_NAME = "clinic_name";
 
 
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
 
-    public static class USER_STATUS {
+    public interface USER_STATUS {
         public static final String ONLINE = "Online";
         public static final String OFFLINE = "Offline";
         public static final String TYPING = "Typing";
@@ -154,7 +172,7 @@ public class RescribeConstants {
     }
 
     // change
-    public static class MESSAGE_STATUS {
+    public interface MESSAGE_STATUS {
         public static final String SEEN = "seen";
         public static final String REACHED = "reached";
         public static final String SENT = "sent";
@@ -164,14 +182,14 @@ public class RescribeConstants {
         public static final int UNREAD = 0;
     }
 
-    public interface FileStatus {
+    public interface FILE_STATUS {
         public static final int UPLOADING = 1;
         public static final int DOWNLOADING = 1;
         public static final int FAILED = 0;
         public static final int COMPLETED = 3;
     }
 
-    public static class PRESCRIPTION_LIST_PARAMS {
+    public interface PRESCRIPTION_LIST_PARAMS {
         public static final String PATIENT_NAME = "User-ID";
         public static final String FILE_TYPE = "fileType";
         public static final String DATE_TYPE = "dateType";
@@ -181,7 +199,7 @@ public class RescribeConstants {
         public static final String DOC_TYPE_ID = "DocTypeId";
     }
 
-    public static class DATE_PATTERN {
+    public interface DATE_PATTERN {
         public static String YYYY_MM_DD_hh_mm_a = "yyyy-MM-dd hh:mm a";
         public static String DD_MM = "dd/MM";
         public static final String MM = "MM";
@@ -203,14 +221,14 @@ public class RescribeConstants {
         public static String YYYY_MM_DD_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
     }
 
-    public static class TIME_STAMPS {
+    public interface TIME_STAMPS {
         public static final int FIVE_FIFTY = 500;
         public static int ONE_SECONDS = 1000;
         public static int TWO_SECONDS = 2000;
         public static int THREE_SECONDS = 3000;
     }
 
-    public static class FILE {
+    public interface FILE {
         public static final String IMG = "img";
         public static final String DOC = "doc";
         public static final String VID = "vid";
@@ -218,7 +236,7 @@ public class RescribeConstants {
         public static final String LOC = "loc";
     }
 
-    public static class FILE_EMOJI {
+    public interface FILE_EMOJI {
         public static final String IMG_FILE = "🏞 Image";
         public static final String DOC_FILE = "📒 Document";
         public static final String VID_FILE = "📹 Video";
@@ -226,7 +244,7 @@ public class RescribeConstants {
         public static final String LOC_FILE = "📍 Location";
     }
 
-    public class INVESTIGATION_KEYS {
+    public interface INVESTIGATION_KEYS {
         public static final String INVESTIGATION_DATE = "investigation_date";
         public static final String INVESTIGATION_TIME = "investigation_time";
         public static final String INVESTIGATION_TEMP_DATA = "investigation_temp_data";
@@ -237,7 +255,7 @@ public class RescribeConstants {
         public static final String INV_ID = "invId";
     }
 
-    public class PATIENT_OPDS_STATUS {
+    public interface PATIENT_OPDS_STATUS {
         public static final String OPD_COMPLETED = "opd completed";
         public static final String OPD_SAVED = "opd saved";
         public static final String ONLY_ATTACHMENTS = "only attachments";

@@ -20,7 +20,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     private String patientName;
     @SerializedName("age")
     @Expose
-    private Integer age;
+    private String age;
     @SerializedName("patientDob")
     @Expose
     private String dateOfBirth;
@@ -92,7 +92,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         this.docId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientName = ((String) in.readValue((String.class.getClassLoader())));
-        this.age = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.age = ((String) in.readValue((String.class.getClassLoader())));
         this.dateOfBirth = ((String) in.readValue((String.class.getClassLoader())));
         this.gender = ((String) in.readValue((String.class.getClassLoader())));
         this.outStandingAmount = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -127,11 +127,11 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         this.patientName = patientName;
     }
 
-    public Integer getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
@@ -278,9 +278,9 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
-        dest.writeValue(patientName);
         dest.writeValue(docId);
         dest.writeValue(hospitalPatId);
+        dest.writeValue(patientName);
         dest.writeValue(age);
         dest.writeValue(dateOfBirth);
         dest.writeValue(gender);
@@ -292,11 +292,11 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         dest.writeValue(patientImageUrl);
         dest.writeValue(appointmentDate);
         dest.writeValue(appointmentTime);
+        dest.writeValue(appointmentStatus);
         dest.writeValue(appointmentEndTime);
         dest.writeValue(appointmentStatusId);
-        dest.writeValue(appointmentStatus);
-    }
 
+    }
 
     public int describeContents() {
         return  0;

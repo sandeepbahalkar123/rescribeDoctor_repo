@@ -19,7 +19,7 @@ import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
 import static com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver.MESSAGE_LIST;
 import static com.rescribe.doctor.services.MQTTService.SEND_MESSAGE;
-import static com.rescribe.doctor.util.RescribeConstants.FileStatus.COMPLETED;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
 
 public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
     AppDBHelper instance;
@@ -40,7 +40,7 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
 
         String prefix[] = uploadInfo.getUploadId().split("_");
         if (prefix[0].equals(doctorId))
-            instance.updateMessageUploadStatus(uploadInfo.getUploadId(), RescribeConstants.FileStatus.FAILED);
+            instance.updateMessageUploadStatus(uploadInfo.getUploadId(), RescribeConstants.FILE_STATUS.FAILED);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(uploadInfo.getNotificationID());

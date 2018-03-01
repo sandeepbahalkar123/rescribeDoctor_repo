@@ -94,7 +94,7 @@ public class PatientDetailActivity extends AppCompatActivity implements HelperRe
         //---
 
         mSingleVisitDetailHelper = new PatientDetailHelper(this, this);
-        mSingleVisitDetailHelper.doGetOneDayVisit(RescribeConstants.OPD_ID);
+      //  mSingleVisitDetailHelper.doGetOneDayVisit(RescribeConstants.OPD_ID);
 
 
         mHistoryExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
@@ -132,7 +132,6 @@ public class PatientDetailActivity extends AppCompatActivity implements HelperRe
                                         int childPosition, long id) {
 
                 mHistoryExpandableListView.collapseGroup(groupPosition);
-
                 return false;
             }
         });
@@ -231,7 +230,6 @@ public class PatientDetailActivity extends AppCompatActivity implements HelperRe
                 patientHistoryList.get(i).setVitals(vitalSortedList);
             }
         }
-
 
         mSingleVisitAdapter = new PatientDetailAdapter(this, patientHistoryList);
         mHistoryExpandableListView.setAdapter(mSingleVisitAdapter);

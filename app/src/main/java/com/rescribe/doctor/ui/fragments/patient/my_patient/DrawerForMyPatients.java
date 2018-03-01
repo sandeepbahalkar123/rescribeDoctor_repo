@@ -27,6 +27,8 @@ import com.rescribe.doctor.adapters.drawer_adapters.SortByPriceFilterAdapter;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.my_appointments.FilterSortByHighLowList;
+import com.rescribe.doctor.model.request_patients.FilterParams;
+import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 
 import java.util.ArrayList;
@@ -40,8 +42,7 @@ import butterknife.Unbinder;
  * Created by jeetal on 12/2/18.
  */
 
-public class DrawerForMyPatients extends Fragment implements HelperResponse,SortByPriceFilterAdapter.onSortByAmountMenuClicked {
-
+public class DrawerForMyPatients extends Fragment implements HelperResponse, SortByPriceFilterAdapter.onSortByAmountMenuClicked {
 
     @BindView(R.id.applyButton)
     Button applyButton;
@@ -132,6 +133,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse,Sort
     private String[] sortOptions = new String[]{"Outstanding Amt" + lowToHigh,
             "Outstanding Amt" + highToLow};
     private int mSortByAmountAdapterPosition;
+    private String sortOrder = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -164,18 +166,6 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse,Sort
         setThumbValue(mLeftThumbView, "" + 1);
         mRightThumbView.setDrawingCacheEnabled(true);
         setThumbValue(mRightThumbView, "" + 100);
-
-     /*   if (mLeftThumbView != null) {
-            mLeftThumbView.setDrawingCacheEnabled(true);
-            setThumbValue(mLeftThumbView, "" + 1);
-        }
-        //-----------
-        // ----- Right thumb view------
-        if (mRightThumbView != null) {
-            mRightThumbView.setDrawingCacheEnabled(true);
-            setThumbValue(mRightThumbView, "" + 100);
-        }*/
-
 
         SpannableString selectGenderString = new SpannableString("Select Gender");
         selectGenderString.setSpan(new UnderlineSpan(), 0, selectGenderString.length(), 0);
@@ -223,6 +213,11 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse,Sort
                 }
             }
         });
+        mSortByPriceFilterAdapter = new SortByPriceFilterAdapter(getActivity(), filterSortByHighLowLists, this);
+        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        sortRecyclerView.setLayoutManager(linearlayoutManager);
+        sortRecyclerView.setHasFixedSize(true);
+        sortRecyclerView.setAdapter(mSortByPriceFilterAdapter);
     }
 
     public static DrawerForMyPatients newInstance() {
@@ -267,7 +262,28 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse,Sort
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.applyButton:
-                mListener.onApply(null,true);
+                RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
+                FilterParams filterParams = new FilterParams();
+                filterParams.setGender(mSelectedGender);
+                if (clinicFeesSeekBar.getSelectedMaxValue().toString().equals("0") && clinicFeesSeekBar.getSelectedMinValue().toString().equals("0")) {
+                    filterParams.setAge("");
+                } else if (clinicFeesSeekBar.getSelectedMinValue().toString().equals("0") && !clinicFeesSeekBar.getSelectedMaxValue().toString().equals("0")) {
+                    filterParams.setAge(String.valueOf(clinicFeesSeekBar.getSelectedMinValue()) + "-" + clinicFeesSeekBar.getSelectedMaxValue());
+                } else if (!clinicFeesSeekBar.getSelectedMinValue().toString().equals("0") && !clinicFeesSeekBar.getSelectedMaxValue().toString().equals("0")) {
+                    filterParams.setAge(String.valueOf(clinicFeesSeekBar.getSelectedMinValue()) + "-" + clinicFeesSeekBar.getSelectedMaxValue());
+                }
+                mRequestSearchPatients.setFilterParams(filterParams);
+                mRequestSearchPatients.setSortField("Outstanding");
+                if (chooseOptionForSort.getText().toString().toLowerCase().contains("low to high")) {
+                    sortOrder = "asc";
+                } else if (chooseOptionForSort.getText().toString().toLowerCase().contains("high to low")) {
+                    sortOrder = "desc";
+                } else {
+                    sortOrder = "";
+                }
+                mRequestSearchPatients.setSortOrder(sortOrder);
+                mListener.onApply(mRequestSearchPatients, true);
+
                 break;
             case R.id.resetButton:
                 configureDrawerFieldsData();
@@ -277,7 +293,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse,Sort
                 genderFemaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
                 transGenderMaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filtergraytransgendericon));
                 transGenderMaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
-                for(FilterSortByHighLowList filterSortByHighLowListObject : mSortByPriceFilterAdapter.getAmountSortList()){
+                for (FilterSortByHighLowList filterSortByHighLowListObject : mSortByPriceFilterAdapter.getAmountSortList()) {
                     filterSortByHighLowListObject.setSelected(false);
                 }
                 mSortByPriceFilterAdapter.notifyDataSetChanged();
@@ -294,7 +310,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse,Sort
                 chooseOptionForSort.setText(mSortByPriceFilterAdapter.getAmountSortList().get(mSortByAmountAdapterPosition).getAmountHighOrLow());
                 break;
             case R.id.resetSortingButton:
-                for(FilterSortByHighLowList filterSortByHighLowListObject : mSortByPriceFilterAdapter.getAmountSortList()){
+                for (FilterSortByHighLowList filterSortByHighLowListObject : mSortByPriceFilterAdapter.getAmountSortList()) {
                     filterSortByHighLowListObject.setSelected(false);
                 }
                 mSortByPriceFilterAdapter.notifyDataSetChanged();
@@ -306,11 +322,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse,Sort
             case R.id.chooseOptionToSort:
                 hideMainLayout.setVisibility(View.GONE);
                 showSortLayout.setVisibility(View.VISIBLE);
-                mSortByPriceFilterAdapter = new SortByPriceFilterAdapter(getActivity(),filterSortByHighLowLists, this);
-                LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                sortRecyclerView.setLayoutManager(linearlayoutManager);
-                sortRecyclerView.setHasFixedSize(true);
-                sortRecyclerView.setAdapter(mSortByPriceFilterAdapter);
+
                 break;
             case R.id.genderMaleLayout:
                 mSelectedGender = genderMaleText.getText().toString();
@@ -350,10 +362,11 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse,Sort
     }
 
     public interface OnDrawerInteractionListener {
-        void onApply(Bundle b, boolean drawerRequired);
+        void onApply(RequestSearchPatients mRequestSearchPatients, boolean drawerRequired);
 
         void onReset(boolean drawerRequired);
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

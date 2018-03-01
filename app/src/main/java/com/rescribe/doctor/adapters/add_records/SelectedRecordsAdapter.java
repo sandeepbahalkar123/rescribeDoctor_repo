@@ -73,15 +73,15 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
                 .load(new File(image.getImagePath()))
                 .apply(requestOptions).thumbnail(0.5f)
                 .into(holder.ivPhoto);
-        if (image.isUploading() == RescribeConstants.FileStatus.UPLOADING) {
+        if (image.isUploading() == RescribeConstants.FILE_STATUS.UPLOADING) {
             holder.progressBarLay.setVisibility(View.VISIBLE);
             holder.crossImageView.setVisibility(View.GONE);
             holder.retryButton.setVisibility(View.GONE);
-        } else if (image.isUploading() == RescribeConstants.FileStatus.FAILED) {
+        } else if (image.isUploading() == RescribeConstants.FILE_STATUS.FAILED) {
             holder.progressBarLay.setVisibility(View.GONE);
             holder.retryButton.setVisibility(View.VISIBLE);
             holder.crossImageView.setVisibility(View.GONE);
-        } else if (image.isUploading() == RescribeConstants.FileStatus.COMPLETED) {
+        } else if (image.isUploading() == RescribeConstants.FILE_STATUS.COMPLETED) {
             holder.progressBarLay.setVisibility(View.GONE);
             holder.crossImageView.setVisibility(View.GONE);
             holder.retryButton.setVisibility(View.GONE);

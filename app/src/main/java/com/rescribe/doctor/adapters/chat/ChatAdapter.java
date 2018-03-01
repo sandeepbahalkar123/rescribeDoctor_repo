@@ -44,13 +44,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
-import static com.rescribe.doctor.util.RescribeConstants.FileStatus.COMPLETED;
-import static com.rescribe.doctor.util.RescribeConstants.FileStatus.DOWNLOADING;
-import static com.rescribe.doctor.util.RescribeConstants.FileStatus.FAILED;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.DOWNLOADING;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.LOC;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
-import static com.rescribe.doctor.util.RescribeConstants.FileStatus.UPLOADING;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.UPLOADING;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder> {
 
@@ -180,7 +180,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
 
                         holder.senderFileLayout.setVisibility(View.VISIBLE);
 
-                        if (message.getUploadStatus() == RescribeConstants.FileStatus.UPLOADING) {
+                        if (message.getUploadStatus() == RescribeConstants.FILE_STATUS.UPLOADING) {
                             holder.senderFileProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderFileUploadStopped.setVisibility(View.GONE);
                             holder.senderFileUploading.setVisibility(View.VISIBLE);
@@ -188,7 +188,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                             holder.senderFileProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderFileUploadStopped.setVisibility(View.VISIBLE);
                             holder.senderFileUploading.setVisibility(View.GONE);
-                        } else if (message.getUploadStatus() == RescribeConstants.FileStatus.COMPLETED) {
+                        } else if (message.getUploadStatus() == RescribeConstants.FILE_STATUS.COMPLETED) {
                             holder.senderFileProgressLayout.setVisibility(View.GONE);
                             holder.senderFileUploadStopped.setVisibility(View.GONE);
                             holder.senderFileUploading.setVisibility(View.GONE);
@@ -220,7 +220,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                     case RescribeConstants.FILE.DOC:
                         holder.senderFileLayout.setVisibility(View.VISIBLE);
 
-                        if (message.getUploadStatus() == RescribeConstants.FileStatus.UPLOADING) {
+                        if (message.getUploadStatus() == RescribeConstants.FILE_STATUS.UPLOADING) {
                             holder.senderFileProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderFileUploadStopped.setVisibility(View.GONE);
                             holder.senderFileUploading.setVisibility(View.VISIBLE);
@@ -228,7 +228,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                             holder.senderFileProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderFileUploadStopped.setVisibility(View.VISIBLE);
                             holder.senderFileUploading.setVisibility(View.GONE);
-                        } else if (message.getUploadStatus() == RescribeConstants.FileStatus.COMPLETED) {
+                        } else if (message.getUploadStatus() == RescribeConstants.FILE_STATUS.COMPLETED) {
                             holder.senderFileProgressLayout.setVisibility(View.GONE);
                             holder.senderFileUploadStopped.setVisibility(View.GONE);
                             holder.senderFileUploading.setVisibility(View.GONE);
@@ -394,7 +394,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                             });
                         }
 
-                        if (message.getUploadStatus() == RescribeConstants.FileStatus.UPLOADING) {
+                        if (message.getUploadStatus() == RescribeConstants.FILE_STATUS.UPLOADING) {
                             holder.senderPhotoProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderPhotoUploading.setVisibility(View.VISIBLE);
                             holder.senderPhotoUploadStopped.setVisibility(View.GONE);
@@ -402,7 +402,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                             holder.senderPhotoProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderPhotoUploading.setVisibility(View.GONE);
                             holder.senderPhotoUploadStopped.setVisibility(View.VISIBLE);
-                        } else if (message.getUploadStatus() == RescribeConstants.FileStatus.COMPLETED) {
+                        } else if (message.getUploadStatus() == RescribeConstants.FILE_STATUS.COMPLETED) {
                             holder.senderPhotoProgressLayout.setVisibility(View.GONE);
                             holder.senderPhotoUploading.setVisibility(View.GONE);
                             holder.senderPhotoUploadStopped.setVisibility(View.GONE);

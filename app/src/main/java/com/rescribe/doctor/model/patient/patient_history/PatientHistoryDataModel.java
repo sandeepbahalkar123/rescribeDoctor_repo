@@ -13,7 +13,7 @@ public class PatientHistoryDataModel {
     @SerializedName("yearsMonthsData")
     @Expose
     private ArrayList<YearsMonthsData> yearsMonthsData = new ArrayList<>();
-    @SerializedName("docList")
+    @SerializedName("opdList")
     @Expose
     private PatientHistoryInfoMonthContainer patientHistoryInfoMonthContainer;
 

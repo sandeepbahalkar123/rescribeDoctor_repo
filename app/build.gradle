@@ -52,7 +52,8 @@ android {
                             'src/main/res/layouts/common',
                             'src/main/res/layouts/bottom_menu',
                             'src/main/res/layouts/add_records',
-                            'src/main/res/layouts/profile'
+                            'src/main/res/layouts/profile',
+                            'src/main/res/layouts/waiting_list'
 
                     ]
         }
@@ -121,6 +122,7 @@ dependencies {
     compile('com.github.ozodrukh:CircularReveal:1.1.1@aar') {
         transitive = true;
     }
+    compile 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
 }
 //apply plugin: 'com.google.gms.google-services'
 

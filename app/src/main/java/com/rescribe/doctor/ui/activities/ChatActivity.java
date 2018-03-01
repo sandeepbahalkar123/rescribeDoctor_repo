@@ -111,9 +111,9 @@ import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.AUD;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.DOC;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
-import static com.rescribe.doctor.util.RescribeConstants.FileStatus.COMPLETED;
-import static com.rescribe.doctor.util.RescribeConstants.FileStatus.FAILED;
-import static com.rescribe.doctor.util.RescribeConstants.FileStatus.UPLOADING;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.UPLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.PENDING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
@@ -586,14 +586,16 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         chatAdapter = new ChatAdapter(mqttMessages, mSelfDrawable, mReceiverDrawable, ChatActivity.this, searchedMessageString);
         chatRecyclerView.setAdapter(chatAdapter);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (scrollPosition == -1)
-                    chatRecyclerView.smoothScrollToPosition(mqttMessages.size() - 1);
-                else chatRecyclerView.smoothScrollToPosition(scrollPosition);
-            }
-        }, mqttMessages.size() > 500 ? 200 : 100);
+        if (!mqttMessages.isEmpty()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (scrollPosition == -1)
+                        chatRecyclerView.smoothScrollToPosition(mqttMessages.size() - 1);
+                    else chatRecyclerView.smoothScrollToPosition(scrollPosition);
+                }
+            }, mqttMessages.size() > 500 ? 200 : 100);
+        }
 
 //        chatHelper.getChatHistory(next, Integer.parseInt(docId), chatList.getId());
 
