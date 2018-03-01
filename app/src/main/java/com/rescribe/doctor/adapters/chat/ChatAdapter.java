@@ -11,6 +11,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,13 +44,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
-import static com.rescribe.doctor.util.RescribeConstants.COMPLETED;
-import static com.rescribe.doctor.util.RescribeConstants.DOWNLOADING;
-import static com.rescribe.doctor.util.RescribeConstants.FAILED;
+import static com.rescribe.doctor.util.RescribeConstants.FileStatus.COMPLETED;
+import static com.rescribe.doctor.util.RescribeConstants.FileStatus.DOWNLOADING;
+import static com.rescribe.doctor.util.RescribeConstants.FileStatus.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.LOC;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
-import static com.rescribe.doctor.util.RescribeConstants.UPLOADING;
+import static com.rescribe.doctor.util.RescribeConstants.FileStatus.UPLOADING;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder> {
 
@@ -157,8 +158,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                     int startIndex = loweCaseMsg.indexOf(lowerCaseSearchString);
                     if (startIndex != -1) {
                         SpannableString spannableStringSearch = new SpannableString(message.getMsg());
-                        spannableStringSearch.setSpan(new ForegroundColorSpan(
-                                        ContextCompat.getColor(mContext, R.color.tagColor)), startIndex
+                        spannableStringSearch.setSpan(new BackgroundColorSpan(
+                                        ContextCompat.getColor(mContext, R.color.yellow)), startIndex
                                 , startIndex + searchedMessageString.length(),
                                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                         holder.senderMessage.setText(spannableStringSearch);
@@ -179,7 +180,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
 
                         holder.senderFileLayout.setVisibility(View.VISIBLE);
 
-                        if (message.getUploadStatus() == RescribeConstants.UPLOADING) {
+                        if (message.getUploadStatus() == RescribeConstants.FileStatus.UPLOADING) {
                             holder.senderFileProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderFileUploadStopped.setVisibility(View.GONE);
                             holder.senderFileUploading.setVisibility(View.VISIBLE);
@@ -187,7 +188,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                             holder.senderFileProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderFileUploadStopped.setVisibility(View.VISIBLE);
                             holder.senderFileUploading.setVisibility(View.GONE);
-                        } else if (message.getUploadStatus() == RescribeConstants.COMPLETED) {
+                        } else if (message.getUploadStatus() == RescribeConstants.FileStatus.COMPLETED) {
                             holder.senderFileProgressLayout.setVisibility(View.GONE);
                             holder.senderFileUploadStopped.setVisibility(View.GONE);
                             holder.senderFileUploading.setVisibility(View.GONE);
@@ -219,7 +220,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                     case RescribeConstants.FILE.DOC:
                         holder.senderFileLayout.setVisibility(View.VISIBLE);
 
-                        if (message.getUploadStatus() == RescribeConstants.UPLOADING) {
+                        if (message.getUploadStatus() == RescribeConstants.FileStatus.UPLOADING) {
                             holder.senderFileProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderFileUploadStopped.setVisibility(View.GONE);
                             holder.senderFileUploading.setVisibility(View.VISIBLE);
@@ -227,7 +228,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                             holder.senderFileProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderFileUploadStopped.setVisibility(View.VISIBLE);
                             holder.senderFileUploading.setVisibility(View.GONE);
-                        } else if (message.getUploadStatus() == RescribeConstants.COMPLETED) {
+                        } else if (message.getUploadStatus() == RescribeConstants.FileStatus.COMPLETED) {
                             holder.senderFileProgressLayout.setVisibility(View.GONE);
                             holder.senderFileUploadStopped.setVisibility(View.GONE);
                             holder.senderFileUploading.setVisibility(View.GONE);
@@ -333,13 +334,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                                     int startIndex = loweCaseMsg.indexOf(lowerCaseSearchString);
                                     if (startIndex != -1) {
                                         SpannableString spannableStringSearch = new SpannableString(message.getMsg());
-                                        spannableStringSearch.setSpan(new ForegroundColorSpan(
-                                                        ContextCompat.getColor(mContext, R.color.tagColor)), startIndex
+                                        spannableStringSearch.setSpan(new BackgroundColorSpan(
+                                                        ContextCompat.getColor(mContext, R.color.yellow)), startIndex
                                                 , startIndex + searchedMessageString.length(),
                                                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                                        holder.senderMessage.setText(spannableStringSearch);
+                                        holder.senderMessageWithImage.setText(spannableStringSearch);
                                     } else
-                                        holder.senderMessage.setText(message.getMsg());
+                                        holder.senderMessageWithImage.setText(message.getMsg());
                                 } else
                                     holder.senderMessageWithImage.setText(message.getMsg());
 
@@ -393,7 +394,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                             });
                         }
 
-                        if (message.getUploadStatus() == RescribeConstants.UPLOADING) {
+                        if (message.getUploadStatus() == RescribeConstants.FileStatus.UPLOADING) {
                             holder.senderPhotoProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderPhotoUploading.setVisibility(View.VISIBLE);
                             holder.senderPhotoUploadStopped.setVisibility(View.GONE);
@@ -401,7 +402,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                             holder.senderPhotoProgressLayout.setVisibility(View.VISIBLE);
                             holder.senderPhotoUploading.setVisibility(View.GONE);
                             holder.senderPhotoUploadStopped.setVisibility(View.VISIBLE);
-                        } else if (message.getUploadStatus() == RescribeConstants.COMPLETED) {
+                        } else if (message.getUploadStatus() == RescribeConstants.FileStatus.COMPLETED) {
                             holder.senderPhotoProgressLayout.setVisibility(View.GONE);
                             holder.senderPhotoUploading.setVisibility(View.GONE);
                             holder.senderPhotoUploadStopped.setVisibility(View.GONE);
@@ -442,7 +443,27 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
             }
 
             if (message.getFileUrl().isEmpty()) {
-                holder.receiverMessage.setText(message.getMsg());
+
+                if (searchedMessageString != null) {
+                    String lowerCaseSearchString = searchedMessageString.toLowerCase();
+                    String loweCaseMsg = message.getMsg().toLowerCase();
+                    int startIndex = loweCaseMsg.indexOf(lowerCaseSearchString);
+                    if (startIndex != -1) {
+                        SpannableString spannableStringSearch = new SpannableString(message.getMsg());
+                        spannableStringSearch.setSpan(new BackgroundColorSpan(
+                                        ContextCompat.getColor(mContext, R.color.yellow)), startIndex
+                                , startIndex + searchedMessageString.length(),
+                                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        spannableStringSearch.setSpan(new ForegroundColorSpan(
+                                        ContextCompat.getColor(mContext, R.color.black)), startIndex
+                                , startIndex + searchedMessageString.length(),
+                                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        holder.receiverMessage.setText(spannableStringSearch);
+                    } else
+                        holder.receiverMessage.setText(message.getMsg());
+                } else
+                    holder.receiverMessage.setText(message.getMsg());
+
                 holder.receiverPhotoLayout.setVisibility(View.GONE);
                 holder.receiverFileLayout.setVisibility(View.GONE);
                 holder.receiverMessage.setVisibility(View.VISIBLE);
@@ -571,6 +592,29 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                         else {
                             holder.receiverMessageWithImage.setVisibility(View.VISIBLE);
                             holder.receiverMessageWithImage.setText(message.getMsg());
+
+                            if (searchedMessageString != null) {
+                                String lowerCaseSearchString = searchedMessageString.toLowerCase();
+                                String loweCaseMsg = message.getMsg().toLowerCase();
+                                int startIndex = loweCaseMsg.indexOf(lowerCaseSearchString);
+                                if (startIndex != -1) {
+                                    SpannableString spannableStringSearch = new SpannableString(message.getMsg());
+                                    spannableStringSearch.setSpan(new BackgroundColorSpan(
+                                                    ContextCompat.getColor(mContext, R.color.yellow)), startIndex
+                                            , startIndex + searchedMessageString.length(),
+                                            Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+                                    spannableStringSearch.setSpan(new ForegroundColorSpan(
+                                                    ContextCompat.getColor(mContext, R.color.black)), startIndex
+                                            , startIndex + searchedMessageString.length(),
+                                            Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+                                    holder.receiverMessageWithImage.setText(spannableStringSearch);
+                                } else
+                                    holder.receiverMessageWithImage.setText(message.getMsg());
+                            } else
+                                holder.receiverMessageWithImage.setText(message.getMsg());
+
                         }
 
                         RequestOptions requestOptions = new RequestOptions();

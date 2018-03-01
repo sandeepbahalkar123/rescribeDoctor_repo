@@ -61,7 +61,6 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
     public void onBindViewHolder(final FileViewHolder holder, final int position) {
         final Image image = paths.get(position);
 
-
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
@@ -74,15 +73,15 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
                 .load(new File(image.getImagePath()))
                 .apply(requestOptions).thumbnail(0.5f)
                 .into(holder.ivPhoto);
-        if (image.isUploading() == RescribeConstants.UPLOADING) {
+        if (image.isUploading() == RescribeConstants.FileStatus.UPLOADING) {
             holder.progressBarLay.setVisibility(View.VISIBLE);
             holder.crossImageView.setVisibility(View.GONE);
             holder.retryButton.setVisibility(View.GONE);
-        } else if (image.isUploading() == RescribeConstants.FAILED) {
+        } else if (image.isUploading() == RescribeConstants.FileStatus.FAILED) {
             holder.progressBarLay.setVisibility(View.GONE);
             holder.retryButton.setVisibility(View.VISIBLE);
             holder.crossImageView.setVisibility(View.GONE);
-        } else if (image.isUploading() == RescribeConstants.COMPLETED) {
+        } else if (image.isUploading() == RescribeConstants.FileStatus.COMPLETED) {
             holder.progressBarLay.setVisibility(View.GONE);
             holder.crossImageView.setVisibility(View.GONE);
             holder.retryButton.setVisibility(View.GONE);

@@ -105,34 +105,20 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             if (position == 0)
                 holder.headingText.setVisibility(View.VISIBLE);
             else holder.headingText.setVisibility(View.GONE);
+
+            holder.messageTextView.setVisibility(View.GONE); // this is last message text view currently not using
+
         } else {
             holder.headingText.setVisibility(View.GONE);
-            holder.messageTextView.setVisibility(View.GONE);
+
+            holder.messageTextView.setVisibility(View.GONE); // this is last message text view currently not using
         }
-
-        //-----------
-//        holder.onlineStatusIcon.setVisibility(View.VISIBLE);
-
-       /* if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(ONLINE)) {
-            holder.onlineStatusIcon.setVisibility(View.VISIBLE);
-            holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.green_light));
-        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(IDLE)) {
-            holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.range_yellow));
-        } else if (doctorConnectChatModel.getOnlineStatus().equalsIgnoreCase(OFFLINE)) {
-            holder.onlineStatusTextView.setTextColor(ContextCompat.getColor(mContext, R.color.grey_500));
-        }
-        //-----------
-
-        holder.onlineStatusTextView.setText(doctorConnectChatModel.getOnlineStatus());*/
 
         if (doctorConnectChatModel.getLastChatTime() != null) {
             String time = CommonMethods.formatDateTime(doctorConnectChatModel.getLastChatTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.TIME);
             holder.dateTimeText.setText(time);
         }
 
-//        holder.doctorType.setVisibility(View.VISIBLE);
-
-        //---------
         String patientName = doctorConnectChatModel.getPatientName();
         patientName = patientName.replace("Dr. ", "");
         if (patientName != null && patientName.length() > 0) {
@@ -146,19 +132,20 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             holder.imageOfDoctor.setImageDrawable(drawable);
         }
 
-        SpannableString spannableStringSearch = null;
-
-        if ((searchString != null) && (!searchString.isEmpty())) {
-            spannableStringSearch = new SpannableString(doctorConnectChatModel.getPatientName());
-            spannableStringSearch.setSpan(new ForegroundColorSpan(
-                            ContextCompat.getColor(mContext, R.color.tagColor)),
-                    0, searchString.length(),
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        }
-
-        if (spannableStringSearch != null)
-            holder.doctorName.setText(spannableStringSearch);
-        else
+        if (searchString != null) {
+            String lowerCaseSearchString = searchString.toLowerCase();
+            String loweCaseMsg = doctorConnectChatModel.getPatientName().toLowerCase();
+            int startIndex = loweCaseMsg.indexOf(lowerCaseSearchString);
+            if (startIndex != -1) {
+                SpannableString spannableStringSearch = new SpannableString(doctorConnectChatModel.getPatientName());
+                spannableStringSearch.setSpan(new ForegroundColorSpan(
+                                ContextCompat.getColor(mContext, R.color.tagColor)), startIndex
+                        , startIndex + searchString.length(),
+                        Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                holder.doctorName.setText(spannableStringSearch);
+            } else
+                holder.doctorName.setText(doctorConnectChatModel.getPatientName());
+        } else
             holder.doctorName.setText(doctorConnectChatModel.getPatientName());
 
         holder.view.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +157,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             }
         });
 
-        doctorConnectChatModel.setUnreadMessages(appDBHelper.unreadChatMessageCountByPatientId(doctorConnectChatModel.getId()));
+        doctorConnectChatModel.setUnreadMessages((int) appDBHelper.unreadChatMessageCountByPatientId(doctorConnectChatModel.getId()));
         if (doctorConnectChatModel.getUnreadMessages() > 0) {
             holder.badgeText.setText(String.valueOf(doctorConnectChatModel.getUnreadMessages()));
             holder.badgeText.setVisibility(View.VISIBLE);
@@ -200,7 +187,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
                     ArrayList<PatientData> filteredList = new ArrayList<>();
 
                     for (PatientData doctorConnectModel : mArrayList) {
-                        if (doctorConnectModel.getPatientName().toLowerCase().startsWith(charString.toLowerCase()))
+                        if (doctorConnectModel.getPatientName().toLowerCase().contains(charString.toLowerCase()))
                             filteredList.add(doctorConnectModel);
                     }
 
