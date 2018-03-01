@@ -90,11 +90,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
         final MQTTMessage message = mqttMessages.get(position);
 
         String timeText = CommonMethods.getFormattedDate(message.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.hh_mm_a);
-        String dateText = CommonMethods.getDayFromDateTime(message.getMsgTime(),RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY);
+        String dateText = CommonMethods.getDayFromDateTime(message.getMsgTime(),RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY, null);
         holder.dateTextView.setText(dateText);
 
         if (position > 0) {
-            String preDate = CommonMethods.getDayFromDateTime(mqttMessages.get(position - 1).getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY);
+            String preDate = CommonMethods.getDayFromDateTime(mqttMessages.get(position - 1).getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY, null);
             message.setDateVisible(!preDate.equals(dateText));
         }
 

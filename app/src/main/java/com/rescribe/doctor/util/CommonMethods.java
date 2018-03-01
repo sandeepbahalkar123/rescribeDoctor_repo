@@ -354,14 +354,18 @@ public class CommonMethods {
         return dateFormat.format(date);
     }
 
-    public static String getDayFromDateTime(String dateText, String originalDateFormat, String expectedDateFormat) {
+    public static String getDayFromDateTime(String dateText, String originalDateFormat, String expectedDateFormat, String expectedTimeFromat) {
         Calendar calendar = Calendar.getInstance();
         Date today = calendar.getTime();
 
         calendar.add(Calendar.DAY_OF_YEAR, -1);
         Date yesterday = calendar.getTime();
 
-        DateFormat expectedFormat = new SimpleDateFormat(expectedDateFormat, Locale.US);
+        DateFormat expectedDFormat = new SimpleDateFormat(expectedDateFormat, Locale.US);
+
+        SimpleDateFormat expectedTFormat = null;
+        if (expectedTimeFromat != null)
+            expectedTFormat = new SimpleDateFormat(expectedTimeFromat, Locale.US);
 
         SimpleDateFormat originalFormat = new SimpleDateFormat(originalDateFormat, Locale.US);
         Date date;
@@ -371,13 +375,13 @@ public class CommonMethods {
             return "";
         }
 
-        String originalDateAsString = expectedFormat.format(date);
+        String originalDateAsString = expectedDFormat.format(date);
 
-        String todayAsString = expectedFormat.format(today);
-        String yesterdayAsString = expectedFormat.format(yesterday);
+        String todayAsString = expectedDFormat.format(today);
+        String yesterdayAsString = expectedDFormat.format(yesterday);
 
         if (todayAsString.equals(originalDateAsString))
-            return "Today";
+            return expectedTFormat == null ? "Today" : expectedTFormat.format(date);
 
         if (yesterdayAsString.equals(originalDateAsString))
             return "Yesterday";

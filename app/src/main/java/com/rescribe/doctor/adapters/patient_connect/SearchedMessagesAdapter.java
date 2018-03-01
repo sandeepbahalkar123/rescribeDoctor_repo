@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 
 import static com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver.MESSAGE_LIST;
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
+import static com.rescribe.doctor.services.MQTTService.PATIENT;
 import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
 import static com.rescribe.doctor.ui.activities.ChatActivity.SEARCHED_TEXT;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
@@ -101,7 +102,7 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
         else
             holder.doctorName.setText(patientName);
 
-        String timeT = CommonMethods.getDayFromDateTime(mqttMessage.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY);
+        String timeT = CommonMethods.getDayFromDateTime(mqttMessage.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY, RescribeConstants.DATE_PATTERN.hh_mm_a);
         holder.timeText.setText(timeT);
 
         patientName = patientName.replace("Dr. ", "");
@@ -129,16 +130,20 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
 
         holder.messageText.setText(spannableStringSearch);
 
-        switch (mqttMessage.getMsgStatus()) {
-            case REACHED:
-                holder.senderTickImageView.setImageResource(R.drawable.ic_reached);
-                break;
-            case SEEN:
-                holder.senderTickImageView.setImageResource(R.drawable.ic_seen);
-                break;
-            default:
-                holder.senderTickImageView.setImageResource(R.drawable.ic_sent);
-                break;
+        if (mqttMessage.getSender().equals(PATIENT))
+            holder.senderTickImageView.setVisibility(View.GONE);
+        else {
+            switch (mqttMessage.getMsgStatus()) {
+                case REACHED:
+                    holder.senderTickImageView.setImageResource(R.drawable.ic_reached);
+                    break;
+                case SEEN:
+                    holder.senderTickImageView.setImageResource(R.drawable.ic_seen);
+                    break;
+                default:
+                    holder.senderTickImageView.setImageResource(R.drawable.ic_sent);
+                    break;
+            }
         }
 
         holder.view.setOnClickListener(new View.OnClickListener() {

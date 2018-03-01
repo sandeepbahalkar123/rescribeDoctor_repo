@@ -234,22 +234,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
             mqttService.typingStatus(statusInfo);
     }
 
-    // change
-    private void messageStatus(String messageStatus) {
-        StatusInfo statusInfo = new StatusInfo();
-
-        String generatedId = docId + "_" + mqttMessages.size() + System.nanoTime();
-        statusInfo.setMsgId(generatedId);
-        statusInfo.setDocId(Integer.parseInt(docId));
-        statusInfo.setPatId(chatList.getId());
-
-        statusInfo.setMessageStatus(messageStatus);
-        if (mqttService != null)
-            mqttService.messageStatus(statusInfo);
-    }
-
-    // End Check Typing
-
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -537,7 +521,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 int positionView = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
                 if (prePosition != positionView) {
                     MQTTMessage mqttMessage = ChatActivity.this.mqttMessages.get(positionView);
-                    String timeText = CommonMethods.getDayFromDateTime(mqttMessage.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY);
+                    String timeText = CommonMethods.getDayFromDateTime(mqttMessage.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY, null);
                     dateTextView.setText(timeText);
 
                     prePosition = positionView;
