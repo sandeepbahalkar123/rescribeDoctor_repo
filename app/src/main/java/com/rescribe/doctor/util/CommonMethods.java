@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CommonMethods {
 
@@ -57,6 +59,7 @@ public class CommonMethods {
     private static boolean encryptionIsOn = true;
     private static String aBuffer = "";
     private static CheckIpConnection mCheckIpConnection;
+    private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
     private int mYear, mMonth, mDay, mHour, mMinute;
     private DatePickerDialogListener mDatePickerDialogListener;
 
@@ -317,6 +320,25 @@ public class CommonMethods {
         }
     }
 
+
+    /**
+     * Generate a value suitable for use in {#setId(int)}.
+     * This value will not collide with ID values generated at build time by aapt for R.id.
+     *
+     * @return a generated ID value
+     */
+    public static int generateViewId() {
+        for (; ; ) {
+            final int result = sNextGeneratedId.get();
+            // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
+            int newValue = result + 1;
+            if (newValue > 0x00FFFFFF) newValue = 1; // Roll over to 1, not 0.
+            if (sNextGeneratedId.compareAndSet(result, newValue)) {
+                Log.d("GENERATED_ID:", " " + result);
+                return result;
+            }
+        }
+    }
 
     public static void dateDifference(Date startDate, Date endDate) {
         //milliseconds

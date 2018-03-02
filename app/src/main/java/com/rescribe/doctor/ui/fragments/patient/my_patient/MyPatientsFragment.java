@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -24,16 +22,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
-import com.rescribe.doctor.adapters.my_appointments.DialogClinicListAdapter;
 import com.rescribe.doctor.adapters.my_patients.MyPatientsAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
@@ -50,12 +50,10 @@ import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.RequestFo
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
-import com.rescribe.doctor.ui.activities.my_patients.TemplateListActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
-import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.PaginationScrollListener;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -71,9 +69,9 @@ import butterknife.Unbinder;
  * Created by jeetal on 31/1/18.
  */
 
-public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.OnDownArrowClicked, BottomMenuAppointmentAdapter.OnMenuBottomItemClickListener, HelperResponse, DialogClinicListAdapter.OnClickOfRadioButton {
+public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.OnDownArrowClicked, BottomMenuAppointmentAdapter.OnMenuBottomItemClickListener, HelperResponse {
     private static Bundle args;
-    private static AppointmentHelper mAppointmentHelper;
+    private AppointmentHelper mAppointmentHelper;
     @BindView(R.id.whiteUnderLine)
     ImageView whiteUnderLine;
     @BindView(R.id.historyExpandableListView)
@@ -104,7 +102,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     public int currentPage = PAGE_START;
     private String searchText = "";
     private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
-    private DialogClinicListAdapter mDialogClinicListAdapter;
     private ArrayList<PatientList> mPatientListsOriginal;
     private int mLocationId;
     private ArrayList<PatientsListAddToWaitingList> patientsListAddToWaitingLists;
@@ -151,7 +148,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
                 @Override
                 public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-
                     loadNextPage(page);
                 }
             });
@@ -176,10 +172,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 searchText = s.toString();
                 if (searchText.length() >= 3) {
                     serachPatientsUsingSearchBar(getContext(), searchText);
-                } else {
-
                 }
-
             }
         });
         mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList);
@@ -207,12 +200,10 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     @Override
     public void onRecordFound(boolean isListEmpty) {
-        if (isListEmpty) {
+        if (isListEmpty)
             emptyListView.setVisibility(View.VISIBLE);
-        } else {
+        else
             emptyListView.setVisibility(View.GONE);
-        }
-
     }
 
     @Override
@@ -352,16 +343,25 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
         dialog.setCancelable(true);
 
-        RecyclerView recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerView);
-        mDialogClinicListAdapter = new DialogClinicListAdapter(getActivity(), mDoctorLocationModel, this);
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearlayoutManager);
-        // off recyclerView Animation
-        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-        if (animator instanceof SimpleItemAnimator)
-            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-        recyclerView.setAdapter(mDialogClinicListAdapter);
+        RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
+        for (int index = 0; index < mDoctorLocationModel.size(); index++) {
+            final DoctorLocationModel clinicList = mDoctorLocationModel.get(index);
+
+            RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
+            radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
+            radioButton.setId(CommonMethods.generateViewId());
+            radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mLocationId = clinicList.getLocationId();
+                    mClinicId = clinicList.getClinicId();
+                    mClinicName = clinicList.getClinicName();
+                }
+            });
+            radioGroup.addView(radioButton);
+        }
 
         TextView okButton = (TextView) dialog.findViewById(R.id.okButton);
         okButton.setOnClickListener(new View.OnClickListener() {
@@ -405,16 +405,25 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
         dialog.setCancelable(true);
 
-        RecyclerView recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerView);
-        mDialogClinicListAdapter = new DialogClinicListAdapter(getActivity(), mPatientListsOriginal, this);
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearlayoutManager);
-        // off recyclerView Animation
-        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-        if (animator instanceof SimpleItemAnimator)
-            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-        recyclerView.setAdapter(mDialogClinicListAdapter);
+        RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
+        for (int index = 0; index < mPatientListsOriginal.size(); index++) {
+            final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
+
+            RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
+            radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
+            radioButton.setId(CommonMethods.generateViewId());
+            radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mLocationId = clinicList.getLocationId();
+                    mClinicId = clinicList.getClinicId();
+                    mClinicName = clinicList.getClinicName();
+                }
+            });
+            radioGroup.addView(radioButton);
+        }
 
         TextView okButton = (TextView) dialog.findViewById(R.id.okButton);
         okButton.setOnClickListener(new View.OnClickListener() {
@@ -424,10 +433,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 if (mLocationId != 0) {
                     callWaitingListApi();
                     dialog.cancel();
-                } else {
+                } else
                     Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
-                }
-
             }
         });
 
@@ -571,12 +578,5 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         mRequestSearchPatients.setSearchText(searchText);
         mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
 
-    }
-
-    @Override
-    public void onRadioButtonClick(DoctorLocationModel clinicList) {
-        mLocationId = clinicList.getLocationId();
-        mClinicId = clinicList.getClinicId();
-        mClinicName = clinicList.getClinicName();
     }
 }

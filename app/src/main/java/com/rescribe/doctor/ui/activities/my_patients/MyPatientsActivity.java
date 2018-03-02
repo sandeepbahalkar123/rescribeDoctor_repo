@@ -48,8 +48,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     private Context mContext;
-    private static AppointmentHelper mAppointmentHelper;
-    private Bundle bundle;
+    private AppointmentHelper mAppointmentHelper;
     private MyPatientsFragment mMyPatientsFragment;
     private boolean isLongPressed;
     private DrawerForMyPatients mDrawerForMyPatients;
@@ -123,7 +122,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
 
             if (customResponse != null) {
                 MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
-                bundle = new Bundle();
+                Bundle bundle = new Bundle();
                 bundle.putParcelable(RescribeConstants.MYPATIENTS_DATA, myAppointmentsBaseModel);
                 mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
