@@ -277,10 +277,8 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                                 case SEEN:
                                     // change message status as a read
                                     for (MQTTMessage mqttMessage : mqttMessages) {
-                                        if (mqttMessage.getMsgStatus().equals(REACHED) || mqttMessage.getMsgStatus().equals(SENT)) {
+                                        if (!mqttMessage.getMsgStatus().equals(SEEN))
                                             mqttMessage.setMsgStatus(SEEN);
-                                            appDBHelper.updateChatMessageStatus(statusInfo);
-                                        }
                                     }
 
                                     chatAdapter.notifyDataSetChanged();
@@ -289,13 +287,21 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                                 case REACHED:
                                     // change message status as a reached
                                     for (MQTTMessage mqttMessage : mqttMessages) {
-                                        if (mqttMessage.getMsgStatus().equals(SENT)) {
+                                        if (mqttMessage.getMsgStatus().equals(SENT) || mqttMessage.getMsgStatus().equals(PENDING))
                                             mqttMessage.setMsgStatus(REACHED);
-                                            appDBHelper.updateChatMessageStatus(statusInfo);
-                                        }
                                     }
 
                                     chatAdapter.notifyDataSetChanged();
+                                    break;
+                                case SENT:
+                                    // change message status as a read
+                                    for (MQTTMessage mqttMessage : mqttMessages) {
+                                        if (mqttMessage.getMsgStatus().equals(PENDING))
+                                            mqttMessage.setMsgStatus(SENT);
+                                    }
+
+                                    chatAdapter.notifyDataSetChanged();
+
                                     break;
                             }
                         } else {
@@ -580,15 +586,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 }
             }, mqttMessages.size() > 500 ? 200 : 100);
         }
-
-//        chatHelper.getChatHistory(next, Integer.parseInt(docId), chatList.getId());
-
-        /*swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                chatHelper.getChatHistory(next, Integer.parseInt(docId), chatList.getId());
-            }
-        });*/
 
         messageType.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1297,6 +1294,10 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     @Override
     protected void onResume() {
         super.onResume();
+
+        MessageNotification.cancel(this, chatList.getId());
+        appDBHelper.markAsAReadChatMessageByPatientId(chatList.getId());
+
         broadcastReceiver.register(this);
         registerReceiver(receiver, new IntentFilter(
                 MQTTService.NOTIFY));
@@ -1304,8 +1305,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         registerReceiver(receiver, new IntentFilter(
                 ACTION_DOWNLOAD_COMPLETE));
 
-        MessageNotification.cancel(this, chatList.getId());
-        appDBHelper.markAsAReadChatMessageByPatientId(chatList.getId());
     }
 
     @Override

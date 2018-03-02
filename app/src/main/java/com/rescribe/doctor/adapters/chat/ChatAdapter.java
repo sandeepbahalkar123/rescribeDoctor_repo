@@ -48,9 +48,11 @@ import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.DOWNLOADING;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.LOC;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.PENDING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.UPLOADING;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder> {
 
@@ -120,8 +122,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ListViewHolder
                 case SEEN:
                     holder.senderTickImageView.setImageResource(R.drawable.ic_seen);
                     break;
-                default:
+                case SENT:
                     holder.senderTickImageView.setImageResource(R.drawable.ic_sent);
+                    break;
+                case PENDING:
+                    holder.senderTickImageView.setImageResource(R.drawable.ic_time);
                     break;
             }
 

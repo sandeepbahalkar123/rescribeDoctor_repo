@@ -316,13 +316,14 @@ public class MQTTService extends Service {
     private void broadcastStatus(String payloadString, String topic) {
         StatusInfo statusInfo = gson.fromJson(payloadString, StatusInfo.class);
         if (statusInfo.getSender().equals(MQTTService.PATIENT)) {
+
+            if (TOPIC[MESSAGE_STATUS_TOPIC].equals(topic))
+                appDBHelper.updateChatMessageStatus(statusInfo);
+
             Intent intent = new Intent(NOTIFY);
             intent.putExtra(MESSAGE, statusInfo);
             intent.putExtra(TOPIC_KEY, topic);
             sendBroadcast(intent);
-
-            if (TOPIC[MESSAGE_STATUS_TOPIC].equals(topic))
-                appDBHelper.updateChatMessageStatus(statusInfo);
         }
     }
 

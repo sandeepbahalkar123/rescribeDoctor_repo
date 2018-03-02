@@ -32,8 +32,10 @@ import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.PATIENT;
 import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
 import static com.rescribe.doctor.ui.activities.ChatActivity.SEARCHED_TEXT;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.PENDING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 
 
 /**
@@ -140,8 +142,11 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
                 case SEEN:
                     holder.senderTickImageView.setImageResource(R.drawable.ic_seen);
                     break;
-                default:
+                case SENT:
                     holder.senderTickImageView.setImageResource(R.drawable.ic_sent);
+                    break;
+                case PENDING:
+                    holder.senderTickImageView.setImageResource(R.drawable.ic_time);
                     break;
             }
         }
