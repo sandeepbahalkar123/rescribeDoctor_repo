@@ -324,6 +324,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 }
                 mAppointmentAdapter.notifyDataSetChanged();
             }
+            //Send Sms
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
             ArrayList<AppointmentList> mAppointmentLists = new ArrayList<>();
 
@@ -367,18 +368,14 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 }
                 mBottomMenuAppointmentAdapter.notifyDataSetChanged();
             }
-        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
-            ArrayList<AppointmentList> mAppointmentLists = new ArrayList<>();
 
+            //Add to WaitingList
+        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
+
+            patientsListAddToWaitingLists = new ArrayList<>();
             for (int groupIndex = 0; groupIndex < mAppointmentAdapter.getGroupList().size(); groupIndex++) {
                 ArrayList<PatientList> patientLists = new ArrayList<>();
-                patientsListAddToWaitingLists = new ArrayList<>();
-                AppointmentList tempAppointmentListObject = null;
-                try {
-                    tempAppointmentListObject = (AppointmentList) mAppointmentAdapter.getGroupList().get(groupIndex).clone();
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                }
+
                 for (int childIndex = 0; childIndex < mAppointmentAdapter.getGroupList().get(groupIndex).getPatientList().size(); childIndex++) {
                     PatientList patientList = mAppointmentAdapter.getGroupList().get(groupIndex).getPatientList().get(childIndex);
                     if (patientList.isSelected()) {
@@ -387,15 +384,12 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                         patientsAddToWaitingListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
                         patientsAddToWaitingListObject.setPatientId(String.valueOf(patientList.getPatientId()));
                         patientsAddToWaitingListObject.setPatientName(patientList.getPatientName());
+                        patientsAddToWaitingListObject.setAppointmentStatusId(patientList.getAppointmentStatusId());
+                        patientsAddToWaitingListObject.setAppointmentId(patientList.getAptId());
                         patientsListAddToWaitingLists.add(patientsAddToWaitingListObject);
                     }
                 }
-                if (!patientLists.isEmpty()) {
-                    tempAppointmentListObject.setPatientList(patientLists);
-                    mAppointmentLists.add(tempAppointmentListObject);
-                }
             }
-
 
             if (!patientsListAddToWaitingLists.isEmpty()) {
                 mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
@@ -433,6 +427,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
 
             RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
+            radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
             radioButton.setId(CommonMethods.generateViewId());
             radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -542,17 +537,17 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
-        CommonMethods.showToast(getActivity(),errorMessage);
+        CommonMethods.showToast(getActivity(), errorMessage);
 
     }
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
-        CommonMethods.showToast(getActivity(),serverErrorMessage);
+        CommonMethods.showToast(getActivity(), serverErrorMessage);
     }
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-        CommonMethods.showToast(getActivity(),serverErrorMessage);
+        CommonMethods.showToast(getActivity(), serverErrorMessage);
     }
 }
