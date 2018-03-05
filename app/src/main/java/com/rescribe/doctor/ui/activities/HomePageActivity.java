@@ -190,6 +190,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, MyPatientsActivity.class);
+                intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM,RescribeConstants.HOME_PAGE);
                 startActivity(intent);
             }
         });

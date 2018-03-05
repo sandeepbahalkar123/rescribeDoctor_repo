@@ -80,7 +80,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             recyclerView.setVisibility(View.VISIBLE);
             recyclerView.setClipToPadding(false);
             WaitingPatientList waitingPatientSingleList = waitingclinicLists.get(0).getWaitingPatientList();
-            mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientSingleList.getViewAll(), this);
+            mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientSingleList.getViewAll());
             LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearlayoutManager);
             // off recyclerView Animation
@@ -106,7 +106,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
                         recyclerView.setVisibility(View.VISIBLE);
                         recyclerView.setClipToPadding(false);
-                        mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientTempList.getViewAll(), ViewAllPatientListFragment.this);
+                        mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientTempList.getViewAll());
                         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                         recyclerView.setLayoutManager(linearlayoutManager);
                         // off recyclerView Animation

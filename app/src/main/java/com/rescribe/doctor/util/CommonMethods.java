@@ -69,18 +69,22 @@ public class CommonMethods {
 
 
     public static String toCamelCase(String input) {
-        StringBuilder result = new StringBuilder();
-        char firstChar = input.charAt(0);
-        result.append(Character.toUpperCase(firstChar));
-        for (int i = 1; i < input.length(); i++) {
-            char currentChar = input.charAt(i);
-            char previousChar = input.charAt(i - 1);
-            if (previousChar == ' ')
-                result.append(Character.toUpperCase(currentChar));
-            else
-                result.append(Character.toLowerCase(currentChar));
+        if(!input.equals("")) {
+            StringBuilder result = new StringBuilder();
+            char firstChar = input.charAt(0);
+            result.append(Character.toUpperCase(firstChar));
+            for (int i = 1; i < input.length(); i++) {
+                char currentChar = input.charAt(i);
+                char previousChar = input.charAt(i - 1);
+                if (previousChar == ' ')
+                    result.append(Character.toUpperCase(currentChar));
+                else
+                    result.append(Character.toLowerCase(currentChar));
+            }
+            return result.toString();
+        }else{
+            return input;
         }
-        return result.toString();
     }
     // 1ˢᵗ, 2ⁿᵈ, 3ʳᵈ, 4ᵗʰ
     public static String ordinal(String number) {

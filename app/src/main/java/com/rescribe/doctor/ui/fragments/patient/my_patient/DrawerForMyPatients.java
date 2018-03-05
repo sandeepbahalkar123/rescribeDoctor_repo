@@ -343,7 +343,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                 transGenderMaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
                 break;
             case R.id.transGenderMaleLayout:
-                mSelectedGender = genderFemaleText.getText().toString();
+                mSelectedGender = transGenderMaleText.getText().toString();
                 genderMaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filtergraymaleicon));
                 genderMaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
                 genderFemaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filtergrayfemaleicon));

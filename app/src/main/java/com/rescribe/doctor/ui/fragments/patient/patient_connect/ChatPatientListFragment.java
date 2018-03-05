@@ -1,4 +1,4 @@
-package com.rescribe.doctor.ui.fragments.patient.my_patient;
+package com.rescribe.doctor.ui.fragments.patient.patient_connect;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -34,14 +34,16 @@ import android.widget.Toast;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
-import com.rescribe.doctor.adapters.my_patients.MyPatientsAdapter;
+import com.rescribe.doctor.adapters.patient_connect.ChatPatientListAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.doctor_connect_chat.DoctorConnectChatBaseModel;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
+import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
@@ -49,16 +51,16 @@ import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.PatientsL
 import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.RequestForWaitingListPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
+import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
+import com.rescribe.doctor.ui.fragments.patient.my_patient.TemplateListForMyPatients;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -66,12 +68,11 @@ import butterknife.Unbinder;
 
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 
-
 /**
- * Created by jeetal on 31/1/18.
+ * Created by jeetal on 5/3/18.
  */
 
-public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.OnDownArrowClicked, BottomMenuAppointmentAdapter.OnMenuBottomItemClickListener, HelperResponse {
+public class ChatPatientListFragment extends Fragment implements ChatPatientListAdapter.OnDownArrowClicked, BottomMenuAppointmentAdapter.OnMenuBottomItemClickListener, HelperResponse {
     private static Bundle args;
     private AppointmentHelper mAppointmentHelper;
     @BindView(R.id.whiteUnderLine)
@@ -94,7 +95,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     EditTextWithDeleteButton searchEditText;
     private Unbinder unbinder;
     private MyPatientBaseModel myPatientBaseModel;
-    private MyPatientsAdapter mMyPatientsAdapter;
+    private ChatPatientListAdapter mMyPatientsAdapter;
     private ArrayList<BottomMenu> mBottomMenuList;
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
@@ -146,13 +147,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             recyclerView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.divider));
             if (animator instanceof SimpleItemAnimator)
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-            if(args.getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM).equals(RescribeConstants.HOME_PAGE)) {
-                mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), myPatientBaseModel.getPatientDataModel().getPatientList(), this, true);
-                recyclerView.setAdapter(mMyPatientsAdapter);
-            }else{
-                mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), myPatientBaseModel.getPatientDataModel().getPatientList(), this, false);
-                recyclerView.setAdapter(mMyPatientsAdapter);
-            }
+
+            mMyPatientsAdapter = new ChatPatientListAdapter(getActivity(), myPatientBaseModel.getPatientDataModel().getPatientList(), this);
+            recyclerView.setAdapter(mMyPatientsAdapter);
             recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
                 @Override
                 public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -203,22 +200,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     }
 
 
-    @Override
-    public void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition) {
-        if (isLongPressed) {
-            recyclerViewBottom.setVisibility(View.VISIBLE);
-        } else {
-            for (int index = 0; index < mMyPatientsAdapter.getGroupList().size(); index++) {
-                mMyPatientsAdapter.getGroupList().get(index).setSelected(false);
-            }
-            mMyPatientsAdapter.notifyDataSetChanged();
-            for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
-                mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
-            }
-            mBottomMenuAppointmentAdapter.notifyDataSetChanged();
-            recyclerViewBottom.setVisibility(View.GONE);
-        }
-    }
+
 
     @Override
     public void onRecordFound(boolean isListEmpty) {
@@ -228,35 +210,24 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             emptyListView.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onCheckUncheckRemoveSelectAllSelection(boolean ischecked) {
-        if (!ischecked) {
-            for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
-                if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
-                    mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
-                }
-            }
-            mBottomMenuAppointmentAdapter.notifyDataSetChanged();
-        }
-    }
+
 
     @Override
-    public void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired) {
-        if(isClickOnPatientDetailsRequired) {
-            Bundle b = new Bundle();
-            b.putString(RescribeConstants.PATIENT_NAME, patientListObject.getPatientName());
-            b.putString(RescribeConstants.PATIENT_INFO, text);
-            b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
-            b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
-            Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
-            intent.putExtra(RescribeConstants.PATIENT_INFO, b);
-            startActivity(intent);
-        }
+    public void onClickOfPatientDetails(PatientList patientListObject, String text) {
+
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
+        PatientData doctorConnectChatModel = new PatientData();
+        doctorConnectChatModel.setId(patientListObject.getPatientId());
+        doctorConnectChatModel.setImageUrl(patientListObject.getPatientImageUrl());
+        doctorConnectChatModel.setPatientName(patientListObject.getPatientName());
+        intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
+        startActivity(intent);
+
     }
 
 
-    public static MyPatientsFragment newInstance(Bundle b) {
-        MyPatientsFragment fragment = new MyPatientsFragment();
+    public static ChatPatientListFragment newInstance(Bundle b) {
+        ChatPatientListFragment fragment = new ChatPatientListFragment();
         args = b;
         if (args == null) {
             args = new Bundle();
@@ -485,23 +456,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         mAppointmentHelper.doAddToWaitingList(requestForWaitingListPatients);
     }
 
-
-    public boolean callOnBackPressed() {
-        if (mMyPatientsAdapter != null) {
-            return mMyPatientsAdapter.isLongPressed;
-        } else {
-            return false;
-        }
-    }
-
-    public void removeCheckBox() {
-        recyclerViewBottom.setVisibility(View.GONE);
-        mMyPatientsAdapter.setLongPressed(false);
-        for (int index = 0; index < mMyPatientsAdapter.getGroupList().size(); index++) {
-            mMyPatientsAdapter.getGroupList().get(index).setSelected(false);
-        }
-        mMyPatientsAdapter.notifyDataSetChanged();
-    }
 
     @OnClick({R.id.rightFab, R.id.leftFab})
     public void onViewClicked(View view) {

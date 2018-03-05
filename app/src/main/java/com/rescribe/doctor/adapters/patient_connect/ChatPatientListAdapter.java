@@ -1,4 +1,4 @@
-package com.rescribe.doctor.adapters.my_patients;
+package com.rescribe.doctor.adapters.patient_connect;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -36,24 +36,24 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by jeetal on 31/1/18.
+ * Created by jeetal on 5/3/18.
  */
 
-public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.ListViewHolder> implements Filterable {
+public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientListAdapter.ListViewHolder> implements Filterable {
 
     private Context mContext;
     private ArrayList<PatientList> mDataList;
     private ArrayList<PatientList> mOriginalPatientList;
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
-    private boolean isClickOnPatientDetailsRequired;
 
-    public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
+
+    public ChatPatientListAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked) {
         this.mDataList = new ArrayList<>(dataList);
         this.mOriginalPatientList = new ArrayList<>(dataList);
         this.mContext = mContext;
         this.mOnDownArrowClicked = mOnDownArrowClicked;
-        this.isClickOnPatientDetailsRequired = isClickOnPatientDetailsRequired;
+
     }
 
     @Override
@@ -67,9 +67,14 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     @Override
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
         final PatientList patientObject = mDataList.get(position);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, mContext.getResources().getDimensionPixelSize(R.dimen.dp14), 0, 0);
+        holder.patientDetailsClickLinearLayout.setLayoutParams(lp);
         holder.opdTypeTextView.setVisibility(View.GONE);
+        holder.blueLineDivider.setVisibility(View.GONE);
+        holder.patientInfoDetailLayout.setVisibility(View.GONE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
-        holder.patientClinicAddress.setText(patientObject.getClinicName()+ " - " + patientObject.getPatientCity());
+        holder.patientClinicAddress.setText(patientObject.getClinicName() + " - " + patientObject.getPatientCity());
         String patientName = "";
         if (patientObject.getSalutation() == 1) {
             patientName = mContext.getString(R.string.mr) + " " + patientObject.getPatientName();
@@ -156,6 +161,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         }
 
         holder.patientGenderTextView.setText(" " + patientObject.getGender());
+
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (patientObject.getOutStandingAmount() == 0) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
@@ -166,7 +172,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
 
         }
-        holder.chatImageView.setVisibility(View.VISIBLE);
+        holder.chatImageView.setVisibility(View.GONE);
         TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, patientObject.getPatientName());
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
@@ -179,33 +185,12 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 .load(patientObject.getPatientImageUrl())
                 .apply(requestOptions).thumbnail(0.5f)
                 .into(holder.patientImageView);
-        holder.checkbox.setChecked(patientObject.isSelected());
 
-        holder.checkbox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                patientObject.setSelected(holder.checkbox.isChecked());
-                mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(holder.checkbox.isChecked());
-                notifyDataSetChanged();
-            }
-        });
-        if (isLongPressed)
-            holder.checkbox.setVisibility(View.VISIBLE);
-        else holder.checkbox.setVisibility(View.GONE);
 
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                isLongPressed = !isLongPressed;
-                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed, position);
-                notifyDataSetChanged();
-                return false;
-            }
-        });
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString(),isClickOnPatientDetailsRequired);
+                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString());
             }
         });
 
@@ -256,9 +241,12 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         LinearLayout cardView;
         @BindView(R.id.patientClinicAddress)
         CustomTextView patientClinicAddress;
+        @BindView(R.id.blueLineDivider)
+        View blueLineDivider;
+        @BindView(R.id.patientInfoDetailLayout)
+        RelativeLayout patientInfoDetailLayout;
         @BindView(R.id.patientDetailsClickLinearLayout)
         RelativeLayout patientDetailsClickLinearLayout;
-
         View view;
 
         ListViewHolder(View view) {
@@ -268,13 +256,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         }
     }
 
-    public boolean isLongPressed() {
-        return isLongPressed;
-    }
 
-    public void setLongPressed(boolean longPressed) {
-        isLongPressed = longPressed;
-    }
 
     @Override
     public Filter getFilter() {
@@ -329,16 +311,11 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
     public interface OnDownArrowClicked {
 
-        void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
-
         void onRecordFound(boolean isListEmpty);
 
-        void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
-
-        void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired);
+        void onClickOfPatientDetails(PatientList patientListObject, String text);
 
     }
-
 
 
     public void add(PatientList mc) {
@@ -352,6 +329,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             add(mc);
         }
     }
+
     public void clear() {
         final int size = mDataList.size();
         if (size > 0) {

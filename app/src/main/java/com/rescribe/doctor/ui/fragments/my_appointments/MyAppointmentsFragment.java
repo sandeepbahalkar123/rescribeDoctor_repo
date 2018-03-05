@@ -169,7 +169,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             }
         });
 
-        mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList);
+        mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList, true);
         recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);
         searchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {

@@ -155,7 +155,7 @@ public class ActiveWaitingListAdapter extends RecyclerView.Adapter {
                 }
             });
 
-            patientIdTextView.setText(mContext.getString(R.string.id) + " " + active.getPatientId());
+            patientIdTextView.setText(mContext.getString(R.string.id) + " " + active.getHospitalPatId());
             if (!active.getWaitingInTime().equals("")) {
                 appointmentTime.setVisibility(View.VISIBLE);
                 waitingTime = CommonMethods.formatDateTime(active.getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
@@ -197,7 +197,9 @@ public class ActiveWaitingListAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View view) {
                     String displayText = "" + active.getPatientName() + " clicked";
+/*
                     Toast.makeText(mContext, displayText, Toast.LENGTH_SHORT).show();
+*/
                     Log.d("ActiveWaitingLis", displayText);
                 }
             });

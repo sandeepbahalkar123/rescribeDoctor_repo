@@ -77,6 +77,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             convertView = infalInflater.inflate(R.layout.my_appointments_child_item, null);
             viewHolder = new ChildViewHolder();
             viewHolder.checkbox = (CheckBox) convertView.findViewById(R.id.checkbox);
+            viewHolder.patientDetailsClickLinearLayout = (RelativeLayout)convertView.findViewById(R.id.patientDetailsClickLinearLayout);
             viewHolder.bluelineImageView = (ImageView) convertView.findViewById(R.id.bluelineImageView);
             viewHolder.appointmentTime = (CustomTextView) convertView.findViewById(R.id.appointmentTime);
             viewHolder.patientIdTextView = (CustomTextView) convertView.findViewById(R.id.patientIdTextView);
@@ -300,6 +301,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder = new GroupViewHolder();
 
             viewHolder.mCheckbox = (CheckBox) convertView.findViewById(R.id.checkbox);
+            viewHolder.patientDetailsClickLinearLayout = (RelativeLayout)convertView.findViewById(R.id.patientDetailsClickLinearLayout);
             viewHolder.mGroupCheckbox = (CheckBox) convertView.findViewById(R.id.groupCheckbox);
             viewHolder.downArrowClickLinearLayout = (LinearLayout) convertView.findViewById(R.id.downArrowClickLinearLayout);
             viewHolder.cardView = (LinearLayout) convertView.findViewById(R.id.cardView);
@@ -610,6 +612,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
   */
     static class ChildViewHolder {
         CheckBox checkbox;
+        RelativeLayout patientDetailsClickLinearLayout;
         LinearLayout cardView;
         ImageView bluelineImageView;
         CustomTextView appointmentTime;
@@ -631,6 +634,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     static class GroupViewHolder {
         LinearLayout cardView;
         CheckBox mCheckbox;
+        RelativeLayout patientDetailsClickLinearLayout;
         CheckBox mGroupCheckbox;
         LinearLayout downArrowClickLinearLayout;
         RelativeLayout mHospitalDetailsLinearLayout;

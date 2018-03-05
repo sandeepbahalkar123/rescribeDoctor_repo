@@ -284,7 +284,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                     } catch (CloneNotSupportedException e) {
                         e.printStackTrace();
                     }
-                    if (clinicList.getClinicId() == tempAppointmentListObject.getClinicId()) {
+                    if (clinicList.getLocationId() == tempAppointmentListObject.getLocationId()) {
                         mFilterAppointmentList.add(tempAppointmentListObject);
                     }
                 }
@@ -327,7 +327,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                     } catch (CloneNotSupportedException e) {
                         e.printStackTrace();
                     }
-                    if (clinicList.getClinicId() == appointmentObject.getClinicId()) {
+                    if (clinicList.getLocationId() == appointmentObject.getLocationId()) {
                         mFilterAppointmentList.add(tempAppointmentListObject);
                     }
                 }

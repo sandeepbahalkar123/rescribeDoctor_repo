@@ -1,6 +1,5 @@
 package com.rescribe.doctor.ui.fragments.patient.my_patient;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,18 +18,15 @@ import android.widget.Toast;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.my_patients.SmsRecepientListAdapter;
 import com.rescribe.doctor.adapters.my_patients.SmsRecepientPatientListAdapter;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateList;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -41,7 +37,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static java.security.AccessController.getContext;
 
 /**
  * Created by jeetal on 27/2/18.
@@ -49,6 +44,7 @@ import static java.security.AccessController.getContext;
 
 public class SendSmsPatientActivity extends AppCompatActivity implements SmsRecepientPatientListAdapter.OnCardViewClickListener, HelperResponse {
 
+    public static final int RESULT_SEND_SMS = 2020;
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -217,7 +213,8 @@ public class SendSmsPatientActivity extends AppCompatActivity implements SmsRece
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
             if (templateBaseModel != null)
                 Toast.makeText(mContext, templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
-
+            setResult(RESULT_SEND_SMS);
+            finish();
 
         }
     }

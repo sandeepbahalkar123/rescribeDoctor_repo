@@ -158,6 +158,9 @@ public class RescribeConstants {
     public static final String TEMPLATE_OBJECT = "template_object";
     public static final String CLINIC_ID = "clinic_id";
     public static final String CLINIC_NAME = "clinic_name";
+    public static final String ACTIVITY_LAUNCHED_FROM = "activity_launched_from";
+    public static final String WAITING_LIST = "waiting_list";
+    public static final String HOME_PAGE = "home_page";
 
 
     public static String HEADER_COLOR = "#E4422C";

@@ -19,9 +19,8 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
-
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
-import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
+import com.rescribe.doctor.ui.fragments.patient.patient_connect.ChatPatientListFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -30,10 +29,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by jeetal on 31/1/18.
+ * Created by jeetal on 5/3/18.
  */
 
-public class MyPatientsActivity extends AppCompatActivity implements HelperResponse, DrawerForMyPatients.OnDrawerInteractionListener {
+public class ShowMyPatientsListActivity  extends AppCompatActivity implements HelperResponse, DrawerForMyPatients.OnDrawerInteractionListener {
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -50,7 +49,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     DrawerLayout drawerLayout;
     private Context mContext;
     private AppointmentHelper mAppointmentHelper;
-    private MyPatientsFragment mMyPatientsFragment;
+    private ChatPatientListFragment mMyPatientsFragment;
     private boolean isLongPressed;
     private DrawerForMyPatients mDrawerForMyPatients;
     Intent mIntent;
@@ -69,12 +68,12 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
         if(mIntent.getExtras()!=null){
             mActivityCalledFrom  = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
         }
-        mContext = MyPatientsActivity.this;
+        mContext = ShowMyPatientsListActivity.this;
         titleTextView.setText(getString(R.string.my_patients));
         mAppointmentHelper = new AppointmentHelper(this, this);
         RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-       // mRequestSearchPatients.setDocId(2462);
-       mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+        // mRequestSearchPatients.setDocId(2462);
+        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
         setUpNavigationDrawer();
     }
@@ -132,7 +131,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
                 Bundle bundle = new Bundle();
                 bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM,mActivityCalledFrom);
                 bundle.putParcelable(RescribeConstants.MYPATIENTS_DATA, myAppointmentsBaseModel);
-                mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
+                mMyPatientsFragment = ChatPatientListFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
             }
 
@@ -178,15 +177,9 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.closeDrawer(GravityCompat.END);
-        } else {
-            isLongPressed = mMyPatientsFragment.callOnBackPressed();
-            if (isLongPressed) {
-                mMyPatientsFragment.removeCheckBox();
-            } else {
-                super.onBackPressed();
-            }
-
         }
+                super.onBackPressed();
+
     }
 
     @Override
