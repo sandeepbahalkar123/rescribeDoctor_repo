@@ -1,6 +1,7 @@
 package com.rescribe.doctor.adapters.my_patients;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -22,9 +23,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.patient_connect.PatientData;
+import com.rescribe.doctor.ui.activities.ChatActivity;
+import com.rescribe.doctor.ui.activities.PatientConnectActivity;
+import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import org.joda.time.DateTime;
 
@@ -209,6 +215,19 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             }
         });
 
+        holder.chatImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, ChatActivity.class);
+                PatientData doctorConnectChatModel = new PatientData();
+                doctorConnectChatModel.setId(patientObject.getPatientId());
+                doctorConnectChatModel.setImageUrl(patientObject.getPatientImageUrl());
+                doctorConnectChatModel.setPatientName(patientObject.getPatientName());
+                intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
+                ((MyPatientsActivity) mContext).startActivity(intent);
+
+            }
+        });
 
     }
 

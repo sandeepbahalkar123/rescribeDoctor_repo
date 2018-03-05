@@ -145,11 +145,10 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             }
             //Spannable condition for PatientId
             if (String.valueOf(patientObject.getHospitalPatId()).toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
-                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
-                patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-                SpannableString spannableIdString = new SpannableString(patientID);
+
+                SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
                 Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(patientID);
+                Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
 
                 while (matcher.find()) {
                     spannableIdString.setSpan(new ForegroundColorSpan(
@@ -159,16 +158,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 }
                 viewHolder.patientIdTextView.setText(spannableIdString);
             } else {
-                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getHospitalPatId());
-                patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-                viewHolder.patientIdTextView.setText(patientID);
+
+                viewHolder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
             }
         } else {
             viewHolder.patientNameTextView.setText(patientName);
             viewHolder.patientPhoneNumber.setText(patientObject.getPatientPhone());
-            SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getHospitalPatId());
-            patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-            viewHolder.patientIdTextView.setText(patientID);
+
+            viewHolder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
         }
 
         if (patientObject.getAge().equals("") && !patientObject.getDateOfBirth().equals("")) {
@@ -333,9 +330,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.mClinicNameTextView.setText(mAppointmentListTemp.get(groupPosition).getClinicName() + " - ");
         viewHolder.mClinicAddress.setText(mAppointmentListTemp.get(groupPosition).getArea() + ", " + mAppointmentListTemp.get(groupPosition).getCity());
         viewHolder.mClinicPatientCount.setText(mAppointmentListTemp.get(groupPosition).getPatientList().size() + "");
-        SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getHospitalPatId() + "");
-        patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-        viewHolder.mPatientIdTextView.setText(patientID);
+
+        viewHolder.mPatientIdTextView.setText(mContext.getString(R.string.id) + " " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getHospitalPatId() + "");
 
         if (mAppointmentListTemp.get(groupPosition).getPatientHeader().getSalutation() == 1) {
             viewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mr) + " " + mAppointmentListTemp.get(groupPosition).getPatientHeader().getPatientName());

@@ -60,6 +60,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
+
 /**
  * Created by jeetal on 31/1/18.
  */
@@ -520,6 +522,8 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
                     startActivity(intent);
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                    getActivity().finish();
+                    getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patient_limit_exceeded).toLowerCase())) {
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
 
@@ -530,6 +534,8 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
                     startActivity(intent);
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                    getActivity().finish();
+                    getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 }
             }
         }
