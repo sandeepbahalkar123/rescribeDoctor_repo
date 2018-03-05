@@ -4,24 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewBottom"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
-        android:divider="@null"
-        android:clipToPadding="false"
-        android:paddingStart="@dimen/dp28"
+        android:layout_alignParentBottom="true"
         android:background="@color/black"
-        android:visibility="gone"
+        android:clipToPadding="false"
+        android:divider="@null"
         android:dividerHeight="0dp"
-        android:paddingLeft="@dimen/dp28" />
+        android:paddingLeft="@dimen/dp28"
+        android:paddingStart="@dimen/dp28"
+        android:visibility="gone" />
 
     <FrameLayout
-        android:background="@color/divider"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@+id/recyclerViewBottom"
-        android:layout_height="match_parent">
+        android:background="@color/divider">
 
         <LinearLayout
             android:id="@+id/appointmentLayoutContainer"
@@ -37,16 +38,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp56"
+                android:layout_marginBottom="@dimen/dp7"
                 android:background="@color/tagColor"
-                android:orientation="vertical"
-                android:layout_marginBottom="@dimen/dp7">
+                android:orientation="vertical">
 
                 <com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton
                     android:id="@+id/searchEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
                     android:layout_marginTop="@dimen/dp10"
+                    android:visibility="visible"
                     app:hintText="@string/search_hint">
 
                 </com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton>
@@ -80,10 +81,10 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipToPadding="false"
                 android:divider="@null"
                 android:visibility="gone"
-                tools:visibility="visible"
-                android:clipToPadding="false"/>
+                tools:visibility="visible" />
         </LinearLayout>
 
         <include layout="@layout/common_no_records_found" />

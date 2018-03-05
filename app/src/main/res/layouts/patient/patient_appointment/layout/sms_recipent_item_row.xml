@@ -3,20 +3,23 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recepientLayout"
-    android:orientation="vertical">
+    android:id="@+id/recepientLayout">
 
     <com.rescribe.doctor.ui.customesViews.CustomTextView
+        android:id="@+id/patientNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/patientNameTextView"
         android:background="@drawable/curve_edges_button"
-        android:drawableEnd="@drawable/close_btn"
         android:drawablePadding="@dimen/dp8"
-        android:drawableRight="@drawable/close_btn"
-        android:padding="@dimen/dp8"
-        tools:text="987655566"
+        android:drawableEnd="@drawable/ic_highlight_off"
+        android:drawableRight="@drawable/ic_highlight_off"
+        android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="@dimen/sp16" />
+        android:paddingTop="@dimen/dp5"
+        android:paddingBottom="@dimen/dp5"
+        android:paddingStart="@dimen/dp8"
+        android:paddingEnd="@dimen/dp8"
+        android:textSize="@dimen/sp14"
+        tools:text="987655566" />
 
 </LinearLayout>

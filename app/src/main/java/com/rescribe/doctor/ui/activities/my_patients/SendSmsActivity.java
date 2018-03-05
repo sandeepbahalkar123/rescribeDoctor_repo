@@ -132,7 +132,6 @@ public class SendSmsActivity extends AppCompatActivity implements SmsRecepientLi
                 } else {
                     setSendEnabled(false);
                     sendSmsButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.sendbutton_grey));
-
                 }
             }
         });

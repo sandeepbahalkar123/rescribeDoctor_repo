@@ -3,9 +3,11 @@ package com.rescribe.doctor.adapters.waiting_list;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -21,12 +23,16 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.ItemTouchHelperAdapter;
+import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.OnStartDragListener;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.ViewBinderHelper;
+import com.rescribe.doctor.ui.fragments.waiting_list.ViewAllPatientListFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +41,7 @@ import butterknife.ButterKnife;
  * Created by jeetal on 23/2/18.
  */
 
-public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
+public class ViewAllWaitingListAdapter extends RecyclerView.Adapter implements ItemTouchHelperAdapter {
 
     private ArrayList<ViewAll> mActiveArrayList = new ArrayList<>();
     private LayoutInflater mInflater;
@@ -44,10 +50,12 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
     private String appointmentScheduleTime = "";
     private String waitingTime = "";
 
+    private final OnStartDragListener mDragStartListener;
 
-    public ViewAllWaitingListAdapter(Context context, ArrayList<ViewAll> mActivesList) {
+    public ViewAllWaitingListAdapter(Context context, ArrayList<ViewAll> mActivesList, OnStartDragListener mDragStartListener) {
         mContext = context;
         mActiveArrayList = mActivesList;
+        this.mDragStartListener = mDragStartListener;
         mInflater = LayoutInflater.from(context);
 
         // uncomment if you want to open only one row at a time
@@ -70,9 +78,33 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
         // put an unique string id as value, can be any string which uniquely define the data
         binderHelper.bindViewAll(holder.swipeLayout, mActiveObject);
 
+        holder.view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    mDragStartListener.onStartDrag(holder);
+                }
+                return false;
+            }
+        });
+        // Add Move touch event.
+
         // Bind your data here
         holder.bind(mActiveObject);
 
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        mActiveArrayList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(mActiveArrayList, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
     }
 
     @Override

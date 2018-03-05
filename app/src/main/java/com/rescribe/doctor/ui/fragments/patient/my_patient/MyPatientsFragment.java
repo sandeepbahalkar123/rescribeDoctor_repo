@@ -108,6 +108,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private ArrayList<PatientInfoList> patientInfoLists;
     private int mClinicId;
     private String mClinicName = "";
+    private boolean isFiltered = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -172,12 +173,20 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 searchText = s.toString();
                 if (searchText.length() >= 3) {
                     serachPatientsUsingSearchBar(getContext(), searchText);
+                    isFiltered = true;
+                } else if (searchText.length() < 3 && isFiltered) {
+                    isFiltered = false;
+                    resetFilter();
                 }
             }
         });
         mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList);
         recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);
+    }
+
+    private void resetFilter() {
+        init();
     }
 
 

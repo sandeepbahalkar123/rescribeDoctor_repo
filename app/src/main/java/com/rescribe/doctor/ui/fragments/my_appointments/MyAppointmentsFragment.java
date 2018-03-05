@@ -3,25 +3,15 @@ package com.rescribe.doctor.ui.fragments.my_appointments;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,14 +36,10 @@ import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
-import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
 import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
-import com.rescribe.doctor.model.patient.template_sms.TemplateDataModel;
-import com.rescribe.doctor.model.patient.template_sms.TemplateList;
-import com.rescribe.doctor.model.patient.template_sms.request_send_sms.RequestSendSmsModel;
 import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.PatientsListAddToWaitingList;
 import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.RequestForWaitingListPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -68,8 +54,6 @@ import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -201,9 +185,10 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             @Override
             public void afterTextChanged(Editable s) {
 
-                charString = s.toString();
-
-                mAppointmentAdapter.getFilter().filter(s);
+                if (mAppointmentAdapter != null) {
+                    charString = s.toString();
+                    mAppointmentAdapter.getFilter().filter(s);
+                }
 
             }
         });
@@ -278,7 +263,6 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         } else {
             emptyListView.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -409,7 +393,6 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 if (!patientLists.isEmpty()) {
                     tempAppointmentListObject.setPatientList(patientLists);
                     mAppointmentLists.add(tempAppointmentListObject);
-
                 }
             }
 
