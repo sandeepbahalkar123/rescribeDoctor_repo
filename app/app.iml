@@ -105,6 +105,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javaPrecompile" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/lint" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/multi-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/prebuild" />
@@ -116,17 +117,13 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
-      <excludeFolder url="file://$MODULE_DIR$/build/reports" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 26 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="com.android.support:multidex-1.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="com.android.support.test:exposed-instrumentation-api-publish-0.5" level="project" />
-    <orderEntry type="library" scope="TEST" name="com.android.support:multidex-1.0.1" level="project" />
-    <orderEntry type="library" name="com.github.bumptech.glide:annotations:4.2.0@jar" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-auth-11.0.4" level="project" />
-    <orderEntry type="library" name="joda-time:joda-time:2.9.1@jar" level="project" />
     <orderEntry type="library" name="com.android.support:cardview-v7-25.3.0" level="project" />
     <orderEntry type="library" name="com.android.support:support-compat-25.3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="com.squareup:javawriter:2.1.1@jar" level="project" />
@@ -137,21 +134,22 @@
     <orderEntry type="library" name="com.nineoldandroids:library:2.4.0@jar" level="project" />
     <orderEntry type="library" name="com.parse.bolts:bolts-tasks:1.4.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-media-compat-25.3.0" level="project" />
+    <orderEntry type="library" name="joda-time:joda-time:2.9.9@jar" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-solver:1.0.2@jar" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-1.0.2" level="project" />
     <orderEntry type="library" name="com.android.support:support-v4-25.3.0" level="project" />
-    <orderEntry type="library" name="com.github.bumptech.glide:gifdecoder:4.2.0@jar" level="project" />
+    <orderEntry type="library" name="com.google.code.gson:gson:2.8.2@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="com.google.code.findbugs:jsr305:2.0.1@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-core:1.3@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="com.android.support.test.espresso:espresso-core-2.2.2" level="project" />
     <orderEntry type="library" name="com.beloo.widget:ChipsLayoutManager-0.3.7" level="project" />
-    <orderEntry type="library" name="com.jakewharton:butterknife-8.5.1" level="project" />
     <orderEntry type="library" name="com.android.support:design-25.3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="com.android.support.test:rules-0.5" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-tasks-11.0.4" level="project" />
     <orderEntry type="library" name="com.philliphsu:bottomsheetpickers-2.3.3" level="project" />
     <orderEntry type="library" name="org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-integration:1.3@jar" level="project" />
+    <orderEntry type="library" name="com.github.bumptech.glide:disklrucache:4.4.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:transition-25.3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="com.android.support:multidex-instrumentation-1.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="com.android.support.test.espresso:espresso-idling-resource-2.2.2" level="project" />
@@ -162,22 +160,22 @@
     <orderEntry type="library" name="com.google.android.gms:play-services-base-11.0.4" level="project" />
     <orderEntry type="library" name="com.android.support:customtabs-25.3.0" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-places-11.0.4" level="project" />
+    <orderEntry type="library" name="com.github.bumptech.glide:gifdecoder:4.4.0@jar" level="project" />
+    <orderEntry type="library" name="com.github.bumptech.glide:annotations:4.4.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:gridlayout-v7-25.3.0" level="project" />
     <orderEntry type="library" name="com.mcxiaoke.volley:library:1.0.19@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="junit:junit:4.12@jar" level="project" />
     <orderEntry type="library" name="io.reactivex:rxjava:1.3.1@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="javax.inject:javax.inject:1@jar" level="project" />
-    <orderEntry type="library" name="com.h6ah4i.android.widget.advrecyclerview:advrecyclerview-0.11.0" level="project" />
-    <orderEntry type="library" name="com.jakewharton:butterknife-annotations:8.5.1@jar" level="project" />
+    <orderEntry type="library" name="com.github.bumptech.glide:glide:4.4.0@jar" level="project" />
     <orderEntry type="library" name="com.parse.bolts:bolts-applinks:1.4.0@jar" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-basement-11.0.4" level="project" />
-    <orderEntry type="library" name="com.google.code.gson:gson:2.7@jar" level="project" />
-    <orderEntry type="library" name="com.github.bumptech.glide:disklrucache:4.2.0@jar" level="project" />
     <orderEntry type="library" name="com.github.hotchemi:permissionsdispatcher-2.4.0" level="project" />
     <orderEntry type="library" name="com.android.support:support-fragment-25.3.0" level="project" />
     <orderEntry type="library" name="com.android.support:animated-vector-drawable-25.3.0" level="project" />
     <orderEntry type="library" name="com.parse.bolts:bolts-android:1.4.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-core-utils-25.3.0" level="project" />
+    <orderEntry type="library" name="com.jakewharton:butterknife-8.6.0" level="project" />
     <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-library:1.3@jar" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-auth-base-11.0.4" level="project" />
     <orderEntry type="library" name="com.android.support:appcompat-v7-25.3.0" level="project" />
@@ -185,10 +183,11 @@
     <orderEntry type="library" name="com.google.android.gms:play-services-maps-11.0.4" level="project" />
     <orderEntry type="library" name="com.android.support:support-annotations:25.3.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:palette-v7-25.3.0" level="project" />
-    <orderEntry type="library" name="com.github.bumptech.glide:glide:4.2.0@jar" level="project" />
+    <orderEntry type="library" name="com.jakewharton:butterknife-annotations:8.6.0@jar" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-location-11.0.4" level="project" />
     <orderEntry type="module" module-name="crystalrangeseekbar" />
     <orderEntry type="module" module-name="fabmenu" />
+    <orderEntry type="module" module-name="advanced_recycler" />
     <orderEntry type="module" module-name="slideview" />
     <orderEntry type="module" module-name="materialdrawer" />
     <orderEntry type="module" module-name="filepicker" />
