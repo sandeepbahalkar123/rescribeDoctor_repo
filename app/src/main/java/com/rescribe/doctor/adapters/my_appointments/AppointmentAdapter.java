@@ -164,7 +164,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         } else {
             viewHolder.patientNameTextView.setText(patientName);
             viewHolder.patientPhoneNumber.setText(patientObject.getPatientPhone());
-
             viewHolder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
         }
 

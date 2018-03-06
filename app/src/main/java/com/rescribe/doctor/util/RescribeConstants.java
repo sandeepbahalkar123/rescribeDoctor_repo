@@ -161,8 +161,7 @@ public class RescribeConstants {
     public static final String ACTIVITY_LAUNCHED_FROM = "activity_launched_from";
     public static final String WAITING_LIST = "waiting_list";
     public static final String HOME_PAGE = "home_page";
-
-
+    public static final String OPD_TIME = "opd_time";
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";

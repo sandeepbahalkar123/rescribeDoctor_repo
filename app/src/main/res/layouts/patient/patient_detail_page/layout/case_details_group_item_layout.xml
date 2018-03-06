@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -9,8 +10,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp16"
-        android:layout_marginTop="@dimen/dp8"
         android:background="@color/white"
         android:gravity="top"
         android:orientation="horizontal">
@@ -19,33 +18,35 @@
             android:id="@+id/viewDetailIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|center_vertical"
-            android:scaleType="centerInside" />
+            android:layout_marginTop="@dimen/dp20"
+            android:layout_marginEnd="@dimen/dp16"
+            android:layout_marginStart="@dimen/dp16"
+            android:adjustViewBounds="true"
+            tools:src="@drawable/commonicon" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|center_vertical"
-            android:layout_marginLeft="@dimen/dp10"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dp12"
+            android:paddingEnd="@dimen/dp16"
+            android:paddingRight="@dimen/dp16"
+            android:paddingTop="@dimen/dp12">
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/viewDetailHeaderLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dp12"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp19"
                 android:textStyle="bold"
-                app:customFont="@string/roboto_bold" />
+                app:customFont="@string/roboto_bold"
+                tools:text="@string/enter_password" />
 
             <View
                 android:id="@+id/headergroupDivider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp1"
-                android:layout_marginBottom="@dimen/dp10"
-                android:layout_marginLeft="@dimen/dp12"
-                android:layout_marginStart="@dimen/dp12"
                 android:layout_marginTop="@dimen/dp10"
                 android:background="@color/divider"
                 android:visibility="gone" />
@@ -54,11 +55,12 @@
                 android:id="@+id/detailFirstPoint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp4"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dp12"
                 android:textColor="@color/view_detail_color"
                 android:textSize="@dimen/sp17"
-                app:customFont="@string/roboto_medium" />
+                app:customFont="@string/roboto_medium"
+                tools:text="@string/enter_password" />
         </LinearLayout>
     </LinearLayout>
 
@@ -66,6 +68,5 @@
         android:id="@+id/adapter_divider_top"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp8"
         android:background="@color/divider" />
 </LinearLayout>

@@ -112,7 +112,12 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
 
             @Override
             public void afterTextChanged(Editable s) {
-                image.setParentCaption(holder.addCaptionText.getText().toString());
+               /* if(holder.addCaptionText.getText().toString().equals("Add caption")) {
+                    image.setParentCaption("");
+                }else{
+                    image.setParentCaption(holder.addCaptionText.getText().toString());
+                }*/
+                image.setParentCaption(s.toString());
                 notifyItemChanged(position);
             }
         });

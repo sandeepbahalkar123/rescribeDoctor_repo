@@ -14,4 +14,6 @@
         android:background="@drawable/no_records_found"
         android:orientation="vertical"
         tools:ignore="ContentDescription" />
+
+
 </RelativeLayout>

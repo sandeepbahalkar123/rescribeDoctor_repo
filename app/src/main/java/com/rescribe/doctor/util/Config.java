@@ -46,6 +46,8 @@ public class Config {
 
     public static final String LOGOUT = "api/doctors/logDoctorSignOut";
     public static final String ACTIVE = "api/doctors/logDoctorActivity";
+    public static final String MY_RECORDS_UPLOAD = "api/upload/addOpdAttachments";
+
 
 }
 

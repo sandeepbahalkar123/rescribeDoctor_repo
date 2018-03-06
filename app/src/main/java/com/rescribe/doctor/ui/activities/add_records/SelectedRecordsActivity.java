@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,8 +35,10 @@ import com.rescribe.doctor.model.investigation.Image;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.activities.HomePageActivity;
+import com.rescribe.doctor.ui.activities.patient_details.SingleVisitDetailsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -48,6 +52,8 @@ import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,6 +70,7 @@ import permissions.dispatcher.RuntimePermissions;
 public class SelectedRecordsActivity extends AppCompatActivity implements SelectedRecordsAdapter.OnClickOfComponentsOnSelectedPhoto {
 
 
+    public static final int CLOSE_SINGLE_VISIT_CODE = 0707;
     @BindView(R.id.recyclerview)
     RecyclerView recyclerView;
     @BindView(R.id.uploadButton)
@@ -87,45 +94,40 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     private ArrayList<Image> imagePaths = new ArrayList<>();
     ArrayList<Image> imageArrayList;
     private SelectedRecordsAdapter selectedRecordsAdapter;
-    private String patient_id = "";
     private Dialog dialog;
     private String visitDate;
     private int docId;
     private String patientId;
-    private int opdId;
+    private String opdId;
     private AppDBHelper appDBHelper;
     private Device device;
     private UploadNotificationConfig uploadNotificationConfig;
     private String authorizationString;
+    private String month;
+    private String year;
+    private String patientName = "";
+    private String patientInfo = "";
+    public static final String OTHERS = "Others";
+    private String Url;
+    private String mHospitalPatId;
+    private String mLocationId;
+    private String mHospitalId;
+    private String mOpdtime;
+    private String currentOpdTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seleted_records);
         ButterKnife.bind(this);
-        titleTextView.setText(getString(R.string.title_activity_report_selection));
-        addImageView.setVisibility(View.VISIBLE);
+
         init();
 
-    /*    setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getString(R.string.title_activity_report_selection));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });*/
-
-        mContext = SelectedRecordsActivity.this;
        /* String coachMarkStatus = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK, mContext);
         if (coachMarkStatus.equals(RescribeConstants.YES))
             coachmark.setVisibility(View.GONE);
 */
-        patient_id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_ID, mContext);
 
         // Show two options for user
 
@@ -174,7 +176,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         recyclerView.setLayoutManager(layoutManager);
 
 
-
         fab.addOnStateChangeListener(new FabSpeedDial.OnStateChangeListener() {
             @Override
             public void onStateChange(boolean open) {
@@ -194,7 +195,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                 for (Image image : imagePaths) {
                     if (image.isSelected()) {
                         if (label != null) {
-                            image.setParentCaption(label.getText().toString());
+                            //image.setParentCaption(label.getText().toString());
                             image.setSelected(false);
                         }
                     }
@@ -205,15 +206,22 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     }
 
     private void init() {
+        mContext = SelectedRecordsActivity.this;
+        mHospitalPatId = getIntent().getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
+        mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);
+        patientId = getIntent().getStringExtra(RescribeConstants.PATIENT_ID);
+        mHospitalId = getIntent().getStringExtra(RescribeConstants.CLINIC_ID);
+        addImageView.setVisibility(View.VISIBLE);
+        patientName = getIntent().getStringExtra(RescribeConstants.PATIENT_NAME);
+        patientInfo = getIntent().getStringExtra(RescribeConstants.PATIENT_INFO);
         imageArrayList = getIntent().getParcelableArrayListExtra(RescribeConstants.DOCUMENTS);
-
-        opdId = getIntent().getIntExtra(RescribeConstants.OPD_ID, 0);
+        mOpdtime = getIntent().getStringExtra(RescribeConstants.OPD_TIME);
+        opdId = getIntent().getStringExtra(RescribeConstants.OPD_ID);
 
         visitDate = getIntent().getStringExtra(RescribeConstants.VISIT_DATE);
 
-        docId = getIntent().getIntExtra(RescribeConstants.DOCTORS_ID, 0);
+        docId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
 
-        patientId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_ID, SelectedRecordsActivity.this);
 
         boolean isUploading = getIntent().getBooleanExtra(RescribeConstants.UPLOADING_STATUS, false);
         if (isUploading)
@@ -222,7 +230,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         appDBHelper = new AppDBHelper(SelectedRecordsActivity.this);
         device = Device.getInstance(SelectedRecordsActivity.this);
 
-        //Url = Config.BASE_URL + Config.MY_RECORDS_UPLOAD;
+        Url = Config.BASE_URL + Config.MY_RECORDS_UPLOAD;
 //        Url = "http://192.168.0.115:8000/" + Config.MY_RECORDS_UPLOAD;
 
         authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, SelectedRecordsActivity.this);
@@ -233,6 +241,31 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         uploadNotificationConfig.setClearOnActionForAllStatuses(true);
 
         UploadService.UPLOAD_POOL_SIZE = 10;
+        setDateInToolbar();
+        userInfoTextView.setVisibility(View.VISIBLE);
+        titleTextView.setText(patientName);
+        userInfoTextView.setText(patientInfo);
+    }
+
+    private void setDateInToolbar() {
+        //Set Date in Required Format i.e 13thJuly'18
+        dateTextview.setVisibility(View.VISIBLE);
+        String timeToShow = CommonMethods.formatDateTime(visitDate, RescribeConstants.DATE_PATTERN.MMM_YY,
+                RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE).toLowerCase();
+        String[] timeToShowSpilt = timeToShow.split(",");
+        month = timeToShowSpilt[0].substring(0, 1).toUpperCase() + timeToShowSpilt[0].substring(1);
+        year = timeToShowSpilt.length == 2 ? timeToShowSpilt[1] : "";
+        Date date = CommonMethods.convertStringToDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        timeToShow = timeToShow.substring(0, 1).toUpperCase() + timeToShow.substring(1);
+        String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + month + "'" + year;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            dateTextview.setText(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            dateTextview.setText(Html.fromHtml(toDisplay));
+        }
+
     }
 
     @Override
@@ -336,7 +369,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
 
             if (!isExist) {
                 Image image = new Image();
-                image.setImageId(patient_id + "_" + UUID.randomUUID().toString());
+                image.setImageId(patientId + "_" + UUID.randomUUID().toString());
                 image.setImagePath(imagePath);
                 image.setType(type);
                 image.setSelected(false);
@@ -346,7 +379,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         selectedRecordsAdapter.notifyDataSetChanged();
     }
 
-    @OnClick({R.id.coachmark, R.id.uploadButton, R.id.addImageView,R.id.backImageView})
+    @OnClick({R.id.coachmark, R.id.uploadButton, R.id.addImageView, R.id.backImageView})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.coachmark:
@@ -360,8 +393,9 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                     if (NetworkUtil.isInternetAvailable(SelectedRecordsActivity.this)) {
                         uploadButton.setEnabled(false);
 
-                        for (int childIndex = 0; childIndex < imagePaths.size(); childIndex++){
-                              //  uploadImage(parentIndex + "_" + childIndex, images.get(childIndex));
+                        for (int parentIndex = 0; parentIndex < imagePaths.size(); parentIndex++) {
+
+                            uploadImage(parentIndex + "", imagePaths.get(parentIndex));
                         }
                     } else
                         CommonMethods.showToast(SelectedRecordsActivity.this, getResources().getString(R.string.internet));
@@ -390,52 +424,78 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
 
     @Override
     public void uploadImage(String uploadId, Image image) {
-      /*  try {
+        try {
 
-            if (image.getChildCaption() == null || image.getChildCaption().equals(""))
+            if (image.getParentCaption() == null || image.getChildCaption().equals(""))
                 image.setChildCaption(OTHERS);
-
-            String childCaptionName;
-            if (image.getParentCaption().equals(INVESTIGATIONS))
-                childCaptionName = image.getChildCaption();
-            else
-                childCaptionName = image.getParentCaption();
-
+            if (mOpdtime.equals("")) {
+                currentOpdTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss);
+            } else {
+                currentOpdTime = mOpdtime;
+            }
             String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+            if (!image.getParentCaption().equals("")) {
+                MultipartUploadRequest uploadRequest = new MultipartUploadRequest(SelectedRecordsActivity.this, uploadId, Url)
+                        .setNotificationConfig(uploadNotificationConfig)
+                        .setMaxRetries(RescribeConstants.MAX_RETRIES)
 
-            MultipartUploadRequest uploadRequest = new MultipartUploadRequest(SelectedRecordsGroupActivity.this, uploadId, Url)
-                    .setNotificationConfig(uploadNotificationConfig)
-                    .setMaxRetries(RescribeConstants.MAX_RETRIES)
+                        .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
+                        .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
+                        .addHeader(RescribeConstants.OS, device.getOS())
+                        .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
+                        .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
 
-                    .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
-                    .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
-                    .addHeader(RescribeConstants.OS, device.getOS())
-                    .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
-                    .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
+                        .addHeader("patientid", patientId)
+                        .addHeader("docid", String.valueOf(docId))
+                        .addHeader("opddate", visitDateToPass)
+                        .addHeader("opdtime", currentOpdTime)
+                        .addHeader("opdid", opdId)
+                        .addHeader("hospitalid", mHospitalId)
+                        .addHeader("hospitalpatid", mHospitalPatId)
+                        .addHeader("locationid", mLocationId)
+                        .addHeader("captionname", image.getParentCaption())
+                   /* .addHeader("imageId", image.getImageId())*/
+                   /* .addHeader("parentCaptionName", image.getParentCaption())*/
 
-                    .addHeader("patientId", patientId)
-                    .addHeader("docId", String.valueOf(docId))
-                    .addHeader("visitDate", visitDateToPass)
-                    .addHeader("imageId", image.getImageId())
-                    .addHeader("parentCaptionName", image.getParentCaption())
-                    .addHeader("childCaptionName", childCaptionName)
+                        .addFileToUpload(image.getImagePath(), "attachment");
+                uploadRequest.startUpload();
+            } else {
+                MultipartUploadRequest uploadRequest = new MultipartUploadRequest(SelectedRecordsActivity.this, uploadId, Url)
+                        .setNotificationConfig(uploadNotificationConfig)
+                        .setMaxRetries(RescribeConstants.MAX_RETRIES)
 
-                    .addFileToUpload(image.getImagePath(), "myRecord");
+                        .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
+                        .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
+                        .addHeader(RescribeConstants.OS, device.getOS())
+                        .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
+                        .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
+                        .addHeader("patientid", patientId)
+                        .addHeader("docid", String.valueOf(docId))
+                        .addHeader("opddate", visitDateToPass)
+                        .addHeader("opdtime", currentOpdTime)
+                        .addHeader("opdid", opdId)
+                        .addHeader("hospitalid", mHospitalId)
+                        .addHeader("hospitalpatid", mHospitalPatId)
+                        .addHeader("locationid", mLocationId)
 
-            if (opdId != 0)
-                uploadRequest.addParameter("opdId", String.valueOf(opdId));
+                   /* .addHeader("imageId", image.getImageId())*/
+                   /* .addHeader("parentCaptionName", image.getParentCaption())*/
 
-            uploadRequest.startUpload();
+                        .addFileToUpload(image.getImagePath(), "attachment");
+                uploadRequest.startUpload();
+            }
+
 
         } catch (FileNotFoundException | MalformedURLException e) {
             e.printStackTrace();
-        }*/
+        }
 
-        // appDBHelper.insertMyRecordsData(uploadId, RescribeConstants.UPLOADING, new Gson().toJson(image), docId, opdId, visitDate);
+        //  appDBHelper.insertMyRecordsData(uploadId, RescribeConstants.UPLOADING, new Gson().toJson(image), docId, opdId, visitDate);
     }
+
     @Override
     public void onBackPressed() {
-      /*  if (!uploadButton.isEnabled()) {
+        /*if (!uploadButton.isEnabled()) {
             Intent intent = new Intent(SelectedRecordsActivity.this, HomePageActivity.class);
             intent.putExtra(RescribeConstants.ALERT, false);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -443,6 +503,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         }*/
         super.onBackPressed();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -454,10 +515,11 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         super.onPause();
         broadcastReceiver.unregister(this);
     }
+
     private UploadServiceBroadcastReceiver broadcastReceiver = new UploadServiceBroadcastReceiver() {
         @Override
         public void onProgress(Context context, UploadInfo uploadInfo) {
-          /*  String pos[] = uploadInfo.getUploadId().split("_");
+          /* String pos[] = uploadInfo.getUploadId().split("_");
             int finalI = Integer.parseInt(pos[0]);
             int finalJ = Integer.parseInt(pos[1]);
 
@@ -473,9 +535,9 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         @Override
         public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
 
-            //appDBHelper.updateMyRecordsData(uploadInfo.getUploadId(), RescribeConstants.FAILED);
+          /*  appDBHelper.updateMyRecordsData(uploadInfo.getUploadId(), RescribeConstants.FAILED);
 
-           /* String pos[] = uploadInfo.getUploadId().split("_");
+       String pos[] = uploadInfo.getUploadId().split("_");
             int finalI = Integer.parseInt(pos[0]);
             int finalJ = Integer.parseInt(pos[1]);
 
@@ -488,9 +550,20 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
 
         @Override
         public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
+            Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(mContext,SingleVisitDetailsActivity.class);
+            intent.putExtra(RescribeConstants.PATIENT_OPDID,opdId);
+            intent.putExtra(RescribeConstants.PATIENT_ID,patientId);
+            intent.putExtra(RescribeConstants.PATIENT_NAME,patientName);
+            intent.putExtra(RescribeConstants.PATIENT_INFO,patientInfo);
+            intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID,mHospitalPatId);
+            intent.putExtra(RescribeConstants.DATE,CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.UTC_PATTERN));
+            intent.putExtra(RescribeConstants.OPD_TIME,currentOpdTime);
+            startActivity(intent);
+            finish();
 
-            // appDBHelper.updateMyRecordsData(uploadInfo.getUploadId(), RescribeConstants.COMPLETED);
-/*
+          /*  appDBHelper.updateMyRecordsData(uploadInfo.getUploadId(), RescribeConstants.COMPLETED);
+
             String pos[] = uploadInfo.getUploadId().split("_");
             int finalI = Integer.parseInt(pos[0]);
             int finalJ = Integer.parseInt(pos[1]);
@@ -498,19 +571,20 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
             groups.get(finalI).getImages().get(finalJ).setUploading(RescribeConstants.COMPLETED);
             mAdapter.notifyItemChanged(finalI);
 
-            CommonMethods.Log(IMAGEDUPLOADID, uploadInfo.getUploadId() + " onCompleted " + serverResponse.getBodyAsString());*/
+            CommonMethods.Log(IMAGEDUPLOADID, uploadInfo.getUploadId() + " onCompleted " + serverResponse.getBodyAsString());
 
-            navigate();
+            navigate();*/
         }
 
         @Override
         public void onCancelled(Context context, UploadInfo uploadInfo) {
-         //   CommonMethods.Log(IMAGEDUPLOADID, uploadInfo.getUploadId() + " onCancelled");
+            //   CommonMethods.Log(IMAGEDUPLOADID, uploadInfo.getUploadId() + " onCancelled");
         }
     };
+
     private void navigate() {
         // Navigate
-     /*   MyRecordsData myRecordsData = appDBHelper.getMyRecordsData();
+      /* MyRecordsData myRecordsData = appDBHelper.getMyRecordsData();
         int completeCount = 0;
         for (Image image : myRecordsData.getImageArrayList()) {
             if (image.isUploading() == RescribeConstants.COMPLETED)

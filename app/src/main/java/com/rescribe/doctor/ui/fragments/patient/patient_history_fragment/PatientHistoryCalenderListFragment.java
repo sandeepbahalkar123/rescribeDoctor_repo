@@ -1,6 +1,5 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_history_fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import com.rescribe.doctor.ui.activities.patient_details.SingleVisitDetailsActiv
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -32,6 +30,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
 
     private static String patientName;
     private static String patientInfo;
+    private static String mHospitalPatId;
     @BindView(R.id.calenderDays)
     RecyclerView mCalenderDays;
     private Context mContext;
@@ -76,6 +75,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         patientName = b.getString(RescribeConstants.PATIENT_NAME);
         patientInfo = b.getString(RescribeConstants.PATIENT_INFO);
         patientID = b.getString(RescribeConstants.PATIENT_ID);
+        mHospitalPatId = b.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
         fragment.setArguments(args);
         return fragment;
     }
@@ -108,13 +108,15 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
 
 
     @Override
-    public void onClickOFLayout(String visitDate, String opdId) {
+    public void onClickOFLayout(String visitDate, String opdId, String opdTime) {
         Intent intent = new Intent(getActivity(),SingleVisitDetailsActivity.class);
         intent.putExtra(RescribeConstants.PATIENT_OPDID,opdId);
         intent.putExtra(RescribeConstants.PATIENT_ID,patientID);
         intent.putExtra(RescribeConstants.PATIENT_NAME,patientName);
         intent.putExtra(RescribeConstants.PATIENT_INFO,patientInfo);
+        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID,mHospitalPatId);
         intent.putExtra(RescribeConstants.DATE,visitDate);
+        intent.putExtra(RescribeConstants.OPD_TIME,opdTime);
         startActivity(intent);
 
     }

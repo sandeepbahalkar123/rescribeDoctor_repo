@@ -1,8 +1,11 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_history_fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -14,14 +17,22 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.philliphsu.bottomsheetpickers.date.DatePickerDialog;
 import com.rescribe.doctor.R;
@@ -30,11 +41,13 @@ import com.rescribe.doctor.adapters.patient_history.YearSpinnerAdapter;
 import com.rescribe.doctor.helpers.patient_detail.PatientDetailHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.login.Year;
 import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryDataModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
+import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -94,6 +107,11 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private Bundle bundle = new Bundle();
     ArrayList<DatesData> mDatesDataArrayList = new ArrayList<>();
     private DatePickerDialog datePickerDialog;
+    private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
+    private String mLocationId;
+    private String mHospitalId;
+    private String mPatientId;
+    private String mHospitalPatId;
 
     public PatientHistoryListFragmentContainer() {
         // Required empty public constructor
@@ -137,11 +155,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mCurrentSelectedTimePeriodTab = new Year();
         mCurrentSelectedTimePeriodTab.setMonthName(new SimpleDateFormat("MMM", Locale.US).format(new Date()));
         mCurrentSelectedTimePeriodTab.setYear(new SimpleDateFormat("yyyy", Locale.US).format(new Date()));
-        //---------
-
-//        mOpdStatusGridView.addItemDecoration(new GridSpacingItemDecoration(2,
-//                getResources().getDimensionPixelSize(R.dimen.dp5), true));
-        //---------
+        mPatientId = args.getString(RescribeConstants.PATIENT_ID);
+        mHospitalPatId = args.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
 
     }
 
@@ -255,11 +270,82 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+        mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
 
-        Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
-        startActivity(intent);
+        showDialogToSelectLocation(mDoctorLocationModel, year, monthOfYear+1, dayOfMonth);
+
 
     }
+
+    private void showDialogToSelectLocation(ArrayList<DoctorLocationModel> mPatientListsOriginal, final int year, final int monthOfYear, final int dayOfMonth) {
+        final Dialog dialog = new Dialog(getActivity());
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
+        dialog.setCancelable(true);
+
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+
+        RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
+        for (int index = 0; index < mPatientListsOriginal.size(); index++) {
+            final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
+
+            RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
+            radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
+            radioButton.setId(CommonMethods.generateViewId());
+            radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mLocationId = String.valueOf(clinicList.getLocationId());
+                    mHospitalId = String.valueOf(clinicList.getClinicId());
+                }
+            });
+            radioGroup.addView(radioButton);
+        }
+
+        TextView okButton = (TextView) dialog.findViewById(R.id.okButton);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!mLocationId.equals(0)) {
+                    callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth);
+                    dialog.cancel();
+                } else
+                    Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+    }
+
+    private void callAddRecordsActivity(String mLocationId, String mHospitalId, int year, int monthOfYear, int dayOfMonth) {
+        Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
+        intent.putExtra(RescribeConstants.OPD_ID, "0");
+        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+        intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+        intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
+        intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
+        intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+        intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+        intent.putExtra(RescribeConstants.VISIT_DATE, dayOfMonth + "-" + monthOfYear + "-" + year);
+        intent.putExtra(RescribeConstants.OPD_TIME, "");
+
+        startActivity(intent);
+    }
+
 
     //---------------
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
