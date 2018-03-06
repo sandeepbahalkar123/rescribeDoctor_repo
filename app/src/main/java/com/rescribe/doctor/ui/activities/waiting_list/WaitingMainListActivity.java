@@ -16,7 +16,7 @@ import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.waiting_list.WaitingListBaseModel;
-import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
+import com.rescribe.doctor.model.waiting_list.WaitingClinicList;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.waiting_list.ActivePatientListFragment;
 import com.rescribe.doctor.ui.fragments.waiting_list.ViewAllPatientListFragment;
@@ -54,7 +54,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
     String[] mFragmentTitleList = new String[2];
     private ActivePatientListFragment mActivePatientListFragment;
     private ViewAllPatientListFragment mViewAllPatientListFragment;
-    private ArrayList<WaitingclinicList> mWaitingClinicList;
+    private ArrayList<WaitingClinicList> mWaitingClinicList;
     private Bundle bundle;
     private AppointmentHelper mAppointmentHelper;
 

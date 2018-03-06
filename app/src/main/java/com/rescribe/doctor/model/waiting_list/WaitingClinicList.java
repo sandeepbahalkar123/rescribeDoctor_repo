@@ -3,12 +3,11 @@ package com.rescribe.doctor.model.waiting_list;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class WaitingclinicList implements Parcelable
-{
+public class WaitingClinicList implements Parcelable {
 
     @SerializedName("clinicName")
     @Expose
@@ -31,23 +30,23 @@ public class WaitingclinicList implements Parcelable
     @SerializedName("patientList")
     @Expose
     private WaitingPatientList waitingPatientList;
-    public final static Creator<WaitingclinicList> CREATOR = new Creator<WaitingclinicList>() {
+    public final static Creator<WaitingClinicList> CREATOR = new Creator<WaitingClinicList>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
-        public WaitingclinicList createFromParcel(Parcel in) {
-            return new WaitingclinicList(in);
+        public WaitingClinicList createFromParcel(Parcel in) {
+            return new WaitingClinicList(in);
         }
 
-        public WaitingclinicList[] newArray(int size) {
-            return (new WaitingclinicList[size]);
+        public WaitingClinicList[] newArray(int size) {
+            return (new WaitingClinicList[size]);
         }
 
     };
 
-    protected WaitingclinicList(Parcel in) {
+    protected WaitingClinicList(Parcel in) {
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -57,7 +56,7 @@ public class WaitingclinicList implements Parcelable
         this.waitingPatientList = ((WaitingPatientList) in.readValue((WaitingPatientList.class.getClassLoader())));
     }
 
-    public WaitingclinicList() {
+    public WaitingClinicList() {
     }
 
     public String getClinicName() {
@@ -127,7 +126,7 @@ public class WaitingclinicList implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

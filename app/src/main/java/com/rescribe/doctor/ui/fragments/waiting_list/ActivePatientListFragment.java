@@ -16,7 +16,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.waiting_list.ActiveWaitingListAdapter;
 import com.rescribe.doctor.adapters.waiting_list.WaitingListSpinnerAdapter;
 import com.rescribe.doctor.model.waiting_list.WaitingPatientList;
-import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
+import com.rescribe.doctor.model.waiting_list.WaitingClinicList;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -47,7 +47,7 @@ public class ActivePatientListFragment extends Fragment {
     RelativeLayout hospitalDetailsLinearLayout;
     private Unbinder unbinder;
     private static Bundle args;
-    private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
+    private ArrayList<WaitingClinicList> waitingclinicLists = new ArrayList<>();
     private WaitingListSpinnerAdapter mWaitingListSpinnerAdapter;
     private ActiveWaitingListAdapter mActiveWaitingListAdapter;
 
@@ -95,7 +95,7 @@ public class ActivePatientListFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 int locationId  = waitingclinicLists.get(i).getLocationId();
                 WaitingPatientList waitingPatientTempList = new WaitingPatientList();
-                for (WaitingclinicList waitingclinicList : waitingclinicLists) {
+                for (WaitingClinicList waitingclinicList : waitingclinicLists) {
                     if (locationId== waitingclinicList.getLocationId()) {
                         waitingPatientTempList = waitingclinicList.getWaitingPatientList();
                     }

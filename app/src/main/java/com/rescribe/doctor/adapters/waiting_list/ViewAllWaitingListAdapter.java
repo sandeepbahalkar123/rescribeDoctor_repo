@@ -78,18 +78,6 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter implements I
         // put an unique string id as value, can be any string which uniquely define the data
         binderHelper.bindViewAll(holder.swipeLayout, mActiveObject);
 
-        holder.view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    mDragStartListener.onStartDrag(holder);
-                }
-                return false;
-            }
-        });
-        // Add Move touch event.
-
-        // Bind your data here
         holder.bind(mActiveObject);
 
     }

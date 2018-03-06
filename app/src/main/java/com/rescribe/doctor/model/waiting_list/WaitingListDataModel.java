@@ -2,10 +2,10 @@
 package com.rescribe.doctor.model.waiting_list;
 
 import java.util.ArrayList;
-import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -14,7 +14,7 @@ public class WaitingListDataModel implements Parcelable
 
     @SerializedName("clinicList")
     @Expose
-    private ArrayList<WaitingclinicList> waitingclinicList = new ArrayList<WaitingclinicList>();
+    private ArrayList<WaitingClinicList> waitingclinicList = new ArrayList<WaitingClinicList>();
     public final static Creator<WaitingListDataModel> CREATOR = new Creator<WaitingListDataModel>() {
 
 
@@ -32,17 +32,17 @@ public class WaitingListDataModel implements Parcelable
     };
 
     protected WaitingListDataModel(Parcel in) {
-        in.readList(this.waitingclinicList, (WaitingclinicList.class.getClassLoader()));
+        in.readList(this.waitingclinicList, (WaitingClinicList.class.getClassLoader()));
     }
 
     public WaitingListDataModel() {
     }
 
-    public ArrayList<WaitingclinicList> getWaitingclinicList() {
+    public ArrayList<WaitingClinicList> getWaitingclinicList() {
         return waitingclinicList;
     }
 
-    public void setWaitingclinicList(ArrayList<WaitingclinicList> waitingclinicList) {
+    public void setWaitingclinicList(ArrayList<WaitingClinicList> waitingclinicList) {
         this.waitingclinicList = waitingclinicList;
     }
 
