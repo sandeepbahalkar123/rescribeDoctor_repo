@@ -25,9 +25,10 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.add_records.SelectedRecordsAdapter;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
@@ -35,20 +36,19 @@ import com.rescribe.doctor.model.investigation.Image;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.activities.HomePageActivity;
+import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.patient_details.SingleVisitDetailsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
 import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadNotificationConfig;
 import net.gotev.uploadservice.UploadService;
 import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
-
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -56,7 +56,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -114,6 +113,8 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     private String mHospitalId;
     private String mOpdtime;
     private String currentOpdTime;
+
+    private int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +207,10 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     }
 
     private void init() {
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) dateTextview.getLayoutParams();
+
+        lp.setMargins(0, 0, getResources().getDimensionPixelSize(R.dimen.dp30), 0);
+        dateTextview.setLayoutParams(lp);
         mContext = SelectedRecordsActivity.this;
         mHospitalPatId = getIntent().getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
         mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);
@@ -393,8 +398,9 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                     if (NetworkUtil.isInternetAvailable(SelectedRecordsActivity.this)) {
                         uploadButton.setEnabled(false);
 
-                        for (int parentIndex = 0; parentIndex < imagePaths.size(); parentIndex++) {
+                        count = 0;
 
+                        for (int parentIndex = 0; parentIndex < imagePaths.size(); parentIndex++) {
                             uploadImage(parentIndex + "", imagePaths.get(parentIndex));
                         }
                     } else
@@ -546,21 +552,23 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
             CommonMethods.Log(IMAGEDUPLOADID, uploadInfo.getUploadId() + " onError");
 
             navigate();*/
+
+          count+=1;
+
+            if (imagePaths.size() == count){
+                allDone();
+            }
         }
 
         @Override
         public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-            Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(mContext,SingleVisitDetailsActivity.class);
-            intent.putExtra(RescribeConstants.PATIENT_OPDID,opdId);
-            intent.putExtra(RescribeConstants.PATIENT_ID,patientId);
-            intent.putExtra(RescribeConstants.PATIENT_NAME,patientName);
-            intent.putExtra(RescribeConstants.PATIENT_INFO,patientInfo);
-            intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID,mHospitalPatId);
-            intent.putExtra(RescribeConstants.DATE,CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.UTC_PATTERN));
-            intent.putExtra(RescribeConstants.OPD_TIME,currentOpdTime);
-            startActivity(intent);
-            finish();
+
+            count+=1;
+
+            if (imagePaths.size() == count){
+                allDone();
+            }
+
 
           /*  appDBHelper.updateMyRecordsData(uploadInfo.getUploadId(), RescribeConstants.COMPLETED);
 
@@ -581,6 +589,18 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
             //   CommonMethods.Log(IMAGEDUPLOADID, uploadInfo.getUploadId() + " onCancelled");
         }
     };
+
+    private void allDone() {
+        Bundle b = new Bundle();
+        b.putString(RescribeConstants.PATIENT_NAME,patientName);
+        b.putString(RescribeConstants.PATIENT_INFO, patientInfo);
+        b.putString(RescribeConstants.PATIENT_ID, patientId);
+        b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+        Intent intent = new Intent(mContext,PatientHistoryActivity.class);
+        intent.putExtra(RescribeConstants.PATIENT_INFO, b);
+        startActivity(intent);
+        finish();
+    }
 
     private void navigate() {
         // Navigate

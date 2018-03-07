@@ -21,6 +21,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.Active;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.OnStartDragListener;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.ViewBinderHelper;
 import com.rescribe.doctor.util.CommonMethods;
@@ -43,12 +44,15 @@ public class ActiveWaitingListAdapter extends RecyclerView.Adapter {
     private final ViewBinderHelper binderHelper = new ViewBinderHelper();
     private String waitingTime = "";
     private String appointmentScheduleTime = "";
+    private Active mActiveObject;
+    private OnStartDragListener mOnStartDragListener;
 
 
-    public ActiveWaitingListAdapter(Context context, ArrayList<Active> mActivesList) {
+    public ActiveWaitingListAdapter(Context context, ArrayList<Active> mActivesList, OnStartDragListener mOnStartDragListener) {
         mContext = context;
         mActiveArrayList = mActivesList;
         mInflater = LayoutInflater.from(context);
+        this.mOnStartDragListener = mOnStartDragListener;
 
         // uncomment if you want to open only one row at a time
         // binderHelper.setOpenOnlyOne(true);
@@ -64,7 +68,7 @@ public class ActiveWaitingListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder h, int position) {
         final ActiveWaitingListAdapter.ViewHolder holder = (ActiveWaitingListAdapter.ViewHolder) h;
 
-        final Active mActiveObject = mActiveArrayList.get(position);
+        mActiveObject = mActiveArrayList.get(position);
 
         // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
         // put an unique string id as value, can be any string which uniquely define the data
@@ -97,6 +101,10 @@ public class ActiveWaitingListAdapter extends RecyclerView.Adapter {
      */
     public void restoreStates(Bundle inState) {
         binderHelper.restoreStates(inState);
+    }
+
+    public ArrayList<Active> getAdapterList() {
+        return mActiveArrayList;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -150,8 +158,7 @@ public class ActiveWaitingListAdapter extends RecyclerView.Adapter {
             deleteLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mActiveArrayList.remove(getAdapterPosition());
-                    notifyItemRemoved(getAdapterPosition());
+                   mOnStartDragListener.onDeleteActiveLayoutClicked(getAdapterPosition(),mActiveObject);
                 }
             });
 

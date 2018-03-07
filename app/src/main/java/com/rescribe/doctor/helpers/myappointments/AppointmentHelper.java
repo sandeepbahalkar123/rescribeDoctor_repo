@@ -17,6 +17,7 @@ import com.rescribe.doctor.model.patient.template_sms.request_send_sms.RequestSe
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.model.waiting_list.WaitingListBaseModel;
 import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.RequestForWaitingListPatients;
+import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.network.ConnectionFactory;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -62,6 +63,8 @@ public class AppointmentHelper implements ConnectionListener {
                 } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT)) {
                     mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_ADD_TO_WAITING_LIST)) {
+                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
+                }else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DELETE_WAITING_LIST)) {
                     mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 }
                 break;
@@ -220,6 +223,15 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setUrl(Config.ADD_TO_WAITING_LIST);
         mConnectionFactory.createConnection(RescribeConstants.TASK_REQUEST_SEND_SMS);
     }
+    public void doDeleteWaitingList(RequestDeleteBaseModel mRequestDeleteBaseModel) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_WAITING_LIST, Request.Method.POST, true);
+        mConnectionFactory.setPostParams(mRequestDeleteBaseModel);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.DELETE_WAITING_LIST);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_DELETE_WAITING_LIST);
+    }
+
+
 }
 
 

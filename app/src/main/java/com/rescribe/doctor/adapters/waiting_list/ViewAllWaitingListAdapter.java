@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
@@ -21,6 +20,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.OnStartDragListener;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.ViewBinderHelper;
 import com.rescribe.doctor.util.CommonMethods;
@@ -43,12 +43,15 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
     private final ViewBinderHelper binderHelper = new ViewBinderHelper();
     private String appointmentScheduleTime = "";
     private String waitingTime = "";
+    private OnStartDragListener mOnStartDragListener;
 
 
-    public ViewAllWaitingListAdapter(Context context, ArrayList<ViewAll> mActivesList) {
+    public ViewAllWaitingListAdapter(Context context, ArrayList<ViewAll> mActivesList, OnStartDragListener mOnStartDragListener) {
         mContext = context;
         mActiveArrayList = mActivesList;
         mInflater = LayoutInflater.from(context);
+        this.mOnStartDragListener = mOnStartDragListener;
+
 
         // uncomment if you want to open only one row at a time
         // binderHelper.setOpenOnlyOne(true);
@@ -149,8 +152,9 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
             deleteLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mActiveArrayList.remove(getAdapterPosition());
-                    notifyItemRemoved(getAdapterPosition());
+                    mOnStartDragListener.onDeleteViewAllLayoutClicked(getAdapterPosition(),mActiveArrayList.get(getAdapterPosition()));
+                  /*  mActiveArrayList.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());*/
                 }
             });
 
@@ -159,10 +163,8 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
                 appointmentTime.setVisibility(View.VISIBLE);
                 waitingTime = CommonMethods.formatDateTime(viewAll.getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
                 appointmentTime.setText(mContext.getString(R.string.in_time) + " - " + waitingTime);
-
             } else {
                 appointmentTime.setVisibility(View.INVISIBLE);
-
             }
             if (!viewAll.getAppointmentTime().equals("")) {
                 appointmentTimeTextView.setVisibility(View.VISIBLE);
@@ -203,5 +205,10 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
                 }
             });
         }
+
     }
+    public ArrayList<ViewAll> getAdapterList(){
+        return mActiveArrayList;
+    }
+
 }

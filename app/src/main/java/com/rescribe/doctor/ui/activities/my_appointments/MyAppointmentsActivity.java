@@ -1,25 +1,19 @@
 package com.rescribe.doctor.ui.activities.my_appointments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Html;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -29,7 +23,6 @@ import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
 import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.model.my_appointments.StatusList;
-import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.my_appointments.DrawerForMyAppointment;
 import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
@@ -63,6 +56,8 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     FrameLayout navView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.emptyListView)
+    RelativeLayout emptyListView;
     private Context mContext;
     private MyAppointmentsFragment mMyAppointmentsFragment;
     private AppointmentHelper mAppointmentHelper;
@@ -182,18 +177,22 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
 
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
+
         CommonMethods.showToast(mContext, errorMessage);
+        emptyListView.setVisibility(View.VISIBLE);
 
     }
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
         CommonMethods.showToast(mContext, serverErrorMessage);
+        emptyListView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
         CommonMethods.showToast(mContext, serverErrorMessage);
+        emptyListView.setVisibility(View.VISIBLE);
     }
 
     @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
@@ -221,7 +220,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.closeDrawer(GravityCompat.END);
         } else {
-
+            if(mMyAppointmentsFragment!=null)
             isLongPressed = mMyAppointmentsFragment.callOnBackPressed();
             if (isLongPressed) {
                 mMyAppointmentsFragment.removeCheckBox();

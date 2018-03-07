@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -25,7 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.dashboard.WaitingOrAppointmentListAdapter;
+import com.rescribe.doctor.adapters.dashboard.DashBoardAppointmentListAdapter;
+import com.rescribe.doctor.adapters.dashboard.DashBoardWaitingList;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.helpers.dashboard.DashboardHelper;
@@ -33,6 +33,8 @@ import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.dashboard.DashboardBaseModel;
+import com.rescribe.doctor.model.dashboard.DashboardDetails;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationBaseModel;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -126,9 +128,11 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private AppDBHelper appDBHelper;
     private String docId;
     private LoginHelper loginHelper;
-    private WaitingOrAppointmentListAdapter mWaitingOrAppointmentListAdapter;
+    private DashBoardAppointmentListAdapter mDashBoardAppointmentListAdapter;
     private LinearLayout menuOptionLinearLayout;
     private DashboardHelper mDashboardHelper;
+    private DashboardDetails mDashboardDetails;
+    private DashBoardWaitingList mDashBoardWaitingList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,27 +155,13 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     }
 
     private void initialize() {
-        //Set values for upper dashboard blocks
+
         mDashboardHelper = new DashboardHelper(this,this);
+        mDashboardHelper.doGetDashboardResponse();
         mDashboardHelper.doDoctorGetLocationList();
-        todayFollowAppointmentCount.setText("21");
-        todayNewAppointmentCount.setText("10");
-        todayWaitingListOrAppointmentCount.setText("25");
-        todayFollowAppointmentTextView.setText("Today's Follow Ups");
-        todayNewAppointmentTextView.setText("Today's New Patients");
-        todayWaitingListOrAppointmentTextView.setText("Today's Appoinments");
-        doctorNameTextView.setText("Dr. Rahul Kalyanpur");
-        aboutDoctorTextView.setText("MBBS, MD - Medicine, Neurology");
-        showCount.setVisibility(View.VISIBLE);
-        showCount.setText("8");
+
         //setWaitingOrAppointmentLayoutHere
-        setLayoutForWaitingOrAppointment();
-        // inflate waiting list layout
-        setLayoutForWaitingList();
-        // inflate patientConnect layout
-        setLayoutForPatientConnect();
-        // inflate MyPatientsActivity layout
-        setLayoutForMyPatients();
+
 
     }
 
@@ -184,7 +174,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         menuNameTextView = (CustomTextView) inflaterMyPatientsLayout.findViewById(R.id.menuNameTextView);
         dashboardArrowImageView = (ImageView) inflaterMyPatientsLayout.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflaterMyPatientsLayout.findViewById(R.id.radioSwitch);
-        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.mypatients_icon));
+        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patient));
         menuNameTextView.setText("My Patients");
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,7 +196,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         menuNameTextView = (CustomTextView) inflaterPatientConnectLayout.findViewById(R.id.menuNameTextView);
         dashboardArrowImageView = (ImageView) inflaterPatientConnectLayout.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflaterPatientConnectLayout.findViewById(R.id.radioSwitch);
-        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patient_connect_icon));
+        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patientconnect));
         menuNameTextView.setText("Patient Connect");
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,7 +210,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         setRadioSwitchStatus();
     }
 
-    private void setLayoutForWaitingList() {
+    private void setLayoutForWaitingList(String waitingListCount) {
         LayoutInflater inflaterWaitingList = LayoutInflater.from(mContext);
         View inflatedLayoutWaitingList = inflaterWaitingList.inflate(R.layout.dashboard_menu_common_layout, null, false);
         hostViewsLayout.addView(inflatedLayoutWaitingList);
@@ -229,8 +219,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         menuNameTextView = (CustomTextView) inflatedLayoutWaitingList.findViewById(R.id.menuNameTextView);
         dashboardArrowImageView = (ImageView) inflatedLayoutWaitingList.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflatedLayoutWaitingList.findViewById(R.id.radioSwitch);
-        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.waitinglist_icon));
-        menuNameTextView.setText("Waiting List - 6");
+        menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patientwaitinglist));
+        menuNameTextView.setText("Waiting List - "+waitingListCount);
         dashboardArrowImageView.setVisibility(View.VISIBLE);
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,7 +231,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         });
     }
 
-    private void setLayoutForWaitingOrAppointment() {
+    private void setLayoutForAppointment() {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View inflatedLayout = inflater.inflate(R.layout.waiting_todays_appointment_common_layout, null, false);
         hostViewsLayout.addView(inflatedLayout);
@@ -249,13 +239,13 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         menuImageView = (ImageView) inflatedLayout.findViewById(R.id.menuImageView);
         appointmentTextView = (CustomTextView) inflatedLayout.findViewById(R.id.appointmentTextView);
         viewTextView = (CustomTextView) inflatedLayout.findViewById(R.id.viewTextView);
-        menuImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.today_s_appointments));
-        appointmentTextView.setText("Today’s Appointments");
+        menuImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.appointment));
+        appointmentTextView.setText("Today's Appointments");
         viewTextView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         viewTextView.setText("VIEW");
         recyclerView.setNestedScrollingEnabled(false);
-        mWaitingOrAppointmentListAdapter = new WaitingOrAppointmentListAdapter(mContext);
+        mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext,mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList());
         viewTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -270,7 +260,39 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
         if (animator instanceof SimpleItemAnimator)
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-        recyclerView.setAdapter(mWaitingOrAppointmentListAdapter);
+        recyclerView.setAdapter(mDashBoardAppointmentListAdapter);
+    }
+
+    private void setLayoutForWaitingListIfAppointmentListEmpty() {
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View inflatedLayout = inflater.inflate(R.layout.waiting_todays_appointment_common_layout, null, false);
+        hostViewsLayout.addView(inflatedLayout);
+        recyclerView = (RecyclerView) inflatedLayout.findViewById(R.id.recyclerView);
+        menuImageView = (ImageView) inflatedLayout.findViewById(R.id.menuImageView);
+        appointmentTextView = (CustomTextView) inflatedLayout.findViewById(R.id.appointmentTextView);
+        viewTextView = (CustomTextView) inflatedLayout.findViewById(R.id.viewTextView);
+        menuImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.appointment));
+        appointmentTextView.setText("Waiting List");
+        viewTextView.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        viewTextView.setText("VIEW");
+        recyclerView.setNestedScrollingEnabled(false);
+        mDashBoardWaitingList = new DashBoardWaitingList(mContext,mDashboardDetails.getDashboardWaitingList().getWaitingClinicList());
+        viewTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomePageActivity.this, WaitingMainListActivity.class);
+                startActivity(intent);
+            }
+        });
+        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearlayoutManager);
+        recyclerView.setNestedScrollingEnabled(false);
+        // off recyclerView Animation
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator)
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        recyclerView.setAdapter(mDashBoardWaitingList);
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -384,110 +406,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         finish();
     }
 
-
-    /*   private void drawerConfiguration() {
-           setDrawerTheme(
-                   new DrawerTheme(this)
-                           .setBackgroundColorRes(R.color.drawer_bg)
-                           .setTextColorPrimaryRes(R.color.drawer_menu_text_color)
-                           .setTextColorSecondaryRes(R.color.drawer_menu_text_color)
-           );
-
-           addItems(
-                   new DrawerItem()
-                           .setTextPrimary(getString(R.string.patient_connect))
-                           .setImage(ContextCompat.getDrawable(this, R.drawable.menu_doctor_connect)),
-                   new DrawerItem()
-                           .setTextPrimary(getString(R.string.logout))
-                           .setImage(ContextCompat.getDrawable(this, R.drawable.menu_logout))
-           );
-           setOnItemClickListener(new DrawerItem.OnItemClickListener() {
-               @Override
-               public void onClick(DrawerItem item, long itemID, int position) {
-                   //  selectItem(position);
-
-                   closeDrawer();
-                   String id = item.getTextPrimary();
-                   *//*if (id.equalsIgnoreCase(getString(R.string.chat))) {
-                    Intent intent = new Intent(mContext, ChatActivity.class);
-                    startActivity(intent);
-                } else *//*
-                if (id.equalsIgnoreCase(getString(R.string.logout))) {
-                    ActiveRequest activeRequest = new ActiveRequest();
-                    activeRequest.setId(Integer.parseInt(docId));
-                    loginHelper.doLogout(activeRequest);
-                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, RescribeConstants.BLANK, mContext);
-                } else if (id.equalsIgnoreCase(getString(R.string.patient_connect))) {
-                    Intent intent = new Intent(mContext, PatientConnectActivity.class);
-                    startActivity(intent);
-                }
-            }
-        });
-
-        // TODO : HARDEDCODED will get remove once done with APIs.
-        addProfile(new DrawerProfile()
-                .setId(1)
-                .setRoundedAvatar((BitmapDrawable) ContextCompat.getDrawable(this, R.drawable.profile))
-                .setBackground(ContextCompat.getDrawable(this, R.drawable.group_2))
-                .setName("Mr.Avinash Deshpande")
-                .setDescription("avinash_deshpande@gmail.com")
-        );
-
-        addProfile(new DrawerProfile()
-                .setId(2)
-                .setRoundedAvatar((BitmapDrawable) ContextCompat.getDrawable(this, R.drawable.profile))
-                .setBackground(ContextCompat.getDrawable(this, R.drawable.group_2))
-                .setName("Mr.Sandeep Deshmukh ")
-                .setDescription("sandeep_deshmukh@gmail.com")
-        );
-
-        addProfile(new DrawerProfile()
-                .setId(ADD_ACCOUNT)
-                .setRoundedAvatar((BitmapDrawable) ContextCompat.getDrawable(this, R.drawable.add_account))
-                .setBackground(ContextCompat.getDrawable(this, R.drawable.group_2))
-                .setDescription("Add Patient").setProfile(false) // for fixed item set profile false
-        );
-
-        addProfile(new DrawerProfile()
-                .setId(MANAGE_ACCOUNT)
-                .setRoundedAvatar((BitmapDrawable) ContextCompat.getDrawable(this, R.drawable.setting))
-                .setBackground(ContextCompat.getDrawable(this, R.drawable.group_2))
-                .setDescription("Manage Profile").setProfile(false) // for fixed item set profile false
-        );
-
-        setOnNonProfileClickListener(new DrawerProfile.OnNonProfileClickListener() {
-            @Override
-            public void onProfileItemClick(DrawerProfile profile, long id) {
-                if (id == ADD_ACCOUNT) {
-
-                    // Do stuff here
-
-                    addProfile(new DrawerProfile()
-                            .setId(3)
-                            .setRoundedAvatar((BitmapDrawable) ContextCompat.getDrawable(mContext, R.drawable.profile))
-                            .setBackground(ContextCompat.getDrawable(mContext, R.drawable.group_2))
-                            .setName("Mr.Ganesh Deshmukh")
-                            .setDescription("ganesh_deshmukh@gmail.com")
-                    );
-//                    CommonMethods.showToast(mContext, "Profile Added");
-
-                } else if (id == MANAGE_ACCOUNT) {
-                    // Do stuff here
-//                    CommonMethods.showToast(mContext, profile.getDescription());
-                }
-                closeDrawer();
-            }
-        });
-
-        setOnProfileSwitchListener(new DrawerProfile.OnProfileSwitchListener() {
-            @Override
-            public void onSwitch(DrawerProfile oldProfile, long oldId, DrawerProfile newProfile, long newId) {
-                // do stuff here
-//                CommonMethods.showToast(mContext, "Welcome " + newProfile.getName());
-            }
-        });
-    }
-*/
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (mOldDataTag.equals(RescribeConstants.LOGOUT))
@@ -503,6 +421,47 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         }else if(mOldDataTag.equals(RescribeConstants.TASK_GET_LOCATION_LIST)){
             DoctorLocationBaseModel  doctorLocationBaseModel = (DoctorLocationBaseModel)customResponse;
             RescribeApplication.setDoctorLocationModels(doctorLocationBaseModel.getDoctorLocationModel());
+        }else if(mOldDataTag.equals(RescribeConstants.TASK_GET_DASHBOARD_RESPONSE)){
+            DashboardBaseModel mDashboardBaseModel = (DashboardBaseModel)customResponse;
+            if(mDashboardBaseModel.getCommon().isSuccess()){
+                mDashboardDetails = new DashboardDetails();
+              mDashboardDetails = mDashboardBaseModel.getDashboarddataModel().getDashboardDetails();
+               if(mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList().size()>0){
+                   todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayFollowUpCount()+"");
+                   todayNewAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayNewPatientCount()+"");
+                   todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount()+"");
+                   todayFollowAppointmentTextView.setText("Today's Follow Ups");
+                   todayNewAppointmentTextView.setText("Today's New Patients");
+                   todayWaitingListOrAppointmentTextView.setText("Today's Appoinments");
+                   doctorNameTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME,mContext));
+                   aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY,mContext));
+                   setLayoutForAppointment();
+                   // inflate waiting list layout
+                   setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount()+"");
+                   // inflate patientConnect layout
+                   setLayoutForPatientConnect();
+                   // inflate MyPatientsActivity layout
+                   setLayoutForMyPatients();
+
+               }else if(mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size()>0){
+                   todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount()+"");
+                   todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount()+"");
+                   todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayWaitingCount()+"");
+                   todayFollowAppointmentTextView.setText("Today's Follow Ups");
+                   todayNewAppointmentTextView.setText("Today's New Patients");
+                   todayWaitingListOrAppointmentTextView.setText("Today's Waiting List");
+                   doctorNameTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME,mContext));
+                   aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY,mContext));
+                   setLayoutForWaitingListIfAppointmentListEmpty();
+                   // inflate patientConnect layout
+                   setLayoutForPatientConnect();
+                   // inflate MyPatientsActivity layout
+                   setLayoutForMyPatients();
+
+               }else{
+
+               }
+            }
         }
 
     }
