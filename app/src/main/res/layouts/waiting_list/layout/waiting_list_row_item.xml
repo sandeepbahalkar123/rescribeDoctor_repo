@@ -18,58 +18,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp6"
-            android:background="@drawable/result_white_box_copy"
             android:orientation="vertical"
             android:layout_marginRight="@dimen/dp4">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:gravity="center">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Appointment"
-                    android:gravity="center"
-                    android:textColor="@color/tagColor" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_horizontal"
-                    android:text="Completed"
-                    android:textColor="@color/tagColor" />
-            </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginEnd="@dimen/dp1"
-                android:layout_marginStart="@dimen/dp1"
-                android:background="@color/tagColor" />
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="24dp"
-                android:layout_weight="1"
-                android:layout_marginBottom="@dimen/dp3"
-                android:layout_marginTop="@dimen/dp3"
-                android:gravity="center"
-                android:layout_marginLeft="24dp">
-                <TextView
+                android:background="@drawable/result_white_box_copy"
+                android:orientation="vertical">
+
+
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Appointment"
-                    android:textColor="@color/Red" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cancel"
-                    android:textColor="@color/Red"/>
-            </LinearLayout>
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/delete" />
+            </RelativeLayout>
         </LinearLayout>
     </FrameLayout>
 

@@ -1,5 +1,6 @@
 package com.rescribe.doctor.ui.activities.my_patients;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ import butterknife.OnClick;
 
 public class SendSmsActivity extends AppCompatActivity implements SmsRecepientListAdapter.OnCardViewClickListener, HelperResponse {
 
+    public static final int RESULT_SMS_SEND = 1010;
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -132,6 +134,7 @@ public class SendSmsActivity extends AppCompatActivity implements SmsRecepientLi
                 } else {
                     setSendEnabled(false);
                     sendSmsButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.sendbutton_grey));
+
                 }
             }
         });
@@ -201,6 +204,8 @@ public class SendSmsActivity extends AppCompatActivity implements SmsRecepientLi
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
             if (templateBaseModel != null)
                 Toast.makeText(mContext, templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+            setResult(RESULT_SMS_SEND);
+            finish();
 
         }
     }

@@ -1,7 +1,6 @@
 package com.rescribe.doctor.adapters.patient_history;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -117,7 +116,7 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         holder.viewMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate(), String.valueOf(patientHistoryInfoObject.getOpdId()));
+                mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate(), String.valueOf(patientHistoryInfoObject.getOpdId()),patientHistoryInfoObject.getOpdTime());
 
             }
         });
@@ -179,6 +178,6 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
     }
 
     public interface OnDayClickListener {
-        public void onClickOFLayout(String visitDate, String opdId);
+        public void onClickOFLayout(String visitDate, String opdId, String opdTime);
     }
 }

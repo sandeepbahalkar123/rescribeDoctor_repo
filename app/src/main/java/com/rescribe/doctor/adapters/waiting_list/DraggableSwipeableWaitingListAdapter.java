@@ -16,16 +16,22 @@
 
 package com.rescribe.doctor.adapters.waiting_list;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
@@ -38,14 +44,18 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeabl
 import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
+import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.RescribeConstants;
 import com.rescribe.doctor.util.dragable_swipable.DrawableUtils;
 import com.rescribe.doctor.util.dragable_swipable.ViewUtils;
 
-public class DraggableSwipeableExampleAdapter
-        extends RecyclerView.Adapter<DraggableSwipeableExampleAdapter.MyViewHolder>
-        implements DraggableItemAdapter<DraggableSwipeableExampleAdapter.MyViewHolder>,
-        SwipeableItemAdapter<DraggableSwipeableExampleAdapter.MyViewHolder> {
+public class DraggableSwipeableWaitingListAdapter
+        extends RecyclerView.Adapter<DraggableSwipeableWaitingListAdapter.MyViewHolder>
+        implements DraggableItemAdapter<DraggableSwipeableWaitingListAdapter.MyViewHolder>,
+        SwipeableItemAdapter<DraggableSwipeableWaitingListAdapter.MyViewHolder> {
     private static final String TAG = "MyDSItemAdapter";
+
+    private int mPreLeftSwipePosition = RecyclerView.NO_POSITION;
 
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
@@ -60,30 +70,64 @@ public class DraggableSwipeableExampleAdapter
     private View.OnClickListener mSwipeableViewContainerOnClickListener;
 
     public interface EventListener {
-        void onItemRemoved(int position);
+        void onDeleteClick(int position);
+
         void onItemPinned(int position);
+
         void onItemViewClicked(View v, boolean pinned);
-//        void onItemViewButtonClicked(View v, boolean pinned);
+
+        void onItemMoved(int fromPosition, int toPosition);
     }
 
     public static class MyViewHolder extends AbstractDraggableSwipeableItemViewHolder {
-        public FrameLayout mContainer;
-        public View mDragHandle;
-        public TextView mTextView;
+        FrameLayout mContainer;
+        View mDragHandle;
 
-        public LinearLayout mBehindViews;
-        public Button mButton1;
-        public Button mButton2;
+        LinearLayout mBehindViews;
+        ImageButton deleteButton;
 
-        public MyViewHolder(View v) {
+        LinearLayout mCardView;
+        ImageView mBluelineImageView;
+        TextView mPatientIdTextView;
+        TextView mAppointmentTime;
+        ImageView mPatientImageView;
+        TextView mPatientNameTextView;
+        LinearLayout mPatientDetailsLinearLayout;
+        TextView mStatusTextView;
+        TextView mTypeStatus;
+        LinearLayout mAppointmentDetailsLinearLayout;
+        TextView mAppointmentLabelTextView;
+        TextView mAppointmentTimeTextView;
+        TextView mPatientPhoneNumber;
+        View mSeparatorView;
+        TextView mTokenLabelTextView;
+        TextView mTokenNumber;
+
+
+        MyViewHolder(View v) {
             super(v);
             mContainer = v.findViewById(R.id.container);
-            mDragHandle = v.findViewById(R.id.drag_handle);
-            mTextView = v.findViewById(android.R.id.text1);
+            mDragHandle = v.findViewById(R.id.dragHandle);
 
             mBehindViews = v.findViewById(R.id.behind_views);
-            mButton1 = v.findViewById(android.R.id.button1);
-            mButton2 = v.findViewById(android.R.id.button2);
+            deleteButton = v.findViewById(R.id.deleteButton);
+
+            mCardView = v.findViewById(R.id.cardView);
+            mBluelineImageView = v.findViewById(R.id.bluelineImageView);
+            mPatientIdTextView = v.findViewById(R.id.patientIdTextView);
+            mAppointmentTime = v.findViewById(R.id.appointmentTime);
+            mPatientImageView = v.findViewById(R.id.patientImageView);
+            mPatientNameTextView = v.findViewById(R.id.patientNameTextView);
+            mPatientDetailsLinearLayout = v.findViewById(R.id.patientDetailsLinearLayout);
+            mStatusTextView = v.findViewById(R.id.statusTextView);
+            mTypeStatus = v.findViewById(R.id.typeStatus);
+            mAppointmentDetailsLinearLayout = v.findViewById(R.id.appointmentDetailsLinearLayout);
+            mAppointmentLabelTextView = v.findViewById(R.id.appointmentLabelTextView);
+            mAppointmentTimeTextView = v.findViewById(R.id.appointmentTimeTextView);
+            mPatientPhoneNumber = v.findViewById(R.id.patientPhoneNumber);
+            mSeparatorView = v.findViewById(R.id.separatorView);
+            mTokenLabelTextView = v.findViewById(R.id.tokenLabelTextView);
+            mTokenNumber = v.findViewById(R.id.tokenNumber);
         }
 
         @Override
@@ -92,7 +136,7 @@ public class DraggableSwipeableExampleAdapter
         }
     }
 
-    public DraggableSwipeableExampleAdapter(AbstractDataProvider dataProvider) {
+    public DraggableSwipeableWaitingListAdapter(AbstractDataProvider dataProvider) {
         mProvider = dataProvider;
         mItemViewOnClickListener = new View.OnClickListener() {
             @Override
@@ -142,7 +186,7 @@ public class DraggableSwipeableExampleAdapter
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         final AbstractDataProvider.Data item = mProvider.getItem(position);
 
         // set listeners
@@ -152,7 +196,51 @@ public class DraggableSwipeableExampleAdapter
         holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
 
         // set text
-        holder.mTextView.setText(item.getViewAll().getPatientName());
+        holder.mPatientNameTextView.setText(item.getViewAll().getPatientName());
+
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // call delete api
+                mEventListener.onDeleteClick(position);
+            }
+        });
+
+        holder.mPatientIdTextView.setText(holder.mPatientIdTextView.getResources().getString(R.string.id) + " " + item.getViewAll().getHospitalPatId());
+        if (!item.getViewAll().getWaitingInTime().equals("")) {
+            holder.mAppointmentTime.setVisibility(View.VISIBLE);
+            String waitingTime = CommonMethods.formatDateTime(item.getViewAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
+            holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
+        } else {
+            holder.mAppointmentTime.setVisibility(View.INVISIBLE);
+        }
+        if (!item.getViewAll().getAppointmentTime().equals("")) {
+            holder.mAppointmentTimeTextView.setVisibility(View.VISIBLE);
+            holder.mAppointmentTimeTextView.setVisibility(View.VISIBLE);
+            String appointmentScheduleTime = CommonMethods.formatDateTime(item.getViewAll().getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
+            holder.mAppointmentTimeTextView.setText(appointmentScheduleTime);
+
+        } else {
+            holder.mAppointmentTimeTextView.setVisibility(View.INVISIBLE);
+            holder.mAppointmentLabelTextView.setVisibility(View.INVISIBLE);
+        }
+
+        holder.mPatientPhoneNumber.setText(item.getViewAll().getPatientPhone());
+        holder.mTokenNumber.setText(item.getViewAll().getTokenNumber());
+        holder.mPatientNameTextView.setText(item.getViewAll().getPatientName());
+        holder.mTypeStatus.setText(" " + item.getViewAll().getWaitingStatus());
+        TextDrawable textDrawable = CommonMethods.getTextDrawable(holder.mPatientImageView.getContext(), item.getViewAll().getPatientName());
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.dontAnimate();
+        requestOptions.override(holder.mPatientImageView.getResources().getDimensionPixelSize(R.dimen.dp67));
+        requestOptions.circleCrop();
+        requestOptions.placeholder(textDrawable);
+        requestOptions.error(textDrawable);
+
+        Glide.with(holder.mPatientImageView.getContext())
+                .load(item.getViewAll().getPatientImageUrl())
+                .apply(requestOptions)
+                .into(holder.mPatientImageView);
 
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();
@@ -166,7 +254,9 @@ public class DraggableSwipeableExampleAdapter
                 bgResId = R.drawable.bg_item_dragging_active_state;
 
                 // need to clear drawable state here to get correct appearance of the dragging item.
-                DrawableUtils.clearState(holder.mContainer.getForeground());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    DrawableUtils.clearState(holder.mContainer.getForeground());
+                }
             } else if ((dragState & Draggable.STATE_FLAG_DRAGGING) != 0) {
                 bgResId = R.drawable.bg_item_dragging_state;
             } else if ((swipeState & Swipeable.STATE_FLAG_IS_ACTIVE) != 0) {
@@ -197,6 +287,11 @@ public class DraggableSwipeableExampleAdapter
         Log.d(TAG, "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
 
         mProvider.moveItem(fromPosition, toPosition);
+
+        if (fromPosition == mPreLeftSwipePosition)
+            mPreLeftSwipePosition = toPosition;
+
+        mEventListener.onItemMoved(fromPosition, toPosition);
     }
 
     @Override
@@ -255,24 +350,21 @@ public class DraggableSwipeableExampleAdapter
         }
     }
 
+    @SuppressLint("SwitchIntDef")
     @Override
     public SwipeResultAction onSwipeItem(MyViewHolder holder, final int position, int result) {
         Log.d(TAG, "onSwipeItem(position = " + position + ", result = " + result + ")");
 
         switch (result) {
-            // swipe right
-            case Swipeable.RESULT_SWIPED_RIGHT:
-                if (mProvider.getItem(position).isPinned()) {
-                    // pinned --- back to default position
-                    return new UnpinResultAction(this, position);
-                }/* else {
-                    // not pinned --- remove
-                    return new SwipeRightResultAction(this, position);
-                }*/
-                // swipe left -- pin
             case Swipeable.RESULT_SWIPED_LEFT:
-                return new SwipeLeftResultAction(this, position);
-            // other --- do nothing
+                SwipeLeftResultAction swipeLeftResultAction = new SwipeLeftResultAction(this, position);
+                if (mPreLeftSwipePosition != RecyclerView.NO_POSITION) {
+                    mProvider.getItem(mPreLeftSwipePosition).setPinned(false);
+                    notifyItemChanged(mPreLeftSwipePosition);
+                }
+                mPreLeftSwipePosition = position;
+                return swipeLeftResultAction;
+
             case Swipeable.RESULT_CANCELED:
             default:
                 if (position != RecyclerView.NO_POSITION) {
@@ -291,12 +383,46 @@ public class DraggableSwipeableExampleAdapter
         mEventListener = eventListener;
     }
 
+    /*private static class SwipeRightResultAction extends SwipeResultActionRemoveItem {
+        private DraggableSwipeableWaitingListAdapter mAdapter;
+        private final int mPosition;
+
+        SwipeRightResultAction(DraggableSwipeableWaitingListAdapter adapter, int position) {
+            mAdapter = adapter;
+            mPosition = position;
+        }
+
+        @Override
+        protected void onPerformAction() {
+            super.onPerformAction();
+
+            mAdapter.mProvider.removeItem(mPosition);
+            mAdapter.notifyItemRemoved(mPosition);
+        }
+
+        @Override
+        protected void onSlideAnimationEnd() {
+            super.onSlideAnimationEnd();
+
+            if (mAdapter.mEventListener != null) {
+                mAdapter.mEventListener.onItemPinned(mPosition);
+            }
+        }
+
+        @Override
+        protected void onCleanUp() {
+            super.onCleanUp();
+            // clear the references
+            mAdapter = null;
+        }
+    }*/
+
     private static class SwipeLeftResultAction extends SwipeResultActionMoveToSwipedDirection {
-        private DraggableSwipeableExampleAdapter mAdapter;
+        private DraggableSwipeableWaitingListAdapter mAdapter;
         private final int mPosition;
         private boolean mSetPinned;
 
-        SwipeLeftResultAction(DraggableSwipeableExampleAdapter adapter, int position) {
+        SwipeLeftResultAction(DraggableSwipeableWaitingListAdapter adapter, int position) {
             mAdapter = adapter;
             mPosition = position;
         }
@@ -332,10 +458,10 @@ public class DraggableSwipeableExampleAdapter
     }
 
     private static class UnpinResultAction extends SwipeResultActionDefault {
-        private DraggableSwipeableExampleAdapter mAdapter;
+        private DraggableSwipeableWaitingListAdapter mAdapter;
         private final int mPosition;
 
-        UnpinResultAction(DraggableSwipeableExampleAdapter adapter, int position) {
+        UnpinResultAction(DraggableSwipeableWaitingListAdapter adapter, int position) {
             mAdapter = adapter;
             mPosition = position;
         }
@@ -358,4 +484,5 @@ public class DraggableSwipeableExampleAdapter
             mAdapter = null;
         }
     }
+
 }

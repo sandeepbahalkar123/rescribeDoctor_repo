@@ -1,6 +1,5 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_history_fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,9 +12,6 @@ import android.widget.Spinner;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.add_records.ComplaintsAdapter;
-import com.rescribe.doctor.adapters.dashboard.WaitingOrAppointmentListAdapter;
-import com.rescribe.doctor.ui.activities.HomePageActivity;
-import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 
 import butterknife.BindView;

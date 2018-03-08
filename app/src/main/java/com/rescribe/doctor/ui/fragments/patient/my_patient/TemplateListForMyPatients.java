@@ -12,28 +12,23 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_patients.TemplateAdapter;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateList;
-import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
-import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
+import static com.rescribe.doctor.ui.fragments.patient.my_patient.SendSmsPatientActivity.RESULT_SEND_SMS;
 
 /**
  * Created by jeetal on 27/2/18.
@@ -142,7 +137,7 @@ public class TemplateListForMyPatients extends AppCompatActivity implements Help
         intent.putExtra(RescribeConstants.TEMPLATE_OBJECT,templateList);
         intent.putExtra(RescribeConstants.CLINIC_NAME,mClinicName);
         intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientLists);
-        startActivity(intent);
+        startActivityForResult(intent,RESULT_SEND_SMS);
 
     }
 
@@ -161,5 +156,13 @@ public class TemplateListForMyPatients extends AppCompatActivity implements Help
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_SEND_SMS) {
+            finish();
+        }
     }
 }

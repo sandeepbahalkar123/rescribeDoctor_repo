@@ -112,7 +112,6 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
             }
         });
         title.setText("" + getString(R.string.patient_connect));
-
         initialize();
     }
 

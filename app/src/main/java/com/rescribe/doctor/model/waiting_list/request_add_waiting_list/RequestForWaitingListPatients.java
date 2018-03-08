@@ -2,7 +2,7 @@
 package com.rescribe.doctor.model.waiting_list.request_add_waiting_list;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
@@ -24,7 +24,7 @@ public class RequestForWaitingListPatients implements Parcelable,CustomResponse
     private Integer locationId;
     @SerializedName("patientsList")
     @Expose
-    private List<PatientsListAddToWaitingList> patientsListAddToWaitingList = new ArrayList<PatientsListAddToWaitingList>();
+    private ArrayList<PatientsListAddToWaitingList> patientsListAddToWaitingList = new ArrayList<PatientsListAddToWaitingList>();
     public final static Creator<RequestForWaitingListPatients> CREATOR = new Creator<RequestForWaitingListPatients>() {
 
 
@@ -76,11 +76,11 @@ public class RequestForWaitingListPatients implements Parcelable,CustomResponse
         this.locationId = locationId;
     }
 
-    public List<PatientsListAddToWaitingList> getPatientsListAddToWaitingList() {
+    public ArrayList<PatientsListAddToWaitingList> getPatientsListAddToWaitingList() {
         return patientsListAddToWaitingList;
     }
 
-    public void setPatientsListAddToWaitingList(List<PatientsListAddToWaitingList> patientsListAddToWaitingList) {
+    public void setPatientsListAddToWaitingList(ArrayList<PatientsListAddToWaitingList> patientsListAddToWaitingList) {
         this.patientsListAddToWaitingList = patientsListAddToWaitingList;
     }
 

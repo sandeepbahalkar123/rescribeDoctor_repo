@@ -1,6 +1,8 @@
 package com.rescribe.doctor.ui.activities.waiting_list;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +18,8 @@ import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.waiting_list.WaitingListBaseModel;
-import com.rescribe.doctor.model.waiting_list.WaitingClinicList;
+import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
+import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.waiting_list.ActivePatientListFragment;
 import com.rescribe.doctor.ui.fragments.waiting_list.ViewAllPatientListFragment;
@@ -35,6 +38,7 @@ import butterknife.OnClick;
 
 public class WaitingMainListActivity extends AppCompatActivity implements HelperResponse {
 
+    public static final int RESULT_CLOSE_ACTIVITY_WAITING_LIST = 040;
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -52,9 +56,11 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
     @BindView(R.id.viewpager)
     ViewPager viewpager;
     String[] mFragmentTitleList = new String[2];
+    @BindView(R.id.leftFab)
+    FloatingActionButton leftFab;
     private ActivePatientListFragment mActivePatientListFragment;
     private ViewAllPatientListFragment mViewAllPatientListFragment;
-    private ArrayList<WaitingClinicList> mWaitingClinicList;
+    private ArrayList<WaitingclinicList> mWaitingClinicList;
     private Bundle bundle;
     private AppointmentHelper mAppointmentHelper;
 
@@ -110,7 +116,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
 
     }
 
-    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView})
+    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView,R.id.leftFab})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -119,6 +125,11 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
             case R.id.titleTextView:
                 break;
             case R.id.userInfoTextView:
+                break;
+            case R.id.leftFab:
+                Intent intent = new Intent(this, MyPatientsActivity.class);
+                intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM,RescribeConstants.WAITING_LIST);
+                startActivityForResult(intent,RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 break;
         }
     }
@@ -155,5 +166,13 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_CLOSE_ACTIVITY_WAITING_LIST) {
+            finish();
+        }
     }
 }

@@ -105,7 +105,6 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             if (position == 0)
                 holder.headingText.setVisibility(View.VISIBLE);
             else holder.headingText.setVisibility(View.GONE);
-
             holder.messageTextView.setVisibility(View.GONE); // this is last message text view currently not using
 
         } else {
@@ -211,6 +210,5 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
     public interface FilterListener {
         void result(String searchText, ArrayList<PatientData> dataList);
     }
-
 }
 

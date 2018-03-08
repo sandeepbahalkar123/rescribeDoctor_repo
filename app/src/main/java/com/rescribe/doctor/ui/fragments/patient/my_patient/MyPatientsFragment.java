@@ -64,6 +64,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
+
 
 /**
  * Created by jeetal on 31/1/18.
@@ -136,7 +138,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             recyclerView.setVisibility(View.VISIBLE);
             recyclerView.setClipToPadding(false);
             emptyListView.setVisibility(View.GONE);
-            mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), myPatientBaseModel.getPatientDataModel().getPatientList(), this);
             LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearlayoutManager);
             // off recyclerView Animation
@@ -145,7 +146,13 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             recyclerView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.divider));
             if (animator instanceof SimpleItemAnimator)
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-            recyclerView.setAdapter(mMyPatientsAdapter);
+            if(args.getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM).equals(RescribeConstants.HOME_PAGE)) {
+                mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), myPatientBaseModel.getPatientDataModel().getPatientList(), this, true);
+                recyclerView.setAdapter(mMyPatientsAdapter);
+            }else{
+                mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), myPatientBaseModel.getPatientDataModel().getPatientList(), this, false);
+                recyclerView.setAdapter(mMyPatientsAdapter);
+            }
             recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
                 @Override
                 public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -180,9 +187,15 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 }
             }
         });
-        mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList);
-        recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);
+        if(args.getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM).equals(RescribeConstants.HOME_PAGE)) {
+            mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList,true);
+            recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+            recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);
+        }else{
+            mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList, false);
+            recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+            recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);
+        }
     }
 
     @Override
@@ -223,15 +236,17 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     }
 
     @Override
-    public void onClickOfPatientDetails(PatientList patientListObject, String text) {
-        Bundle b = new Bundle();
-        b.putString(RescribeConstants.PATIENT_NAME, patientListObject.getPatientName());
-        b.putString(RescribeConstants.PATIENT_INFO, text);
-        b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
-        b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
-        Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
-        intent.putExtra(RescribeConstants.PATIENT_INFO, b);
-        startActivity(intent);
+    public void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired) {
+        if(isClickOnPatientDetailsRequired) {
+            Bundle b = new Bundle();
+            b.putString(RescribeConstants.PATIENT_NAME, patientListObject.getPatientName());
+            b.putString(RescribeConstants.PATIENT_INFO, text);
+            b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
+            b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
+            Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
+            intent.putExtra(RescribeConstants.PATIENT_INFO, b);
+            startActivity(intent);
+        }
     }
 
 
@@ -282,9 +297,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
             if (!patientInfoLists.isEmpty()) {
                 showDialogForSmsLocationSelection(mDoctorLocationModel);
-               /* Intent intent = new Intent(getActivity(), TemplateListForMyPatients.class);
-                intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST,patientLists);
-                startActivity(intent);*/
+
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                     if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
                         mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
@@ -501,13 +514,11 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     public void loadNextPage(int currentPage) {
         if (searchText.length() == 0) {
             RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-            //mRequestSearchPatients.setDocId(2462);
             mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
             mRequestSearchPatients.setPageNo(currentPage);
             mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
         } else {
             RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-            //mRequestSearchPatients.setDocId(2462);
             mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
             mRequestSearchPatients.setPageNo(currentPage);
             mRequestSearchPatients.setSearchText(searchText);
@@ -540,10 +551,13 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             if (templateBaseModel.getCommon().isSuccess()) {
                 if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.all_patients_exists).toLowerCase())) {
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+
                 } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase())) {
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
                     startActivity(intent);
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                    getActivity().finish();
+                    getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patient_limit_exceeded).toLowerCase())) {
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
 
@@ -554,6 +568,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
                     startActivity(intent);
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                    getActivity().finish();
+                    getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 }
             }
         }

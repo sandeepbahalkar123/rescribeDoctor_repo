@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.model.waiting_list.WaitingClinicList;
+import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ import java.util.ArrayList;
 public class WaitingListSpinnerAdapter extends BaseAdapter {
 
     private Context mContext;
-    private ArrayList<WaitingClinicList> mWaitingclinicLists;
+    private ArrayList<WaitingclinicList> mWaitingclinicLists;
 
-    public WaitingListSpinnerAdapter(Context context, ArrayList<WaitingClinicList> mWaitingclinicLists) {
+    public WaitingListSpinnerAdapter(Context context, ArrayList<WaitingclinicList> mWaitingclinicLists) {
         this.mContext = context;
         this.mWaitingclinicLists = mWaitingclinicLists;
     }
@@ -50,7 +50,7 @@ public class WaitingListSpinnerAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.spinner_row_item_layout, parent, false);
         }
 
-        final WaitingClinicList waitingClinicListObject = mWaitingclinicLists.get(position);
+        final WaitingclinicList waitingClinicListObject = mWaitingclinicLists.get(position);
         if (waitingClinicListObject != null) {
             CustomTextView clinicNameTextView = (CustomTextView) view.findViewById(R.id.clinicNameTextView);
             CustomTextView clinicAddress = (CustomTextView) view.findViewById(R.id.clinicAddress);

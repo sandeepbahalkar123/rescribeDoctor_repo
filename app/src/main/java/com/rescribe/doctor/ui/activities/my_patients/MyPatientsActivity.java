@@ -1,6 +1,7 @@
 package com.rescribe.doctor.ui.activities.my_patients;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.GravityCompat;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
@@ -18,7 +20,6 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
-
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
 import com.rescribe.doctor.util.CommonMethods;
@@ -47,11 +48,15 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     FrameLayout navView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.emptyListView)
+    RelativeLayout emptyListView;
     private Context mContext;
     private AppointmentHelper mAppointmentHelper;
     private MyPatientsFragment mMyPatientsFragment;
     private boolean isLongPressed;
     private DrawerForMyPatients mDrawerForMyPatients;
+    Intent mIntent;
+    private String mActivityCalledFrom = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +67,16 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     }
 
     private void initialize() {
+        mIntent = getIntent();
+        if (mIntent.getExtras() != null) {
+            mActivityCalledFrom = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
+        }
         mContext = MyPatientsActivity.this;
         titleTextView.setText(getString(R.string.my_patients));
         mAppointmentHelper = new AppointmentHelper(this, this);
         RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-       // mRequestSearchPatients.setDocId(2462);
-       mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+        // mRequestSearchPatients.setDocId(2462);
+        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
         setUpNavigationDrawer();
     }
@@ -123,6 +132,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
             if (customResponse != null) {
                 MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
                 Bundle bundle = new Bundle();
+                bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM, mActivityCalledFrom);
                 bundle.putParcelable(RescribeConstants.MYPATIENTS_DATA, myAppointmentsBaseModel);
                 mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
@@ -134,17 +144,20 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
         CommonMethods.showToast(mContext, errorMessage);
+        emptyListView.setVisibility(View.VISIBLE);
 
     }
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
         CommonMethods.showToast(mContext, serverErrorMessage);
+        emptyListView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
         CommonMethods.showToast(mContext, serverErrorMessage);
+        emptyListView.setVisibility(View.VISIBLE);
     }
 
     @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
@@ -171,7 +184,8 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
         if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.closeDrawer(GravityCompat.END);
         } else {
-            isLongPressed = mMyPatientsFragment.callOnBackPressed();
+            if (mMyPatientsFragment != null)
+                isLongPressed = mMyPatientsFragment.callOnBackPressed();
             if (isLongPressed) {
                 mMyPatientsFragment.removeCheckBox();
             } else {

@@ -24,5 +24,6 @@
         android:layout_gravity="end"
         android:background="@color/white"
         android:fitsSystemWindows="true" />
+    <include layout="@layout/common_no_records_found"/>
 
 </android.support.v4.widget.DrawerLayout>

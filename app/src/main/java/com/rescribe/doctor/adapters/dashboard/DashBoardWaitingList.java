@@ -10,43 +10,51 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.dashboard.AppointmentClinicList;
+import com.rescribe.doctor.model.dashboard.WaitingClinicList;
 import com.rescribe.doctor.ui.customesViews.CustomTypefaceSpan;
+import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.RescribeConstants;
+
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by jeetal on 30/1/18.
+ * Created by jeetal on 7/3/18.
  */
 
-public class WaitingOrAppointmentListAdapter extends RecyclerView.Adapter<WaitingOrAppointmentListAdapter.ListViewHolder> {
-
+public class DashBoardWaitingList extends RecyclerView.Adapter<DashBoardWaitingList.ListViewHolder> {
 
     private Context mContext;
-    private String[] mDataListHospitalDetails = {"P.D.Hinduja National Hospital, Mumbai", "Pain Clinic, Pune"};
-    private String[] timingList = {"From 02:30 pm", "From 08:00 am"};
-    private String[] opdList = {"6 OPD, 4 OT", "2 OT"};
-
-    public WaitingOrAppointmentListAdapter(Context mContext) {
+    private ArrayList<WaitingClinicList> mWaitingClinicList = new ArrayList<>();
+    public DashBoardWaitingList(Context mContext, ArrayList<WaitingClinicList> mWaitingClinicList) {
         this.mContext = mContext;
+        this.mWaitingClinicList = mWaitingClinicList;
     }
 
     @Override
-    public ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DashBoardWaitingList.ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.dashboard_menu_item_layout, parent, false);
 
-        return new ListViewHolder(itemView);
+        return new DashBoardWaitingList.ListViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final ListViewHolder holder, int position) {
+    public void onBindViewHolder(final DashBoardWaitingList.ListViewHolder holder, int position) {
 
         //TODO : NEED TO IMPLEMENT
+        final WaitingClinicList waitingClinicList = mWaitingClinicList.get(position);
+        String waitingListCount = waitingClinicList.getPatientWaitingCount()+"";
+        String clinicInfo = waitingClinicList.getClinicName()+", " +waitingClinicList.getAreaName()+", "+waitingClinicList.getCityName();
 
         Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/roboto_bold.ttf");
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(mDataListHospitalDetails[position] + " - " + timingList[position] + " - " + opdList[position]);
-        spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), mDataListHospitalDetails[position].length()+3+timingList[position].length()+3,spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(clinicInfo+" - " + waitingListCount);
+        spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), clinicInfo.length()+3+waitingListCount.length(),spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         holder.textViewName.setText(spannableStringBuilder);
 
 
@@ -54,7 +62,7 @@ public class WaitingOrAppointmentListAdapter extends RecyclerView.Adapter<Waitin
 
     @Override
     public int getItemCount() {
-        return mDataListHospitalDetails.length;
+        return mWaitingClinicList.size();
     }
 
     static class ListViewHolder extends RecyclerView.ViewHolder {

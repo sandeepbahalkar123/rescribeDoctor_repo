@@ -1,5 +1,6 @@
 package com.rescribe.doctor.ui.activities.my_patients;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
 
 /**
  * Created by jeetal on 21/2/18.
@@ -133,9 +136,9 @@ public class TemplateListActivity extends AppCompatActivity implements HelperRes
         ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
         ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
         for(AppointmentList appointmentList :appointmentList){
-          for(PatientList patientList : appointmentList.getPatientList()){
-              patientListsToShowOnSmsScreen.add(patientList);
-          }
+            for(PatientList patientList : appointmentList.getPatientList()){
+                patientListsToShowOnSmsScreen.add(patientList);
+            }
         }
 
         for(AppointmentList appointmentList : appointmentList){
@@ -158,11 +161,11 @@ public class TemplateListActivity extends AppCompatActivity implements HelperRes
             clinicListForSms.add(listForSms);
 
         }
-      //  showSendSmsDialog(clinicListForSms);
+        //  showSendSmsDialog(clinicListForSms);
         Intent intent = new Intent(this,SendSmsActivity.class);
         intent.putExtra(RescribeConstants.SMS_DETAIL_LIST,clinicListForSms);
         intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW,patientListsToShowOnSmsScreen);
-        startActivity(intent);
+        startActivityForResult(intent,RESULT_SMS_SEND);
 
     }
 
@@ -181,4 +184,14 @@ public class TemplateListActivity extends AppCompatActivity implements HelperRes
     public void onBackPressed() {
         super.onBackPressed();
     }
-}
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_SMS_SEND) {
+            finish();
+            }
+        }
+    }
+
+

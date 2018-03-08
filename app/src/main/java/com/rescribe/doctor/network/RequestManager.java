@@ -35,6 +35,7 @@ import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.case_details.CaseDetailsModel;
 import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
+import com.rescribe.doctor.model.dashboard.DashboardBaseModel;
 import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
 import com.rescribe.doctor.model.doctor_connect_chat.DoctorConnectChatBaseModel;
 import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
@@ -538,6 +539,14 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_GET_LOCATION_LIST: //This is for get archived list
                         DoctorLocationBaseModel mDoctorLocationBaseModel = new Gson().fromJson(data, DoctorLocationBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mDoctorLocationBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_GET_DASHBOARD_RESPONSE: //This is for get archived list
+                        DashboardBaseModel mDashboardBaseModel = new Gson().fromJson(data, DashboardBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mDashboardBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_DELETE_WAITING_LIST: //This is for get archived list
+                        TemplateBaseModel mDeleteWaitingList = new Gson().fromJson(data, TemplateBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mDeleteWaitingList, mOldDataTag);
                         break;
 
                     default:

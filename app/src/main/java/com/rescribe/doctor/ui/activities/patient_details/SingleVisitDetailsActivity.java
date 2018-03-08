@@ -7,15 +7,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter;
 import com.rescribe.doctor.helpers.patient_detail.PatientDetailHelper;
@@ -26,6 +23,7 @@ import com.rescribe.doctor.model.case_details.Range;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.case_details.VisitData;
 import com.rescribe.doctor.model.case_details.Vital;
+import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -67,6 +65,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     Spinner year;
     @BindView(R.id.addImageView)
     ImageView addImageView;
+    @BindView(R.id.addRecordButton)
+    Button addRecordButton;
     private int mLastExpandedPosition = -1;
     Intent mIntent;
     private SingleVisitAdapter mSingleVisitAdapter;
@@ -79,6 +79,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String mDateSelected;
     private String patientID;
     private String opdID;
+    private String mHospitalPatId;
+    private String mOpdTime;
 
 
     @Override
@@ -99,6 +101,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         if (intent.getExtras() != null) {
             patientID = intent.getStringExtra(RescribeConstants.PATIENT_ID);
             opdID = intent.getStringExtra(RescribeConstants.PATIENT_OPDID);
+            mOpdTime = intent.getStringExtra(RescribeConstants.OPD_TIME);
+            mHospitalPatId = intent.getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
             titleTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_NAME));
             userInfoTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_INFO));
             mDateSelected = intent.getStringExtra(RescribeConstants.DATE);
@@ -120,7 +124,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         }
 
         PatientDetailHelper mSingleVisitDetailHelper = new PatientDetailHelper(this, this);
-        mSingleVisitDetailHelper.doGetOneDayVisit(opdID,patientID);
+        mSingleVisitDetailHelper.doGetOneDayVisit(opdID, patientID);
 
         // title.setText(getString(R.string.visit_details));
 
@@ -132,7 +136,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 List<PatientHistory> listDataList = mSingleVisitAdapter.getListDataList();
                 List<VisitCommonData> childObject = listDataList.get(groupPosition).getCommonData();
 
-                if (mSingleVisitAdapter.getListDataList().get(groupPosition).getCaseDetailName().equalsIgnoreCase("vitals")) {
+                if (mSingleVisitAdapter.getListDataList().get(groupPosition).getCaseDetailName().equalsIgnoreCase("vitals") || mSingleVisitAdapter.getListDataList().get(groupPosition).getCaseDetailName().equalsIgnoreCase("vitals")) {
                     if (mSingleVisitAdapter.getListDataList().get(groupPosition).getVitals().isEmpty()) {
                         mHistoryExpandableListView.collapseGroup(groupPosition);
                     }
@@ -261,6 +265,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
         mSingleVisitAdapter = new SingleVisitAdapter(this, patientHistoryList);
         mHistoryExpandableListView.setAdapter(mSingleVisitAdapter);
+        addRecordButton.setVisibility(View.VISIBLE);
 
 
     }
@@ -298,13 +303,28 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         isBpMax = bpMax;
     }
 
-    @OnClick({R.id.backImageView, R.id.userInfoTextView})
+    @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.addRecordButton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
                 finish();
                 break;
             case R.id.userInfoTextView:
+                break;
+            case R.id.addRecordButton:
+                CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
+                Intent intent = new Intent(this, SelectedRecordsActivity.class);
+                intent.putExtra(RescribeConstants.OPD_ID, opdID);
+                intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+                intent.putExtra(RescribeConstants.LOCATION_ID, "0");
+                intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
+                intent.putExtra(RescribeConstants.CLINIC_ID, "0");
+                intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+                intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+                intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
+                intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
+
+                startActivity(intent);
                 break;
         }
     }

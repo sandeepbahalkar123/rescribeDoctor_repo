@@ -1,12 +1,12 @@
 package com.rescribe.doctor.adapters.my_patients;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
@@ -22,9 +23,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.patient_connect.PatientData;
+import com.rescribe.doctor.ui.activities.ChatActivity;
+import com.rescribe.doctor.ui.activities.PatientConnectActivity;
+import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import org.joda.time.DateTime;
 
@@ -46,12 +52,14 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     private ArrayList<PatientList> mOriginalPatientList;
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
+    private boolean isClickOnPatientDetailsRequired;
 
-    public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked) {
+    public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
         this.mDataList = new ArrayList<>(dataList);
         this.mOriginalPatientList = new ArrayList<>(dataList);
         this.mContext = mContext;
         this.mOnDownArrowClicked = mOnDownArrowClicked;
+        this.isClickOnPatientDetailsRequired = isClickOnPatientDetailsRequired;
     }
 
     @Override
@@ -117,11 +125,10 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             //TODO:
             //Spannable condition for PatientId
             if (String.valueOf(patientObject.getHospitalPatId()).contains(patientObject.getSpannableString())) {
-                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
-                patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-                SpannableString spannableIdString = new SpannableString(patientID);
+
+                SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
                 Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(patientID);
+                Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
 
                 while (matcher.find()) {
                     spannableIdString.setSpan(new ForegroundColorSpan(
@@ -131,16 +138,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 }
                 holder.patientIdTextView.setText(spannableIdString);
             } else {
-                SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getHospitalPatId());
-                patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-                holder.patientIdTextView.setText(patientID);
+
+                holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
             }
         } else {
             holder.patientNameTextView.setText(patientName);
             holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
-            SpannableString patientID = new SpannableString(mContext.getString(R.string.id) + " " + patientObject.getHospitalPatId());
-            patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-            holder.patientIdTextView.setText(patientID);
+            holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
         }
 
         if (patientObject.getAge().equals("") && !patientObject.getDateOfBirth().equals("")) {
@@ -158,19 +162,6 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         }
 
         holder.patientGenderTextView.setText(" " + patientObject.getGender());
-        /*if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
-            holder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
-            holder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
-        } else if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
-            holder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
-            holder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
-
-        } else if (patientObject.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.follow))) {
-            holder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientObject.getAppointmentStatus());
-            holder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
-
-        }*/
-
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (patientObject.getOutStandingAmount() == 0) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
@@ -220,10 +211,23 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString());
+                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString(),isClickOnPatientDetailsRequired);
             }
         });
 
+        holder.chatImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, ChatActivity.class);
+                PatientData doctorConnectChatModel = new PatientData();
+                doctorConnectChatModel.setId(patientObject.getPatientId());
+                doctorConnectChatModel.setImageUrl(patientObject.getPatientImageUrl());
+                doctorConnectChatModel.setPatientName(patientObject.getPatientName());
+                intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
+                ((MyPatientsActivity) mContext).startActivity(intent);
+
+            }
+        });
 
     }
 
@@ -271,6 +275,8 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         LinearLayout cardView;
         @BindView(R.id.patientClinicAddress)
         CustomTextView patientClinicAddress;
+        @BindView(R.id.patientDetailsClickLinearLayout)
+        RelativeLayout patientDetailsClickLinearLayout;
 
         View view;
 
@@ -348,40 +354,12 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
         void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
 
-        void onClickOfPatientDetails(PatientList patientListObject, String text);
+        void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired);
 
     }
 
 
-    /* public void addLoadingFooter() {
-         isLoadingAdded = true;
-         add(new PatientList());
-     }
 
-     public void removeLoadingFooter() {
-         isLoadingAdded = false;
-
-         int position = mDataList.size() - 1;
-         PatientList item = getItem(position);
-
-         if (item != null) {
-             mDataList.remove(position);
-             notifyItemRemoved(position);
-         }
-     }
-
-     public void addAll(ArrayList<PatientList> mcList) {
-         for (PatientList mc : mcList) {
-             add(mc);
-         }
-     }
-     public void add(PatientList mc) {
-         mDataList.add(mc);
-         notifyItemInserted(mDataList.size() - 1);
-     }
-     public PatientList getItem(int position) {
-         return mDataList.get(position);
-     }*/
     public void add(PatientList mc) {
         mDataList.add(mc);
         notifyItemInserted(mDataList.size() - 1);

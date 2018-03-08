@@ -136,21 +136,16 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     private boolean isPlaying = false;
     private int prePosition = -1;
     // Audio End
-
     private static final int MAX_ATTACHMENT_COUNT = 10;
-
     private static final String RESCRIBE_FILES = "/Rescribe/Files/";
     private static final String RESCRIBE_PHOTOS = "/Rescribe/Photos/";
     private static final String RESCRIBE_AUDIO = "/Rescribe/Audios/";
-
     private static final String RESCRIBE_UPLOAD_FILES = "/Rescribe/SentFiles/";
     private static final String RESCRIBE_UPLOAD_PHOTOS = "/Rescribe/SentPhotos/";
     private static final String RESCRIBE_UPLOAD_AUDIO = "/Rescribe/SentAudios/";
-
     private String filesFolder;
     private String photosFolder;
     private String audioFolder;
-
     private String filesUploadFolder;
     private String photosUploadFolder;
     private String audioUploadFolder;
@@ -159,10 +154,8 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     ImageView backButton;
     @BindView(R.id.profilePhoto)
     ImageView profilePhoto;
-
     @BindView(R.id.onlineStatusIcon)
     ImageView onlineStatusIcon;
-
     @BindView(R.id.receiverName)
     CustomTextView receiverName;
     @BindView(R.id.onlineStatus)
@@ -187,19 +180,12 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     ImageView sendButton;
     @BindView(R.id.messageTypeLayout)
     RelativeLayout messageTypeLayout;
-
-//    @BindView(R.id.swipeLayout)
-//    SwipeRefreshLayout swipeLayout;
-
     @BindView(R.id.audioSlider)
     SlideView audioSlider;
-
     @BindView(R.id.dateTextView)
     TextView dateTextView;
-
     @BindView(R.id.reveal_items)
     CardView mRevealView;
-
     @BindView(R.id.exitRevealDialog)
     FrameLayout exitRevealDialog;
 
@@ -499,7 +485,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                     .buildRound(("" + doctorName.charAt(0)).toUpperCase(), color2);
         }
 
-        dateTime.setText(chatList.getOnlineStatus());
+        dateTime.setText(""+chatList.getOnlineStatus());
         setUserStatusColor(chatList.getOnlineStatus());
 
         if (chatList.getOnlineStatus().equalsIgnoreCase(ONLINE))

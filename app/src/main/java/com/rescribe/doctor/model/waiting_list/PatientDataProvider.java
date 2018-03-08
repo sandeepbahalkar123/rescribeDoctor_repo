@@ -21,12 +21,12 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ExampleDataProvider extends AbstractDataProvider {
+public class PatientDataProvider extends AbstractDataProvider {
     private List<ConcreteData> mData;
     private ConcreteData mLastRemovedData;
     private int mLastRemovedPosition = -1;
 
-    public ExampleDataProvider(ArrayList<ViewAll> viewAlls) {
+    public PatientDataProvider(ArrayList<ViewAll> viewAlls) {
         mData = new LinkedList<>();
         for (int i = 0; i < viewAlls.size(); i++) {
             final long id = mData.size();

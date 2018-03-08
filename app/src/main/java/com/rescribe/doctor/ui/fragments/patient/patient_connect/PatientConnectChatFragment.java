@@ -1,7 +1,9 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_connect;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -22,6 +24,7 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.patient.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
+import com.rescribe.doctor.ui.activities.my_patients.ShowMyPatientsListActivity;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -29,6 +32,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -43,8 +47,9 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     RecyclerView searchRecyclerView;
     @BindView(R.id.emptyListView)
     RelativeLayout mEmptyListView;
-
     Unbinder unbinder;
+    @BindView(R.id.leftFab)
+    FloatingActionButton leftFab;
     private ArrayList<PatientData> mReceivedPatientDataList = new ArrayList<>();
     private PatientConnectAdapter mPatientConnectAdapter;
     private DividerItemDecoration dividerItemDecoration;
@@ -256,7 +261,6 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                     mqttMessage.setPatId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER2ID)));
                     mqttMessage.setDocId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER1ID)));
                     mqttMessage.setName(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDERNAME)));
-
                     mqttMessage.setSpecialization(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SPECIALITY)));
                     mqttMessage.setMsgStatus(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSGSTATUS)));
                     mqttMessage.setImageUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDERIMGURL)));
@@ -289,6 +293,18 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         }
 
         searchedMessagesAdapter.notifyDataSetChanged();
+    }
+
+    @OnClick({R.id.searchRecyclerView, R.id.leftFab})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.searchRecyclerView:
+                break;
+            case R.id.leftFab:
+                Intent intent = new Intent(getActivity(),ShowMyPatientsListActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }
 

@@ -43,7 +43,7 @@ public class Image implements Parcelable {
     private boolean selected = false;
     @SerializedName("parentCaption")
     @Expose
-    private String parentCaption = "Add Caption";
+    private String parentCaption = "";
     @SerializedName("childCaption")
     @Expose
     private String childCaption = "";

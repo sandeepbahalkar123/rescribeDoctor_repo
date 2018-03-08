@@ -3,17 +3,14 @@ package com.rescribe.doctor.adapters.waiting_list;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
@@ -23,16 +20,13 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
-import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.ItemTouchHelperAdapter;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.OnStartDragListener;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.ViewBinderHelper;
-import com.rescribe.doctor.ui.fragments.waiting_list.ViewAllPatientListFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +35,7 @@ import butterknife.ButterKnife;
  * Created by jeetal on 23/2/18.
  */
 
-public class ViewAllWaitingListAdapter extends RecyclerView.Adapter implements ItemTouchHelperAdapter {
+public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
 
     private ArrayList<ViewAll> mActiveArrayList = new ArrayList<>();
     private LayoutInflater mInflater;
@@ -49,14 +43,15 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter implements I
     private final ViewBinderHelper binderHelper = new ViewBinderHelper();
     private String appointmentScheduleTime = "";
     private String waitingTime = "";
+    private OnStartDragListener mOnStartDragListener;
 
-    private final OnStartDragListener mDragStartListener;
 
-    public ViewAllWaitingListAdapter(Context context, ArrayList<ViewAll> mActivesList, OnStartDragListener mDragStartListener) {
+    public ViewAllWaitingListAdapter(Context context, ArrayList<ViewAll> mActivesList, OnStartDragListener mOnStartDragListener) {
         mContext = context;
         mActiveArrayList = mActivesList;
-        this.mDragStartListener = mDragStartListener;
         mInflater = LayoutInflater.from(context);
+        this.mOnStartDragListener = mOnStartDragListener;
+
 
         // uncomment if you want to open only one row at a time
         // binderHelper.setOpenOnlyOne(true);
@@ -78,21 +73,9 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter implements I
         // put an unique string id as value, can be any string which uniquely define the data
         binderHelper.bindViewAll(holder.swipeLayout, mActiveObject);
 
+        // Bind your data here
         holder.bind(mActiveObject);
 
-    }
-
-    @Override
-    public void onItemDismiss(int position) {
-        mActiveArrayList.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(mActiveArrayList, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-        return true;
     }
 
     @Override
@@ -169,20 +152,19 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter implements I
             deleteLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mActiveArrayList.remove(getAdapterPosition());
-                    notifyItemRemoved(getAdapterPosition());
+                    mOnStartDragListener.onDeleteViewAllLayoutClicked(getAdapterPosition(),mActiveArrayList.get(getAdapterPosition()));
+                  /*  mActiveArrayList.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());*/
                 }
             });
 
-            patientIdTextView.setText(mContext.getString(R.string.id) + " " + viewAll.getPatientId());
+            patientIdTextView.setText(mContext.getString(R.string.id) + " " + viewAll.getHospitalPatId());
             if (!viewAll.getWaitingInTime().equals("")) {
                 appointmentTime.setVisibility(View.VISIBLE);
                 waitingTime = CommonMethods.formatDateTime(viewAll.getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
                 appointmentTime.setText(mContext.getString(R.string.in_time) + " - " + waitingTime);
-
             } else {
                 appointmentTime.setVisibility(View.INVISIBLE);
-
             }
             if (!viewAll.getAppointmentTime().equals("")) {
                 appointmentTimeTextView.setVisibility(View.VISIBLE);
@@ -216,10 +198,17 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter implements I
                 @Override
                 public void onClick(View view) {
                     String displayText = "" + viewAll.getPatientName() + " clicked";
+/*
                     Toast.makeText(mContext, displayText, Toast.LENGTH_SHORT).show();
+*/
                     Log.d("ViewAllWaitingList", displayText);
                 }
             });
         }
+
     }
+    public ArrayList<ViewAll> getAdapterList(){
+        return mActiveArrayList;
+    }
+
 }

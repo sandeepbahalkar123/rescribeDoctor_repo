@@ -103,6 +103,8 @@ public class RescribeConstants {
     public static final String TASK_GET_SEARCH_RESULT_MY_PATIENT = RescribeConstants.BLANK + 25;
     public static final String TASK_ADD_TO_WAITING_LIST = RescribeConstants.BLANK + 26;
     public static final String TASK_GET_LOCATION_LIST = RescribeConstants.BLANK + 27;
+    public static final String TASK_GET_DASHBOARD_RESPONSE = RescribeConstants.BLANK + 28;
+    public static final String TASK_DELETE_WAITING_LIST = RescribeConstants.BLANK + 29;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -158,7 +160,10 @@ public class RescribeConstants {
     public static final String TEMPLATE_OBJECT = "template_object";
     public static final String CLINIC_ID = "clinic_id";
     public static final String CLINIC_NAME = "clinic_name";
-
+    public static final String ACTIVITY_LAUNCHED_FROM = "activity_launched_from";
+    public static final String WAITING_LIST = "waiting_list";
+    public static final String HOME_PAGE = "home_page";
+    public static final String OPD_TIME = "opd_time";
 
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";

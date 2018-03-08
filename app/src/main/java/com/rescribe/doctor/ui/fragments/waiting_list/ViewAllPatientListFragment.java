@@ -1,6 +1,5 @@
 package com.rescribe.doctor.ui.fragments.waiting_list;
 
-
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
@@ -23,15 +23,24 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeMana
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableExampleAdapter;
-import com.rescribe.doctor.adapters.waiting_list.ViewAllWaitingListAdapter;
+import com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableWaitingListAdapter;
 import com.rescribe.doctor.adapters.waiting_list.WaitingListSpinnerAdapter;
+import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
+import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
-import com.rescribe.doctor.model.waiting_list.ExampleDataProvider;
+import com.rescribe.doctor.model.waiting_list.Active;
+import com.rescribe.doctor.model.waiting_list.PatientDataProvider;
+import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.model.waiting_list.WaitingPatientList;
-import com.rescribe.doctor.model.waiting_list.WaitingClinicList;
+import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
+import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.OnStartDragListener;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -44,7 +53,7 @@ import butterknife.Unbinder;
  * Created by jeetal on 22/2/18.
  */
 
-public class ViewAllPatientListFragment extends Fragment {
+public class ViewAllPatientListFragment extends Fragment implements OnStartDragListener, HelperResponse {
 
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
@@ -52,7 +61,7 @@ public class ViewAllPatientListFragment extends Fragment {
     private RecyclerViewDragDropManager recyclerViewDragDropManager;
     private RecyclerViewSwipeManager recyclerViewSwipeManager;
     private RecyclerViewTouchActionGuardManager recyclerViewTouchActionGuardManager;
-    
+
     @BindView(R.id.clinicListSpinner)
     Spinner clinicListSpinner;
     @BindView(R.id.recyclerView)
@@ -67,9 +76,13 @@ public class ViewAllPatientListFragment extends Fragment {
     RelativeLayout hospitalDetailsLinearLayout;
     private Unbinder unbinder;
     private static Bundle args;
-    private ArrayList<WaitingClinicList> waitingclinicLists = new ArrayList<>();
+    private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
     private WaitingListSpinnerAdapter mWaitingListSpinnerAdapter;
-    private ViewAllWaitingListAdapter mViewAllWaitingListAdapter;
+//    private ViewAllWaitingListAdapter mViewAllWaitingListAdapter;
+    private ArrayList<ViewAll> viewAllArrayList;
+    private int adapterPos;
+    private AppointmentHelper mAppointmentHelper;
+    private int mLocationId;
 
     public ViewAllPatientListFragment() {
     }
@@ -84,28 +97,24 @@ public class ViewAllPatientListFragment extends Fragment {
     }
 
     private void init() {
+        mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         waitingclinicLists = args.getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
         if (waitingclinicLists.size() > 1) {
             clinicListSpinner.setVisibility(View.VISIBLE);
             hospitalDetailsLinearLayout.setVisibility(View.GONE);
-//            mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
-//            clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
-
-            setAdapter();
+            mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
+            clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
 
         } else {
+            mLocationId = waitingclinicLists.get(0).getLocationId();
             clinicListSpinner.setVisibility(View.GONE);
             hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
-            clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName()+" - ");
+            clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
             clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
             recyclerView.setVisibility(View.VISIBLE);
             recyclerView.setClipToPadding(false);
-            WaitingPatientList waitingPatientSingleList = waitingclinicLists.get(0).getWaitingPatientList();
-
-            setAdapter();
-            
-            /*
-            mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientSingleList.getViewAll(), this);
+            /*WaitingPatientList waitingPatientSingleList = waitingclinicLists.get(0).getWaitingPatientList();
+            mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientSingleList.getViewAll(),this);
             LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearlayoutManager);
             // off recyclerView Animation
@@ -114,42 +123,48 @@ public class ViewAllPatientListFragment extends Fragment {
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
             recyclerView.setAdapter(mViewAllWaitingListAdapter);*/
+
+            setAdapter();
+
+        }
+        clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+
+    {
+        @Override
+        public void onItemSelected (AdapterView < ? > adapterView, View view,int i, long l){
+        mLocationId = waitingclinicLists.get(i).getLocationId();
+        WaitingPatientList waitingPatientTempList = new WaitingPatientList();
+        for (WaitingclinicList waitingclinicList : waitingclinicLists) {
+            if (mLocationId == waitingclinicList.getLocationId()) {
+                waitingPatientTempList = waitingclinicList.getWaitingPatientList();
+            }
+        }
+        if (waitingPatientTempList != null) {
+
+            recyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setClipToPadding(false);
+           /* mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientTempList.getViewAll(), ViewAllPatientListFragment.this);
+            LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(linearlayoutManager);
+            // off recyclerView Animation
+            RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+            if (animator instanceof SimpleItemAnimator)
+                ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+            recyclerView.setAdapter(mViewAllWaitingListAdapter);*/
+
+           setAdapter();
         }
 
 
-        /*clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int locationId  = waitingclinicLists.get(i).getLocationId();
-                WaitingPatientList waitingPatientTempList = new WaitingPatientList();
-                for (WaitingclinicList waitingclinicList : waitingclinicLists) {
-                    if (locationId== waitingclinicList.getLocationId()) {
-                        waitingPatientTempList = waitingclinicList.getWaitingPatientList();
-                    }
-                }
-                    if (waitingPatientTempList != null) {
-
-                        recyclerView.setVisibility(View.VISIBLE);
-                        recyclerView.setClipToPadding(false);
-                        mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientTempList.getViewAll(), ViewAllPatientListFragment.this);
-                        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                        recyclerView.setLayoutManager(linearlayoutManager);
-                        // off recyclerView Animation
-                        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-                        if (animator instanceof SimpleItemAnimator)
-                            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-                        recyclerView.setAdapter(mViewAllWaitingListAdapter);
-                    }
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
     }
+
+        @Override
+        public void onNothingSelected (AdapterView < ? > adapterView){
+
+    }
+    });
+}
+
 
     private void setAdapter() {
         // New
@@ -170,21 +185,27 @@ public class ViewAllPatientListFragment extends Fragment {
         recyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
         //adapter
-        final DraggableSwipeableExampleAdapter myItemAdapter = new DraggableSwipeableExampleAdapter(getDataProvider());
-        myItemAdapter.setEventListener(new DraggableSwipeableExampleAdapter.EventListener() {
-            @Override
-            public void onItemRemoved(int position) {
+        final DraggableSwipeableWaitingListAdapter myItemAdapter = new DraggableSwipeableWaitingListAdapter(getDataProvider());
+        myItemAdapter.setEventListener(new DraggableSwipeableWaitingListAdapter.EventListener() {
 
+            @Override
+            public void onDeleteClick(int position) {
+                CommonMethods.showToast(getContext(), "Position " + position);
             }
 
             @Override
             public void onItemPinned(int position) {
-
+                CommonMethods.showToast(getContext(), "Pinned " + position);
             }
 
             @Override
             public void onItemViewClicked(View v, boolean pinned) {
                 onItemViewClick(v, pinned);
+            }
+
+            @Override
+            public void onItemMoved(int fromPosition, int toPosition) {
+
             }
         });
 
@@ -237,6 +258,61 @@ public class ViewAllPatientListFragment extends Fragment {
     }
 
     @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+
+    }
+
+    @Override
+    public void onDeleteViewAllLayoutClicked(int adapterPosition, ViewAll viewAll) {
+        adapterPos = adapterPosition;
+        RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
+        requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+        requestDeleteBaseModel.setLocationId(mLocationId);
+        requestDeleteBaseModel.setWaitingDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+        requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
+        requestDeleteBaseModel.setWaitingSequence(viewAll.getWaitingSequence());
+        mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);
+
+    }
+
+    @Override
+    public void onDeleteActiveLayoutClicked(int adapterPosition, Active active) {
+
+    }
+
+
+    @Override
+    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        if (mOldDataTag.equals(RescribeConstants.TASK_DELETE_WAITING_LIST)) {
+            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
+            /*if (templateBaseModel.getCommon().isSuccess()) {
+                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
+                viewAllArrayList = mViewAllWaitingListAdapter.getAdapterList();
+                viewAllArrayList.remove(adapterPos);
+                mViewAllWaitingListAdapter.notifyItemRemoved(adapterPos);
+            } else {
+                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
+
+            }*/
+        }
+    }
+
+    @Override
+    public void onParseError(String mOldDataTag, String errorMessage) {
+
+    }
+
+    @Override
+    public void onServerError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @Override
+    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @Override
     public void onPause() {
         recyclerViewDragDropManager.cancelDrag();
         super.onPause();
@@ -278,7 +354,7 @@ public class ViewAllPatientListFragment extends Fragment {
     private void onItemViewClick(View v, boolean pinned) {
         int position = recyclerView.getChildAdapterPosition(v);
         if (position != RecyclerView.NO_POSITION) {
-            
+
         }
     }
 
@@ -287,7 +363,7 @@ public class ViewAllPatientListFragment extends Fragment {
     }
 
     public AbstractDataProvider getDataProvider() {
-        return new ExampleDataProvider(waitingclinicLists.get(0).getWaitingPatientList().getViewAll());
+        return new PatientDataProvider(waitingclinicLists.get(0).getWaitingPatientList().getViewAll());
     }
 
     public void notifyItemChanged(int position) {

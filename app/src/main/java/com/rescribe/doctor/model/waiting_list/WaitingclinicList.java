@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class WaitingClinicList implements Parcelable {
+public class WaitingclinicList implements Parcelable {
 
     @SerializedName("clinicName")
     @Expose
@@ -30,23 +30,23 @@ public class WaitingClinicList implements Parcelable {
     @SerializedName("patientList")
     @Expose
     private WaitingPatientList waitingPatientList;
-    public final static Creator<WaitingClinicList> CREATOR = new Creator<WaitingClinicList>() {
+    public final static Creator<WaitingclinicList> CREATOR = new Creator<WaitingclinicList>() {
 
 
         @SuppressWarnings({
                 "unchecked"
         })
-        public WaitingClinicList createFromParcel(Parcel in) {
-            return new WaitingClinicList(in);
+        public WaitingclinicList createFromParcel(Parcel in) {
+            return new WaitingclinicList(in);
         }
 
-        public WaitingClinicList[] newArray(int size) {
-            return (new WaitingClinicList[size]);
+        public WaitingclinicList[] newArray(int size) {
+            return (new WaitingclinicList[size]);
         }
 
     };
 
-    protected WaitingClinicList(Parcel in) {
+    protected WaitingclinicList(Parcel in) {
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -56,7 +56,7 @@ public class WaitingClinicList implements Parcelable {
         this.waitingPatientList = ((WaitingPatientList) in.readValue((WaitingPatientList.class.getClassLoader())));
     }
 
-    public WaitingClinicList() {
+    public WaitingclinicList() {
     }
 
     public String getClinicName() {

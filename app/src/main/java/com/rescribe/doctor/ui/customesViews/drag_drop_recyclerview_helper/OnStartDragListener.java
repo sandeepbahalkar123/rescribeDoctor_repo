@@ -18,6 +18,9 @@ package com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper;
 
 import android.support.v7.widget.RecyclerView;
 
+import com.rescribe.doctor.model.waiting_list.Active;
+import com.rescribe.doctor.model.waiting_list.ViewAll;
+
 /**
  * Listener for manual initiation of a drag.
  */
@@ -29,5 +32,8 @@ public interface OnStartDragListener {
      * @param viewHolder The holder of the view to drag.
      */
     void onStartDrag(RecyclerView.ViewHolder viewHolder);
+
+    void onDeleteViewAllLayoutClicked(int adapterPosition, ViewAll viewAll);
+    void onDeleteActiveLayoutClicked(int adapterPosition, Active active);
 
 }

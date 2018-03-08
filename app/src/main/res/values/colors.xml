@@ -2,10 +2,10 @@
 <resources>
 
     <color name="bg_item_normal_state">#fff0f0f0</color>
-    <color name="bg_item_dragging_state">#ffffdddd</color>
-    <color name="bg_item_dragging_active_state">#ffff9999</color>
+    <color name="bg_item_dragging_state">#ffddddff</color>
+    <color name="bg_item_dragging_active_state">#c192ceef</color>
     <color name="bg_item_swiping_state">#ffddddff</color>
-    <color name="bg_item_swiping_active_state">#ff9999ff</color>
+    <color name="bg_item_swiping_active_state">#c19dd6f5</color>
 
     <color name="bg_group_item_normal_state">#ffddffdd</color>
     <color name="bg_group_item_normal_pressed_state">#ff99cc99</color>
