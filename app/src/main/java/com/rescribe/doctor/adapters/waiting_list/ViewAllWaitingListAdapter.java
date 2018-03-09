@@ -52,7 +52,6 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
         mInflater = LayoutInflater.from(context);
         this.mOnStartDragListener = mOnStartDragListener;
 
-
         // uncomment if you want to open only one row at a time
         // binderHelper.setOpenOnlyOne(true);
     }
@@ -72,6 +71,7 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
         // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
         // put an unique string id as value, can be any string which uniquely define the data
         binderHelper.bindViewAll(holder.swipeLayout, mActiveObject);
+
 
         // Bind your data here
         holder.bind(mActiveObject);

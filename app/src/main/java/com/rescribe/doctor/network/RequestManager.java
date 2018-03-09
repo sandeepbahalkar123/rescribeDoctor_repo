@@ -548,6 +548,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         TemplateBaseModel mDeleteWaitingList = new Gson().fromJson(data, TemplateBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mDeleteWaitingList, mOldDataTag);
                         break;
+                    case RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE: //This is for get archived list
+                        TemplateBaseModel mCompleteCancel = new Gson().fromJson(data, TemplateBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mCompleteCancel, mOldDataTag);
+                        break;
 
                     default:
 
