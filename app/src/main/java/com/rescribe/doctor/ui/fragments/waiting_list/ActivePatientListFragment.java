@@ -42,7 +42,7 @@ import butterknife.Unbinder;
  * Created by jeetal on 22/2/18.
  */
 
-public class ActivePatientListFragment extends Fragment implements OnStartDragListener,HelperResponse {
+public class ActivePatientListFragment extends Fragment implements OnStartDragListener, HelperResponse {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -79,7 +79,7 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
     }
 
     private void init() {
-        mAppointmentHelper = new AppointmentHelper(getActivity(),this);
+        mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         waitingclinicLists = args.getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
         if (waitingclinicLists.size() > 1) {
             clinicListSpinner.setVisibility(View.VISIBLE);
@@ -91,12 +91,12 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
             mLocationId = waitingclinicLists.get(0).getLocationId();
             clinicListSpinner.setVisibility(View.GONE);
             hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
-            clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName()+" - ");
+            clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
             clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
             recyclerView.setVisibility(View.VISIBLE);
             recyclerView.setClipToPadding(false);
             WaitingPatientList waitingPatientSingleList = waitingclinicLists.get(0).getWaitingPatientList();
-            mActiveWaitingListAdapter = new ActiveWaitingListAdapter(getActivity(), waitingPatientSingleList.getActive(),this);
+            mActiveWaitingListAdapter = new ActiveWaitingListAdapter(getActivity(), waitingPatientSingleList.getActive(), this);
             LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearlayoutManager);
             // off recyclerView Animation
@@ -119,18 +119,18 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
 
                 if (waitingPatientTempList != null) {
 
-                        recyclerView.setVisibility(View.VISIBLE);
-                        recyclerView.setClipToPadding(false);
-                        mActiveWaitingListAdapter = new ActiveWaitingListAdapter(getActivity(), waitingPatientTempList.getActive(),ActivePatientListFragment.this);
-                        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                        recyclerView.setLayoutManager(linearlayoutManager);
-                        // off recyclerView Animation
-                        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-                        if (animator instanceof SimpleItemAnimator)
-                            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    recyclerView.setClipToPadding(false);
+                    mActiveWaitingListAdapter = new ActiveWaitingListAdapter(getActivity(), waitingPatientTempList.getActive(), ActivePatientListFragment.this);
+                    LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                    recyclerView.setLayoutManager(linearlayoutManager);
+                    // off recyclerView Animation
+                    RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+                    if (animator instanceof SimpleItemAnimator)
+                        ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
-                        recyclerView.setAdapter(mActiveWaitingListAdapter);
-                    }
+                    recyclerView.setAdapter(mActiveWaitingListAdapter);
+                }
 
             }
 
@@ -153,16 +153,15 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if(mOldDataTag.equals(RescribeConstants.TASK_DELETE_WAITING_LIST)){
-            TemplateBaseModel templateBaseModel = (TemplateBaseModel)customResponse;
-            if(templateBaseModel.getCommon().isSuccess()){
-                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage()+"", Toast.LENGTH_SHORT).show();
+        if (mOldDataTag.equals(RescribeConstants.TASK_DELETE_WAITING_LIST)) {
+            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
+            if (templateBaseModel.getCommon().isSuccess()) {
+                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
                 activeArrayList = mActiveWaitingListAdapter.getAdapterList();
                 activeArrayList.remove(adapterPos);
                 mActiveWaitingListAdapter.notifyItemRemoved(adapterPos);
-            }else{
-                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage()+"", Toast.LENGTH_SHORT).show();
-
+            } else {
+                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -197,9 +196,9 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
     public void onDeleteActiveLayoutClicked(int adapterPosition, Active active) {
         adapterPos = adapterPosition;
         RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
-        requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID,getActivity())));
+        requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
         requestDeleteBaseModel.setLocationId(mLocationId);
-        requestDeleteBaseModel.setWaitingDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY,RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+        requestDeleteBaseModel.setWaitingDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
         requestDeleteBaseModel.setWaitingId(active.getWaitingId());
         requestDeleteBaseModel.setWaitingSequence(active.getWaitingSequence());
         mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);

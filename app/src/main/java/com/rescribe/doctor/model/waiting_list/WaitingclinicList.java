@@ -3,12 +3,11 @@ package com.rescribe.doctor.model.waiting_list;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class WaitingclinicList implements Parcelable
-{
+public class WaitingclinicList implements Parcelable {
 
     @SerializedName("clinicName")
     @Expose
@@ -35,7 +34,7 @@ public class WaitingclinicList implements Parcelable
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public WaitingclinicList createFromParcel(Parcel in) {
             return new WaitingclinicList(in);
@@ -127,7 +126,7 @@ public class WaitingclinicList implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

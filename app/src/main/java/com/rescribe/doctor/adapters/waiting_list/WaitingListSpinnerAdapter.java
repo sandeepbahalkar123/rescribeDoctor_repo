@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
@@ -19,14 +18,12 @@ import java.util.ArrayList;
 
 public class WaitingListSpinnerAdapter extends BaseAdapter {
 
-    Context mContext;
+    private Context mContext;
     private ArrayList<WaitingclinicList> mWaitingclinicLists;
-
 
     public WaitingListSpinnerAdapter(Context context, ArrayList<WaitingclinicList> mWaitingclinicLists) {
         this.mContext = context;
         this.mWaitingclinicLists = mWaitingclinicLists;
-
     }
 
     @Override

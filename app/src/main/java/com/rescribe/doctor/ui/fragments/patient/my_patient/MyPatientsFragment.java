@@ -189,7 +189,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     isFiltered = true;
                 } else if (searchText.length() < 3 && isFiltered) {
                     isFiltered = false;
-                    resetFilter();
+                    init();
                 }
             }
         });
@@ -203,11 +203,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);
         }
     }
-
-    private void resetFilter() {
-        init();
-    }
-
 
     @Override
     public void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition) {

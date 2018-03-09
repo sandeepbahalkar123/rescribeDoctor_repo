@@ -1,1 +1,1 @@
-include ':app', ':materialdrawer', ':filepicker', ':uploadservice', ':slideview', ':crystalrangeseekbar', ':fabmenu'
+include ':app', ':materialdrawer', ':filepicker', ':uploadservice', ':slideview', ':crystalrangeseekbar', ':fabmenu', ':advanced_recycler'
