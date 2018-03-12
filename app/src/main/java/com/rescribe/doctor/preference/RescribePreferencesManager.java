@@ -2,7 +2,9 @@ package com.rescribe.doctor.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
@@ -10,6 +12,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -43,6 +47,18 @@ public class RescribePreferencesManager {
             }
         }
         return sharedPreferences;
+    }
+
+    public static ArrayList<String> getListString(String key) {
+        return new ArrayList<String>(Arrays.asList(TextUtils.split(sharedPreferences.getString(key, ""), ",=,")));
+    }
+
+
+    public static void putListString(String key, ArrayList<String> stringList) {
+        if (key == null) return;
+        if (stringList ==null)return;
+        String[] myStringList = stringList.toArray(new String[stringList.size()]);
+        sharedPreferences.edit().putString(key, TextUtils.join(",=,", myStringList)).apply();
     }
 
     public static String getString(String key, Context context) {
@@ -230,5 +246,9 @@ public class RescribePreferencesManager {
         String IS_EXIT = "isExit";
         String PATIENT_ID = "patient_id";
         String CHAT_IS_CHECKED = "is_checked";
+        String D0C_SERVICES = "doc_services";
+        String DOC_INFO = "doc_info";
+        String DOC_EXPERIENCE = "doc_experience";
+        String DOC_DEGREE = "doc_degree";
     }
 }

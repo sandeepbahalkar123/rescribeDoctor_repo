@@ -54,6 +54,7 @@ import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
+import com.rescribe.doctor.ui.activities.my_patients.ShowMyPatientsListActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
@@ -237,7 +238,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rightFab:
-                MyPatientsActivity activity = (MyPatientsActivity) getActivity();
+                ShowMyPatientsListActivity activity = (ShowMyPatientsListActivity) getActivity();
                 activity.getActivityDrawerLayout().openDrawer(GravityCompat.END);
                 break;
             case R.id.leftFab:

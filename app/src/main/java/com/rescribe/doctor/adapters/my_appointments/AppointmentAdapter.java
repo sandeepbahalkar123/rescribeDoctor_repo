@@ -370,15 +370,15 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         public void bind(final PatientList patientList, final int groupPosition, final int childPosition) {
             String patientName = "";
             if (patientList.getSalutation() == 1) {
-                patientName = mContext.getString(R.string.mr) + " " + patientList.getPatientName();
+                patientName = mContext.getString(R.string.mr) + " " + CommonMethods.toCamelCase(patientList.getPatientName());
             } else if (patientList.getSalutation() == 2) {
-                patientName = mContext.getString(R.string.mrs) + " " + patientList.getPatientName();
+                patientName = mContext.getString(R.string.mrs) + " " +  CommonMethods.toCamelCase(patientList.getPatientName());
 
             } else if (patientList.getSalutation() == 3) {
-                patientName = mContext.getString(R.string.miss) + " " + patientList.getPatientName();
+                patientName = mContext.getString(R.string.miss) + " " + CommonMethods.toCamelCase(patientList.getPatientName());
 
             } else if (patientList.getSalutation() == 4) {
-                patientName = patientList.getPatientName();
+                patientName = CommonMethods.toCamelCase(patientList.getPatientName());
             }
 
             if (patientList.getSpannableString() != null) {
@@ -452,7 +452,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
             }
 
-            viewHolder.patientGenderTextView.setText(" " + patientList.getGender());
+            viewHolder.patientGenderTextView.setText(" " + CommonMethods.toCamelCase(patientList.getGender()));
             if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
                 viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
                 viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.booked));
@@ -588,15 +588,15 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             groupViewHolder.mPatientIdTextView.setText(mContext.getString(R.string.id) + " " + appointmentListObject.getPatientHeader().getHospitalPatId() + "");
 
             if (appointmentListObject.getPatientHeader().getSalutation() == 1) {
-                groupViewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mr) + " " + appointmentListObject.getPatientHeader().getPatientName());
+                groupViewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mr) + " " + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
             } else if (appointmentListObject.getPatientHeader().getSalutation() == 2) {
-                groupViewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mrs) + " " + appointmentListObject.getPatientHeader().getPatientName());
+                groupViewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mrs) + " " + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
 
             } else if (appointmentListObject.getPatientHeader().getSalutation() == 3) {
-                groupViewHolder.mPatientNameTextView.setText(mContext.getString(R.string.miss) + " " + appointmentListObject.getPatientHeader().getPatientName());
+                groupViewHolder.mPatientNameTextView.setText(mContext.getString(R.string.miss) + " " + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
 
             } else if (appointmentListObject.getPatientHeader().getSalutation() == 4) {
-                groupViewHolder.mPatientNameTextView.setText(appointmentListObject.getPatientHeader().getPatientName());
+                groupViewHolder.mPatientNameTextView.setText(CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
             }
             if (appointmentListObject.getPatientHeader().getAge().equals("") && !appointmentListObject.getPatientHeader().getDateOfBirth().equals("")) {
                 groupViewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);
@@ -613,7 +613,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
             }
 
-            groupViewHolder.mPatientGenderTextView.setText(" " + appointmentListObject.getPatientHeader().getGender());
+            groupViewHolder.mPatientGenderTextView.setText(" " +CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getGender()));
             if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
                 groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
                 groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.booked));
@@ -741,14 +741,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 @Override
                 public void onClick(View view) {
                     mOnDownArrowClicked.onGroupAppointmentCancelled(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 3, "complete", groupPosition);
-                    binderHelper.closeLayout(appointmentListObject.getClinicName());
+                    binderHelper.closeLayout(groupPosition+"");
                 }
             });
             groupViewHolder.mAppointmentCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mOnDownArrowClicked.onGroupAppointmentCancelled(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 4, "cancel", groupPosition);
-                    binderHelper.closeLayout(appointmentListObject.getClinicName());
+                    binderHelper.closeLayout(groupPosition+"");
                 }
             });
         }

@@ -62,6 +62,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
+import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 
 /**
  * Created by jeetal on 31/1/18.
@@ -105,6 +106,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     private int groupPos;
     private int headerPos;
     private boolean isFromGroup;
+    private String patientName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -285,13 +287,29 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 }
             }
             mBottomMenuAppointmentAdapter.notifyDataSetChanged();
+        }else{
+            for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+                if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
+                    mBottomMenuAppointmentAdapter.getList().get(i).setSelected(true);
+                }
+            }
+            mBottomMenuAppointmentAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void onClickOfPatientDetails(PatientList patientListObject, String patientDetails) {
+        if (patientListObject.getSalutation() == 1) {
+            patientName = getString(R.string.mr) + " " + toCamelCase(patientListObject.getPatientName());
+        } else if (patientListObject.getSalutation() == 2) {
+            patientName = getString(R.string.mrs) + " " + toCamelCase(patientListObject.getPatientName());
+        } else if (patientListObject.getSalutation() == 3) {
+            patientName = getString(R.string.miss) + " " + toCamelCase(patientListObject.getPatientName());
+        } else if (patientListObject.getSalutation() == 4) {
+            patientName = toCamelCase(patientListObject.getPatientName());
+        }
         Bundle b = new Bundle();
-        b.putString(RescribeConstants.PATIENT_NAME, patientListObject.getPatientName());
+        b.putString(RescribeConstants.PATIENT_NAME, patientName);
         b.putString(RescribeConstants.PATIENT_INFO, patientDetails);
         b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
         b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));

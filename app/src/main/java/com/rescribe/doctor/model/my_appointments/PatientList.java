@@ -27,7 +27,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     @SerializedName("gender")
     @Expose
     private String gender;
-    @SerializedName("outStandingAmount")
+    @SerializedName("outstandingAmount")
     @Expose
     private Integer outStandingAmount;
     @SerializedName("patientId")

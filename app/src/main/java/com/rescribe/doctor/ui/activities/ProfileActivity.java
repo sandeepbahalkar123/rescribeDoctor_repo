@@ -2,14 +2,21 @@ package com.rescribe.doctor.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatImageView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -18,10 +25,18 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.bottom_menus.BottomMenuAdapter;
+import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.dashboard.SettingsActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
 import com.rescribe.doctor.ui.customesViews.BottomSheetDialog;
@@ -116,7 +131,13 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     LinearLayout aboutLayout;
     private Context mContext;
     private BottomSheetDialog mBottomSheetDialog;
-
+    private String doctorNameToDisplay;
+    private ArrayList<String> mServiceslist = new ArrayList<>();
+    private ArrayList<DoctorLocationModel> mArrayListDoctorLocationModel = new ArrayList<>();
+    private ColorGenerator mColorGenerator;
+    private String mDoctorName;
+    private DoctorLocationModel doctorLocationModel;
+    private int mSelectedClinicDataPosition;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,12 +150,146 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
     private void initialize() {
         mContext = ProfileActivity.this;
+        mColorGenerator = ColorGenerator.MATERIAL;
+        mArrayListDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
+        int size = mArrayListDoctorLocationModel.size();
         titleTextView.setText(getString(R.string.profile));
-        DocServicesListAdapter mServicesAdapter = new DocServicesListAdapter(mContext, null);
-        servicesListView.setAdapter(mServicesAdapter);
-       /* ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.global_item_simple_spinner, mClickedDoctorObject.getClinicDataList());
+        aboutDoctorDescription.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, mContext));
+        if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
+            doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
+        } else {
 
-        mClinicNameSpinner.setAdapter(arrayAdapter);*/
+            doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
+        }
+        doctorName.setText(doctorNameToDisplay);
+        SpannableString content = new SpannableString("Services");
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        servicesHeaderView.setText(content);
+        countDoctorExperience.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_EXPERIENCE, mContext));
+        doctorExperience.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_EXPERIENCE, mContext) + " years of experience");
+        doctorSpecialization.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, mContext));
+        mServiceslist = RescribePreferencesManager.getListString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.D0C_SERVICES);
+        setServicesInView(mServiceslist);
+
+        if (size > 0) {
+            allClinicPracticeLocationMainLayout.setVisibility(View.VISIBLE);
+
+            String mainString = getString(R.string.practices_at_locations);
+            if (size == 1) {
+                mainString = mainString.substring(0, mainString.length() - 1);
+            }
+            String updatedString = mainString.replace("$$", "" + size);
+            SpannableString contentExp = new SpannableString(updatedString);
+            contentExp.setSpan(new ForegroundColorSpan(
+                            ContextCompat.getColor(mContext, R.color.tagColor)),
+                    13, 13 + String.valueOf(size).length(),//hightlight mSearchString
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            docPracticesLocationCount.setText(contentExp);
+        } else {
+            allClinicPracticeLocationMainLayout.setVisibility(View.GONE);
+
+        }
+        if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext) != null) {
+
+            mDoctorName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
+            if (mDoctorName.contains("Dr. ")) {
+                mDoctorName = mDoctorName.replace("Dr. ", "");
+            }
+            int color2 = mColorGenerator.getColor(mDoctorName);
+            TextDrawable drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .width(Math.round(getResources().getDimension(R.dimen.dp40))) // width in px
+                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                    .endConfig()
+                    .buildRound(("" + mDoctorName.charAt(0)).toUpperCase(), color2);
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.dontAnimate();
+            requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+            requestOptions.skipMemoryCache(true);
+            requestOptions.placeholder(drawable);
+            requestOptions.error(drawable);
+
+            Glide.with(mContext)
+                    .load(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext))
+                    .apply(requestOptions).thumbnail(0.5f)
+                    .into(profileImage);
+
+        }
+        if (mArrayListDoctorLocationModel.size() > 0) {
+            ArrayList<String> mClinicname = new ArrayList<>();
+            for (int i = 0; i < mArrayListDoctorLocationModel.size(); i++) {
+                mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getArea() + ", " + mArrayListDoctorLocationModel.get(i).getCity());
+            }
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.global_item_simple_spinner, mClinicname);
+            clinicNameSpinner.setAdapter(arrayAdapter);
+
+
+            clinicNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    doctorLocationModel = mArrayListDoctorLocationModel.get(position);
+                    if (doctorLocationModel.getClinicName().equals("")) {
+                        clinicName.setVisibility(View.GONE);
+                    } else {
+                        clinicName.setVisibility(View.VISIBLE);
+                        clinicName.setText("" + doctorLocationModel.getClinicName());
+
+                    }
+
+                    mSelectedClinicDataPosition = position;
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            if (mArrayListDoctorLocationModel.size() == 1) {
+                clinicNameSpinner.setEnabled(false);
+                clinicNameSpinner.setClickable(false);
+                mSelectedClinicDataPosition = 0;
+                clinicNameSpinner.setBackgroundColor(ContextCompat.getColor(mContext, R.color.transparent));
+            } else {
+                clinicNameSpinner.setEnabled(true);
+                clinicNameSpinner.setClickable(true);
+                clinicNameSpinner.setBackground(ContextCompat.getDrawable(mContext, R.drawable.spinner_bg));
+            }
+        } else {
+            clinicNameSpinnerParentLayout.setVisibility(View.GONE);
+        }
+
+
+    }
+
+
+    private void setServicesInView(ArrayList<String> receivedDocService) {
+        //---------
+
+        int receivedDocServiceSize = receivedDocService.size();
+        if (receivedDocServiceSize > 0) {
+            servicesLine.setVisibility(View.VISIBLE);
+            servicesLayout.setVisibility(View.VISIBLE);
+            ArrayList<String> docListToSend = new ArrayList<>();
+            if (receivedDocServiceSize > 4) {
+                docListToSend.addAll(receivedDocService.subList(0, 4));
+                readMoreDocServices.setVisibility(View.VISIBLE);
+            } else {
+                docListToSend.addAll(receivedDocService);
+                readMoreDocServices.setVisibility(View.GONE);
+            }
+            DocServicesListAdapter mServicesAdapter = new DocServicesListAdapter(mContext, docListToSend);
+            servicesListView.setAdapter(mServicesAdapter);
+            CommonMethods.setListViewHeightBasedOnChildren(servicesListView);
+        } else {
+            servicesLine.setVisibility(View.GONE);
+            servicesLayout.setVisibility(View.GONE);
+        }
+
+        //---------
     }
 
     @Override
@@ -154,7 +309,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         super.onBottomMenuClick(bottomMenu);
     }
 
-    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView,R.id.readMoreDocServices})
+    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -179,8 +334,8 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         mBottomSheetDialog.setTitle("Services");
         mBottomSheetDialog.heightParam(ViewGroup.LayoutParams.MATCH_PARENT);
         ListView mServicesListView = (ListView) v.findViewById(R.id.servicesListView);
-       /* DialogServicesListAdapter mServicesAdapter = new DialogServicesListAdapter(mContext, clinicData.getDocServices());
-        mServicesListView.setAdapter(mServicesAdapter);*/
+        DialogServicesListAdapter mServicesAdapter = new DialogServicesListAdapter(mContext, mServiceslist);
+        mServicesListView.setAdapter(mServicesAdapter);
         AppCompatImageView closeButton = (AppCompatImageView) v.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +348,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                 .show();
 
     }
+
     class DialogServicesListAdapter extends BaseAdapter {
         Context mContext;
         private ArrayList<String> mDocServiceList;
@@ -236,19 +392,20 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         }
     }
 
+
     public class DocServicesListAdapter extends BaseAdapter {
         Context mContext;
         private ArrayList<String> mDocServiceList;
-        private String[] mStringList = {"Memory Loss","Parkinson","Alzheimer"};
 
 
         DocServicesListAdapter(Context context, ArrayList<String> items) {
             this.mContext = context;
+            mDocServiceList = items;
         }
 
         @Override
         public int getCount() {
-            return mStringList.length;
+            return mDocServiceList.size();
         }
 
         @Override
@@ -271,7 +428,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                 view = layoutInflater.inflate(R.layout.global_item_simple_spinner, null);
             }
             CustomTextView dataView = (CustomTextView) view.findViewById(R.id.servicestextView);
-            dataView.setText("" + mStringList[position]);
+            dataView.setText("" + mDocServiceList.get(position));
             return view;
         }
     }

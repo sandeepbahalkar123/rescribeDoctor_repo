@@ -23,6 +23,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.dashboard.DashBoardAppointmentListAdapter;
 import com.rescribe.doctor.adapters.dashboard.DashBoardWaitingList;
@@ -44,6 +49,7 @@ import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
+import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.SwitchButton;
 import com.rescribe.doctor.util.CommonMethods;
@@ -123,6 +129,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     SwitchButton radioSwitch;
     @BindView(R.id.hostViewsLayout)
     LinearLayout hostViewsLayout;
+    @BindView(R.id.doctorDashboardImage)
+    CircularImageView doctorDashboardImage;
 
     private Context mContext;
     private AppDBHelper appDBHelper;
@@ -133,6 +141,9 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private DashboardHelper mDashboardHelper;
     private DashboardDetails mDashboardDetails;
     private DashBoardWaitingList mDashBoardWaitingList;
+    private String doctorNameToDisplay;
+    private String mDoctorName;
+    private ColorGenerator mColorGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +151,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         setContentView(R.layout.home_page_layout);
         ButterKnife.bind(this);
         mContext = HomePageActivity.this;
+        mColorGenerator = ColorGenerator.MATERIAL;
         HomePageActivityPermissionsDispatcher.getPermissionWithCheck(HomePageActivity.this);
         appDBHelper = new AppDBHelper(mContext);
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
@@ -150,13 +162,12 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         initialize();
         setCurrentActivtyTab(getString(R.string.home));
 
-
         //drawerConfiguration();
     }
 
     private void initialize() {
 
-        mDashboardHelper = new DashboardHelper(this,this);
+        mDashboardHelper = new DashboardHelper(this, this);
         mDashboardHelper.doGetDashboardResponse();
         mDashboardHelper.doDoctorGetLocationList();
 
@@ -180,7 +191,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, MyPatientsActivity.class);
-                intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM,RescribeConstants.HOME_PAGE);
+                intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM, RescribeConstants.HOME_PAGE);
                 startActivity(intent);
             }
         });
@@ -220,7 +231,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         dashboardArrowImageView = (ImageView) inflatedLayoutWaitingList.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflatedLayoutWaitingList.findViewById(R.id.radioSwitch);
         menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patientwaitinglist));
-        menuNameTextView.setText("Waiting List - "+waitingListCount);
+        menuNameTextView.setText("Waiting List - " + waitingListCount);
         dashboardArrowImageView.setVisibility(View.VISIBLE);
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,7 +256,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         recyclerView.setVisibility(View.VISIBLE);
         viewTextView.setText("VIEW");
         recyclerView.setNestedScrollingEnabled(false);
-        mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext,mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList());
+        mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList());
         viewTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -277,7 +288,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         recyclerView.setVisibility(View.VISIBLE);
         viewTextView.setText("VIEW");
         recyclerView.setNestedScrollingEnabled(false);
-        mDashBoardWaitingList = new DashBoardWaitingList(mContext,mDashboardDetails.getDashboardWaitingList().getWaitingClinicList());
+        mDashBoardWaitingList = new DashBoardWaitingList(mContext, mDashboardDetails.getDashboardWaitingList().getWaitingClinicList());
         viewTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -418,51 +429,96 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             }
         else if (mOldDataTag.equals(ACTIVE_STATUS)) {
             CommonMethods.Log(ACTIVE_STATUS, "active");
-        }else if(mOldDataTag.equals(RescribeConstants.TASK_GET_LOCATION_LIST)){
-            DoctorLocationBaseModel  doctorLocationBaseModel = (DoctorLocationBaseModel)customResponse;
+        } else if (mOldDataTag.equals(RescribeConstants.TASK_GET_LOCATION_LIST)) {
+            DoctorLocationBaseModel doctorLocationBaseModel = (DoctorLocationBaseModel) customResponse;
             RescribeApplication.setDoctorLocationModels(doctorLocationBaseModel.getDoctorLocationModel());
-        }else if(mOldDataTag.equals(RescribeConstants.TASK_GET_DASHBOARD_RESPONSE)){
-            DashboardBaseModel mDashboardBaseModel = (DashboardBaseModel)customResponse;
-            if(mDashboardBaseModel.getCommon().isSuccess()){
+        } else if (mOldDataTag.equals(RescribeConstants.TASK_GET_DASHBOARD_RESPONSE)) {
+            DashboardBaseModel mDashboardBaseModel = (DashboardBaseModel) customResponse;
+            if (mDashboardBaseModel.getCommon().isSuccess()) {
                 mDashboardDetails = new DashboardDetails();
-              mDashboardDetails = mDashboardBaseModel.getDashboarddataModel().getDashboardDetails();
-               if(mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList().size()>0){
-                   todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayFollowUpCount()+"");
-                   todayNewAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayNewPatientCount()+"");
-                   todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount()+"");
-                   todayFollowAppointmentTextView.setText("Today's Follow Ups");
-                   todayNewAppointmentTextView.setText("Today's New Patients");
-                   todayWaitingListOrAppointmentTextView.setText("Today's Appoinments");
-                   doctorNameTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME,mContext));
-                   aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY,mContext));
-                   setLayoutForAppointment();
-                   // inflate waiting list layout
-                   setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount()+"");
-                   // inflate patientConnect layout
-                   setLayoutForPatientConnect();
-                   // inflate MyPatientsActivity layout
-                   setLayoutForMyPatients();
+                mDashboardDetails = mDashboardBaseModel.getDashboarddataModel().getDashboardDetails();
+                if (mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList().size() > 0) {
+                    todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayFollowUpCount() + "");
+                    todayNewAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayNewPatientCount() + "");
+                    todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount() + "");
+                    todayFollowAppointmentTextView.setText("Today's Follow Ups");
+                    todayNewAppointmentTextView.setText("Today's New Patients");
+                    todayWaitingListOrAppointmentTextView.setText("Today's Appoinments");
+                    if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
+                        doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
+                    } else {
+                        doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
 
-               }else if(mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size()>0){
-                   todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount()+"");
-                   todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount()+"");
-                   todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayWaitingCount()+"");
-                   todayFollowAppointmentTextView.setText("Today's Follow Ups");
-                   todayNewAppointmentTextView.setText("Today's New Patients");
-                   todayWaitingListOrAppointmentTextView.setText("Today's Waiting List");
-                   doctorNameTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME,mContext));
-                   aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY,mContext));
-                   setLayoutForWaitingListIfAppointmentListEmpty();
-                   // inflate patientConnect layout
-                   setLayoutForPatientConnect();
-                   // inflate MyPatientsActivity layout
-                   setLayoutForMyPatients();
+                    }
+                    doctorNameTextView.setText(doctorNameToDisplay);
+                    aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, mContext));
+                    setLayoutForAppointment();
+                    // inflate waiting list layout
+                    setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
+                    // inflate patientConnect layout
+                    setLayoutForPatientConnect();
+                    // inflate MyPatientsActivity layout
+                    setLayoutForMyPatients();
+                    setUpImage();
 
-               }else{
+                } else if (mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size() > 0) {
+                    todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
+                    todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
+                    todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayWaitingCount() + "");
+                    todayFollowAppointmentTextView.setText("Today's Follow Ups");
+                    todayNewAppointmentTextView.setText("Today's New Patients");
+                    todayWaitingListOrAppointmentTextView.setText("Today's Waiting List");
+                    if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
+                        doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
+                    } else {
+                        doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
 
-               }
+                    }
+                    doctorNameTextView.setText(doctorNameToDisplay);
+                    aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY, mContext));
+                    setLayoutForWaitingListIfAppointmentListEmpty();
+                    // inflate patientConnect layout
+                    setLayoutForPatientConnect();
+                    // inflate MyPatientsActivity layout
+                    setLayoutForMyPatients();
+                    setUpImage();
+
+                } else {
+
+                }
             }
         }
+
+    }
+
+    private void setUpImage() {
+        if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext) != null) {
+
+            mDoctorName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
+            if (mDoctorName.contains("Dr. ")) {
+                mDoctorName = mDoctorName.replace("Dr. ", "");
+            }
+            int color2 = mColorGenerator.getColor(mDoctorName);
+            TextDrawable drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .width(Math.round(getResources().getDimension(R.dimen.dp40))) // width in px
+                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                    .endConfig()
+                    .buildRound(("" + mDoctorName.charAt(0)).toUpperCase(), color2);
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.dontAnimate();
+            requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+            requestOptions.skipMemoryCache(true);
+            requestOptions.placeholder(drawable);
+            requestOptions.error(drawable);
+
+            Glide.with(mContext)
+                    .load(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext))
+                    .apply(requestOptions).thumbnail(0.5f)
+                    .into(doctorDashboardImage);
+
+        }
+
 
     }
 
@@ -548,7 +604,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.settings))) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
-        }else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.profile))) {
+        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.profile))) {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
         }

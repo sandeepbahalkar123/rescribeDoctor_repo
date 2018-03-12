@@ -37,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:paddingTop="@dimen/dp25"
+                    android:paddingTop="@dimen/dp16"
                     android:textColor="@color/timing_bg_color"
                     android:textSize="@dimen/sp24"
                     app:customFont="@string/roboto_bold"
@@ -54,18 +54,18 @@
                     android:paddingTop="@dimen/dp10"
                     android:textColor="@color/dashboard_text_color"
                     android:textSize="@dimen/sp12"
-                    app:customFont="@string/roboto_bold"
+                    app:customFont="@string/roboto_regular"
                     tools:text="Today's Appointment" />
             </RelativeLayout>
 
             <ImageView
-                android:layout_width="2dp"
+                android:layout_width="@dimen/dp1"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/dp21"
                 android:layout_marginEnd="@dimen/dp20"
                 android:layout_marginStart="@dimen/dp20"
                 android:layout_marginTop="@dimen/dp21"
-                android:background="@color/dashboard_divider_color"
+                android:src="@drawable/vertical_line"
                 tools:ignore="ContentDescription" />
 
             <RelativeLayout
@@ -78,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:paddingTop="@dimen/dp25"
+                    android:paddingTop="@dimen/dp16"
                     android:textColor="@color/timing_bg_color"
                     android:textSize="@dimen/sp24"
                     app:customFont="@string/roboto_bold"
@@ -94,18 +94,18 @@
                     android:paddingTop="@dimen/dp10"
                     android:textColor="@color/dashboard_text_color"
                     android:textSize="@dimen/sp12"
-                    app:customFont="@string/roboto_bold"
+                    app:customFont="@string/roboto_regular"
                     tools:text="Today's Appointment" />
             </RelativeLayout>
 
             <ImageView
-                android:layout_width="2dp"
+                android:layout_width="@dimen/dp1"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/dp21"
                 android:layout_marginEnd="@dimen/dp20"
                 android:layout_marginStart="@dimen/dp20"
                 android:layout_marginTop="@dimen/dp21"
-                android:background="@color/dashboard_divider_color"
+                android:src="@drawable/vertical_line"
                 tools:ignore="ContentDescription" />
 
             <RelativeLayout
@@ -120,7 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:paddingTop="@dimen/dp25"
+                    android:paddingTop="@dimen/dp16"
                     android:textColor="@color/timing_bg_color"
                     android:textSize="@dimen/sp24"
                     app:customFont="@string/roboto_bold"
@@ -136,7 +136,7 @@
                     android:paddingTop="@dimen/dp10"
                     android:textColor="@color/dashboard_text_color"
                     android:textSize="@dimen/sp12"
-                    app:customFont="@string/roboto_bold"
+                    app:customFont="@string/roboto_regular"
                     tools:text="Today's Appointment" />
             </RelativeLayout>
 
@@ -188,6 +188,7 @@
             <com.rescribe.doctor.ui.customesViews.CircularImageView
                 android:layout_width="@dimen/dp100"
                 android:layout_height="@dimen/dp100"
+                android:id="@+id/doctorDashboardImage"
                 android:layout_marginBottom="@dimen/dp30"
                 android:layout_marginTop="@dimen/dp54"
                 android:src="@drawable/filtergrayfemaleicon" />

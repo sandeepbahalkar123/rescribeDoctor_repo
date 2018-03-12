@@ -76,7 +76,7 @@
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cancel"
+                    android:text="Cancelled"
                     android:textColor="@color/Red"
                     app:customFont="@string/roboto_medium" />
             </LinearLayout>
@@ -92,7 +92,7 @@
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp7"
+            android:layout_marginBottom="@dimen/dp4"
             android:layout_marginEnd="@dimen/dp7"
             android:layout_marginStart="@dimen/dp7"
             android:background="@drawable/result_white_box"
@@ -252,6 +252,7 @@
                     android:layout_marginRight="@dimen/dp16"
                     android:button="@drawable/checkboxselecter"
                     android:visibility="gone"
+                    android:padding="@dimen/dp4"
                     tools:visibility="visible" />
 
 

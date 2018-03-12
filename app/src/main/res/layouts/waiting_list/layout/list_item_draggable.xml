@@ -78,7 +78,7 @@
                     android:layout_toRightOf="@id/bluelineImageView"
                     android:paddingLeft="@dimen/dp13"
                     android:paddingStart="@dimen/dp13"
-                    android:textColor="@color/rating_color"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/sp13"
                     app:customFont="@string/roboto_medium"
                     tools:ignore="RtlSymmetry"

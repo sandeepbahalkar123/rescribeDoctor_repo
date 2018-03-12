@@ -25,7 +25,6 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
-import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -35,6 +34,7 @@ import com.rescribe.doctor.util.RescribeConstants;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,18 +75,18 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         final PatientList patientObject = mDataList.get(position);
         holder.opdTypeTextView.setVisibility(View.GONE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
-        holder.patientClinicAddress.setText(patientObject.getClinicName()+ " - " + patientObject.getPatientCity());
+        holder.patientClinicAddress.setText(patientObject.getClinicName() + " - " + patientObject.getPatientCity());
         String patientName = "";
         if (patientObject.getSalutation() == 1) {
-            patientName = mContext.getString(R.string.mr) + " " + patientObject.getPatientName();
+            patientName = mContext.getString(R.string.mr) + " " + CommonMethods.toCamelCase(patientObject.getPatientName());
         } else if (patientObject.getSalutation() == 2) {
-            patientName = mContext.getString(R.string.mrs) + " " + patientObject.getPatientName();
+            patientName = mContext.getString(R.string.mrs) + " " + CommonMethods.toCamelCase(patientObject.getPatientName());
 
         } else if (patientObject.getSalutation() == 3) {
-            patientName = mContext.getString(R.string.miss) + " " + patientObject.getPatientName();
+            patientName = mContext.getString(R.string.miss) + " " + CommonMethods.toCamelCase(patientObject.getPatientName());
 
         } else if (patientObject.getSalutation() == 4) {
-            patientName = patientObject.getPatientName();
+            patientName = CommonMethods.toCamelCase(patientObject.getPatientName());
         }
 
 
@@ -161,7 +161,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.patientAgeTextView.setVisibility(View.GONE);
         }
 
-        holder.patientGenderTextView.setText(" " + patientObject.getGender());
+        holder.patientGenderTextView.setText(" " + CommonMethods.toCamelCase(patientObject.getGender()));
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (patientObject.getOutStandingAmount() == 0) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
@@ -191,8 +191,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             @Override
             public void onClick(View v) {
                 patientObject.setSelected(holder.checkbox.isChecked());
-                mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(holder.checkbox.isChecked());
-                notifyDataSetChanged();
+                mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(holder.checkbox.isChecked(), patientObject);
             }
         });
         if (isLongPressed)
@@ -211,7 +210,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString(),isClickOnPatientDetailsRequired);
+                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString(), isClickOnPatientDetailsRequired);
             }
         });
 
@@ -352,12 +351,11 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
         void onRecordFound(boolean isListEmpty);
 
-        void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
+        void onCheckUncheckRemoveSelectAllSelection(boolean ischecked, PatientList patientObject);
 
         void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired);
 
     }
-
 
 
     public void add(PatientList mc) {
@@ -365,12 +363,14 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         notifyItemInserted(mDataList.size() - 1);
     }
 
-    public void addAll(ArrayList<PatientList> mcList) {
+    public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId) {
 
         for (PatientList mc : mcList) {
+            mc.setSelected(selectedDoctorId.contains(mc.getHospitalPatId()));
             add(mc);
         }
     }
+
     public void clear() {
         final int size = mDataList.size();
         if (size > 0) {

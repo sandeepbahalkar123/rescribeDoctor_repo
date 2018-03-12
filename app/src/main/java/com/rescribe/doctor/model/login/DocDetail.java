@@ -28,6 +28,18 @@ public class DocDetail implements Parcelable {
     @SerializedName("docImgUrl")
     @Expose
     private String docImgUrl;
+    @SerializedName("docDegree")
+    @Expose
+    private String docDegree;
+    @SerializedName("docExperience")
+    @Expose
+    private String docExperience;
+    @SerializedName("docInfo")
+    @Expose
+    private String docInfo;
+    @SerializedName("docService")
+    @Expose
+    private ArrayList<String> docService = new ArrayList<String>();
     @SerializedName("clinicList")
     @Expose
     private ArrayList<ClinicList> clinicList = new ArrayList<ClinicList>();
@@ -54,6 +66,10 @@ public class DocDetail implements Parcelable {
         this.docSpaciality = ((String) in.readValue((String.class.getClassLoader())));
         this.docAddress = ((String) in.readValue((String.class.getClassLoader())));
         this.docImgUrl = ((String) in.readValue((String.class.getClassLoader())));
+        this.docDegree = ((String) in.readValue((String.class.getClassLoader())));
+        this.docExperience = ((String) in.readValue((String.class.getClassLoader())));
+        this.docInfo = ((String) in.readValue((String.class.getClassLoader())));
+        in.readList(this.docService, (java.lang.String.class.getClassLoader()));
         in.readList(this.clinicList, (ClinicList.class.getClassLoader()));
     }
 
@@ -108,6 +124,38 @@ public class DocDetail implements Parcelable {
         this.docImgUrl = docImgUrl;
     }
 
+    public String getDocDegree() {
+        return docDegree;
+    }
+
+    public void setDocDegree(String docDegree) {
+        this.docDegree = docDegree;
+    }
+
+    public String getDocExperience() {
+        return docExperience;
+    }
+
+    public void setDocExperience(String docExperience) {
+        this.docExperience = docExperience;
+    }
+
+    public String getDocInfo() {
+        return docInfo;
+    }
+
+    public void setDocInfo(String docInfo) {
+        this.docInfo = docInfo;
+    }
+
+    public ArrayList<String> getDocService() {
+        return docService;
+    }
+
+    public void setDocService(ArrayList<String> docService) {
+        this.docService = docService;
+    }
+
     public ArrayList<ClinicList> getClinicList() {
         return clinicList;
     }
@@ -123,6 +171,10 @@ public class DocDetail implements Parcelable {
         dest.writeValue(docSpaciality);
         dest.writeValue(docAddress);
         dest.writeValue(docImgUrl);
+        dest.writeValue(docDegree);
+        dest.writeValue(docExperience);
+        dest.writeValue(docInfo);
+        dest.writeList(docService);
         dest.writeList(clinicList);
     }
 

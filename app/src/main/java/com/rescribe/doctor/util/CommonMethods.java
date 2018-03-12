@@ -86,6 +86,8 @@ public class CommonMethods {
             return input;
         }
     }
+
+
     // 1ˢᵗ, 2ⁿᵈ, 3ʳᵈ, 4ᵗʰ
     public static String ordinal(String number) {
         try {

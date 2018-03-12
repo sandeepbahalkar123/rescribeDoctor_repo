@@ -214,7 +214,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             @Override
             public void onClick(View v) {
                 // call delete api
-                mEventListener.onDeleteClick(position,item.getViewAll());
+                mEventListener.onDeleteClick(position, item.getViewAll());
             }
         });
 
@@ -281,13 +281,13 @@ public class DraggableSwipeableViewAllWaitingListAdapter
 
             holder.mContainer.setBackgroundResource(bgResId);
         }
-          if(item.getViewAll().getWaitingStatus().equals("In Queue")){
-              holder.setMaxLeftSwipeAmount(-0.4f);
-              holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
-          }else{
-              holder.setMaxLeftSwipeAmount(0);
-              holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
-          }
+        if (item.getViewAll().getWaitingStatus().equals("In Queue") || item.getViewAll().getWaitingStatus().equals("Confirmed")) {
+            holder.setMaxLeftSwipeAmount(-0.4f);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
+        } else {
+            holder.setMaxLeftSwipeAmount(0);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
+        }
 
         holder.setMaxRightSwipeAmount(0);
     }

@@ -34,7 +34,7 @@ import butterknife.OnClick;
  * Created by jeetal on 5/3/18.
  */
 
-public class ShowMyPatientsListActivity  extends AppCompatActivity implements HelperResponse, DrawerForMyPatients.OnDrawerInteractionListener {
+public class ShowMyPatientsListActivity extends AppCompatActivity implements HelperResponse, DrawerForMyPatients.OnDrawerInteractionListener {
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -67,8 +67,8 @@ public class ShowMyPatientsListActivity  extends AppCompatActivity implements He
 
     private void initialize() {
         mIntent = getIntent();
-        if(mIntent.getExtras()!=null){
-            mActivityCalledFrom  = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
+        if (mIntent.getExtras() != null) {
+            mActivityCalledFrom = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
         }
         mContext = ShowMyPatientsListActivity.this;
         titleTextView.setText(getString(R.string.my_patients));
@@ -131,7 +131,7 @@ public class ShowMyPatientsListActivity  extends AppCompatActivity implements He
             if (customResponse != null) {
                 MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
                 Bundle bundle = new Bundle();
-                bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM,mActivityCalledFrom);
+                bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM, mActivityCalledFrom);
                 bundle.putParcelable(RescribeConstants.MYPATIENTS_DATA, myAppointmentsBaseModel);
                 mMyPatientsFragment = ChatPatientListFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
@@ -180,7 +180,7 @@ public class ShowMyPatientsListActivity  extends AppCompatActivity implements He
         if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.closeDrawer(GravityCompat.END);
         }
-                super.onBackPressed();
+        super.onBackPressed();
 
     }
 
@@ -201,7 +201,7 @@ public class ShowMyPatientsListActivity  extends AppCompatActivity implements He
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
             finish();
         }
     }

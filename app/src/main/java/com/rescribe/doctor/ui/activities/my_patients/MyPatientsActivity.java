@@ -25,6 +25,8 @@ import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import java.util.HashSet;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -59,6 +61,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     private String mActivityCalledFrom = "";
     private boolean isFromDrawer ;
     private RequestSearchPatients mRequestSearchPatientsFromDrawer = new RequestSearchPatients();
+    public HashSet<Integer> selectedDoctorId = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

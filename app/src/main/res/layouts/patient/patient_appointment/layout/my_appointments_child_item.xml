@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp7"
         android:layout_marginEnd="@dimen/dp7"
-        android:layout_marginBottom="@dimen/dp7"
+        android:layout_marginBottom="@dimen/dp4"
         android:background="@drawable/result_white_box"
         android:orientation="vertical">
 
@@ -163,6 +163,7 @@
                 android:id="@+id/checkbox"
                 tools:visibility="visible"
                 android:visibility="gone"
+                android:padding="@dimen/dp4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"

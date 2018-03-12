@@ -152,7 +152,7 @@
                         android:layout_marginTop="@dimen/dp8"
                         android:ellipsize="end"
                         android:gravity="left"
-                        android:maxLines="3"
+                        android:maxLines="1"
                         android:textColor="@color/vitals_name"
                         android:textSize="@dimen/sp13"
                         app:customFont="@string/roboto_medium"

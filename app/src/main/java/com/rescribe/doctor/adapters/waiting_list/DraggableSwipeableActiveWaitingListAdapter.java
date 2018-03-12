@@ -64,8 +64,6 @@ public class DraggableSwipeableActiveWaitingListAdapter
     }
 
 
-
-
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
     }
@@ -212,7 +210,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
             @Override
             public void onClick(View v) {
                 // call delete api
-                mEventListener.onDeleteClick(position,item.getActiveAll());
+                mEventListener.onDeleteClick(position, item.getActiveAll());
             }
         });
 
@@ -280,10 +278,10 @@ public class DraggableSwipeableActiveWaitingListAdapter
             holder.mContainer.setBackgroundResource(bgResId);
         }
 
-        if(item.getActiveAll().getWaitingStatus().equals("In Queue")){
+        if (item.getActiveAll().getWaitingStatus().equals("In Queue") || item.getActiveAll().getWaitingStatus().equals("Confirmed")) {
             holder.setMaxLeftSwipeAmount(-0.4f);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
-        }else{
+        } else {
             holder.setMaxLeftSwipeAmount(0);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
         }

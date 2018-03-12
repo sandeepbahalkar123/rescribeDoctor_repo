@@ -33,11 +33,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="enter_otp">Enter OTP</string>
     <string name="enter">Enter&#160;</string>
-    <string name="read_more"><u>more</u></string>
+    <string name="read_more"><u>More</u></string>
     <string name="read_less">&#160;<u>
         less</u></string>
     <string name="done">Done</string>
     <string name="others">Others</string>
+    <string name="practices_at_locations">Practices at $$ locations</string>
     <string name="prescriptionModels">Prescriptions</string>
     <string name="title_activity_zoomview">Zoom View</string>
     <string name="type">type</string>

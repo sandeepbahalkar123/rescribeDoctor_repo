@@ -54,9 +54,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/read_more"
+                        android:layout_marginStart="@dimen/dp16"
                         android:textColor="@color/tagColor"
                         android:visibility="gone"
-                        app:customFont="@string/roboto_medium" />
+                        app:customFont="@string/roboto_medium"
+                        android:layout_marginLeft="@dimen/dp16" />
                 </LinearLayout>
 
                 <View
