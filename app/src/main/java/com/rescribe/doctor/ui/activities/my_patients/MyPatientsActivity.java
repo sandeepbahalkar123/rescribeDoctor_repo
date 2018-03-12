@@ -209,8 +209,6 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
         mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
         isFromDrawer = true;
         mRequestSearchPatientsFromDrawer =  mRequestSearchPatients;
-
-
     }
 
     @Override

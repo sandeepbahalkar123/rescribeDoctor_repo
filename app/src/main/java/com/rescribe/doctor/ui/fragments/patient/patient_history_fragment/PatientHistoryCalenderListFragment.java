@@ -14,12 +14,17 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_history.CalenderDayOfMonthGridAdapter;
 import com.rescribe.doctor.helpers.patient_detail.PatientDetailHelper;
 import com.rescribe.doctor.model.login.Year;
+import com.rescribe.doctor.model.my_records.MyRecordInfoAndReports;
 import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
 import com.rescribe.doctor.ui.activities.patient_details.SingleVisitDetailsActivity;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -94,6 +99,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
 
                     formattedDoctorList = monthArrayListHashMap.get(mMonthName);
 
+                    Collections.sort(formattedDoctorList, new DateWiseComparator());
 
                     mCalenderDayOfMonthGridAdapter = new CalenderDayOfMonthGridAdapter(this.getContext(), formattedDoctorList, this);
                     LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -103,6 +109,15 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
                     //setOPDStatusGridViewAdapter(parentFragment, formattedDoctorList);
                 }
             }
+        }
+    }
+
+    private class DateWiseComparator implements Comparator<PatientHistoryInfo> {
+
+        public int compare(PatientHistoryInfo m1, PatientHistoryInfo m2) {
+            Date m1Date = CommonMethods.convertStringToDate(m1.getVisitDate(), RescribeConstants.DATE_PATTERN.UTC_PATTERN);
+            Date m2Date = CommonMethods.convertStringToDate(m2.getVisitDate(), RescribeConstants.DATE_PATTERN.UTC_PATTERN);
+            return m2Date.compareTo(m1Date);
         }
     }
 

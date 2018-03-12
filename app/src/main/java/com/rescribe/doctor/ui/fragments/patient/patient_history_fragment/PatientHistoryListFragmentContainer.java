@@ -1,6 +1,5 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_history_fragment;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,15 +7,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -70,8 +66,7 @@ import butterknife.OnClick;
 
 public class PatientHistoryListFragmentContainer extends Fragment implements HelperResponse, DatePickerDialog.OnDateSetListener {
 
-    private static final int REQUEST_CODE = 111;
-    private static Bundle args;
+    public static final int SELECT_REQUEST_CODE = 111;
     @BindView(R.id.backImageView)
     ImageView mBackArrow;
     @BindView(R.id.tabFragment)
@@ -112,6 +107,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private String mHospitalId;
     private String mPatientId;
     private String mHospitalPatId;
+    private Bundle args;
 
     public PatientHistoryListFragmentContainer() {
         // Required empty public constructor
@@ -130,17 +126,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         return mRootView;
     }
 
-    public static PatientHistoryListFragmentContainer newInstance(Bundle b) {
-        PatientHistoryListFragmentContainer fragment = new PatientHistoryListFragmentContainer();
-        args = new Bundle();
-        args = b;
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-
     private void initialize() {
-
+        args = getArguments();
         titleTextView.setText(args.getString(RescribeConstants.PATIENT_NAME));
         userInfoTextView.setVisibility(View.VISIBLE);
         userInfoTextView.setText(args.getString(RescribeConstants.PATIENT_INFO));
@@ -307,9 +294,11 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             @Override
             public void onClick(View v) {
 
-                if (!mLocationId.equals(0)) {
-                    callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth);
-                    dialog.cancel();
+                if (mLocationId != null) {
+                    if (!mLocationId.equals("0")) {
+                        callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth);
+                        dialog.cancel();
+                    } else Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
             }
@@ -342,7 +331,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         intent.putExtra(RescribeConstants.VISIT_DATE, dayOfMonth + "-" + monthOfYear + "-" + year);
         intent.putExtra(RescribeConstants.OPD_TIME, "");
 
-        startActivity(intent);
+        getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
     }
 
 

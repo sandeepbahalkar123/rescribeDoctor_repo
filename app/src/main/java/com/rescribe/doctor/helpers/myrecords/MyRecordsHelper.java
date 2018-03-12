@@ -152,8 +152,7 @@ public class MyRecordsHelper implements ConnectionListener {
             //  String s = CommonMethods.formatDateTime(m1, RescribeConstants.DATE_PATTERN.YYYY_MM_DD, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE);
             Date m1Date = CommonMethods.convertStringToDate(m1.getMyRecordDoctorInfo().getDate(), RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             Date m2Date = CommonMethods.convertStringToDate(m2.getMyRecordDoctorInfo().getDate(), RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-            int i = m2Date.compareTo(m1Date);
-            return i;
+            return m2Date.compareTo(m1Date);
         }
     }
 }
