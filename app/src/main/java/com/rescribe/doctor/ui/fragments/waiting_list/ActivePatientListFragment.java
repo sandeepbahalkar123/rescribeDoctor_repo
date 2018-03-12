@@ -1,7 +1,10 @@
 package com.rescribe.doctor.ui.fragments.waiting_list;
 
+import android.graphics.drawable.NinePatchDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -13,14 +16,26 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
+import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
+import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
+import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.waiting_list.ActiveWaitingListAdapter;
+import com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableActiveWaitingListAdapter;
+import com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableViewAllWaitingListAdapter;
 import com.rescribe.doctor.adapters.waiting_list.WaitingListSpinnerAdapter;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
+import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
 import com.rescribe.doctor.model.waiting_list.Active;
+import com.rescribe.doctor.model.waiting_list.PatientDataActiveWaitingListProvider;
 import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.model.waiting_list.WaitingPatientList;
 import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
@@ -42,7 +57,7 @@ import butterknife.Unbinder;
  * Created by jeetal on 22/2/18.
  */
 
-public class ActivePatientListFragment extends Fragment implements OnStartDragListener, HelperResponse {
+public class ActivePatientListFragment extends Fragment implements HelperResponse {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -65,7 +80,13 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
     private int adapterPos;
     private int mLocationId;
     private AppointmentHelper mAppointmentHelper;
-
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.Adapter mWrappedAdapter;
+    private RecyclerViewDragDropManager recyclerViewDragDropManager;
+    private RecyclerViewSwipeManager recyclerViewSwipeManager;
+    private RecyclerViewTouchActionGuardManager recyclerViewTouchActionGuardManager;
+    private DraggableSwipeableActiveWaitingListAdapter mDraggableSwipeableActiveWaitingListAdapter;
     public ActivePatientListFragment() {
     }
 
@@ -95,7 +116,7 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
             clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
             recyclerView.setVisibility(View.VISIBLE);
             recyclerView.setClipToPadding(false);
-            WaitingPatientList waitingPatientSingleList = waitingclinicLists.get(0).getWaitingPatientList();
+           /* WaitingPatientList waitingPatientSingleList = waitingclinicLists.get(0).getWaitingPatientList();
             mActiveWaitingListAdapter = new ActiveWaitingListAdapter(getActivity(), waitingPatientSingleList.getActive(), this);
             LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearlayoutManager);
@@ -104,7 +125,8 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
             if (animator instanceof SimpleItemAnimator)
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
-            recyclerView.setAdapter(mActiveWaitingListAdapter);
+            recyclerView.setAdapter(mActiveWaitingListAdapter);*/
+            setAdapter();
         }
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -121,7 +143,8 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
 
                     recyclerView.setVisibility(View.VISIBLE);
                     recyclerView.setClipToPadding(false);
-                    mActiveWaitingListAdapter = new ActiveWaitingListAdapter(getActivity(), waitingPatientTempList.getActive(), ActivePatientListFragment.this);
+                    setAdapter();
+                  /*  mActiveWaitingListAdapter = new ActiveWaitingListAdapter(getActivity(), waitingPatientTempList.getActive(), ActivePatientListFragment.this);
                     LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                     recyclerView.setLayoutManager(linearlayoutManager);
                     // off recyclerView Animation
@@ -129,7 +152,7 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
                     if (animator instanceof SimpleItemAnimator)
                         ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
-                    recyclerView.setAdapter(mActiveWaitingListAdapter);
+                    recyclerView.setAdapter(mActiveWaitingListAdapter);*/
                 }
 
             }
@@ -157,11 +180,10 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
             if (templateBaseModel.getCommon().isSuccess()) {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
-                activeArrayList = mActiveWaitingListAdapter.getAdapterList();
-                activeArrayList.remove(adapterPos);
-                mActiveWaitingListAdapter.notifyItemRemoved(adapterPos);
+                mDraggableSwipeableActiveWaitingListAdapter.removeItem(adapterPos);
             } else {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
+
             }
         }
     }
@@ -181,26 +203,158 @@ public class ActivePatientListFragment extends Fragment implements OnStartDragLi
 
     }
 
-    @Override
-    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+    private void setAdapter() {
+        // New
 
+        mLayoutManager = new LinearLayoutManager(getContext());
+
+        // touch guard manager  (this class is required to suppress scrolling while swipe-dismiss animation is running)
+        recyclerViewTouchActionGuardManager = new RecyclerViewTouchActionGuardManager();
+        recyclerViewTouchActionGuardManager.setInterceptVerticalScrollingWhileAnimationRunning(true);
+        recyclerViewTouchActionGuardManager.setEnabled(true);
+
+        // drag & drop manager
+        recyclerViewDragDropManager = new RecyclerViewDragDropManager();
+        recyclerViewDragDropManager.setDraggingItemShadowDrawable(
+                (NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z3));
+
+        // swipe manager
+        recyclerViewSwipeManager = new RecyclerViewSwipeManager();
+
+        //adapter
+        mDraggableSwipeableActiveWaitingListAdapter = new DraggableSwipeableActiveWaitingListAdapter(getDataProvider());
+        mDraggableSwipeableActiveWaitingListAdapter.setEventListener(new DraggableSwipeableActiveWaitingListAdapter.EventListener() {
+            @Override
+            public void onDeleteClick(int position, Active viewAll) {
+                adapterPos = position;
+                RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
+                requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                requestDeleteBaseModel.setLocationId(mLocationId);
+                requestDeleteBaseModel.setWaitingDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+                requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
+                requestDeleteBaseModel.setWaitingSequence(viewAll.getWaitingSequence());
+                mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);
+
+            }
+
+            @Override
+            public void onItemPinned(int position) {
+
+            }
+
+            @Override
+            public void onItemViewClicked(View v, boolean pinned) {
+
+            }
+
+            @Override
+            public void onItemMoved(int fromPosition, int toPosition) {
+
+            }
+        });
+
+        mAdapter = mDraggableSwipeableActiveWaitingListAdapter;
+
+        mWrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(mDraggableSwipeableActiveWaitingListAdapter);      // wrap for dragging
+        mWrappedAdapter = recyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);      // wrap for swiping
+
+        final GeneralItemAnimator animator = new DraggableItemAnimator();
+
+        // Change animations are enabled by default since support-v7-recyclerview v22.
+        // Disable the change animation in order to make turning back animation of swiped item works properly.
+        animator.setSupportsChangeAnimations(false);
+
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(mWrappedAdapter);  // requires *wrapped* adapter
+        recyclerView.setItemAnimator(animator);
+
+        // additional decorations
+        //noinspection StatementWithEmptyBody
+        if (supportsViewElevation()) {
+            // Lollipop or later has native drop shadow feature. ItemShadowDecorator is not required.
+        } else {
+            recyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z3)));
+        }
+        recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.list_divider_h), true));
+
+        // NOTE:
+        // The initialization order is very important! This order determines the priority of touch event handling.
+        //
+        // priority: TouchActionGuard > Swipe > DragAndDrop
+        recyclerViewTouchActionGuardManager.attachRecyclerView(recyclerView);
+        recyclerViewSwipeManager.attachRecyclerView(recyclerView);
+        recyclerViewDragDropManager.attachRecyclerView(recyclerView);
+
+        // for debugging
+//        animator.setDebug(true);
+//        animator.setMoveDuration(2000);
+//        animator.setRemoveDuration(2000);
+//        recyclerViewSwipeManager.setMoveToOutsideWindowAnimationDuration(2000);
+//        recyclerViewSwipeManager.setReturnToDefaultPositionAnimationDuration(2000);
     }
 
     @Override
-    public void onDeleteViewAllLayoutClicked(int adapterPosition, ViewAll viewAll) {
-
-
+    public void onPause() {
+        recyclerViewDragDropManager.cancelDrag();
+        super.onPause();
     }
 
     @Override
-    public void onDeleteActiveLayoutClicked(int adapterPosition, Active active) {
-        adapterPos = adapterPosition;
-        RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
-        requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-        requestDeleteBaseModel.setLocationId(mLocationId);
-        requestDeleteBaseModel.setWaitingDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
-        requestDeleteBaseModel.setWaitingId(active.getWaitingId());
-        requestDeleteBaseModel.setWaitingSequence(active.getWaitingSequence());
-        mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);
+    public void onDestroyView() {
+        if (recyclerViewDragDropManager != null) {
+            recyclerViewDragDropManager.release();
+            recyclerViewDragDropManager = null;
+        }
+
+        if (recyclerViewSwipeManager != null) {
+            recyclerViewSwipeManager.release();
+            recyclerViewSwipeManager = null;
+        }
+
+        if (recyclerViewTouchActionGuardManager != null) {
+            recyclerViewTouchActionGuardManager.release();
+            recyclerViewTouchActionGuardManager = null;
+        }
+
+        if (recyclerView != null) {
+            recyclerView.setItemAnimator(null);
+            recyclerView.setAdapter(null);
+            recyclerView = null;
+        }
+
+        if (mWrappedAdapter != null) {
+            WrapperAdapterUtils.releaseAll(mWrappedAdapter);
+            mWrappedAdapter = null;
+        }
+        mAdapter = null;
+        mLayoutManager = null;
+
+        super.onDestroyView();
     }
+
+    private void onItemViewClick(View v, boolean pinned) {
+        int position = recyclerView.getChildAdapterPosition(v);
+        if (position != RecyclerView.NO_POSITION) {
+
+        }
+    }
+
+    private boolean supportsViewElevation() {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+    }
+
+    public AbstractDataProvider getDataProvider() {
+        return new PatientDataActiveWaitingListProvider(waitingclinicLists.get(0).getWaitingPatientList().getActive());
+    }
+
+    public void notifyItemChanged(int position) {
+        mAdapter.notifyItemChanged(position);
+    }
+
+    public void notifyItemInserted(int position) {
+        mAdapter.notifyItemInserted(position);
+        recyclerView.scrollToPosition(position);
+    }
+
+
 }

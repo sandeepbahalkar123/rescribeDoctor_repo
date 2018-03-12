@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
@@ -23,7 +24,7 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeMana
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableWaitingListAdapter;
+import com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableViewAllWaitingListAdapter;
 import com.rescribe.doctor.adapters.waiting_list.WaitingListSpinnerAdapter;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -78,11 +79,12 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     private static Bundle args;
     private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
     private WaitingListSpinnerAdapter mWaitingListSpinnerAdapter;
-//    private ViewAllWaitingListAdapter mViewAllWaitingListAdapter;
+    //    private ViewAllWaitingListAdapter mViewAllWaitingListAdapter;
     private ArrayList<ViewAll> viewAllArrayList;
     private int adapterPos;
     private AppointmentHelper mAppointmentHelper;
     private int mLocationId;
+    private DraggableSwipeableViewAllWaitingListAdapter myItemAdapter;
 
     public ViewAllPatientListFragment() {
     }
@@ -129,20 +131,20 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         }
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 
-    {
-        @Override
-        public void onItemSelected (AdapterView < ? > adapterView, View view,int i, long l){
-        mLocationId = waitingclinicLists.get(i).getLocationId();
-        WaitingPatientList waitingPatientTempList = new WaitingPatientList();
-        for (WaitingclinicList waitingclinicList : waitingclinicLists) {
-            if (mLocationId == waitingclinicList.getLocationId()) {
-                waitingPatientTempList = waitingclinicList.getWaitingPatientList();
-            }
-        }
-        if (waitingPatientTempList != null) {
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mLocationId = waitingclinicLists.get(i).getLocationId();
+                WaitingPatientList waitingPatientTempList = new WaitingPatientList();
+                for (WaitingclinicList waitingclinicList : waitingclinicLists) {
+                    if (mLocationId == waitingclinicList.getLocationId()) {
+                        waitingPatientTempList = waitingclinicList.getWaitingPatientList();
+                    }
+                }
+                if (waitingPatientTempList != null) {
 
-            recyclerView.setVisibility(View.VISIBLE);
-            recyclerView.setClipToPadding(false);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    recyclerView.setClipToPadding(false);
            /* mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientTempList.getViewAll(), ViewAllPatientListFragment.this);
             LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearlayoutManager);
@@ -152,18 +154,18 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
             recyclerView.setAdapter(mViewAllWaitingListAdapter);*/
 
-           setAdapter();
-        }
+                    setAdapter();
+                }
 
 
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
-
-        @Override
-        public void onNothingSelected (AdapterView < ? > adapterView){
-
-    }
-    });
-}
 
 
     private void setAdapter() {
@@ -185,11 +187,20 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         recyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
         //adapter
-        final DraggableSwipeableWaitingListAdapter myItemAdapter = new DraggableSwipeableWaitingListAdapter(getDataProvider());
-        myItemAdapter.setEventListener(new DraggableSwipeableWaitingListAdapter.EventListener() {
+        myItemAdapter = new DraggableSwipeableViewAllWaitingListAdapter(getDataProvider());
+        myItemAdapter.setEventListener(new DraggableSwipeableViewAllWaitingListAdapter.EventListener() {
 
             @Override
-            public void onDeleteClick(int position) {
+            public void onDeleteClick(int position, ViewAll viewAll) {
+                adapterPos = position;
+                RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
+                requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                requestDeleteBaseModel.setLocationId(mLocationId);
+                requestDeleteBaseModel.setWaitingDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+                requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
+                requestDeleteBaseModel.setWaitingSequence(viewAll.getWaitingSequence());
+                mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);
+
                 CommonMethods.showToast(getContext(), "Position " + position);
             }
 
@@ -285,15 +296,13 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (mOldDataTag.equals(RescribeConstants.TASK_DELETE_WAITING_LIST)) {
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
-            /*if (templateBaseModel.getCommon().isSuccess()) {
+            if (templateBaseModel.getCommon().isSuccess()) {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
-                viewAllArrayList = mViewAllWaitingListAdapter.getAdapterList();
-                viewAllArrayList.remove(adapterPos);
-                mViewAllWaitingListAdapter.notifyItemRemoved(adapterPos);
+                myItemAdapter.removeItem(adapterPos);
             } else {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
 
-            }*/
+            }
         }
     }
 

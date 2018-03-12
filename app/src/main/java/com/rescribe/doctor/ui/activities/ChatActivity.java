@@ -63,6 +63,7 @@ import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.singleton.Device;
+import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
@@ -153,7 +154,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     @BindView(R.id.backButton)
     ImageView backButton;
     @BindView(R.id.profilePhoto)
-    ImageView profilePhoto;
+    CircularImageView profilePhoto;
     @BindView(R.id.onlineStatusIcon)
     ImageView onlineStatusIcon;
     @BindView(R.id.receiverName)
@@ -190,7 +191,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     FrameLayout exitRevealDialog;
 
     // Check Typing
-
+    private boolean isCallFromPatientList;
     final int TYPING_TIMEOUT = 3000; // 5 seconds timeout
     private static final String TYPING_MESSAGE = "typing...";
     final Handler timeoutHandler = new Handler();
@@ -388,6 +389,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         if (mPressed) {
             openBottomSheetMenu();
         } else {
+            isExistInChat = isCallFromPatientList;
             if (isExistInChat) {
                 if (mqttMessages.isEmpty())
                     setResult(Activity.RESULT_CANCELED);
@@ -439,7 +441,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
         } else
             chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
-
+        isCallFromPatientList = getIntent().getBooleanExtra(RescribeConstants.IS_CALL_FROM_MY_PATEINTS,false);
         receiverName.setText(chatList.getPatientName());
         String patientName = chatList.getPatientName();
 
@@ -1535,4 +1537,5 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         }
         return outputPath + inputFile;
     }
+
 }

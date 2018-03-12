@@ -21,17 +21,17 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PatientDataProvider extends AbstractDataProvider {
-    private List<ConcreteData> mData;
-    private ConcreteData mLastRemovedData;
+public class PatientDataActiveWaitingListProvider extends AbstractDataProvider {
+    private List<ConcreteActiveData> mData;
+    private ConcreteActiveData mLastRemovedData;
     private int mLastRemovedPosition = -1;
 
-    public PatientDataProvider(ArrayList<ViewAll> viewAlls) {
+    public PatientDataActiveWaitingListProvider(ArrayList<Active> viewAlls) {
         mData = new LinkedList<>();
         for (int i = 0; i < viewAlls.size(); i++) {
             final long id = mData.size();
             final int viewType = 0;
-            mData.add(new ConcreteData(id, viewType, viewAlls.get(i)));
+            mData.add(new ConcreteActiveData(id, viewType, viewAlls.get(i)));
         }
     }
 
@@ -71,12 +71,17 @@ public class PatientDataProvider extends AbstractDataProvider {
     }
 
     @Override
+    public void addItem(ViewAll viewAll) {
+
+    }
+
+    @Override
     public void moveItem(int fromPosition, int toPosition) {
         if (fromPosition == toPosition) {
             return;
         }
 
-        final ConcreteData item = mData.remove(fromPosition);
+        final ConcreteActiveData item = mData.remove(fromPosition);
 
         mData.add(toPosition, item);
         mLastRemovedPosition = -1;
@@ -95,25 +100,21 @@ public class PatientDataProvider extends AbstractDataProvider {
     @Override
     public void removeItem(int position) {
         //noinspection UnnecessaryLocalVariable
-        final ConcreteData removedItem = mData.remove(position);
+        final ConcreteActiveData removedItem = mData.remove(position);
 
         mLastRemovedData = removedItem;
         mLastRemovedPosition = position;
     }
 
-    @Override
-    public void addItem(ViewAll viewAll) {
-        mData.add(new ConcreteData(mData.size(), 0, viewAll));
-    }
 
-    public static final class ConcreteData extends Data {
+    public static final class ConcreteActiveData extends Data {
 
         private final long mId;
-        private final ViewAll mViewAll;
+        private final Active mViewAll;
         private final int mViewType;
         private boolean mPinned;
 
-        ConcreteData(long id, int viewType, ViewAll viewAll) {
+        ConcreteActiveData(long id, int viewType, Active viewAll) {
             mId = id;
             mViewType = viewType;
             mViewAll = viewAll;
@@ -131,12 +132,13 @@ public class PatientDataProvider extends AbstractDataProvider {
 
         @Override
         public ViewAll getViewAll() {
-            return mViewAll;
+            return null;
         }
+
 
         @Override
         public Active getActiveAll() {
-            return null;
+            return mViewAll;
         }
 
         @Override

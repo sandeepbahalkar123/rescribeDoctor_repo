@@ -1,5 +1,6 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_connect;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -60,7 +61,9 @@ import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.Endles
 import com.rescribe.doctor.ui.fragments.patient.my_patient.TemplateListForMyPatients;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -73,6 +76,8 @@ import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActi
  */
 
 public class ChatPatientListFragment extends Fragment implements ChatPatientListAdapter.OnDownArrowClicked, HelperResponse {
+
+    public static final int CALL_FROM_MY_PATIENT_LIST = 0600;
     private static Bundle args;
     private AppointmentHelper mAppointmentHelper;
     @BindView(R.id.whiteUnderLine)
@@ -191,8 +196,6 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     }
 
 
-
-
     @Override
     public void onRecordFound(boolean isListEmpty) {
         if (isListEmpty)
@@ -200,7 +203,6 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         else
             emptyListView.setVisibility(View.GONE);
     }
-
 
 
     @Override
@@ -212,7 +214,10 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         doctorConnectChatModel.setImageUrl(patientListObject.getPatientImageUrl());
         doctorConnectChatModel.setPatientName(patientListObject.getPatientName());
         intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
+        intent.putExtra(RescribeConstants.IS_CALL_FROM_MY_PATEINTS, true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
+        getActivity().finish();
 
     }
 
@@ -303,4 +308,5 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
 
     }
+
 }

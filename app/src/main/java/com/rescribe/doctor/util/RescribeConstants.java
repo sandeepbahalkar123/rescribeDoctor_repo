@@ -167,6 +167,7 @@ public class RescribeConstants {
     public static final String OPD_TIME = "opd_time";
     public static final String IS_FROM_DRAWER = "is_from_drawer";
     public static final String DRAWER_REQUEST = "drawer_request";
+    public static final String IS_CALL_FROM_MY_PATEINTS = "call_from_my_patients_chat";
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
