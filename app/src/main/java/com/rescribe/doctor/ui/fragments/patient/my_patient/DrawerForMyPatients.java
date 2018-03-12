@@ -194,6 +194,10 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                 .setRightThumbBitmap(null)
                 .setRightThumbHighlightBitmap(null)
                 .setDataType(CrystalRangeSeekbar.DataType.INTEGER)
+                .setMaxValue(100)
+                .setMinValue(0)
+                .setMaxStartValue(100)
+                .setMinStartValue(0)
                 .apply();
 
         // set listener

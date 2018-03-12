@@ -101,33 +101,35 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     private void init() {
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         waitingclinicLists = args.getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
-        if (waitingclinicLists.size() > 1) {
-            clinicListSpinner.setVisibility(View.VISIBLE);
-            hospitalDetailsLinearLayout.setVisibility(View.GONE);
-            mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
-            clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
+        if (waitingclinicLists != null) {
+            if (waitingclinicLists.size() > 1) {
+                clinicListSpinner.setVisibility(View.VISIBLE);
+                hospitalDetailsLinearLayout.setVisibility(View.GONE);
+                mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
+                clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
 
-        } else {
-            mLocationId = waitingclinicLists.get(0).getLocationId();
-            clinicListSpinner.setVisibility(View.GONE);
-            hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
-            clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
-            clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
-            recyclerView.setVisibility(View.VISIBLE);
-            recyclerView.setClipToPadding(false);
-            /*WaitingPatientList waitingPatientSingleList = waitingclinicLists.get(0).getWaitingPatientList();
-            mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientSingleList.getViewAll(),this);
-            LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(linearlayoutManager);
-            // off recyclerView Animation
-            RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-            if (animator instanceof SimpleItemAnimator)
-                ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+            } else {
+                mLocationId = waitingclinicLists.get(0).getLocationId();
+                clinicListSpinner.setVisibility(View.GONE);
+                hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
+                clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
+                clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
+                recyclerView.setVisibility(View.VISIBLE);
+                recyclerView.setClipToPadding(false);
+                /*WaitingPatientList waitingPatientSingleList = waitingclinicLists.get(0).getWaitingPatientList();
+                mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientSingleList.getViewAll(),this);
+                LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                recyclerView.setLayoutManager(linearlayoutManager);
+                // off recyclerView Animation
+                RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+                if (animator instanceof SimpleItemAnimator)
+                    ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
-            recyclerView.setAdapter(mViewAllWaitingListAdapter);*/
+                recyclerView.setAdapter(mViewAllWaitingListAdapter);*/
 
-            setAdapter();
+                setAdapter();
 
+            }
         }
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 
@@ -206,7 +208,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
             @Override
             public void onItemPinned(int position) {
-                CommonMethods.showToast(getContext(), "Pinned " + position);
+//                CommonMethods.showToast(getContext(), "Pinned " + position);
             }
 
             @Override
@@ -361,10 +363,10 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     }
 
     private void onItemViewClick(View v, boolean pinned) {
-        int position = recyclerView.getChildAdapterPosition(v);
-        if (position != RecyclerView.NO_POSITION) {
-
-        }
+//        int position = recyclerView.getChildAdapterPosition(v);
+//        if (position != RecyclerView.NO_POSITION) {
+//
+//        }
     }
 
     private boolean supportsViewElevation() {

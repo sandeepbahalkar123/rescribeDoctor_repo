@@ -281,9 +281,11 @@ public class DraggableSwipeableActiveWaitingListAdapter
         }
 
         if(item.getActiveAll().getWaitingStatus().equals("In Queue")){
+            holder.mDragHandle.setVisibility(View.VISIBLE);
             holder.setMaxLeftSwipeAmount(-0.4f);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
         }else{
+            holder.mDragHandle.setVisibility(View.GONE);
             holder.setMaxLeftSwipeAmount(0);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
         }

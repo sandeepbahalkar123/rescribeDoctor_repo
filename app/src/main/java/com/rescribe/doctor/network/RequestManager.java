@@ -280,7 +280,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
-        parseJson(fixEncoding(response), isTokenExpired);
+        parseJson(response, isTokenExpired);
     }
 
     private void errorResponse(VolleyError error, boolean isTokenExpired) {

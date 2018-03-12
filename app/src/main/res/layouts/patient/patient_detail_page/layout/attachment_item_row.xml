@@ -2,30 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="0dp"
-    tools:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
     android:layout_margin="@dimen/dp4"
-    android:background="@drawable/border"
     android:layout_weight="1"
-    android:orientation="vertical">
+    android:background="@drawable/border"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:layout_width="match_parent">
 
-    <ImageView
-        android:id="@+id/attachmentImage"
+    <droidninja.filepicker.views.SquareRelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        tools:src="@drawable/ic_file" />
+        android:layout_height="wrap_content">
 
-    <com.rescribe.doctor.ui.customesViews.CustomTextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:padding="@dimen/dp8"
-        android:gravity="center"
-        android:lines="1"
-        android:ellipsize="end"
-        android:layout_height="wrap_content"
-        tools:text="Attachment"/>
+        <ImageView
+            android:id="@+id/attachmentImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_above="@+id/titleText"
+            tools:src="@drawable/ic_file" />
+
+        <com.rescribe.doctor.ui.customesViews.CustomTextView
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:lines="1"
+            android:padding="@dimen/dp4"
+            tools:text="Attachment" />
+
+    </droidninja.filepicker.views.SquareRelativeLayout>
 
 </LinearLayout>
