@@ -206,9 +206,18 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
 
                 break;
             case R.id.titleTextView:
+
                 break;
             case R.id.resetButton:
                 configureDrawerFieldsData();
+                for(int i = 0;i<mDrawerAppointmetClinicNameAdapter.getAdapterClinicList().size();i++){
+                    mDrawerAppointmetClinicNameAdapter.getAdapterClinicList().get(i).setSelected(false);
+                }
+                mDrawerAppointmetClinicNameAdapter.notifyDataSetChanged();
+                for(int i = 0;i<mDrawerAppointmentSelectStatusAdapter.getAdapterStatusList().size();i++){
+                    mDrawerAppointmentSelectStatusAdapter.getAdapterStatusList().get(i).setSelected(false);
+                }
+                mDrawerAppointmentSelectStatusAdapter.notifyDataSetChanged();
                 break;
             case R.id.sortingHeaderView:
                 break;

@@ -57,6 +57,8 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     private DrawerForMyPatients mDrawerForMyPatients;
     Intent mIntent;
     private String mActivityCalledFrom = "";
+    private boolean isFromDrawer ;
+    private RequestSearchPatients mRequestSearchPatientsFromDrawer = new RequestSearchPatients();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +136,8 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
                 Bundle bundle = new Bundle();
                 bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM, mActivityCalledFrom);
                 bundle.putParcelable(RescribeConstants.MYPATIENTS_DATA, myAppointmentsBaseModel);
+                bundle.putBoolean(RescribeConstants.IS_FROM_DRAWER,isFromDrawer);
+                bundle.putParcelable(RescribeConstants.DRAWER_REQUEST,mRequestSearchPatientsFromDrawer);
                 mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
             }
@@ -200,6 +204,8 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
         drawerLayout.closeDrawers();
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
+        isFromDrawer = true;
+        mRequestSearchPatientsFromDrawer =  mRequestSearchPatients;
 
 
     }

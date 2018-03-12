@@ -68,7 +68,6 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class SelectedRecordsActivity extends AppCompatActivity implements SelectedRecordsAdapter.OnClickOfComponentsOnSelectedPhoto {
 
-
     public static final int CLOSE_SINGLE_VISIT_CODE = 0707;
     @BindView(R.id.recyclerview)
     RecyclerView recyclerView;

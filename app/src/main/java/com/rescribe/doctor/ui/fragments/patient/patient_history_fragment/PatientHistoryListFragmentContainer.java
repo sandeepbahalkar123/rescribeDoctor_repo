@@ -190,7 +190,6 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 mTimePeriodList) {
             mPatientHistoryCalenderListFragment = new PatientHistoryCalenderListFragment();
             fragment = mPatientHistoryCalenderListFragment.createNewFragment(data, args); // pass data here
-            fragment.setTargetFragment(PatientHistoryListFragmentContainer.this, REQUEST_CODE);
             mViewPagerAdapter.addFragment(fragment, data); // pass title here
         }
         mViewpager.setOffscreenPageLimit(0);
@@ -509,15 +508,4 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         // mOpdStatusGridView.setAdapter(baseAdapter);
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            bundle = data.getBundleExtra(RescribeConstants.DATES_INFO);
-            if (bundle != null) {
-                longpressed = bundle.getBoolean(RescribeConstants.LONGPRESSED, false);
-                mDatesDataArrayList = bundle.getParcelableArrayList(RescribeConstants.DATES_LIST);
-            }
-        }
-    }
 }

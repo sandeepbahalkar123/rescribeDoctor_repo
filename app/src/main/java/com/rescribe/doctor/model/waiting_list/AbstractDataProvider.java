@@ -26,6 +26,7 @@ public abstract class AbstractDataProvider {
         public abstract int getViewType();
 
         public abstract ViewAll getViewAll();
+        public abstract Active getActiveAll();
 
         public abstract void setPinned(boolean pinned);
 
@@ -43,4 +44,6 @@ public abstract class AbstractDataProvider {
     public abstract void swapItem(int fromPosition, int toPosition);
 
     public abstract int undoLastRemoval();
+
+    public abstract void addItem(ViewAll viewAll);
 }

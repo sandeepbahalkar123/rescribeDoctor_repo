@@ -111,6 +111,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private int mClinicId;
     private String mClinicName = "";
     private boolean isFiltered = false;
+    private boolean isFromDrawer;
+    private RequestSearchPatients mRequestSearchPatientsForDrawer = new RequestSearchPatients();
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -125,6 +127,10 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     private void init() {
         mBottomMenuList = new ArrayList<>();
+        isFromDrawer = args.getBoolean(RescribeConstants.IS_FROM_DRAWER);
+        if(isFromDrawer){
+            mRequestSearchPatientsForDrawer = args.getParcelable(RescribeConstants.DRAWER_REQUEST);
+        }
         mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         for (String mMenuName : mMenuNames) {
@@ -512,17 +518,31 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     }
 
     public void loadNextPage(int currentPage) {
-        if (searchText.length() == 0) {
-            RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-            mRequestSearchPatients.setPageNo(currentPage);
-            mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
-        } else {
-            RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-            mRequestSearchPatients.setPageNo(currentPage);
-            mRequestSearchPatients.setSearchText(searchText);
-            mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
+        if(!isFromDrawer) {
+            if (searchText.length() == 0) {
+                RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
+                mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                mRequestSearchPatients.setPageNo(currentPage);
+                mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
+            } else {
+                RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
+                mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                mRequestSearchPatients.setPageNo(currentPage);
+                mRequestSearchPatients.setSearchText(searchText);
+                mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
+            }
+        }else{
+            if (searchText.length() == 0) {
+                mRequestSearchPatientsForDrawer.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                mRequestSearchPatientsForDrawer.setPageNo(currentPage);
+                mAppointmentHelper.doGetMyPatients(mRequestSearchPatientsForDrawer);
+            } else {
+                mRequestSearchPatientsForDrawer.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                mRequestSearchPatientsForDrawer.setPageNo(currentPage);
+                mRequestSearchPatientsForDrawer.setSearchText(searchText);
+                mAppointmentHelper.doGetMyPatients(mRequestSearchPatientsForDrawer);
+            }
+
         }
     }
 

@@ -26,6 +26,8 @@ package com.rescribe.doctor.ui.customesViews.swipeable_recyclerview;
 
 import android.os.Bundle;
 
+import com.rescribe.doctor.model.my_appointments.AppointmentList;
+import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.model.waiting_list.Active;
 import com.rescribe.doctor.model.waiting_list.ViewAll;
 
@@ -128,6 +130,89 @@ public class ViewBinderHelper {
 
         // set lock swipe
         swipeLayout.setLockDrag(lockedSwipeSet.contains(mViewAll.getPatientName()));
+    }
+    public void bindAppointmentChildList(final SwipeRevealLayout swipeLayout,final PatientList mPatientList) {
+        if (swipeLayout.shouldRequestLayout()) {
+            swipeLayout.requestLayout();
+        }
+
+        mapLayouts.values().remove(swipeLayout);
+        mapLayouts.put(mPatientList.getPatientName(), swipeLayout);
+
+        swipeLayout.abort();
+        swipeLayout.setDragStateChangeListener(new SwipeRevealLayout.DragStateChangeListener() {
+            @Override
+            public void onDragStateChanged(int state) {
+                mapStates.put(mPatientList.getPatientName(), state);
+
+                if (openOnlyOne) {
+                    closeOthers(mPatientList.getPatientName(), swipeLayout);
+                }
+            }
+        });
+
+        // first time binding.
+        if (!mapStates.containsKey(mPatientList.getPatientName())) {
+            mapStates.put(mPatientList.getPatientName(), SwipeRevealLayout.STATE_CLOSE);
+            swipeLayout.close(false);
+        }
+
+        // not the first time, then close or open depends on the current state.
+        else {
+            int state = mapStates.get(mPatientList.getPatientName());
+
+            if (state == SwipeRevealLayout.STATE_CLOSE || state == SwipeRevealLayout.STATE_CLOSING ||
+                    state == SwipeRevealLayout.STATE_DRAGGING) {
+                swipeLayout.close(false);
+            } else {
+                swipeLayout.open(false);
+            }
+        }
+
+        // set lock swipe
+        swipeLayout.setLockDrag(lockedSwipeSet.contains(mPatientList.getPatientName()));
+    }
+
+    public void bindGroup(final SwipeRevealLayout swipeLayout, final AppointmentList mPatientList, final int groupPosition) {
+        if (swipeLayout.shouldRequestLayout()) {
+            swipeLayout.requestLayout();
+        }
+
+        mapLayouts.values().remove(swipeLayout);
+        mapLayouts.put(groupPosition+"", swipeLayout);
+
+        swipeLayout.abort();
+        swipeLayout.setDragStateChangeListener(new SwipeRevealLayout.DragStateChangeListener() {
+            @Override
+            public void onDragStateChanged(int state) {
+                mapStates.put(groupPosition+"", state);
+
+                if (openOnlyOne) {
+                    closeOthers(groupPosition+"", swipeLayout);
+                }
+            }
+        });
+
+        // first time binding.
+        if (!mapStates.containsKey(groupPosition+"")) {
+            mapStates.put(groupPosition+"", SwipeRevealLayout.STATE_CLOSE);
+            swipeLayout.close(false);
+        }
+
+        // not the first time, then close or open depends on the current state.
+        else {
+            int state = mapStates.get(groupPosition+"");
+
+            if (state == SwipeRevealLayout.STATE_CLOSE || state == SwipeRevealLayout.STATE_CLOSING ||
+                    state == SwipeRevealLayout.STATE_DRAGGING) {
+                swipeLayout.close(false);
+            } else {
+                swipeLayout.open(false);
+            }
+        }
+
+        // set lock swipe
+        swipeLayout.setLockDrag(lockedSwipeSet.contains(groupPosition+""));
     }
 
     /**

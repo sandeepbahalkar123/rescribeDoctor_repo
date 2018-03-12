@@ -39,4 +39,10 @@
     <string name="patient_limit_exceeded">Patient limit exceeded!</string>
     <string name="already_exists_in_waiting_list">already exists in waiting list!</string>
     <string name="added_to_waiting_list">added to waiting list!</string>
+    <string name="appointment_completed">Appointment is completed</string>
+    <string name="appointment_cancelled">Appointment is cancelled</string>
+    <string name="confirmed">confirmed</string>
+    <string name="cancelled">cancelled</string>
+    <string name="no_show">no show</string>
+    <string name="other">other</string>
 </resources>

@@ -21,19 +21,21 @@
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/clinicNameTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/bulletImageView"
             android:layout_toRightOf="@id/bulletImageView"
             android:textColor="@color/black"
             android:textSize="@dimen/sp16"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:customFont="@string/roboto_bold"
             tools:text="Shree Clinic - " />
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/clinicAddress"
-            android:layout_width="200dp"
+            android:layout_width="120dp"
             android:paddingTop="@dimen/dp3"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -112,6 +114,92 @@
             android:layout_marginRight="@dimen/dp6" />
 
     </RelativeLayout>
+<com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout
+    android:id="@+id/swipe_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/divider"
+    app:dragEdge="right"
+    app:mode="same_level">
+    <FrameLayout
+        android:id="@+id/delete_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="157dp"
+            android:layout_marginTop="@dimen/dp7"
+            android:layout_marginEnd="@dimen/dp4"
+            android:layout_marginRight="@dimen/dp4"
+            android:background="@drawable/result_white_box_copy"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/appointmentComplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp8"
+                android:layout_marginTop="@dimen/dp8"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Appointment"
+                    android:textColor="@color/tagColor" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="Completed"
+                    android:textColor="@color/tagColor" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="@dimen/dp1"
+                android:layout_marginStart="@dimen/dp1"
+                android:background="@color/tagColor" />
+
+            <LinearLayout
+                android:id="@+id/appointmentCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp8"
+                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="@dimen/dp8"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Appointment"
+                    android:textColor="@color/Red"
+                    app:customFont="@string/roboto_medium" />
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"
+                    android:textColor="@color/Red"
+                    app:customFont="@string/roboto_medium" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/front_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/cardView"
@@ -348,4 +436,6 @@
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
+    </FrameLayout>
+</com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout>
 </LinearLayout>

@@ -45,7 +45,11 @@
     <color name="dashboard_text_color">#995b5b5b</color>
     <color name="dashboard_menu_text_color">#5b5b5b</color>
     <color name="white">#ffffff</color>
-    <color name="complete_color">#6cbb8e</color>
+    <color name="complete_color">#6bbb8e</color>
+    <color name="confirm_color">#f1b76b</color>
+    <color name="cancel_color">#dc5e56</color>
+    <color name="other_color">#525e6d</color>
+    <color name="no_show_color">#77c0e2</color>
     <color name="book_color">#63c3d7</color>
     <color name="gender_drawer">#cacaca</color>
     <color name="choose_option_color">#6e6e6e</color>

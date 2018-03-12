@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.dashboard.AppointmentClinicList;
 import com.rescribe.doctor.ui.customesViews.CustomTypefaceSpan;
@@ -27,11 +28,11 @@ import butterknife.ButterKnife;
 
 public class DashBoardAppointmentListAdapter extends RecyclerView.Adapter<DashBoardAppointmentListAdapter.ListViewHolder> {
 
-    private String[] mDataListHospitalDetails = {"P.D.Hinduja National Hospital, Mumbai", "Pain Clinic, Pune"};
-    private String[] timingList = {"From 02:30 pm", "From 08:00 am"};
-    private String[] opdList = {"6 OPD, 4 OT", "2 OT"};
     private Context mContext;
-   private  ArrayList<AppointmentClinicList> mAppointmentClinicLists = new ArrayList<>();
+    private ArrayList<AppointmentClinicList> mAppointmentClinicLists = new ArrayList<>();
+    private String startTimeToShow;
+    private String stringFrom;
+
     public DashBoardAppointmentListAdapter(Context mContext, ArrayList<AppointmentClinicList> appointmentClinicList) {
         this.mContext = mContext;
         this.mAppointmentClinicLists = appointmentClinicList;
@@ -50,14 +51,20 @@ public class DashBoardAppointmentListAdapter extends RecyclerView.Adapter<DashBo
 
         //TODO : NEED TO IMPLEMENT
         final AppointmentClinicList appointmentClinicList = mAppointmentClinicLists.get(position);
-        String startTimeToShow = CommonMethods.formatDateTime(appointmentClinicList.getAppointmentStartTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss,RescribeConstants.TIME);
-        String otCount = appointmentClinicList.getAppointmentOTCount() +" OT";
-        String opdCount = appointmentClinicList.getAppointmentOpdCount() +" OPD, ";
-        String clinicInfo = appointmentClinicList.getClinicName()+", " +appointmentClinicList.getAreaName()+", "+appointmentClinicList.getCityName();
+        if (appointmentClinicList.getAppointmentStartTime().equals("")) {
+            stringFrom = "";
+            startTimeToShow = "";
+        } else {
+            stringFrom = " From ";
+            startTimeToShow = CommonMethods.formatDateTime(appointmentClinicList.getAppointmentStartTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME);
+        }
+        String otCount = appointmentClinicList.getAppointmentOTCount() + " OT";
+        String opdCount = appointmentClinicList.getAppointmentOpdCount() + " OPD, ";
+        String clinicInfo = appointmentClinicList.getClinicName() + ", " + appointmentClinicList.getAreaName() + ", " + appointmentClinicList.getCityName();
 
         Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/roboto_bold.ttf");
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(clinicInfo+ " From "+startTimeToShow.toLowerCase()+ " - " + opdCount +otCount);
-        spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), clinicInfo.length()+6+startTimeToShow.length()+3,spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(clinicInfo + stringFrom + startTimeToShow.toLowerCase() + " - " + opdCount + otCount);
+        spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), clinicInfo.length() + +stringFrom.length() + startTimeToShow.length() + 3, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         holder.textViewName.setText(spannableStringBuilder);
 
 

@@ -59,7 +59,7 @@ public class PatientDetailHelper implements ConnectionListener {
                         if (patientHistoryInfoMonthContainer != null) {
                             Map<String, ArrayList<PatientHistoryInfo>> monthWiseSortedPatientHistory = patientHistoryInfoMonthContainer.getMonthWiseSortedPatientHistory();
                             if(monthWiseSortedPatientHistory.size()>0)
-                            yearWiseSortedPatientHistoryInfo.put(patientHistoryInfoMonthContainer.getYear(), monthWiseSortedPatientHistory);
+                                yearWiseSortedPatientHistoryInfo.put(patientHistoryInfoMonthContainer.getYear(), monthWiseSortedPatientHistory);
                         }
                         mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                     }
@@ -95,9 +95,10 @@ public class PatientDetailHelper implements ConnectionListener {
 
     //get case study list
     public void doGetOneDayVisit(String opdId, String patientID) {
-       ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ONE_DAY_VISIT, Request.Method.GET, false);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ONE_DAY_VISIT, Request.Method.GET, false);
         mConnectionFactory.setHeaderParams();
-        mConnectionFactory.setUrl(Config.ONE_DAY_VISIT_URL + opdId + "&patientId="+ patientID);
+        String docId = (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
+        mConnectionFactory.setUrl(Config.ONE_DAY_VISIT_URL + opdId + "&patientId="+ patientID+"&docId="+docId);
         mConnectionFactory.createConnection(RescribeConstants.TASK_ONE_DAY_VISIT);
        /* try {
             InputStream is = mContext.getAssets().open("patient_details.json");

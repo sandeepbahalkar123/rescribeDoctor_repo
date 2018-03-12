@@ -88,7 +88,6 @@ public class DashboardHelper implements ConnectionListener {
         mConnectionFactory.setUrl(Config.GET_DASHBOARD_DATA);
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_DASHBOARD_RESPONSE);
     }
-
 }
 
 

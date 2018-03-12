@@ -302,7 +302,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                 break;
             case R.id.leftFab:
                 Intent intent = new Intent(getActivity(),ShowMyPatientsListActivity.class);
-                startActivity(intent);
+                getActivity().startActivityForResult(intent, 1111);
                 break;
         }
     }

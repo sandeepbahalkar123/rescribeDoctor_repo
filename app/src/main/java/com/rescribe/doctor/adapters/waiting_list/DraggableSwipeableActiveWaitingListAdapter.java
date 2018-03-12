@@ -44,18 +44,27 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeabl
 import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
+import com.rescribe.doctor.model.waiting_list.Active;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 import com.rescribe.doctor.util.dragable_swipable.DrawableUtils;
 import com.rescribe.doctor.util.dragable_swipable.ViewUtils;
 
-public class DraggableSwipeableWaitingListAdapter
-        extends RecyclerView.Adapter<DraggableSwipeableWaitingListAdapter.MyViewHolder>
-        implements DraggableItemAdapter<DraggableSwipeableWaitingListAdapter.MyViewHolder>,
-        SwipeableItemAdapter<DraggableSwipeableWaitingListAdapter.MyViewHolder> {
+public class DraggableSwipeableActiveWaitingListAdapter
+        extends RecyclerView.Adapter<DraggableSwipeableActiveWaitingListAdapter.MyViewHolder>
+        implements DraggableItemAdapter<DraggableSwipeableActiveWaitingListAdapter.MyViewHolder>,
+        SwipeableItemAdapter<DraggableSwipeableActiveWaitingListAdapter.MyViewHolder> {
     private static final String TAG = "MyDSItemAdapter";
 
     private int mPreLeftSwipePosition = RecyclerView.NO_POSITION;
+
+    public void removeItem(int index) {
+        mProvider.removeItem(index);
+        notifyItemRemoved(index);
+    }
+
+
+
 
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants {
@@ -70,7 +79,8 @@ public class DraggableSwipeableWaitingListAdapter
     private View.OnClickListener mSwipeableViewContainerOnClickListener;
 
     public interface EventListener {
-        void onDeleteClick(int position);
+        void onDeleteClick(int position, Active viewAll);
+
 
         void onItemPinned(int position);
 
@@ -136,7 +146,7 @@ public class DraggableSwipeableWaitingListAdapter
         }
     }
 
-    public DraggableSwipeableWaitingListAdapter(AbstractDataProvider dataProvider) {
+    public DraggableSwipeableActiveWaitingListAdapter(AbstractDataProvider dataProvider) {
         mProvider = dataProvider;
         mItemViewOnClickListener = new View.OnClickListener() {
             @Override
@@ -196,28 +206,28 @@ public class DraggableSwipeableWaitingListAdapter
         holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
 
         // set text
-        holder.mPatientNameTextView.setText(item.getViewAll().getPatientName());
+        holder.mPatientNameTextView.setText(item.getActiveAll().getPatientName());
 
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // call delete api
-                mEventListener.onDeleteClick(position);
+                mEventListener.onDeleteClick(position,item.getActiveAll());
             }
         });
 
-        holder.mPatientIdTextView.setText(holder.mPatientIdTextView.getResources().getString(R.string.id) + " " + item.getViewAll().getHospitalPatId());
-        if (!item.getViewAll().getWaitingInTime().equals("")) {
+        holder.mPatientIdTextView.setText(holder.mPatientIdTextView.getResources().getString(R.string.id) + " " + item.getActiveAll().getHospitalPatId());
+        if (!item.getActiveAll().getWaitingInTime().equals("")) {
             holder.mAppointmentTime.setVisibility(View.VISIBLE);
-            String waitingTime = CommonMethods.formatDateTime(item.getViewAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
+            String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
             holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
         } else {
             holder.mAppointmentTime.setVisibility(View.INVISIBLE);
         }
-        if (!item.getViewAll().getAppointmentTime().equals("")) {
+        if (!item.getActiveAll().getAppointmentTime().equals("")) {
             holder.mAppointmentTimeTextView.setVisibility(View.VISIBLE);
             holder.mAppointmentTimeTextView.setVisibility(View.VISIBLE);
-            String appointmentScheduleTime = CommonMethods.formatDateTime(item.getViewAll().getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
+            String appointmentScheduleTime = CommonMethods.formatDateTime(item.getActiveAll().getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
             holder.mAppointmentTimeTextView.setText(appointmentScheduleTime);
 
         } else {
@@ -225,11 +235,11 @@ public class DraggableSwipeableWaitingListAdapter
             holder.mAppointmentLabelTextView.setVisibility(View.INVISIBLE);
         }
 
-        holder.mPatientPhoneNumber.setText(item.getViewAll().getPatientPhone());
-        holder.mTokenNumber.setText(item.getViewAll().getTokenNumber());
-        holder.mPatientNameTextView.setText(item.getViewAll().getPatientName());
-        holder.mTypeStatus.setText(" " + item.getViewAll().getWaitingStatus());
-        TextDrawable textDrawable = CommonMethods.getTextDrawable(holder.mPatientImageView.getContext(), item.getViewAll().getPatientName());
+        holder.mPatientPhoneNumber.setText(item.getActiveAll().getPatientPhone());
+        holder.mTokenNumber.setText(item.getActiveAll().getTokenNumber());
+        holder.mPatientNameTextView.setText(item.getActiveAll().getPatientName());
+        holder.mTypeStatus.setText(" " + item.getActiveAll().getWaitingStatus());
+        TextDrawable textDrawable = CommonMethods.getTextDrawable(holder.mPatientImageView.getContext(), item.getActiveAll().getPatientName());
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
         requestOptions.override(holder.mPatientImageView.getResources().getDimensionPixelSize(R.dimen.dp67));
@@ -238,7 +248,7 @@ public class DraggableSwipeableWaitingListAdapter
         requestOptions.error(textDrawable);
 
         Glide.with(holder.mPatientImageView.getContext())
-                .load(item.getViewAll().getPatientImageUrl())
+                .load(item.getActiveAll().getPatientImageUrl())
                 .apply(requestOptions)
                 .into(holder.mPatientImageView);
 
@@ -270,11 +280,15 @@ public class DraggableSwipeableWaitingListAdapter
             holder.mContainer.setBackgroundResource(bgResId);
         }
 
-        // set swiping properties
-        // set swiping properties
-        holder.setMaxLeftSwipeAmount(-0.4f);
+        if(item.getActiveAll().getWaitingStatus().equals("In Queue")){
+            holder.setMaxLeftSwipeAmount(-0.4f);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
+        }else{
+            holder.setMaxLeftSwipeAmount(0);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
+        }
+
         holder.setMaxRightSwipeAmount(0);
-        holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
     }
 
     @Override
@@ -383,46 +397,13 @@ public class DraggableSwipeableWaitingListAdapter
         mEventListener = eventListener;
     }
 
-    /*private static class SwipeRightResultAction extends SwipeResultActionRemoveItem {
-        private DraggableSwipeableWaitingListAdapter mAdapter;
-        private final int mPosition;
-
-        SwipeRightResultAction(DraggableSwipeableWaitingListAdapter adapter, int position) {
-            mAdapter = adapter;
-            mPosition = position;
-        }
-
-        @Override
-        protected void onPerformAction() {
-            super.onPerformAction();
-
-            mAdapter.mProvider.removeItem(mPosition);
-            mAdapter.notifyItemRemoved(mPosition);
-        }
-
-        @Override
-        protected void onSlideAnimationEnd() {
-            super.onSlideAnimationEnd();
-
-            if (mAdapter.mEventListener != null) {
-                mAdapter.mEventListener.onItemPinned(mPosition);
-            }
-        }
-
-        @Override
-        protected void onCleanUp() {
-            super.onCleanUp();
-            // clear the references
-            mAdapter = null;
-        }
-    }*/
 
     private static class SwipeLeftResultAction extends SwipeResultActionMoveToSwipedDirection {
-        private DraggableSwipeableWaitingListAdapter mAdapter;
+        private DraggableSwipeableActiveWaitingListAdapter mAdapter;
         private final int mPosition;
         private boolean mSetPinned;
 
-        SwipeLeftResultAction(DraggableSwipeableWaitingListAdapter adapter, int position) {
+        SwipeLeftResultAction(DraggableSwipeableActiveWaitingListAdapter adapter, int position) {
             mAdapter = adapter;
             mPosition = position;
         }
@@ -458,10 +439,10 @@ public class DraggableSwipeableWaitingListAdapter
     }
 
     private static class UnpinResultAction extends SwipeResultActionDefault {
-        private DraggableSwipeableWaitingListAdapter mAdapter;
+        private DraggableSwipeableActiveWaitingListAdapter mAdapter;
         private final int mPosition;
 
-        UnpinResultAction(DraggableSwipeableWaitingListAdapter adapter, int position) {
+        UnpinResultAction(DraggableSwipeableActiveWaitingListAdapter adapter, int position) {
             mAdapter = adapter;
             mPosition = position;
         }
