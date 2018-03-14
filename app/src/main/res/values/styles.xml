@@ -32,9 +32,9 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <!-- <style name="tabTextSize" parent="Widget.Design.TabLayout">
-         <item name="android:textSize">@dimen/sp20</item>
-         <item name="android:textAllCaps">false</item>
+    <!-- <stsenderNamename="tabTextSize" parent="Widget.Design.TabLayout">
+         <isenderNamename="android:textSize">@dimen/sp20</item>
+         <isenderNamename="android:textAllCaps">false</item>
      </style>-->
 
     <style name="AppLoginMainStyle">

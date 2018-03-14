@@ -217,7 +217,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
         intent.putExtra(RescribeConstants.IS_CALL_FROM_MY_PATEINTS, true);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
+        getActivity().startActivityForResult(intent, Activity.RESULT_OK);
         getActivity().finish();
 
     }

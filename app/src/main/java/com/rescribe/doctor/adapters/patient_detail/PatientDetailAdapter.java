@@ -386,13 +386,13 @@ public class PatientDetailAdapter extends BaseExpandableListAdapter {
             } else if (mVisitDetailList.size() > 1) {
                 groupViewHolder.mDetailFirstPoint.setText(mVisitDetailList.get(0).getName() + "...");
             } else {
-//                SpannableString s = CommonMethods.addTextToStringAtLast(mVisitDetailList.get(0).getName(), 5, "...", ContextCompat.getColor(mContext, R.color.view_detail_color));
+//                SpannableString s = CommonMethods.addTextToStringAtLast(mVisitDetailList.get(0).getSenderName(), 5, "...", ContextCompat.getColor(mContext, R.color.view_detail_color));
                 String text = mVisitDetailList.get(0).getName();
                 if (text.length() > TEXT_LIMIT)
                     groupViewHolder.mDetailFirstPoint.setText(text.substring(0, TEXT_LIMIT - 1) + "...");
                 else groupViewHolder.mDetailFirstPoint.setText(text);
             }
-            //groupViewHolder.mDetailFirstPoint.setText(setStringLength(mVisitDetailList.get(0).getName()));// + ".......");
+            //groupViewHolder.mDetailFirstPoint.setText(setStringLength(mVisitDetailList.get(0).getSenderName()));// + ".......");
 
         }
         return convertView;

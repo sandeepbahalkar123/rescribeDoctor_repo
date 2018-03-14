@@ -1091,7 +1091,7 @@ processor	: 0
 vendor_id	: GenuineIntel
 cpu family	: 6
 model		: 61
-model name	: Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz
+model senderName	: Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz
 stepping	: 4
 microcode	: 0x22
 cpu MHz		: 2201.000
@@ -1117,7 +1117,7 @@ processor	: 1
 vendor_id	: GenuineIntel
 cpu family	: 6
 model		: 61
-model name	: Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz
+model senderName	: Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz
 stepping	: 4
 microcode	: 0x22
 cpu MHz		: 2201.000
@@ -1143,7 +1143,7 @@ processor	: 2
 vendor_id	: GenuineIntel
 cpu family	: 6
 model		: 61
-model name	: Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz
+model senderName	: Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz
 stepping	: 4
 microcode	: 0x22
 cpu MHz		: 2201.000
@@ -1169,7 +1169,7 @@ processor	: 3
 vendor_id	: GenuineIntel
 cpu family	: 6
 model		: 61
-model name	: Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz
+model senderName	: Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz
 stepping	: 4
 microcode	: 0x22
 cpu MHz		: 2201.000

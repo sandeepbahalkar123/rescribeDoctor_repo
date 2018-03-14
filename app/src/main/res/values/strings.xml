@@ -67,9 +67,9 @@
     <string name="enter_otp_for_login">Otp For Login</string>
     <string name="your_health">\"Your Own Healthcare Repository\"</string>
     <string name="using_otp">Using OTP</string>
-    <!-- <string name="google_maps_key">AIzaSyDxO-cLqGemArsUCSrn_uIUn5FzTkds4u0</string>-->
+    <!-- <strsenderNamename="google_maps_key">AIzaSyDxO-cLqGemArsUCSrn_uIUn5FzTkds4u0</string>-->
 
-    <!-- <string name="google_maps_key">AIzaSyDxO-cLqGemArsUCSrn_uIUn5FzTkds4u0</string>-->
+    <!-- <strsenderNamename="google_maps_key">AIzaSyDxO-cLqGemArsUCSrn_uIUn5FzTkds4u0</string>-->
     <!--Key for Release-->
 
     <!--Key for Debug-->

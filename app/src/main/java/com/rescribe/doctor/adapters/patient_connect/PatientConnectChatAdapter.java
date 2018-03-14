@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.rescribe.doctor.ui.activities.PatientConnectActivity.PATIENT_CONNECT_REQUEST;
+
 
 /**
  * Created by jeetal on 6/9/17.
@@ -146,7 +148,7 @@ public class PatientConnectChatAdapter extends RecyclerView.Adapter<PatientConne
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ChatActivity.class);
                 intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
-                ((PatientConnectActivity) mContext).startActivityForResult(intent, 1111);
+                ((PatientConnectActivity) mContext).startActivityForResult(intent, PATIENT_CONNECT_REQUEST);
             }
         });
         //---------

@@ -1,5 +1,6 @@
 package com.rescribe.doctor.adapters.my_patients;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
@@ -223,7 +224,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 doctorConnectChatModel.setImageUrl(patientObject.getPatientImageUrl());
                 doctorConnectChatModel.setPatientName(patientObject.getPatientName());
                 intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
-                ((MyPatientsActivity) mContext).startActivity(intent);
+                ((Activity) mContext).startActivityForResult(intent, Activity.RESULT_OK);
 
             }
         });

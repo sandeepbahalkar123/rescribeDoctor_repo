@@ -50,6 +50,8 @@ import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
 public class PatientConnectActivity extends AppCompatActivity implements HelperResponse, SearchView.OnQueryTextListener {
 
     private final static String TAG = "DoctorConnect";
+    public static final int PATIENT_CONNECT_REQUEST = 1111;
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -188,10 +190,11 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (Activity.RESULT_OK == resultCode) {
-            PatientData patientData = data.getParcelableExtra(RescribeConstants.CHAT_USERS);
-            mPatientConnectChatFragment.addItem(patientData);
+            if (requestCode == PATIENT_CONNECT_REQUEST) {
+                PatientData patientData = data.getParcelableExtra(RescribeConstants.CHAT_USERS);
+                mPatientConnectChatFragment.addItem(patientData);
+            }
         }
     }
 
