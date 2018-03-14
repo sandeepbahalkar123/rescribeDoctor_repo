@@ -2,6 +2,7 @@ package com.rescribe.doctor.ui.fragments.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -125,10 +126,13 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 break;
             case R.id.forgotPasswordView:
                 // on click of forgotPassword
-                Intent intentObj = new Intent(getActivity(), AppGlobalContainerActivity.class);
+                Uri uri = Uri.parse("https://drrescribe.com/app.html#/access/forgotPassword"); // missing 'http://' will cause crashed
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+              /*  Intent intentObj = new Intent(getActivity(), AppGlobalContainerActivity.class);
                 intentObj.putExtra(getString(R.string.type), getString(R.string.forgot_password));
                 intentObj.putExtra(getString(R.string.title), getString(R.string.forgot_password_header));
-                startActivity(intentObj);
+                startActivity(intentObj);*/
                 break;
             case R.id.signup:
                 //on click of signup , Signup fragment is loaded here.
@@ -156,21 +160,23 @@ public class LoginFragment extends Fragment implements HelperResponse {
         String enter = getString(R.string.enter);
         if (email.isEmpty()) {
             message = enter + getString(R.string.enter_email_id).toLowerCase(Locale.US);
+            editTextEmailID.setError(message);
             editTextEmailID.requestFocus();
 
         } else if (!CommonMethods.isValidEmail(email)) {
             message = getString(R.string.err_email_invalid);
+            editTextEmailID.setError(message);
             editTextEmailID.requestFocus();
 
         } else if (password.isEmpty()) {
             message = enter + getString(R.string.enter_password).toLowerCase(Locale.US);
             editTextPassword.setError(message);
             editTextPassword.requestFocus();
-        }/* else if (password.trim().length() < 8) {
+        } else if (password.trim().length() < 6) {
             message = getString(R.string.error_too_small_password);
             editTextPassword.setError(message);
             editTextPassword.requestFocus();
-        }*/
+        }
         if (message != null) {
             return true;
         } else {

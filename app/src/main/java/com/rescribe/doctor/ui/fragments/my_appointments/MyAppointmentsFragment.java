@@ -1,10 +1,13 @@
 package com.rescribe.doctor.ui.fragments.my_appointments;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -60,6 +63,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
@@ -107,6 +112,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     private int headerPos;
     private boolean isFromGroup;
     private String patientName;
+    private String phoneNo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -233,6 +239,12 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         for (int i = 0; i < count; i++) {
             expandableListView.collapseGroup(i);
         }
+    }
+
+    @Override
+    public void onPhoneNoClick(String patientPhone) {
+        MyAppointmentsActivity activity = (MyAppointmentsActivity) getActivity();
+        activity.callPatient(patientPhone);
     }
 
 
@@ -529,16 +541,15 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         });
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(true);
+
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
-
         dialog.getWindow().setAttributes(lp);
-        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(true);
         dialog.show();
 
     }

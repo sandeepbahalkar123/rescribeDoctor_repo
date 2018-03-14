@@ -168,11 +168,18 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private void initialize() {
 
         mDashboardHelper = new DashboardHelper(this, this);
-        mDashboardHelper.doGetDashboardResponse();
         mDashboardHelper.doDoctorGetLocationList();
+        if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
+            doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
+        } else {
+            doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
 
+        }
+        doctorNameTextView.setText(doctorNameToDisplay);
+        aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, mContext));
+        setUpImage();
+        mDashboardHelper.doGetDashboardResponse();
         //setWaitingOrAppointmentLayoutHere
-
 
     }
 
@@ -444,14 +451,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     todayFollowAppointmentTextView.setText("Today's Follow Ups");
                     todayNewAppointmentTextView.setText("Today's New Patients");
                     todayWaitingListOrAppointmentTextView.setText("Today's Appoinments");
-                    if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
-                        doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
-                    } else {
-                        doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
-
-                    }
-                    doctorNameTextView.setText(doctorNameToDisplay);
-                    aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, mContext));
                     setLayoutForAppointment();
                     // inflate waiting list layout
                     setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
@@ -459,7 +458,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     setLayoutForPatientConnect();
                     // inflate MyPatientsActivity layout
                     setLayoutForMyPatients();
-                    setUpImage();
+
 
                 } else if (mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size() > 0) {
                     todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
@@ -468,20 +467,12 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     todayFollowAppointmentTextView.setText("Today's Follow Ups");
                     todayNewAppointmentTextView.setText("Today's New Patients");
                     todayWaitingListOrAppointmentTextView.setText("Today's Waiting List");
-                    if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
-                        doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
-                    } else {
-                        doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
-
-                    }
-                    doctorNameTextView.setText(doctorNameToDisplay);
-                    aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY, mContext));
                     setLayoutForWaitingListIfAppointmentListEmpty();
                     // inflate patientConnect layout
                     setLayoutForPatientConnect();
                     // inflate MyPatientsActivity layout
                     setLayoutForMyPatients();
-                    setUpImage();
+
 
                 } else {
 

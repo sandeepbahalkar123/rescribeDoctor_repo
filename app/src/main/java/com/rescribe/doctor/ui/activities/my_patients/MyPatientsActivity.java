@@ -1,9 +1,12 @@
 package com.rescribe.doctor.ui.activities.my_patients;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -30,11 +33,13 @@ import java.util.HashSet;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by jeetal on 31/1/18.
  */
-
+@RuntimePermissions
 public class MyPatientsActivity extends AppCompatActivity implements HelperResponse, DrawerForMyPatients.OnDrawerInteractionListener {
     @BindView(R.id.backImageView)
     ImageView backImageView;
@@ -59,9 +64,10 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     private DrawerForMyPatients mDrawerForMyPatients;
     Intent mIntent;
     private String mActivityCalledFrom = "";
-    private boolean isFromDrawer ;
+    private boolean isFromDrawer;
     private RequestSearchPatients mRequestSearchPatientsFromDrawer = new RequestSearchPatients();
     public HashSet<Integer> selectedDoctorId = new HashSet<>();
+    private String phoneNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,8 +145,8 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
                 Bundle bundle = new Bundle();
                 bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM, mActivityCalledFrom);
                 bundle.putParcelable(RescribeConstants.MYPATIENTS_DATA, myAppointmentsBaseModel);
-                bundle.putBoolean(RescribeConstants.IS_FROM_DRAWER,isFromDrawer);
-                bundle.putParcelable(RescribeConstants.DRAWER_REQUEST,mRequestSearchPatientsFromDrawer);
+                bundle.putBoolean(RescribeConstants.IS_FROM_DRAWER, isFromDrawer);
+                bundle.putParcelable(RescribeConstants.DRAWER_REQUEST, mRequestSearchPatientsFromDrawer);
                 mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
             }
@@ -208,7 +214,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
         isFromDrawer = true;
-        mRequestSearchPatientsFromDrawer =  mRequestSearchPatients;
+        mRequestSearchPatientsFromDrawer = mRequestSearchPatients;
     }
 
     @Override
@@ -217,4 +223,25 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     }
 
 
+    public void callPatient(String patientPhone) {
+        phoneNo = patientPhone;
+        MyPatientsActivityPermissionsDispatcher.doCallSupportWithCheck(this);
+    }
+
+    @NeedsPermission(Manifest.permission.CALL_PHONE)
+    void doCallSupport() {
+        callSupport(phoneNo);
+    }
+
+    private void callSupport(String phoneNo) {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + phoneNo));
+        startActivity(callIntent);
+    }
+
+
+    public void onRequestPermssionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MyPatientsActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
 }

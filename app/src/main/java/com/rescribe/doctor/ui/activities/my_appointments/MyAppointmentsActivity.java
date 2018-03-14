@@ -1,9 +1,13 @@
 package com.rescribe.doctor.ui.activities.my_appointments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -36,11 +40,13 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by jeetal on 31/1/18.
  */
-
+@RuntimePermissions
 public class MyAppointmentsActivity extends AppCompatActivity implements HelperResponse, DrawerForMyAppointment.OnDrawerInteractionListener {
     @BindView(R.id.backImageView)
     ImageView backImageView;
@@ -72,6 +78,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private MyAppointmentsBaseModel myAppointmentsBaseMainModel;
     private ArrayList<ClinicList> mClinicListsFilter;
     private ArrayList<AppointmentList> mFilterAppointmentList;
+    private String phoneNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -355,4 +362,27 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     public void onReset(boolean drawerRequired) {
 
     }
+
+    public void callPatient(String patientPhone) {
+        phoneNo = patientPhone;
+        MyAppointmentsActivityPermissionsDispatcher.doCallSupportWithCheck(this);
+    }
+
+    @NeedsPermission(Manifest.permission.CALL_PHONE)
+    void doCallSupport() {
+        callSupport(phoneNo);
+    }
+
+    private void callSupport(String phoneNo) {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:"+phoneNo));
+        startActivity(callIntent);
+    }
+
+
+    public void onRequestPermssionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+       MyAppointmentsActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
 }

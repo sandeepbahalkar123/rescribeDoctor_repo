@@ -1,8 +1,12 @@
 package com.rescribe.doctor.ui.fragments.waiting_list;
 
+import android.Manifest;
+import android.content.Intent;
 import android.graphics.drawable.NinePatchDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,11 +56,13 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by jeetal on 22/2/18.
  */
-
+@RuntimePermissions
 public class ActivePatientListFragment extends Fragment implements HelperResponse {
 
     @BindView(R.id.recyclerView)
@@ -87,6 +93,9 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     private RecyclerViewSwipeManager recyclerViewSwipeManager;
     private RecyclerViewTouchActionGuardManager recyclerViewTouchActionGuardManager;
     private DraggableSwipeableActiveWaitingListAdapter mDraggableSwipeableActiveWaitingListAdapter;
+    private WaitingPatientList waitingPatientTempList;
+    private String phoneNo;
+
     public ActivePatientListFragment() {
     }
 
@@ -132,7 +141,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mLocationId = waitingclinicLists.get(i).getLocationId();
-                WaitingPatientList waitingPatientTempList = new WaitingPatientList();
+              waitingPatientTempList = new WaitingPatientList();
                 for (WaitingclinicList waitingclinicList : waitingclinicLists) {
                     if (mLocationId == waitingclinicList.getLocationId()) {
                         waitingPatientTempList = waitingclinicList.getWaitingPatientList();
@@ -234,6 +243,13 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
                 requestDeleteBaseModel.setWaitingSequence(viewAll.getWaitingSequence());
                 mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);
+
+            }
+
+            @Override
+            public void onPhoneClick(String phoneNumber) {
+                phoneNo = phoneNumber;
+                ActivePatientListFragmentPermissionsDispatcher.doCallSupportWithCheck(ActivePatientListFragment.this);
 
             }
 
@@ -344,7 +360,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     }
 
     public AbstractDataProvider getDataProvider() {
-        return new PatientDataActiveWaitingListProvider(waitingclinicLists.get(0).getWaitingPatientList().getActive());
+        return new PatientDataActiveWaitingListProvider(waitingPatientTempList.getActive());
     }
 
     public void notifyItemChanged(int position) {
@@ -355,6 +371,21 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         mAdapter.notifyItemInserted(position);
         recyclerView.scrollToPosition(position);
     }
+    @NeedsPermission(Manifest.permission.CALL_PHONE)
+    void doCallSupport() {
+        callSupport(phoneNo);
+    }
 
+    private void callSupport(String phoneNo) {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + phoneNo));
+        startActivity(callIntent);
+    }
+
+
+    public void onRequestPermssionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+       ActivePatientListFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
 
 }

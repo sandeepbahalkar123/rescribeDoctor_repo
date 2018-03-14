@@ -238,8 +238,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="@dimen/dp10"
-            android:paddingBottom="@dimen/dp10">
+            android:padding="@dimen/dp10">
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/docPracticesLocationCount"
@@ -288,8 +287,9 @@
                 style="@style/SpinnerThemeProfile"
                 android:visibility="visible"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:spinnerMode="dropdown" />
+
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 style="@style/SpinnerThemeProfile"
                 android:layout_width="match_parent"

@@ -78,7 +78,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
     public interface EventListener {
         void onDeleteClick(int position, Active viewAll);
-
+        void onPhoneClick(String phoneNumber);
 
         void onItemPinned(int position);
 
@@ -211,6 +211,12 @@ public class DraggableSwipeableActiveWaitingListAdapter
             public void onClick(View v) {
                 // call delete api
                 mEventListener.onDeleteClick(position, item.getActiveAll());
+            }
+        });
+        holder.mPatientPhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mEventListener.onPhoneClick(item.getActiveAll().getPatientPhone());
             }
         });
 

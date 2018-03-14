@@ -256,7 +256,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             } else {
                 clinicNameSpinner.setEnabled(true);
                 clinicNameSpinner.setClickable(true);
-                clinicNameSpinner.setBackground(ContextCompat.getDrawable(mContext, R.drawable.spinner_bg));
+                clinicNameSpinner.setBackground(ContextCompat.getDrawable(mContext, R.drawable.spinner_bg_profile));
             }
         } else {
             clinicNameSpinnerParentLayout.setVisibility(View.GONE);
@@ -384,10 +384,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             }
 
             CustomTextView dataView = (CustomTextView) view.findViewById(R.id.text);
-            Drawable leftDrawable = AppCompatResources.getDrawable(mContext, R.drawable.services_dot);
-            dataView.setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null);
-
-            dataView.setText("" + data);
+            dataView.setText(data);
             return view;
         }
     }
@@ -425,9 +422,9 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
             if (convertView == null) {
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                view = layoutInflater.inflate(R.layout.global_item_simple_spinner, null);
+                view = layoutInflater.inflate(R.layout.services_item_textview, null);
             }
-            CustomTextView dataView = (CustomTextView) view.findViewById(R.id.servicestextView);
+            CustomTextView dataView = (CustomTextView) view.findViewById(R.id.text);
             dataView.setText("" + mDocServiceList.get(position));
             return view;
         }

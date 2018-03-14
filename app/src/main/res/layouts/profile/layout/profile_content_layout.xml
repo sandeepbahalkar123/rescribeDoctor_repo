@@ -28,14 +28,14 @@
                     android:id="@+id/servicesLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dp10">
+                    android:orientation="vertical">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/servicesHeaderView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/services"
+                        android:padding="@dimen/dp10"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp16"
                         app:customFont="@string/roboto_medium" />
@@ -54,7 +54,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/read_more"
-                        android:layout_marginStart="@dimen/dp16"
+                        android:layout_marginStart="@dimen/dp10"
+                        android:paddingBottom="@dimen/dp10"
                         android:textColor="@color/tagColor"
                         android:visibility="gone"
                         app:customFont="@string/roboto_medium"

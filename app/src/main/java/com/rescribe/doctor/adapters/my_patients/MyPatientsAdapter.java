@@ -198,7 +198,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.checkbox.setVisibility(View.VISIBLE);
         else holder.checkbox.setVisibility(View.GONE);
 
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.patientDetailsClickLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 isLongPressed = !isLongPressed;
@@ -207,7 +207,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 return false;
             }
         });
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString(), isClickOnPatientDetailsRequired);
@@ -227,6 +227,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
             }
         });
+        holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnDownArrowClicked.onPhoneNoClick(patientObject.getPatientPhone());
+            }
+        });
+
 
     }
 
@@ -354,6 +361,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         void onCheckUncheckRemoveSelectAllSelection(boolean ischecked, PatientList patientObject);
 
         void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired);
+        void onPhoneNoClick(String patientPhone);
 
     }
 

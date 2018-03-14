@@ -56,7 +56,7 @@
     <string name="err_maximum_otp_retries">You have exceeded maximum retry of OTP generation, please try after sometime.</string>
     <string name="err_invalid_mobile_no">Enter valid mobile no.</string>
     <string name="enter_password">Password</string>
-    <string name="error_too_small_password">Password should be 8 characters long. </string>
+    <string name="error_too_small_password">Password should be 6 characters long. </string>
     <string name="title">Title</string>
     <string name="server_error">Server Error</string>
     <string name="add_caption">Add Caption</string>
@@ -65,7 +65,7 @@
     <!--//*** Google Map key-->
 
     <string name="enter_otp_for_login">Otp For Login</string>
-    <string name="your_health">Your Own Healthcare Repository</string>
+    <string name="your_health">\"Your Own Healthcare Repository\"</string>
     <string name="using_otp">Using OTP</string>
     <!-- <string name="google_maps_key">AIzaSyDxO-cLqGemArsUCSrn_uIUn5FzTkds4u0</string>-->
 

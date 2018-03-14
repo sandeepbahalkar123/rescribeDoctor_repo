@@ -245,7 +245,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder.checkbox.setVisibility(View.VISIBLE);
         else viewHolder.checkbox.setVisibility(View.GONE);
 
-        viewHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+        viewHolder.patientDetailsClickLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 isLongPressed = !isLongPressed;
@@ -254,7 +254,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 return false;
             }
         });
-        viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mOnDownArrowClicked.onClickOfPatientDetails(mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition), viewHolder.patientAgeTextView.getText().toString() + viewHolder.patientGenderTextView.getText().toString());
@@ -274,7 +274,12 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 binderHelper.closeLayout(patientList.getPatientName());
             }
         });
-
+        viewHolder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnDownArrowClicked.onPhoneNoClick(patientList.getPatientPhone());
+            }
+        });
     }
 
     private int getSelectedCount(List<PatientList> patientList) {
@@ -426,14 +431,26 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.mHospitalDetailsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isExpanded) {
-                    groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
-                    groupViewHolder.upArrow.setVisibility(View.GONE);
-                } else {
-                    groupViewHolder.mDownArrow.setVisibility(View.GONE);
-                    groupViewHolder.upArrow.setVisibility(View.VISIBLE);
+                if(appointmentListObject.getPatientList().size()==1){
+                    if (isExpanded) {
+                        groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
+                        groupViewHolder.upArrow.setVisibility(View.GONE);
+                    } else {
+                        groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
+                        groupViewHolder.upArrow.setVisibility(View.GONE);
+                    }
+                    mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
+
+                }else {
+                    if (isExpanded) {
+                        groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
+                        groupViewHolder.upArrow.setVisibility(View.GONE);
+                    } else {
+                        groupViewHolder.mDownArrow.setVisibility(View.GONE);
+                        groupViewHolder.upArrow.setVisibility(View.VISIBLE);
+                    }
+                    mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
                 }
-                mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
             }
         });
         groupViewHolder.mGroupCheckbox.setChecked(appointmentListObject.isSelectedGroupCheckbox());
@@ -476,7 +493,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             }
         });
 
-        groupViewHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+        groupViewHolder.mPatientDetailsClickLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 isLongPressed = !isLongPressed;
@@ -485,7 +502,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 return false;
             }
         });
-        groupViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+        groupViewHolder.mPatientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mOnDownArrowClicked.onClickOfPatientDetails(appointmentListObject.getPatientHeader(), groupViewHolder.mPatientAgeTextView.getText().toString() + groupViewHolder.mPatientGenderTextView.getText().toString());
@@ -512,6 +529,12 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             public void onClick(View view) {
                 mOnDownArrowClicked.onGroupAppointmentCancelled(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 4, "cancel", groupPosition);
                 binderHelper.closeLayout(groupPosition + "");
+            }
+        });
+        groupViewHolder.mPatientPhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnDownArrowClicked.onPhoneNoClick(appointmentListObject.getPatientHeader().getPatientPhone());
             }
         });
     }
@@ -684,7 +707,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         private SwipeRevealLayout swipe_layout;
         private LinearLayout cardView;
         private CheckBox mCheckbox;
-        private RelativeLayout patientDetailsClickLinearLayout;
+        private RelativeLayout mPatientDetailsClickLinearLayout;
         private CheckBox mGroupCheckbox;
         private LinearLayout downArrowClickLinearLayout;
         private RelativeLayout mHospitalDetailsLinearLayout;
@@ -716,7 +739,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             mAppointmentComplete = (LinearLayout) convertView.findViewById(R.id.appointmentComplete);
             swipe_layout = (SwipeRevealLayout) convertView.findViewById(R.id.swipe_layout);
             mCheckbox = (CheckBox) convertView.findViewById(R.id.checkbox);
-            patientDetailsClickLinearLayout = (RelativeLayout) convertView.findViewById(R.id.patientDetailsClickLinearLayout);
+            mPatientDetailsClickLinearLayout = (RelativeLayout) convertView.findViewById(R.id.patientDetailsClickLinearLayout);
             mGroupCheckbox = (CheckBox) convertView.findViewById(R.id.groupCheckbox);
             downArrowClickLinearLayout = (LinearLayout) convertView.findViewById(R.id.downArrowClickLinearLayout);
             cardView = (LinearLayout) convertView.findViewById(R.id.cardView);
@@ -765,6 +788,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         void expandAll();
 
         void collapseAll();
+
+        void onPhoneNoClick(String patientPhone);
     }
 
 }

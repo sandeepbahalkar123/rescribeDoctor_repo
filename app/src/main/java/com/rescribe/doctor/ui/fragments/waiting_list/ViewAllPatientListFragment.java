@@ -1,8 +1,12 @@
 package com.rescribe.doctor.ui.fragments.waiting_list;
 
+import android.Manifest;
+import android.content.Intent;
 import android.graphics.drawable.NinePatchDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,11 +53,13 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by jeetal on 22/2/18.
  */
-
+@RuntimePermissions
 public class ViewAllPatientListFragment extends Fragment implements OnStartDragListener, HelperResponse {
 
     private RecyclerView.LayoutManager mLayoutManager;
@@ -85,6 +91,8 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     private AppointmentHelper mAppointmentHelper;
     private int mLocationId;
     private DraggableSwipeableViewAllWaitingListAdapter myItemAdapter;
+    private WaitingPatientList waitingPatientTempList;
+    private String phoneNo;
 
     public ViewAllPatientListFragment() {
     }
@@ -137,7 +145,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mLocationId = waitingclinicLists.get(i).getLocationId();
-                WaitingPatientList waitingPatientTempList = new WaitingPatientList();
+                waitingPatientTempList = new WaitingPatientList();
                 for (WaitingclinicList waitingclinicList : waitingclinicLists) {
                     if (mLocationId == waitingclinicList.getLocationId()) {
                         waitingPatientTempList = waitingclinicList.getWaitingPatientList();
@@ -147,15 +155,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
                     recyclerView.setVisibility(View.VISIBLE);
                     recyclerView.setClipToPadding(false);
-           /* mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientTempList.getViewAll(), ViewAllPatientListFragment.this);
-            LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(linearlayoutManager);
-            // off recyclerView Animation
-            RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-            if (animator instanceof SimpleItemAnimator)
-                ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-            recyclerView.setAdapter(mViewAllWaitingListAdapter);*/
-
                     setAdapter();
                 }
 
@@ -219,6 +218,12 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
 
+            }
+
+            @Override
+            public void onPhoneClick(String patientPhone) {
+                phoneNo = patientPhone;
+                ViewAllPatientListFragmentPermissionsDispatcher.doCallSupportWithCheck(ViewAllPatientListFragment.this);
             }
         });
 
@@ -374,7 +379,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     }
 
     public AbstractDataProvider getDataProvider() {
-        return new PatientDataProvider(waitingclinicLists.get(0).getWaitingPatientList().getViewAll());
+        return new PatientDataProvider(waitingPatientTempList.getViewAll());
     }
 
     public void notifyItemChanged(int position) {
@@ -384,5 +389,21 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     public void notifyItemInserted(int position) {
         mAdapter.notifyItemInserted(position);
         recyclerView.scrollToPosition(position);
+    }
+    @NeedsPermission(Manifest.permission.CALL_PHONE)
+    void doCallSupport() {
+        callSupport(phoneNo);
+    }
+
+    private void callSupport(String phoneNo) {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + phoneNo));
+        startActivity(callIntent);
+    }
+
+
+    public void onRequestPermssionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ViewAllPatientListFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 }

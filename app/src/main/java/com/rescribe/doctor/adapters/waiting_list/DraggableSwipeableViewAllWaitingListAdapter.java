@@ -89,6 +89,8 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         void onItemViewClicked(View v, boolean pinned);
 
         void onItemMoved(int fromPosition, int toPosition);
+
+        void onPhoneClick(String patientPhone);
     }
 
     public static class MyViewHolder extends AbstractDraggableSwipeableItemViewHolder {
@@ -217,6 +219,13 @@ public class DraggableSwipeableViewAllWaitingListAdapter
                 mEventListener.onDeleteClick(position, item.getViewAll());
             }
         });
+        holder.mPatientPhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mEventListener.onPhoneClick(item.getViewAll().getPatientPhone());
+            }
+        });
+
 
         holder.mPatientIdTextView.setText(holder.mPatientIdTextView.getResources().getString(R.string.id) + " " + item.getViewAll().getHospitalPatId());
         if (!item.getViewAll().getWaitingInTime().equals("")) {

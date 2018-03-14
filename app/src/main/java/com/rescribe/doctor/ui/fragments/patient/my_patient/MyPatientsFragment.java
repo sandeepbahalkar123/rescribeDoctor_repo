@@ -272,8 +272,35 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             intent.putExtra(RescribeConstants.PATIENT_INFO, b);
             startActivity(intent);
         }else{
+            patientsListAddToWaitingLists = new ArrayList<>();
+            for (int childIndex = 0; childIndex < mMyPatientsAdapter.getGroupList().size(); childIndex++) {
+                PatientList patientList = mMyPatientsAdapter.getGroupList().get(childIndex);
+                if (patientList.getHospitalPatId().equals(patientListObject.getHospitalPatId())) {
+                    PatientsListAddToWaitingList patientInfoListObject = new PatientsListAddToWaitingList();
+                    patientInfoListObject.setPatientName(patientList.getPatientName());
+                    patientInfoListObject.setPatientId(String.valueOf(patientList.getPatientId()));
+                    patientInfoListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
+                    patientsListAddToWaitingLists.add(patientInfoListObject);
+
+                }
+            }
+
+            if (!patientsListAddToWaitingLists.isEmpty()) {
+
+                showDialogToSelectLocation(mDoctorLocationModel);
+
+            } else {
+             //   CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
+
+            }
 
         }
+    }
+
+    @Override
+    public void onPhoneNoClick(String patientPhone) {
+        MyPatientsActivity activity = (MyPatientsActivity) getActivity();
+        activity.callPatient(patientPhone);
     }
 
 
@@ -439,7 +466,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         lp.gravity = Gravity.CENTER;
 
         dialog.getWindow().setAttributes(lp);
-        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
     }
@@ -494,7 +520,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         lp.gravity = Gravity.CENTER;
 
         dialog.getWindow().setAttributes(lp);
-        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
     }

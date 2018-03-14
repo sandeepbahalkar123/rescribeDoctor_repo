@@ -136,16 +136,16 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             String loweCaseMsg = doctorConnectChatModel.getPatientName().toLowerCase();
             int startIndex = loweCaseMsg.indexOf(lowerCaseSearchString);
             if (startIndex != -1) {
-                SpannableString spannableStringSearch = new SpannableString(doctorConnectChatModel.getPatientName());
+                SpannableString spannableStringSearch = new SpannableString(CommonMethods.toCamelCase(doctorConnectChatModel.getPatientName()));
                 spannableStringSearch.setSpan(new ForegroundColorSpan(
                                 ContextCompat.getColor(mContext, R.color.tagColor)), startIndex
                         , startIndex + searchString.length(),
                         Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 holder.doctorName.setText(spannableStringSearch);
             } else
-                holder.doctorName.setText(doctorConnectChatModel.getPatientName());
+                holder.doctorName.setText(CommonMethods.toCamelCase(doctorConnectChatModel.getPatientName()));
         } else
-            holder.doctorName.setText(doctorConnectChatModel.getPatientName());
+            holder.doctorName.setText(CommonMethods.toCamelCase(doctorConnectChatModel.getPatientName()));
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
