@@ -74,7 +74,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     EditTextWithDeleteButton searchEditText;
     @BindView(R.id.whiteUnderLine)
     ImageView whiteUnderLine;
-    public static ExpandableListView expandableListView;
+    public ExpandableListView expandableListView;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.appointmentLayoutContainer)
@@ -88,7 +88,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     @BindView(R.id.recyclerViewBottom)
     RecyclerView recyclerViewBottom;
     Unbinder unbinder;
-    private static AppointmentAdapter mAppointmentAdapter;
+    private AppointmentAdapter mAppointmentAdapter;
     private MyAppointmentsDataModel mMyAppointmentsDataModel;
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
     private int mGroupPosition;
@@ -221,14 +221,14 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         return fragment;
     }
 
-    public static void expandAll() {
+    public void expandAll() {
         int count = mAppointmentAdapter.getGroupCount();
         for (int i = 0; i < count; i++) {
             expandableListView.expandGroup(i);
         }
     }
 
-    public static void collapseAll() {
+    public void collapseAll() {
         int count = mAppointmentAdapter.getGroupCount();
         for (int i = 0; i < count; i++) {
             expandableListView.collapseGroup(i);
