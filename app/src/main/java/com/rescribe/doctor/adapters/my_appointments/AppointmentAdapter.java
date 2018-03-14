@@ -624,7 +624,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                         mOnDownArrowClicked.expandAll();
                     }
                 }
-
             }
         };
     }
