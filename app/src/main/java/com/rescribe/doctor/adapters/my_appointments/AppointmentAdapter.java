@@ -663,14 +663,25 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             groupViewHolder.mHospitalDetailsLinearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (isExpanded) {
-                        groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
-                        groupViewHolder.upArrow.setVisibility(View.GONE);
-                    } else {
-                        groupViewHolder.mDownArrow.setVisibility(View.GONE);
-                        groupViewHolder.upArrow.setVisibility(View.VISIBLE);
+                    if(mAppointmentListTemp.get(groupPosition).getPatientList().size()==1){
+                        if(isExpanded){
+                            groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
+                            groupViewHolder.upArrow.setVisibility(View.GONE);
+                        }else{
+                            groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
+                            groupViewHolder.upArrow.setVisibility(View.GONE);
+                        }
+                    }else{
+                        if (isExpanded) {
+                            groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
+                            groupViewHolder.upArrow.setVisibility(View.GONE);
+                        } else {
+                            groupViewHolder.mDownArrow.setVisibility(View.GONE);
+                            groupViewHolder.upArrow.setVisibility(View.VISIBLE);
+                        }
+                        mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
                     }
-                    mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
+
                 }
             });
             groupViewHolder.mGroupCheckbox.setChecked(appointmentListObject.isSelectedGroupCheckbox());
@@ -684,7 +695,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                     int selected = getSelectedCount(appointmentListObject.getPatientList());
                     appointmentListObject.setSelectedGroupCheckbox(selected == appointmentListObject.getPatientList().size() && appointmentListObject.getPatientHeader().isSelected());
                     mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(groupViewHolder.mCheckbox.isChecked());
-
                     notifyDataSetChanged();
                 }
             });
