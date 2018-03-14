@@ -1,5 +1,6 @@
 package com.rescribe.doctor.adapters.patient_connect;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +30,9 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.rescribe.doctor.ui.activities.PatientConnectActivity.PATIENT_CONNECT_REQUEST;
+import static com.rescribe.doctor.util.RescribeConstants.IS_CALL_FROM_MY_PATEINTS;
 
 
 /**
@@ -152,7 +156,8 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ChatActivity.class);
                 intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
-                mContext.startActivity(intent);
+                intent.putExtra(IS_CALL_FROM_MY_PATEINTS, true);
+                ((Activity) mContext).startActivityForResult(intent, PATIENT_CONNECT_REQUEST);
             }
         });
 

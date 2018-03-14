@@ -245,7 +245,7 @@ public class AddRecordsActivity extends AppCompatActivity implements DoctorSpinn
                 } else {
                     RequestAddDoctorModel requestAddDoctorModel = new RequestAddDoctorModel();
                     requestAddDoctorModel.setAddress(selectAddressText.getText().toString());
-                    requestAddDoctorModel.setName(mSelectDoctorName.getText().toString());
+                    requestAddDoctorModel.setSenderName(mSelectDoctorName.getText().toString());
                     myRecordsHelper.addDoctor(requestAddDoctorModel);
                 }*/
                 callRecordsActivity();

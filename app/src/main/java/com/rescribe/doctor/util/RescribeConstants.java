@@ -172,102 +172,106 @@ public class RescribeConstants {
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
 
+    public static final String[] SALUTATION = {"Mr.", "Mrs.", "Miss", "Other"};
+    public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};
+
     public interface USER_STATUS {
-        public static final String ONLINE = "Online";
-        public static final String OFFLINE = "Offline";
-        public static final String TYPING = "Typing";
-        public static final String IDLE = "Idle";
+        String ONLINE = "Online";
+        String OFFLINE = "Offline";
+        String TYPING = "Typing";
+        String IDLE = "Idle";
     }
 
     // change
     public interface MESSAGE_STATUS {
-        public static final String SEEN = "seen";
-        public static final String REACHED = "reached";
-        public static final String SENT = "sent";
-        public static final String PENDING = "pending";
+        String SEEN = "seen";
+        String REACHED = "reached";
+        String SENT = "sent";
+        String PENDING = "pending";
 
-        public static final int READ = 1;
-        public static final int UNREAD = 0;
+        int READ = 1;
+        int UNREAD = 0;
     }
 
     public interface FILE_STATUS {
-        public static final int UPLOADING = 1;
-        public static final int DOWNLOADING = 1;
-        public static final int FAILED = 0;
-        public static final int COMPLETED = 3;
+        int UPLOADING = 1;
+        int DOWNLOADING = 1;
+        int FAILED = 0;
+        int COMPLETED = 3;
     }
 
     public interface PRESCRIPTION_LIST_PARAMS {
-        public static final String PATIENT_NAME = "User-ID";
-        public static final String FILE_TYPE = "fileType";
-        public static final String DATE_TYPE = "dateType";
-        public static final String FROM_DATE = "fromDate";
-        public static final String TO_DATE = "toDate";
-        public static final String ANNOTATION_TEXT = "annotationText";
-        public static final String DOC_TYPE_ID = "DocTypeId";
+        String PATIENT_NAME = "User-ID";
+        String FILE_TYPE = "fileType";
+        String DATE_TYPE = "dateType";
+        String FROM_DATE = "fromDate";
+        String TO_DATE = "toDate";
+        String ANNOTATION_TEXT = "annotationText";
+        String DOC_TYPE_ID = "DocTypeId";
     }
 
+
     public interface DATE_PATTERN {
-        public static String YYYY_MM_DD_hh_mm_a = "yyyy-MM-dd hh:mm a";
-        public static String DD_MM = "dd/MM";
-        public static final String MM = "MM";
-        public static final String MMM = "MMM";
-        public static final String UTC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-        public final static String YYYY_MM_DD = "yyyy-MM-dd";
-        public final static String DD_MM_YYYY = "dd-MM-yyyy";
-        public final static String DD_MMMM_YYYY = "dd MMMM yyyy"; // 12-September-2017
-        public final static String hh_mm_a = "hh:mm a";
-        public static final String TOTIMEZONE = "Asia/Kolkata";
-        public final static String EEEE_dd_MMM_yyyy_hh_mm_a = "EEEE dd MMM yyyy | hh:mm a";
-        public static String HH_mm_ss = "HH:mm:ss";
-        public static String DD_MM_YYYY_hh_mm = "dd/MM/yyyy hh:mm aa";
-        public static String HH_MM = "hh:mm";
-        public static String MMM_YYYY = "MMM, yyyy";
-        public static String MMM_YY = "MMM, yy";
-        public static String DD_MM_YYYY_hh_mm_ss = "dd-MM-yyyy hh:mm:ss";
-        public static String YYYY_MM_DD_hh_mm_ss = "yyyy-MM-dd hh:mm:ss";
-        public static String YYYY_MM_DD_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
+        String YYYY_MM_DD_hh_mm_a = "yyyy-MM-dd hh:mm a";
+        String DD_MM = "dd/MM";
+        String MM = "MM";
+        String MMM = "MMM";
+        String UTC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        String YYYY_MM_DD = "yyyy-MM-dd";
+        String DD_MM_YYYY = "dd-MM-yyyy";
+        String DD_MMMM_YYYY = "dd MMMM yyyy"; // 12-September-2017
+        String hh_mm_a = "hh:mm a";
+        String TOTIMEZONE = "Asia/Kolkata";
+        String EEEE_dd_MMM_yyyy_hh_mm_a = "EEEE dd MMM yyyy | hh:mm a";
+        String HH_mm_ss = "HH:mm:ss";
+        String DD_MM_YYYY_hh_mm = "dd/MM/yyyy hh:mm aa";
+        String HH_MM = "hh:mm";
+        String MMM_YYYY = "MMM, yyyy";
+        String MMM_YY = "MMM, yy";
+        String DD_MM_YYYY_hh_mm_ss = "dd-MM-yyyy hh:mm:ss";
+        String YYYY_MM_DD_hh_mm_ss = "yyyy-MM-dd hh:mm:ss";
+        String YYYY_MM_DD_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
     }
 
     public interface TIME_STAMPS {
-        public static final int FIVE_FIFTY = 500;
-        public static int ONE_SECONDS = 1000;
-        public static int TWO_SECONDS = 2000;
-        public static int THREE_SECONDS = 3000;
+        int FIVE_FIFTY = 500;
+        int ONE_SECONDS = 1000;
+        int TWO_SECONDS = 2000;
+        int THREE_SECONDS = 3000;
     }
 
     public interface FILE {
-        public static final String IMG = "img";
-        public static final String DOC = "doc";
-        public static final String VID = "vid";
-        public static final String AUD = "aud";
-        public static final String LOC = "loc";
+        String IMG = "img";
+        String DOC = "doc";
+        String VID = "vid";
+        String AUD = "aud";
+        String LOC = "loc";
     }
 
     public interface FILE_EMOJI {
-        public static final String IMG_FILE = "🏞 Image";
-        public static final String DOC_FILE = "📒 Document";
-        public static final String VID_FILE = "📹 Video";
-        public static final String AUD_FILE = "🔊 Audio";
-        public static final String LOC_FILE = "📍 Location";
+        String IMG_FILE = "🏞 Image";
+        String DOC_FILE = "📒 Document";
+        String VID_FILE = "📹 Video";
+        String AUD_FILE = "🔊 Audio";
+        String LOC_FILE = "📍 Location";
     }
 
     public interface INVESTIGATION_KEYS {
-        public static final String INVESTIGATION_DATE = "investigation_date";
-        public static final String INVESTIGATION_TIME = "investigation_time";
-        public static final String INVESTIGATION_TEMP_DATA = "investigation_temp_data";
-        public static final String INVESTIGATION_MESSAGE = "investigation_message";
-        public static final String INVESTIGATION_DATA = "investigation_data";
-        public static final String INVESTIGATION_NOTIFICATION_ID = "investigation_notification_id";
-        public static final String IMAGE_ID = "imgId";
-        public static final String INV_ID = "invId";
+        String INVESTIGATION_DATE = "investigation_date";
+        String INVESTIGATION_TIME = "investigation_time";
+        String INVESTIGATION_TEMP_DATA = "investigation_temp_data";
+        String INVESTIGATION_MESSAGE = "investigation_message";
+        String INVESTIGATION_DATA = "investigation_data";
+        String INVESTIGATION_NOTIFICATION_ID = "investigation_notification_id";
+        String IMAGE_ID = "imgId";
+        String INV_ID = "invId";
     }
 
     public interface PATIENT_OPDS_STATUS {
-        public static final String OPD_COMPLETED = "opd completed";
-        public static final String OPD_SAVED = "opd saved";
-        public static final String ONLY_ATTACHMENTS = "only attachments";
-        public static final String NO_SHOW = "no show";
+        String OPD_COMPLETED = "opd completed";
+        String OPD_SAVED = "opd saved";
+        String ONLY_ATTACHMENTS = "only attachments";
+        String NO_SHOW = "no show";
     }
 }
 

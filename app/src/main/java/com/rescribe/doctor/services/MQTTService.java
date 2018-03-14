@@ -230,7 +230,7 @@ public class MQTTService extends Service {
                                                 // change
                                                 statusInfo.setMessageStatus(REACHED);
 
-                                                MessageNotification.notify(mContext, messagesTemp, messageL.getName(), getProfilePhotoBitmap(messageL), (int) appDBHelper.unreadChatMessageCountByPatientId(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
+                                                MessageNotification.notify(mContext, messagesTemp, messageL.getSenderName(), getProfilePhotoBitmap(messageL), (int) appDBHelper.unreadChatMessageCountByPatientId(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
                                             } else {
                                                 // change
                                                 messageL.setReadStatus(READ);
@@ -480,8 +480,8 @@ public class MQTTService extends Service {
     private Bitmap getProfilePhotoBitmap(final MQTTMessage messageL) {
 
         TextDrawable mReceiverDrawable = null;
-        String doctorName = messageL.getName();
-        String doctorPhoto = messageL.getImageUrl();
+        String doctorName = messageL.getSenderName();
+        String doctorPhoto = messageL.getSenderImgUrl();
 
         if (!doctorName.isEmpty()) {
             doctorName = doctorName.replace("Dr. ", "");

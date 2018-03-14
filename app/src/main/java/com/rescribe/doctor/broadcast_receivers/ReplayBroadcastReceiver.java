@@ -57,8 +57,8 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements Help
             String imageUrl = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, context);
             String speciality = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY, context);
 
-            messageL.setName(doctorName);
-            messageL.setImageUrl(imageUrl);
+            messageL.setSenderName(doctorName);
+            messageL.setSenderImgUrl(imageUrl);
             messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
 
             messageL.setFileUrl("");

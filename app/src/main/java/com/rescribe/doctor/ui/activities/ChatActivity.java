@@ -395,6 +395,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                     setResult(Activity.RESULT_CANCELED);
                 else {
                     Intent in = new Intent();
+                    chatList.setLastChatTime(mqttMessages.get(mqttMessages.size() - 1).getMsgTime());
                     in.putExtra(RescribeConstants.CHAT_USERS, chatList);
                     setResult(Activity.RESULT_OK, in);
                 }
@@ -432,7 +433,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
             if (gotIntent.getAction().equals(REPLY_ACTION)) {
                 chatList = new PatientData();
                 MQTTMessage mqttMessage = gotIntent.getParcelableExtra(ReplayBroadcastReceiver.MESSAGE_LIST);
-                chatList.setPatientName(mqttMessage.getName());
+                chatList.setPatientName(mqttMessage.getSenderName());
                 chatList.setId(mqttMessage.getPatId());
                 chatList.setOnlineStatus(ONLINE);
                 chatList.setUnreadMessages(0);
@@ -441,7 +442,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
         } else
             chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
-        isCallFromPatientList = getIntent().getBooleanExtra(RescribeConstants.IS_CALL_FROM_MY_PATEINTS,false);
+        isCallFromPatientList = getIntent().getBooleanExtra(RescribeConstants.IS_CALL_FROM_MY_PATEINTS, false);
         receiverName.setText(chatList.getPatientName());
         String patientName = chatList.getPatientName();
 
@@ -487,7 +488,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                     .buildRound(("" + doctorName.charAt(0)).toUpperCase(), color2);
         }
 
-        dateTime.setText(""+chatList.getOnlineStatus());
+        dateTime.setText("" + chatList.getOnlineStatus());
         setUserStatusColor(chatList.getOnlineStatus());
 
         if (chatList.getOnlineStatus().equalsIgnoreCase(ONLINE))
@@ -631,13 +632,13 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 mqttMessage.setSender(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER)));
                 mqttMessage.setPatId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER2ID)));
                 mqttMessage.setDocId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER1ID)));
-                mqttMessage.setName(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDERNAME)));
+                mqttMessage.setSenderName(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDERNAME)));
 
                 mqttMessage.setSpecialization(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SPECIALITY)));
 
                 mqttMessage.setMsgStatus(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSGSTATUS)) == null ? SENT : cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSGSTATUS)));
 
-                mqttMessage.setImageUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDERIMGURL)));
+                mqttMessage.setSenderImgUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDERIMGURL)));
                 mqttMessage.setFileUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILEURL)));
                 mqttMessage.setFileType(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILETYPE)));
 
@@ -956,9 +957,9 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
                     messageL.setDocId(Integer.parseInt(docId));
                     messageL.setPatId(chatList.getId());
-                    messageL.setName(docName);
+                    messageL.setSenderName(docName);
                     messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
-                    messageL.setImageUrl(imageUrl);
+                    messageL.setSenderImgUrl(imageUrl);
                     messageL.setSpecialization(speciality);
                     messageL.setPaidStatus(FREE);
 
@@ -1100,9 +1101,9 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         messageL.setDocId(Integer.parseInt(docId));
         messageL.setPatId(chatList.getId());
 
-        messageL.setName(docName);
+        messageL.setSenderName(docName);
         messageL.setOnlineStatus(ONLINE);
-        messageL.setImageUrl(imageUrl);
+        messageL.setSenderImgUrl(imageUrl);
 
         messageL.setFileType(RescribeConstants.FILE.LOC);
         messageL.setSpecialization("");
@@ -1147,9 +1148,9 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
             messageL.setDocId(Integer.parseInt(docId));
             messageL.setPatId(chatList.getId());
-            messageL.setName(docName);
+            messageL.setSenderName(docName);
             messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
-            messageL.setImageUrl(imageUrl);
+            messageL.setSenderImgUrl(imageUrl);
             messageL.setSpecialization(speciality);
             messageL.setPaidStatus(FREE);
 
@@ -1187,9 +1188,9 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
             messageL.setMsgId(generatedId);
             messageL.setDocId(Integer.parseInt(docId));
             messageL.setPatId(chatList.getId());
-            messageL.setName(docName);
+            messageL.setSenderName(docName);
             messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
-            messageL.setImageUrl(imageUrl);
+            messageL.setSenderImgUrl(imageUrl);
             messageL.setSpecialization(speciality);
             messageL.setPaidStatus(FREE);
 

@@ -1,5 +1,6 @@
 package com.rescribe.doctor.adapters.patient_connect;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
@@ -32,6 +33,7 @@ import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.PATIENT;
 import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
 import static com.rescribe.doctor.ui.activities.ChatActivity.SEARCHED_TEXT;
+import static com.rescribe.doctor.util.RescribeConstants.IS_CALL_FROM_MY_PATEINTS;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.PENDING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
@@ -98,7 +100,7 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
             holder.headingText.setVisibility(View.VISIBLE);
         else holder.headingText.setVisibility(View.GONE);
 
-        String patientName = mqttMessage.getName();
+        String patientName = mqttMessage.getSenderName();
         if (mqttMessage.getSender().equals(DOCTOR))
             holder.doctorName.setText("You");
         else
@@ -158,7 +160,8 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
                 intent.setAction(REPLY_ACTION);
                 intent.putExtra(MESSAGE_LIST, mqttMessage);
                 intent.putExtra(SEARCHED_TEXT, searchString);
-                mContext.startActivity(intent);
+                intent.putExtra(IS_CALL_FROM_MY_PATEINTS, true);
+                ((Activity) mContext).startActivityForResult(intent, Activity.RESULT_OK);
             }
         });
 
