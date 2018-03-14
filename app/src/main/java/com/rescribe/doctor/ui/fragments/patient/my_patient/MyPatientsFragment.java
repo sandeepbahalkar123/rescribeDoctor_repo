@@ -271,6 +271,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
             intent.putExtra(RescribeConstants.PATIENT_INFO, b);
             startActivity(intent);
+        }else{
+
         }
     }
 

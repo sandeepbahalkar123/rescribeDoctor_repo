@@ -28,14 +28,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ImageView
-            android:id="@+id/noRecords"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@drawable/no_records_found"
-            android:visibility="gone"
-            tools:visibility="visible"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -72,6 +64,14 @@
             android:text="@string/add_record"
             android:textColor="@color/white"
             android:visibility="visible"
+            tools:visibility="visible"/>
+        <ImageView
+            android:id="@+id/noRecords"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/no_records_found"
+            android:visibility="gone"
             tools:visibility="visible"/>
 
     </RelativeLayout>

@@ -411,45 +411,49 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         PatientHistoryBaseModel newBaseModel = (PatientHistoryBaseModel) customResponse;
         PatientHistoryDataModel dataModel = newBaseModel.getPatientHistoryDataModel();
-
-        mTimePeriodList = dataModel.getFormattedYearList();
-        if (mViewPagerAdapter == null) {
-            mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
-            mTabLayout.setupWithViewPager(mViewpager);
-            mYearList = dataModel.getUniqueYears();
-            mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
-            mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
-        }
-
-        if (dataModel.getYearsMonthsData().isEmpty()) {
-            noRecords.setVisibility(View.VISIBLE);
-            mYearSpinnerView.setVisibility(View.GONE);
-            mTabLayout.setVisibility(View.GONE);
-        } else {
+        if(dataModel.getYearsMonthsData().size()>0) {
             noRecords.setVisibility(View.GONE);
-            mYearSpinnerView.setVisibility(View.VISIBLE);
-            mTabLayout.setVisibility(View.VISIBLE);
-            if (mYearList.size() == 1) {
+            mTimePeriodList = dataModel.getFormattedYearList();
+            if (mViewPagerAdapter == null) {
+                mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
+                mTabLayout.setupWithViewPager(mViewpager);
+                mYearList = dataModel.getUniqueYears();
+                mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
+                mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
+            }
+
+            if (dataModel.getYearsMonthsData().isEmpty()) {
+                noRecords.setVisibility(View.VISIBLE);
                 mYearSpinnerView.setVisibility(View.GONE);
-                mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
-                mYearSpinnerSingleItem.setText(mYearList.get(0).toString());
+                mTabLayout.setVisibility(View.GONE);
             } else {
+                noRecords.setVisibility(View.GONE);
                 mYearSpinnerView.setVisibility(View.VISIBLE);
-                mYearSpinnerSingleItem.setVisibility(View.GONE);
+                mTabLayout.setVisibility(View.VISIBLE);
+                if (mYearList.size() == 1) {
+                    mYearSpinnerView.setVisibility(View.GONE);
+                    mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
+                    mYearSpinnerSingleItem.setText(mYearList.get(0).toString());
+                } else {
+                    mYearSpinnerView.setVisibility(View.VISIBLE);
+                    mYearSpinnerSingleItem.setVisibility(View.GONE);
 
+                }
             }
-        }
 
-        if (mTabLayout != null) {
-            if (mTabLayout.getTabCount() > 5) {
-                mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-            } else {
-                mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-                mTabLayout.setTabMode(TabLayout.MODE_FIXED);
+            if (mTabLayout != null) {
+                if (mTabLayout.getTabCount() > 5) {
+                    mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+                } else {
+                    mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+                    mTabLayout.setTabMode(TabLayout.MODE_FIXED);
+                }
             }
-        }
 
-        setupViewPager();
+            setupViewPager();
+        }else{
+            noRecords.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
