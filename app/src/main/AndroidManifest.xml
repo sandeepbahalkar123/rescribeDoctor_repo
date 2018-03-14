@@ -121,8 +121,7 @@
             android:name=".ui.activities.my_patients.patient_history.PatientHistoryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustPan|adjustResize"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask"/>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".ui.activities.my_patients.ShowMyPatientsListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

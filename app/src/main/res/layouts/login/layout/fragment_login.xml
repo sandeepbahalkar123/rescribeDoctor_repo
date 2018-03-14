@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_bg"
@@ -9,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp20"
         android:layout_weight="0.7"
@@ -21,14 +20,14 @@
             android:layout_gravity="center"
             android:src="@drawable/vector_smart_object" />
 
-        <com.rescribe.doctor.ui.customesViews.CustomTextView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/roboto_medium"
             android:text="@string/your_health"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp16"
-            app:customFont="@string/roboto_medium" />
+            android:textSize="@dimen/sp16" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,10 +39,9 @@
             <EditText
                 android:id="@+id/editTextEmailID"
                 style="@style/AppLoginNewMainStyle"
+                android:fontFamily="@font/roboto_medium"
                 android:hint="@string/enter_email_id"
-                android:inputType="textEmailAddress"
-                android:textStyle="bold"
-                android:typeface="sans" />
+                android:inputType="textEmailAddress" />
             <!--  Email Label -->
             <View
                 android:layout_width="match_parent"
@@ -55,10 +53,9 @@
                 android:id="@+id/editTextPassword"
                 style="@style/AppLoginNewMainStyle"
                 android:layout_marginTop="@dimen/dp8"
+                android:fontFamily="@font/roboto_medium"
                 android:hint="@string/enter_password"
-                android:inputType="textPassword"
-                android:textStyle="bold"
-                android:typeface="sans" />
+                android:inputType="textPassword" />
 
             <View
                 android:layout_width="match_parent"
@@ -91,6 +88,7 @@
                 android:layout_marginLeft="@dimen/dp10"
                 android:layout_marginRight="@dimen/dp10"
                 android:background="@color/login_bg_color"
+                android:fontFamily="@font/roboto_medium"
                 android:gravity="center"
                 android:paddingBottom="@dimen/dp10"
                 android:paddingTop="@dimen/dp10"
@@ -112,19 +110,19 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="@dimen/dp6"
-                    android:visibility="invisible"
                     android:text="@string/forgot_password"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp14"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="invisible" />
 
                 <View
-                    android:visibility="invisible"
                     android:layout_width="@dimen/dp2"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/dp10"
                     android:layout_marginRight="@dimen/dp10"
-                    android:background="@color/white" />
+                    android:background="@color/white"
+                    android:visibility="invisible" />
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/signup"
@@ -133,10 +131,10 @@
                     android:gravity="center"
                     android:padding="@dimen/dp6"
                     android:text="@string/sign_up"
-                    android:visibility="invisible"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp14"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="invisible" />
             </LinearLayout>
         </LinearLayout>
 

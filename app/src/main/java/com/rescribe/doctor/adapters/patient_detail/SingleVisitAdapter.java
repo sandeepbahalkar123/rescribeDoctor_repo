@@ -306,7 +306,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
             Glide.with(mContext)
                     .load(attachments.get(i).getUrl())
-                    .apply(requestOptions).thumbnail(0.5f)
+                    .apply(requestOptions)
                     .into(attachmentImage);
 
             //dialog is opened to see info of vitals , Note : BpMin and BpMax is together shown as Bp

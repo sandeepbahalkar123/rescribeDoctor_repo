@@ -590,14 +590,15 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     };
 
     private void allDone() {
-        Bundle b = new Bundle();
-        b.putString(RescribeConstants.PATIENT_NAME,patientName);
-        b.putString(RescribeConstants.PATIENT_INFO, patientInfo);
-        b.putString(RescribeConstants.PATIENT_ID, patientId);
-        b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-        Intent intent = new Intent(mContext,PatientHistoryActivity.class);
-        intent.putExtra(RescribeConstants.PATIENT_INFO, b);
-        startActivity(intent);
+//        Bundle b = new Bundle();
+//        b.putString(RescribeConstants.PATIENT_NAME,patientName);
+//        b.putString(RescribeConstants.PATIENT_INFO, patientInfo);
+//        b.putString(RescribeConstants.PATIENT_ID, patientId);
+//        b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+//        Intent intent = new Intent(mContext, PatientHistoryActivity.class);
+//        intent.putExtra(RescribeConstants.PATIENT_INFO, b);
+//        startActivity(intent);
+        setResult(RESULT_OK);
         finish();
     }
 

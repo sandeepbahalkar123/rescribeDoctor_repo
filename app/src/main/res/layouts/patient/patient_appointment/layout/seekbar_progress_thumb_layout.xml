@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="@dimen/dp34"
+        android:layout_width="@dimen/dp32"
         android:layout_height="wrap_content"
         android:background="@drawable/age_scroller"
         android:gravity="center"
@@ -16,7 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="10000"
+            android:text="1000"
+            tools:text="10000"
             android:textColor="@color/white"
             android:textSize="@dimen/sp11" />
 

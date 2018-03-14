@@ -92,18 +92,23 @@ public class TemplateListActivity extends AppCompatActivity implements HelperRes
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
-            ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
-            if (!templateLists.isEmpty()) {
-                recyclerView.setVisibility(View.VISIBLE);
-                emptyListView.setVisibility(View.GONE);
-                mTemplateAdapter = new TemplateAdapter(mContext, templateLists, this);
-                LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-                recyclerView.setLayoutManager(linearlayoutManager);
-                // off recyclerView Animation
-                RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-                if (animator instanceof SimpleItemAnimator)
-                    ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-                recyclerView.setAdapter(mTemplateAdapter);
+            if (templateBaseModel.getTemplateDataModel() != null) {
+                ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
+                if (templateLists.isEmpty()) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    emptyListView.setVisibility(View.GONE);
+                    mTemplateAdapter = new TemplateAdapter(mContext, templateLists, this);
+                    LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+                    recyclerView.setLayoutManager(linearlayoutManager);
+                    // off recyclerView Animation
+                    RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+                    if (animator instanceof SimpleItemAnimator)
+                        ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+                    recyclerView.setAdapter(mTemplateAdapter);
+                } else {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyListView.setVisibility(View.VISIBLE);
+                }
             } else {
                 recyclerView.setVisibility(View.GONE);
                 emptyListView.setVisibility(View.VISIBLE);

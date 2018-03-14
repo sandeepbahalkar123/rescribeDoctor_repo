@@ -340,9 +340,9 @@
                             android:id="@+id/clinicFeesSeekBar"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp40"
-                            android:minHeight="@dimen/dp40"
-                            app:max_value="100"
-                            app:min_value="0" />
+                            android:paddingEnd="@dimen/dp10"
+                            android:paddingStart="@dimen/dp10"
+                            android:minHeight="@dimen/dp40"/>
 
                     </LinearLayout>
 
