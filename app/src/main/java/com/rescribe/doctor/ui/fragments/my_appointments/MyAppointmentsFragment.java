@@ -127,7 +127,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             mBottomMenuList.add(bottomMenu);
         }
         mMyAppointmentsDataModel = args.getParcelable(RescribeConstants.APPOINTMENT_DATA);
-        ArrayList<AppointmentList> mAppointmentList = new ArrayList<>();
+        final ArrayList<AppointmentList> mAppointmentList = new ArrayList<>();
         if (mMyAppointmentsDataModel.getAppointmentList().size() > 0 || !mMyAppointmentsDataModel.getAppointmentList().isEmpty()) {
             expandableListView.setVisibility(View.VISIBLE);
             expandableListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
@@ -171,6 +171,9 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             @Override
             public void onGroupExpand(int groupPosition) {
                 if (charString.equals("")) {
+                    if(mAppointmentList.get(groupPosition).getPatientList().size()==1){
+                        expandableListView.collapseGroup(groupPosition);
+                    }
                     if (lastExpandedPosition != -1
                             && groupPosition != lastExpandedPosition) {
                         expandableListView.collapseGroup(lastExpandedPosition);
@@ -280,17 +283,10 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
     @Override
     public void onCheckUncheckRemoveSelectAllSelection(boolean ischecked) {
-        if (!ischecked) {
+        if (ischecked) {
             for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                 if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
                     mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
-                }
-            }
-            mBottomMenuAppointmentAdapter.notifyDataSetChanged();
-        }else{
-            for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
-                if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
-                    mBottomMenuAppointmentAdapter.getList().get(i).setSelected(true);
                 }
             }
             mBottomMenuAppointmentAdapter.notifyDataSetChanged();
