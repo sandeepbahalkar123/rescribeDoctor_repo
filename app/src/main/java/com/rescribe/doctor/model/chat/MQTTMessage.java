@@ -27,7 +27,6 @@ public class MQTTMessage implements Parcelable {
     @Expose
     private String msgTime;
 
-    // change
     @SerializedName("sender")
     @Expose
     private String sender = DOCTOR;
