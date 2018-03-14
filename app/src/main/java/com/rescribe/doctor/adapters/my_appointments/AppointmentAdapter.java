@@ -1,5 +1,6 @@
 package com.rescribe.doctor.adapters.my_appointments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +29,6 @@ import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.ViewBinderHelper;
-import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -98,7 +98,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
     }
 
-    private void bind(final PatientList patientList, final int groupPosition, final int childPosition,final ChildViewHolder viewHolder) {
+    @SuppressLint("CheckResult")
+    private void bind(final PatientList patientList, final int groupPosition, final int childPosition, final ChildViewHolder viewHolder) {
         String patientName = "";
         if (patientList.getSalutation() == 1) {
             patientName = mContext.getString(R.string.mr) + " " + CommonMethods.toCamelCase(patientList.getPatientName());
@@ -337,6 +338,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         return convertView;
     }
 
+    @SuppressLint("CheckResult")
     private void bindGroupItem(final AppointmentList appointmentListObject, final int groupPosition, final boolean isExpanded, final GroupViewHolder groupViewHolder) {
         groupViewHolder.mClinicNameTextView.setText(appointmentListObject.getClinicName() + " - ");
         groupViewHolder.mClinicAddress.setText(appointmentListObject.getArea() + ", " + appointmentListObject.getCity());
