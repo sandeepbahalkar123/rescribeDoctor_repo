@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+
 /**
  * Created by jeetal on 31/1/18.
  */
@@ -101,17 +103,10 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     @SuppressLint("CheckResult")
     private void bind(final PatientList patientList, final int groupPosition, final int childPosition, final ChildViewHolder viewHolder) {
         String patientName = "";
-        if (patientList.getSalutation() == 1) {
-            patientName = mContext.getString(R.string.mr) + " " + CommonMethods.toCamelCase(patientList.getPatientName());
-        } else if (patientList.getSalutation() == 2) {
-            patientName = mContext.getString(R.string.mrs) + " " + CommonMethods.toCamelCase(patientList.getPatientName());
 
-        } else if (patientList.getSalutation() == 3) {
-            patientName = mContext.getString(R.string.miss) + " " + CommonMethods.toCamelCase(patientList.getPatientName());
-
-        } else if (patientList.getSalutation() == 4) {
-            patientName = CommonMethods.toCamelCase(patientList.getPatientName());
-        }
+        if (patientList.getSalutation() != 0)
+            patientName = RescribeConstants.SALUTATION[patientList.getSalutation() - 1] + toCamelCase(patientList.getPatientName());
+        else patientName = toCamelCase(patientList.getPatientName());
 
         if (patientList.getSpannableString() != null) {
             //Spannable condition for PatientName
@@ -350,17 +345,11 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
         groupViewHolder.mPatientIdTextView.setText(mContext.getString(R.string.id) + " " + appointmentListObject.getPatientHeader().getHospitalPatId() + "");
 
-        if (appointmentListObject.getPatientHeader().getSalutation() == 1) {
-            groupViewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mr) + " " + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
-        } else if (appointmentListObject.getPatientHeader().getSalutation() == 2) {
-            groupViewHolder.mPatientNameTextView.setText(mContext.getString(R.string.mrs) + " " + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
-
-        } else if (appointmentListObject.getPatientHeader().getSalutation() == 3) {
-            groupViewHolder.mPatientNameTextView.setText(mContext.getString(R.string.miss) + " " + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
-
-        } else if (appointmentListObject.getPatientHeader().getSalutation() == 4) {
+        if (appointmentListObject.getPatientHeader().getSalutation() != 0)
+            groupViewHolder.mPatientNameTextView.setText(RescribeConstants.SALUTATION[appointmentListObject.getPatientHeader().getSalutation() - 1] + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
+        else
             groupViewHolder.mPatientNameTextView.setText(CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
-        }
+
         if (appointmentListObject.getPatientHeader().getAge().equals("") && !appointmentListObject.getPatientHeader().getDateOfBirth().equals("")) {
             groupViewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate();

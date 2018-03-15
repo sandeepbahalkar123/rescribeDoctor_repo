@@ -39,7 +39,7 @@ public class MQTTMessage implements Parcelable {
     private int docId;
     @SerializedName("alutation")
     @Expose
-    private int salutation;
+    private Integer salutation;
     @SerializedName("senderName")
     @Expose
     private String senderName;
@@ -100,7 +100,7 @@ public class MQTTMessage implements Parcelable {
             instance.sender = ((String) in.readValue((String.class.getClassLoader())));
             instance.patId = ((int) in.readValue((int.class.getClassLoader())));
             instance.docId = ((int) in.readValue((int.class.getClassLoader())));
-            instance.salutation = ((int) in.readValue((String.class.getClassLoader())));
+            instance.salutation = ((Integer) in.readValue((String.class.getClassLoader())));
             instance.senderName = ((String) in.readValue((String.class.getClassLoader())));
             instance.receiverName = ((String) in.readValue((String.class.getClassLoader())));
             instance.specialization = ((String) in.readValue((String.class.getClassLoader())));
@@ -234,11 +234,11 @@ public class MQTTMessage implements Parcelable {
     }
 
 
-    public int getSalutation() {
+    public Integer getSalutation() {
         return salutation;
     }
 
-    public void setSalutation(int salutation) {
+    public void setSalutation(Integer salutation) {
         this.salutation = salutation;
     }
 

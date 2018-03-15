@@ -1,8 +1,8 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
@@ -28,38 +28,27 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ImageView
-            android:id="@+id/noRecords"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@drawable/no_records_found"
-            android:visibility="gone"
-            tools:visibility="visible"/>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
             android:layout_above="@+id/addRecordButton"
+            android:background="@color/white"
             android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/noRecords"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/no_records_found"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-          <!--  <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="@dimen/fab_margin"
-                android:src="@drawable/ic_add_action"
-                app:backgroundTint="@color/floating_blue_color"
-                android:layout_alignParentRight="true" />
--->
         </RelativeLayout>
 
         <Button
@@ -72,7 +61,7 @@
             android:text="@string/add_record"
             android:textColor="@color/white"
             android:visibility="visible"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
     </RelativeLayout>
 

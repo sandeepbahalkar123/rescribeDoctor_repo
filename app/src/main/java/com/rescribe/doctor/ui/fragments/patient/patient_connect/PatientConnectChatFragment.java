@@ -53,7 +53,6 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     FloatingActionButton leftFab;
     private ArrayList<PatientData> mReceivedPatientDataList = new ArrayList<>();
     private PatientConnectAdapter mPatientConnectAdapter;
-    private DividerItemDecoration dividerItemDecoration;
     private SearchedMessagesAdapter searchedMessagesAdapter;
     private ArrayList<MQTTMessage> mqttMessages = new ArrayList<>();
 
@@ -91,7 +90,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 

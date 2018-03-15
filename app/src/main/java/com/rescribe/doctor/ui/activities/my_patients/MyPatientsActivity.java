@@ -59,7 +59,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     private DrawerForMyPatients mDrawerForMyPatients;
     Intent mIntent;
     private String mActivityCalledFrom = "";
-    private boolean isFromDrawer ;
+    private boolean isFromDrawer;
     private RequestSearchPatients mRequestSearchPatientsFromDrawer = new RequestSearchPatients();
     public HashSet<Integer> selectedDoctorId = new HashSet<>();
 
