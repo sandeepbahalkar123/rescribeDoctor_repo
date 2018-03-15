@@ -22,7 +22,7 @@ public class SendMessageModel implements CustomResponse {
         this.common = common;
     }
 
-    /*public String getData() {
+    /*public String getViewAllData() {
         return data;
     }
 

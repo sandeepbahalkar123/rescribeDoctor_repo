@@ -78,7 +78,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     private Unbinder unbinder;
     private static Bundle args;
     private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
-    private WaitingListSpinnerAdapter mWaitingListSpinnerAdapter;
     //    private ViewAllWaitingListAdapter mViewAllWaitingListAdapter;
     private ArrayList<ViewAll> viewAllArrayList;
     private int adapterPos;
@@ -105,7 +104,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             if (waitingclinicLists.size() > 1) {
                 clinicListSpinner.setVisibility(View.VISIBLE);
                 hospitalDetailsLinearLayout.setVisibility(View.GONE);
-                mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
+                WaitingListSpinnerAdapter mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
                 clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
 
             } else {
@@ -218,7 +217,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
-
+                myItemAdapter.getAllItems();
             }
         });
 

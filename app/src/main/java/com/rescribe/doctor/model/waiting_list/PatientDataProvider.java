@@ -102,13 +102,18 @@ public class PatientDataProvider extends AbstractDataProvider {
     }
 
     @Override
-    public void addItem(ViewAll viewAll) {
+    public void addViewAllItem(ViewAll viewAll) {
         mData.add(new ConcreteData(mData.size(), 0, viewAll));
     }
 
     @Override
-    public List<ConcreteData> getData() {
+    public List<ConcreteData> getViewAllData() {
         return mData;
+    }
+
+    @Override
+    public List<PatientDataActiveWaitingListProvider.ConcreteActiveData> getActiveData() {
+        return null;
     }
 
     public static final class ConcreteData extends Data {
