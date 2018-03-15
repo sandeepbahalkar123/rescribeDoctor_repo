@@ -86,6 +86,14 @@ public class PatientData implements Parcelable, CustomResponse {
         this.unreadMessages = unreadMessages;
     }
 
+    public Integer getSalutation() {
+        return salutation;
+    }
+
+    public void setSalutation(Integer salutation) {
+        this.salutation = salutation;
+    }
+
     public final static Creator<PatientData> CREATOR = new Creator<PatientData>() {
         @SuppressWarnings({
                 "unchecked"

@@ -16,6 +16,9 @@
 
 package com.rescribe.doctor.model.waiting_list;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public abstract class AbstractDataProvider {
 
     public static abstract class Data {
@@ -46,4 +49,6 @@ public abstract class AbstractDataProvider {
     public abstract int undoLastRemoval();
 
     public abstract void addItem(ViewAll viewAll);
+
+    public abstract List<PatientDataProvider.ConcreteData> getData();
 }

@@ -106,6 +106,11 @@ public class PatientDataProvider extends AbstractDataProvider {
         mData.add(new ConcreteData(mData.size(), 0, viewAll));
     }
 
+    @Override
+    public List<ConcreteData> getData() {
+        return mData;
+    }
+
     public static final class ConcreteData extends Data {
 
         private final long mId;

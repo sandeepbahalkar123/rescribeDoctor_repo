@@ -37,9 +37,9 @@ public class MQTTMessage implements Parcelable {
     @SerializedName("user1id")
     @Expose
     private int docId;
-    @SerializedName("alutation")
+    @SerializedName("salutation")
     @Expose
-    private Integer salutation;
+    private Integer salutation = 0;
     @SerializedName("senderName")
     @Expose
     private String senderName;
@@ -232,7 +232,6 @@ public class MQTTMessage implements Parcelable {
     public void setReceiverImgUrl(String receiverImgUrl) {
         this.receiverImgUrl = receiverImgUrl;
     }
-
 
     public Integer getSalutation() {
         return salutation;

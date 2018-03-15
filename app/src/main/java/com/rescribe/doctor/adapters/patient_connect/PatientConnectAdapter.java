@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.PATIENT_CONNECT_REQUEST;
 import static com.rescribe.doctor.util.RescribeConstants.IS_CALL_FROM_MY_PATEINTS;
+import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
 
 /**
@@ -134,6 +135,11 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
                     .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
             holder.imageOfDoctor.setImageDrawable(drawable);
         }
+
+        String salutation;
+        if (doctorConnectChatModel.getSalutation() != 0)
+            salutation = SALUTATION[doctorConnectChatModel.getSalutation() - 1];
+        else salutation = "";
 
         if (searchString != null) {
             String lowerCaseSearchString = searchString.toLowerCase();
