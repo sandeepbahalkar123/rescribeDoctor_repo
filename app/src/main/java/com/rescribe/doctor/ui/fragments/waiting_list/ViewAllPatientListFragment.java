@@ -323,6 +323,14 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
 
             }
+        }else if (mOldDataTag.equals(RescribeConstants.TASK_DARG_DROP)) {
+            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
+            if (templateBaseModel.getCommon().isSuccess()) {
+                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
+
+            }
         }
     }
 
