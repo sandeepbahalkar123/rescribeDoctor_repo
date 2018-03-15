@@ -16,7 +16,6 @@
 
 package com.rescribe.doctor.model.waiting_list;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class AbstractDataProvider {
@@ -29,6 +28,7 @@ public abstract class AbstractDataProvider {
         public abstract int getViewType();
 
         public abstract ViewAll getViewAll();
+
         public abstract Active getActiveAll();
 
         public abstract void setPinned(boolean pinned);
@@ -48,7 +48,9 @@ public abstract class AbstractDataProvider {
 
     public abstract int undoLastRemoval();
 
-    public abstract void addItem(ViewAll viewAll);
+    public abstract void addViewAllItem(ViewAll viewAll);
 
-    public abstract List<PatientDataProvider.ConcreteData> getData();
+    public abstract List<PatientDataProvider.ConcreteData> getViewAllData();
+
+    public abstract List<PatientDataActiveWaitingListProvider.ConcreteActiveData> getActiveData();
 }

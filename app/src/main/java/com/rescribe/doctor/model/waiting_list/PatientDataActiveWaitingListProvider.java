@@ -71,13 +71,18 @@ public class PatientDataActiveWaitingListProvider extends AbstractDataProvider {
     }
 
     @Override
-    public void addItem(ViewAll viewAll) {
+    public void addViewAllItem(ViewAll viewAll) {
 
     }
 
     @Override
-    public List<PatientDataProvider.ConcreteData> getData() {
+    public List<PatientDataProvider.ConcreteData> getViewAllData() {
         return null;
+    }
+
+    @Override
+    public List<ConcreteActiveData> getActiveData() {
+        return mData;
     }
 
     @Override
@@ -115,14 +120,14 @@ public class PatientDataActiveWaitingListProvider extends AbstractDataProvider {
     public static final class ConcreteActiveData extends Data {
 
         private final long mId;
-        private final Active mViewAll;
+        private final Active mActiveAll;
         private final int mViewType;
         private boolean mPinned;
 
         ConcreteActiveData(long id, int viewType, Active viewAll) {
             mId = id;
             mViewType = viewType;
-            mViewAll = viewAll;
+            mActiveAll = viewAll;
         }
 
         @Override
@@ -143,7 +148,7 @@ public class PatientDataActiveWaitingListProvider extends AbstractDataProvider {
 
         @Override
         public Active getActiveAll() {
-            return mViewAll;
+            return mActiveAll;
         }
 
         @Override
@@ -153,7 +158,7 @@ public class PatientDataActiveWaitingListProvider extends AbstractDataProvider {
 
         @Override
         public String toString() {
-            return mViewAll.getPatientName();
+            return mActiveAll.getPatientName();
         }
 
         @Override

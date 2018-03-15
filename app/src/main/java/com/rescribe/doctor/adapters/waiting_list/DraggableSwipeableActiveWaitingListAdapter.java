@@ -45,6 +45,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
 import com.rescribe.doctor.model.waiting_list.Active;
+import com.rescribe.doctor.model.waiting_list.PatientDataActiveWaitingListProvider;
 import com.rescribe.doctor.model.waiting_list.PatientDataProvider;
 import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.util.CommonMethods;
@@ -63,10 +64,12 @@ public class DraggableSwipeableActiveWaitingListAdapter
     private int mPreLeftSwipePosition = RecyclerView.NO_POSITION;
 
     public ArrayList<Active> getAllItems() {
-        ArrayList<Active> viewAlls = new ArrayList<>();
-        for (PatientDataProvider.ConcreteData concreteData : mProvider.getData())
-            viewAlls.add(concreteData.getActiveAll());
-        return viewAlls;
+
+        ArrayList<Active> activeAll = new ArrayList<>();
+        for (PatientDataActiveWaitingListProvider.ConcreteActiveData concreteData : mProvider.getActiveData())
+            activeAll.add(concreteData.getActiveAll());
+        return activeAll;
+
     }
 
     public void removeItem(int index) {

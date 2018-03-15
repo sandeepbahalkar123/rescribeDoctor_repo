@@ -178,9 +178,15 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         doctorNameTextView.setText(doctorNameToDisplay);
         aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, mContext));
         setUpImage();
-        mDashboardHelper.doGetDashboardResponse();
+
         //setWaitingOrAppointmentLayoutHere
 
+    }
+
+    @Override
+    protected void onResume() {
+        mDashboardHelper.doGetDashboardResponse();
+        super.onResume();
     }
 
     private void setLayoutForMyPatients() {
@@ -451,6 +457,9 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     todayFollowAppointmentTextView.setText("Today's Follow Ups");
                     todayNewAppointmentTextView.setText("Today's New Patients");
                     todayWaitingListOrAppointmentTextView.setText("Today's Appoinments");
+
+                    hostViewsLayout.removeAllViews();
+
                     setLayoutForAppointment();
                     // inflate waiting list layout
                     setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
@@ -467,6 +476,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     todayFollowAppointmentTextView.setText("Today's Follow Ups");
                     todayNewAppointmentTextView.setText("Today's New Patients");
                     todayWaitingListOrAppointmentTextView.setText("Today's Waiting List");
+                    hostViewsLayout.removeAllViews();
                     setLayoutForWaitingListIfAppointmentListEmpty();
                     // inflate patientConnect layout
                     setLayoutForPatientConnect();

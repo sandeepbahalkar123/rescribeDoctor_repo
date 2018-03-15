@@ -68,13 +68,13 @@ public class DraggableSwipeableViewAllWaitingListAdapter
 
     public ArrayList<ViewAll> getAllItems() {
         ArrayList<ViewAll> viewAlls = new ArrayList<>();
-        for (PatientDataProvider.ConcreteData concreteData : mProvider.getData())
+        for (PatientDataProvider.ConcreteData concreteData : mProvider.getViewAllData())
             viewAlls.add(concreteData.getViewAll());
         return viewAlls;
     }
 
     public void addItem(ViewAll viewAll) {
-        mProvider.addItem(viewAll);
+        mProvider.addViewAllItem(viewAll);
         notifyItemInserted(mProvider.getCount());
     }
 
