@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.rescribe.doctor.util.CommonMethods;
 
 public class PatientInfoList implements Parcelable {
 
@@ -47,7 +48,7 @@ public class PatientInfoList implements Parcelable {
 
 
     public String getPatientName() {
-        return patientName;
+        return CommonMethods.toCamelCase(patientName);
     }
 
     public void setPatientName(String patientName) {
