@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="enter_sms_text_here">Enter sms text here</string>
-    <string name="address">Address</string>
-    <string name="location">Location</string>
-</resources>
