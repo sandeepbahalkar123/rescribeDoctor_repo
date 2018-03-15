@@ -31,6 +31,7 @@
                     android:background="@drawable/premium_doctor_bg"
                     android:drawableLeft="@drawable/premium_icon"
                     android:drawablePadding="@dimen/dp4"
+                    android:drawableStart="@drawable/premium_icon"
                     android:padding="@dimen/dp4"
                     android:text="Premium"
                     android:textColor="@color/white"
@@ -111,8 +112,8 @@
 
             <com.rescribe.doctor.ui.customesViews.CircularImageView
                 android:id="@+id/profileImage"
-                android:layout_width="@dimen/dp80"
-                android:layout_height="@dimen/dp80"
+                android:layout_width="@dimen/dp86"
+                android:layout_height="@dimen/dp86"
                 android:layout_gravity="center"
                 android:src="@drawable/layer_12"
                 app:border="true"
