@@ -21,17 +21,14 @@ import com.rescribe.doctor.adapters.drawer_adapters.DrawerAppointmetClinicNameAd
 import com.rescribe.doctor.adapters.drawer_adapters.SortByPriceFilterAdapter;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.my_appointments.ClinicList;
 import com.rescribe.doctor.model.my_appointments.FilterSortByHighLowList;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
-import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.model.my_appointments.StatusList;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.DoubleAdder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -105,6 +102,8 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     private MyAppointmentsDataModel mMyAppointmentsDataModel;
     private ArrayList<StatusList> statusLists = new ArrayList<>();
     private ArrayList<ClinicList> mClinciListToFilter = new ArrayList<>();
+    private ArrayList<StatusList> mStatuslistOfFilter = new ArrayList<>();
+    private ArrayList<ClinicList> mCliniclistOfFilter = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -187,21 +186,20 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
         switch (view.getId()) {
             case R.id.applyButton:
                 Bundle b = new Bundle();
-                ArrayList<StatusList> mStatuslist = new ArrayList<>();
-                for(StatusList statusList:statusLists){
+                for(StatusList statusList:mDrawerAppointmentSelectStatusAdapter.getAdapterStatusList()){
                     if(statusList.isSelected()){
-                        mStatuslist.add(statusList);
+                        mStatuslistOfFilter.add(statusList);
                     }
                 }
-                ArrayList<ClinicList> mClinic = new ArrayList<>();
-                for(ClinicList clinicObj:mClinciListToFilter){
+
+                for(ClinicList clinicObj:mDrawerAppointmetClinicNameAdapter.getAdapterClinicList()){
                     if(clinicObj.isSelected()){
-                        mClinic.add(clinicObj);
+                        mCliniclistOfFilter.add(clinicObj);
                     }
                 }
                 b.putParcelable(RescribeConstants.APPOINTMENT_DATA,mMyAppointmentsDataModel);
-                b.putParcelableArrayList(RescribeConstants.FILTER_STATUS_LIST,mStatuslist);
-                b.putParcelableArrayList(RescribeConstants.FILTER_CLINIC_LIST,mClinic);
+                b.putParcelableArrayList(RescribeConstants.FILTER_STATUS_LIST, mStatuslistOfFilter);
+                b.putParcelableArrayList(RescribeConstants.FILTER_CLINIC_LIST, mCliniclistOfFilter);
                 mListener.onApply(b, true);
 
                 break;

@@ -153,7 +153,7 @@
     <string name="app_logo">AppLogo</string>
     <string name="settings">Settings</string>
     <string name="support">Support</string>
-    <string name="outstanding_amount">Outstanding Amount:</string>
+    <string name="outstanding_amount">O/S Amount:</string>
     <string name="id">ID:</string>
     <string name="years">yrs -</string>
     <string name="opd_appointment">Appointment</string>
@@ -218,5 +218,6 @@
     <string name="cancelled">cancelled</string>
     <string name="no_show">no show</string>
     <string name="other">other</string>
+    <string name="enter_sms_text_here">Enter sms text here</string>
 
 </resources>

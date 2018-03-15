@@ -23,6 +23,7 @@ public class Config {
     public static final String GET_DASHBOARD_DATA = "doctor/api/dashboard/getDashboard";
     public static final String DELETE_WAITING_LIST = "doctor/api/appointment/deleteFromWaitingList";
     public static final String CANCEL_OR_COMPLETE_APPOINTMENT = "api/patient/updateAppointmentStatus";
+    public static final String DRAG_AND_DROP_API = "doctor/api/appointment/dragDropPatientWaiting";
     public static boolean DEV_BUILD = true;
     //Declared all URL used in app here
 

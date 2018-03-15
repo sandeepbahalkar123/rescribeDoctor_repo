@@ -113,7 +113,12 @@ public class SendSmsPatientActivity extends AppCompatActivity implements SmsRece
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 10);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(1, 10);
         recyclerView.setAdapter(mSmsRecepientPatientListAdapter);
-        editTextSmsContent.setText(mTemplateList.getTemplateContent());
+        if(mTemplateList==null) {
+            editTextSmsContent.setHint(getString(R.string.enter_sms_text_here));
+        }else{
+            editTextSmsContent.setText(mTemplateList.getTemplateContent());
+
+        }
         editTextSmsContent.setScroller(new Scroller(getApplicationContext()));
         editTextSmsContent.setVerticalScrollBarEnabled(true);
         editTextSmsContent.setMinLines(1);

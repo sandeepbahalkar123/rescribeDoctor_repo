@@ -114,12 +114,16 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         if (waitingclinicLists.size() > 1) {
             clinicListSpinner.setVisibility(View.VISIBLE);
             hospitalDetailsLinearLayout.setVisibility(View.GONE);
+
+
             mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
             clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
 
         } else {
             mLocationId = waitingclinicLists.get(0).getLocationId();
             clinicListSpinner.setVisibility(View.GONE);
+            waitingPatientTempList = new WaitingPatientList();
+            waitingPatientTempList = waitingclinicLists.get(0).getWaitingPatientList();
             hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
             clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
             clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());

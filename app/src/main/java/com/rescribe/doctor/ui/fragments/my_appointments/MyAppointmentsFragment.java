@@ -13,7 +13,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,6 +36,7 @@ import android.widget.Toast;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.AppointmentAdapter;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
+import com.rescribe.doctor.adapters.my_patients.TemplateAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -44,11 +47,15 @@ import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
 import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.model.my_appointments.request_cancel_or_complete_appointment.RequestAppointmentCancelModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
+import com.rescribe.doctor.model.patient.template_sms.TemplateList;
+import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
+import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.PatientsListAddToWaitingList;
 import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.RequestForWaitingListPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
+import com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.TemplateListActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
@@ -66,6 +73,7 @@ import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 
@@ -113,6 +121,10 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     private boolean isFromGroup;
     private String patientName;
     private String phoneNo;
+    private ArrayList<AppointmentList> mAppointmentLists;
+    private ArrayList<AppointmentList> mAppointListForBookAndConfirm;
+    private boolean isBookAndConfirmedRequired;
+    private ArrayList<PatientList> mPatientListsForBookAndCancel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -127,6 +139,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     private void init() {
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         mBottomMenuList = new ArrayList<>();
+        isBookAndConfirmedRequired = args.getBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED);
         for (String mMenuName : mMenuNames) {
             BottomMenu bottomMenu = new BottomMenu();
             bottomMenu.setMenuName(mMenuName);
@@ -148,9 +161,49 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                     mAppointmentList.add(clinicList);
                 }
             }
+
             if (!mAppointmentList.isEmpty()) {
-                mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointmentList, this);
-                expandableListView.setAdapter(mAppointmentAdapter);
+                //list is sorted for Booked and Confirmed Status appointments
+                if (isBookAndConfirmedRequired) {
+                    mAppointListForBookAndConfirm = new ArrayList<>();
+                    for (int i = 0; i < mAppointmentList.size(); i++) {
+                        ArrayList<PatientList> patientListToAddBookAndConfirmEntries = new ArrayList<>();
+
+                        AppointmentList tempAppointmentListObject = null;
+                        try {
+                            tempAppointmentListObject = (AppointmentList) mAppointmentList.get(i).clone();
+                        } catch (CloneNotSupportedException e) {
+                            e.printStackTrace();
+                        }
+
+                        mPatientListsForBookAndCancel = tempAppointmentListObject.getPatientList();
+                        if (!mPatientListsForBookAndCancel.isEmpty() && mPatientListsForBookAndCancel.size() > 0) {
+                            for (int j = 0; j < mPatientListsForBookAndCancel.size(); j++) {
+                                if (mPatientListsForBookAndCancel.get(j).getAppointmentStatus().equals("Confirmed") || mPatientListsForBookAndCancel.get(j).getAppointmentStatus().equals("Booked")) {
+                                    PatientList patientList = new PatientList();
+                                    patientList = mPatientListsForBookAndCancel.get(j);
+                                    patientListToAddBookAndConfirmEntries.add(patientList);
+                                }
+                            }
+                            if (!patientListToAddBookAndConfirmEntries.isEmpty()) {
+                                tempAppointmentListObject.setPatientList(patientListToAddBookAndConfirmEntries);
+                                mAppointListForBookAndConfirm.add(tempAppointmentListObject);
+                            }
+                        }
+                    }
+                    //from sorted patientlist the first position element is set as patientheader
+                    for (int i = 0; i < mAppointListForBookAndConfirm.size(); i++) {
+                        mPatientLists = mAppointListForBookAndConfirm.get(i).getPatientList();
+                        if (!mPatientLists.isEmpty() && mPatientLists.size() > 0) {
+                            mAppointListForBookAndConfirm.get(i).setPatientHeader(mPatientLists.get(0));
+                        }
+                    }
+                    mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointListForBookAndConfirm, this);
+                    expandableListView.setAdapter(mAppointmentAdapter);
+                } else {
+                    mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointmentList, this);
+                    expandableListView.setAdapter(mAppointmentAdapter);
+                }
             } else {
                 expandableListView.setVisibility(View.GONE);
                 emptyListView.setVisibility(View.VISIBLE);
@@ -177,7 +230,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             @Override
             public void onGroupExpand(int groupPosition) {
                 if (charString.equals("")) {
-                    if(mAppointmentList.get(groupPosition).getPatientList().size()==1){
+                    if (mAppointmentList.get(groupPosition).getPatientList().size() == 1) {
                         expandableListView.collapseGroup(groupPosition);
                     }
                     if (lastExpandedPosition != -1
@@ -415,7 +468,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             }
             //Send Sms
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
-            ArrayList<AppointmentList> mAppointmentLists = new ArrayList<>();
+            mAppointmentLists = new ArrayList<>();
 
             for (int groupIndex = 0; groupIndex < mAppointmentAdapter.getGroupList().size(); groupIndex++) {
                 ArrayList<PatientList> patientLists = new ArrayList<>();
@@ -439,9 +492,8 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             }
 
             if (!mAppointmentLists.isEmpty()) {
-                Intent intent = new Intent(getActivity(), TemplateListActivity.class);
-                intent.putParcelableArrayListExtra(RescribeConstants.APPOINTMENT_LIST, mAppointmentLists);
-                startActivity(intent);
+                mAppointmentHelper.doGetDoctorTemplate();
+
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                     if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
                         mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
@@ -609,6 +661,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
                     getActivity().finish();
                     getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
+                    mAppointmentAdapter.setLongPressed(false);
                 } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patient_limit_exceeded).toLowerCase())) {
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
 
@@ -621,6 +674,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
                     getActivity().finish();
                     getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
+                    mAppointmentAdapter.setLongPressed(false);
                 }
             }
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE)) {
@@ -657,6 +711,55 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             } else {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
 
+            }
+
+        }
+        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
+            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
+            if (templateBaseModel.getTemplateDataModel() != null) {
+                ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
+                if (!templateLists.isEmpty()) {
+                    Intent intent = new Intent(getActivity(), TemplateListActivity.class);
+                    intent.putParcelableArrayListExtra(RescribeConstants.APPOINTMENT_LIST, mAppointmentLists);
+                    intent.putParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST, templateLists);
+                    startActivity(intent);
+                } else {
+
+                }
+            } else {
+                ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
+                ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
+                for (AppointmentList appointmentList : mAppointmentLists) {
+                    for (PatientList patientList : appointmentList.getPatientList()) {
+                        patientListsToShowOnSmsScreen.add(patientList);
+                    }
+                }
+
+                for (AppointmentList appointmentList : mAppointmentLists) {
+                    ClinicListForSms listForSms = new ClinicListForSms();
+                    ArrayList<PatientInfoList> patientInfoLists = new ArrayList<>();
+                    listForSms.setClinicId(appointmentList.getClinicId());
+                    listForSms.setClinicName(appointmentList.getClinicName());
+                    listForSms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                    listForSms.setLocationId(appointmentList.getLocationId());
+                    listForSms.setTemplateContent("");
+                    for (PatientList patientList : appointmentList.getPatientList()) {
+                        PatientInfoList patientInfoList = new PatientInfoList();
+                        patientInfoList.setHospitalPatId(patientList.getHospitalPatId());
+                        patientInfoList.setPatientId(patientList.getPatientId());
+                        patientInfoList.setPatientPhone(patientList.getPatientPhone());
+                        patientInfoList.setPatientName(patientList.getPatientName());
+                        patientInfoLists.add(patientInfoList);
+                    }
+                    listForSms.setPatientInfoList(patientInfoLists);
+                    clinicListForSms.add(listForSms);
+
+                }
+                //  showSendSmsDialog(clinicListForSms);
+                Intent intent = new Intent(getActivity(), SendSmsActivity.class);
+                intent.putExtra(RescribeConstants.SMS_DETAIL_LIST, clinicListForSms);
+                intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW, patientListsToShowOnSmsScreen);
+                startActivityForResult(intent, RESULT_SMS_SEND);
             }
 
         }

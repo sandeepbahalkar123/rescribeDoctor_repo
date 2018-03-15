@@ -2,6 +2,7 @@ package com.rescribe.doctor.ui.fragments.patient.my_patient;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,7 +35,7 @@ import static com.rescribe.doctor.ui.fragments.patient.my_patient.SendSmsPatient
  * Created by jeetal on 27/2/18.
  */
 
-public class TemplateListForMyPatients extends AppCompatActivity implements HelperResponse, TemplateAdapter.OnCardViewClickListener {
+public class TemplateListForMyPatients extends AppCompatActivity implements TemplateAdapter.OnCardViewClickListener {
 
     @BindView(R.id.backImageView)
     ImageView backImageView;
@@ -60,6 +61,7 @@ public class TemplateListForMyPatients extends AppCompatActivity implements Help
     private int mlocationId;
     private int mClinicId;
     private String mClinicName = "";
+    private ArrayList<TemplateList> mTemplateLists;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,58 +78,27 @@ public class TemplateListForMyPatients extends AppCompatActivity implements Help
         if (intent.getExtras() != null) {
             patientLists = intent.getParcelableArrayListExtra(RescribeConstants.PATIENT_LIST);
             mlocationId = intent.getIntExtra(RescribeConstants.LOCATION_ID, 0);
-            mClinicId = intent.getIntExtra(RescribeConstants.CLINIC_ID,0);
-            mClinicName= intent.getStringExtra(RescribeConstants.CLINIC_NAME);
+            mClinicId = intent.getIntExtra(RescribeConstants.CLINIC_ID, 0);
+            mClinicName = intent.getStringExtra(RescribeConstants.CLINIC_NAME);
+            mTemplateLists = intent.getParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST);
         }
-        mAppointmentHelper = new AppointmentHelper(mContext, this);
-        mAppointmentHelper.doGetDoctorTemplate();
+
         titleTextView.setText(getString(R.string.template_list));
-
-    }
-
-    @Override
-    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
-            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
-            ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
-            if (!templateLists.isEmpty()) {
-                recyclerView.setVisibility(View.VISIBLE);
-                emptyListView.setVisibility(View.GONE);
-                mTemplateAdapter = new TemplateAdapter(mContext, templateLists, this);
-                LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-                recyclerView.setLayoutManager(linearlayoutManager);
-                // off recyclerView Animation
-                RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-                if (animator instanceof SimpleItemAnimator)
-                    ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-                recyclerView.setAdapter(mTemplateAdapter);
-            } else {
-                recyclerView.setVisibility(View.GONE);
-                emptyListView.setVisibility(View.VISIBLE);
-            }
+        if (!mTemplateLists.isEmpty()) {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyListView.setVisibility(View.GONE);
+            mTemplateAdapter = new TemplateAdapter(mContext, mTemplateLists, this);
+            LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(linearlayoutManager);
+            // off recyclerView Animation
+            RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+            if (animator instanceof SimpleItemAnimator)
+                ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+            recyclerView.setAdapter(mTemplateAdapter);
 
         }
 
     }
-
-    @Override
-    public void onParseError(String mOldDataTag, String errorMessage) {
-        Toast.makeText(mContext, errorMessage, Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void onServerError(String mOldDataTag, String serverErrorMessage) {
-        Toast.makeText(mContext, serverErrorMessage, Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-        Toast.makeText(mContext, serverErrorMessage, Toast.LENGTH_SHORT).show();
-
-    }
-
     @Override
     public void onCardViewClick(TemplateList templateList) {
 

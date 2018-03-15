@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_patients.TemplateAdapter;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
@@ -32,7 +34,9 @@ import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientIn
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -43,7 +47,7 @@ import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESU
  * Created by jeetal on 21/2/18.
  */
 
-public class TemplateListActivity extends AppCompatActivity implements HelperResponse, TemplateAdapter.OnCardViewClickListener {
+public class TemplateListActivity extends AppCompatActivity implements TemplateAdapter.OnCardViewClickListener {
 
     @BindView(R.id.backImageView)
     ImageView backImageView;
@@ -66,6 +70,7 @@ public class TemplateListActivity extends AppCompatActivity implements HelperRes
     private TemplateAdapter mTemplateAdapter;
     private Intent intent;
     private ArrayList<AppointmentList> appointmentList;
+    private ArrayList<TemplateList> templateLists;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,58 +86,24 @@ public class TemplateListActivity extends AppCompatActivity implements HelperRes
         intent = getIntent();
         if (intent.getExtras() != null) {
             appointmentList = intent.getParcelableArrayListExtra(RescribeConstants.APPOINTMENT_LIST);
+            templateLists = intent.getParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST);
         }
-        mAppointmentHelper = new AppointmentHelper(mContext, this);
-        mAppointmentHelper.doGetDoctorTemplate();
+
         titleTextView.setText(getString(R.string.template_list));
-
-    }
-
-    @Override
-    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
-            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
-            if (templateBaseModel.getTemplateDataModel() != null) {
-                ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
-                if (templateLists.isEmpty()) {
-                    recyclerView.setVisibility(View.VISIBLE);
-                    emptyListView.setVisibility(View.GONE);
-                    mTemplateAdapter = new TemplateAdapter(mContext, templateLists, this);
-                    LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-                    recyclerView.setLayoutManager(linearlayoutManager);
-                    // off recyclerView Animation
-                    RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-                    if (animator instanceof SimpleItemAnimator)
-                        ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-                    recyclerView.setAdapter(mTemplateAdapter);
-                } else {
-                    recyclerView.setVisibility(View.GONE);
-                    emptyListView.setVisibility(View.VISIBLE);
-                }
-            } else {
-                recyclerView.setVisibility(View.GONE);
-                emptyListView.setVisibility(View.VISIBLE);
-            }
+        if (!templateLists.isEmpty()) {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyListView.setVisibility(View.GONE);
+            mTemplateAdapter = new TemplateAdapter(mContext, templateLists, this);
+            LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(linearlayoutManager);
+            // off recyclerView Animation
+            RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+            if (animator instanceof SimpleItemAnimator)
+                ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+            recyclerView.setAdapter(mTemplateAdapter);
+        } else {
 
         }
-
-    }
-
-    @Override
-    public void onParseError(String mOldDataTag, String errorMessage) {
-        Toast.makeText(mContext, errorMessage, Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void onServerError(String mOldDataTag, String serverErrorMessage) {
-        Toast.makeText(mContext, serverErrorMessage, Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-        Toast.makeText(mContext, serverErrorMessage, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -140,21 +111,21 @@ public class TemplateListActivity extends AppCompatActivity implements HelperRes
     public void onCardViewClick(TemplateList templateList) {
         ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
         ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
-        for(AppointmentList appointmentList :appointmentList){
-            for(PatientList patientList : appointmentList.getPatientList()){
+        for (AppointmentList appointmentList : appointmentList) {
+            for (PatientList patientList : appointmentList.getPatientList()) {
                 patientListsToShowOnSmsScreen.add(patientList);
             }
         }
 
-        for(AppointmentList appointmentList : appointmentList){
-            ClinicListForSms  listForSms = new ClinicListForSms();
+        for (AppointmentList appointmentList : appointmentList) {
+            ClinicListForSms listForSms = new ClinicListForSms();
             ArrayList<PatientInfoList> patientInfoLists = new ArrayList<>();
             listForSms.setClinicId(appointmentList.getClinicId());
             listForSms.setClinicName(appointmentList.getClinicName());
-            listForSms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID,mContext)));
+            listForSms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
             listForSms.setLocationId(appointmentList.getLocationId());
             listForSms.setTemplateContent(templateList.getTemplateContent());
-            for(PatientList patientList : appointmentList.getPatientList()){
+            for (PatientList patientList : appointmentList.getPatientList()) {
                 PatientInfoList patientInfoList = new PatientInfoList();
                 patientInfoList.setHospitalPatId(patientList.getHospitalPatId());
                 patientInfoList.setPatientId(patientList.getPatientId());
@@ -167,10 +138,10 @@ public class TemplateListActivity extends AppCompatActivity implements HelperRes
 
         }
         //  showSendSmsDialog(clinicListForSms);
-        Intent intent = new Intent(this,SendSmsActivity.class);
-        intent.putExtra(RescribeConstants.SMS_DETAIL_LIST,clinicListForSms);
-        intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW,patientListsToShowOnSmsScreen);
-        startActivityForResult(intent,RESULT_SMS_SEND);
+        Intent intent = new Intent(this, SendSmsActivity.class);
+        intent.putExtra(RescribeConstants.SMS_DETAIL_LIST, clinicListForSms);
+        intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW, patientListsToShowOnSmsScreen);
+        startActivityForResult(intent, RESULT_SMS_SEND);
 
     }
 
@@ -195,8 +166,8 @@ public class TemplateListActivity extends AppCompatActivity implements HelperRes
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_SMS_SEND) {
             finish();
-            }
         }
     }
+}
 
 

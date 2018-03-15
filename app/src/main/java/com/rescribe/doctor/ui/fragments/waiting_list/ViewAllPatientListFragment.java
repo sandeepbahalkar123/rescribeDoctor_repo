@@ -41,6 +41,8 @@ import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.model.waiting_list.WaitingPatientList;
 import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
 import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
+import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAndDropBaseModel;
+import com.rescribe.doctor.model.waiting_list.request_drag_drop.WaitingListSequence;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -118,6 +120,8 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
             } else {
                 mLocationId = waitingclinicLists.get(0).getLocationId();
+                waitingPatientTempList = new WaitingPatientList();
+                waitingPatientTempList = waitingclinicLists.get(0).getWaitingPatientList();
                 clinicListSpinner.setVisibility(View.GONE);
                 hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
                 clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
@@ -217,7 +221,16 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
-
+                RequestForDragAndDropBaseModel requestForDragAndDropBaseModel = new RequestForDragAndDropBaseModel();
+                ArrayList<WaitingListSequence> waitingListSequences = new ArrayList<>();
+                /*for(){
+                    WaitingListSequence waitingListSequence = new WaitingListSequence();
+                    waitingListSequence.setWaitingId();
+                    waitingListSequence.setWaitingSequence();
+                    waitingListSequences.add(waitingListSequence);
+                }*/
+                requestForDragAndDropBaseModel.setWaitingListSequence(waitingListSequences);
+                mAppointmentHelper.doDargAndDropApi(requestForDragAndDropBaseModel);
             }
 
             @Override

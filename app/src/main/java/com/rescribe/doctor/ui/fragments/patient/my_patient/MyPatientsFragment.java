@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
 import com.rescribe.doctor.adapters.my_patients.MyPatientsAdapter;
+import com.rescribe.doctor.adapters.my_patients.TemplateAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
@@ -43,6 +44,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
+import com.rescribe.doctor.model.patient.template_sms.TemplateList;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.PatientsListAddToWaitingList;
@@ -65,6 +67,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
+import static com.rescribe.doctor.ui.fragments.patient.my_patient.SendSmsPatientActivity.RESULT_SEND_SMS;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 
 
@@ -442,12 +445,13 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             public void onClick(View v) {
 
                 if (mLocationId != 0) {
-                    Intent intent = new Intent(getActivity(), TemplateListForMyPatients.class);
+                    mAppointmentHelper.doGetDoctorTemplate();
+                   /* Intent intent = new Intent(getActivity(), TemplateListForMyPatients.class);
                     intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
                     intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
                     intent.putExtra(RescribeConstants.CLINIC_NAME, mClinicName);
                     intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientInfoLists);
-                    startActivity(intent);
+                    startActivity(intent);*/
                     dialog.cancel();
                 } else {
                     Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
@@ -646,6 +650,27 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     getActivity().finish();
                     getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 }
+            }
+        } if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
+            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
+            ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
+            if (!templateLists.isEmpty()) {
+                Intent intent = new Intent(getActivity(), TemplateListForMyPatients.class);
+                intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+                intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
+                intent.putExtra(RescribeConstants.CLINIC_NAME, mClinicName);
+                intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientInfoLists);
+                intent.putParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST,templateLists);
+                startActivity(intent);
+            } else {
+                TemplateList templateList = null;
+                Intent intent = new Intent(getActivity(),SendSmsPatientActivity.class);
+                intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+                intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
+                intent.putExtra(RescribeConstants.TEMPLATE_OBJECT,templateList);
+                intent.putExtra(RescribeConstants.CLINIC_NAME,mClinicName);
+                intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientInfoLists);
+                startActivityForResult(intent,RESULT_SEND_SMS);
             }
         }
     }

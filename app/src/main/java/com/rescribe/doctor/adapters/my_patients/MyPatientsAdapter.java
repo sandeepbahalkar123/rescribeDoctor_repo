@@ -76,7 +76,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         final PatientList patientObject = mDataList.get(position);
         holder.opdTypeTextView.setVisibility(View.GONE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
-        holder.patientClinicAddress.setText(patientObject.getClinicName() + " - " + patientObject.getPatientCity());
+        holder.patientClinicAddress.setText(patientObject.getPatientCity());
         String patientName = "";
         if (patientObject.getSalutation() == 1) {
             patientName = mContext.getString(R.string.mr) + " " + CommonMethods.toCamelCase(patientObject.getPatientName());

@@ -291,7 +291,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             holder.mContainer.setBackgroundResource(bgResId);
         }
 
-        if (item.getViewAll().getWaitingStatus().equals("In Queue")) {
+        if (item.getViewAll().getWaitingStatus().equals("In Queue")||item.getViewAll().getWaitingStatus().equals("Confirmed")) {
             holder.mDragHandle.setVisibility(View.VISIBLE);
             holder.setMaxLeftSwipeAmount(-0.4f);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);

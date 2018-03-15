@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.philliphsu.bottomsheetpickers.date.DatePickerDialog;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -47,7 +48,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by jeetal on 31/1/18.
  */
 @RuntimePermissions
-public class MyAppointmentsActivity extends AppCompatActivity implements HelperResponse, DrawerForMyAppointment.OnDrawerInteractionListener {
+public class MyAppointmentsActivity extends AppCompatActivity implements HelperResponse, DrawerForMyAppointment.OnDrawerInteractionListener,DatePickerDialog.OnDateSetListener  {
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -69,7 +70,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private AppointmentHelper mAppointmentHelper;
     private Bundle bundle;
     private String month;
-    private String year;
+    private String mYear;
     private boolean isLongPressed;
     private DrawerForMyAppointment mDrawerForMyAppointment;
     private Bundle bundleOnApply;
@@ -79,6 +80,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private ArrayList<ClinicList> mClinicListsFilter;
     private ArrayList<AppointmentList> mFilterAppointmentList;
     private String phoneNo;
+    private DatePickerDialog datePickerDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +95,9 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         titleTextView.setText(getString(R.string.appointments));
         setDateInToolbar();
         //Call api for AppointmentData
+        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         mAppointmentHelper = new AppointmentHelper(this, this);
-        mAppointmentHelper.doGetAppointmentData();
+        mAppointmentHelper.doGetAppointmentData(date);
 
 
     }
@@ -150,12 +153,12 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                 RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE).toLowerCase();
         String[] timeToShowSpilt = timeToShow.split(",");
         month = timeToShowSpilt[0].substring(0, 1).toUpperCase() + timeToShowSpilt[0].substring(1);
-        year = timeToShowSpilt.length == 2 ? timeToShowSpilt[1] : "";
+        mYear = timeToShowSpilt.length == 2 ? timeToShowSpilt[1] : "";
         Date date = CommonMethods.convertStringToDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         timeToShow = timeToShow.substring(0, 1).toUpperCase() + timeToShow.substring(1);
-        String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + month + "'" + year;
+        String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + month + "'" + mYear;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             dateTextview.setText(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
         } else {
@@ -173,6 +176,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                 myAppointmentsBaseMainModel = (MyAppointmentsBaseModel) customResponse;
                 bundle = new Bundle();
                 bundle.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsBaseMainModel.getMyAppointmentsDataModel());
+                bundle.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED,true);
                 mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
                 setUpNavigationDrawer();
@@ -211,6 +215,16 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             case R.id.userInfoTextView:
                 break;
             case R.id.dateTextview:
+                Calendar now = Calendar.getInstance();
+// As of version 2.3.0, `BottomSheetDatePickerDialog` is deprecated.
+                datePickerDialog = DatePickerDialog.newInstance(
+                        this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.setAccentColor(getResources().getColor(R.color.tagColor));
+                datePickerDialog.setMinDate(Calendar.getInstance());
+                datePickerDialog.show(getSupportFragmentManager(), getResources().getString(R.string.select_date_text));
 
                 break;
             case R.id.viewContainer:
@@ -242,8 +256,6 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         drawerLayout.closeDrawers();
         bundleOnApply = new Bundle();
 
-        mStatusLists = new ArrayList<>();
-        mClinicListsFilter = new ArrayList<>();
         mClinicListsFilter = b.getParcelableArrayList(RescribeConstants.FILTER_CLINIC_LIST);
         mStatusLists = b.getParcelableArrayList(RescribeConstants.FILTER_STATUS_LIST);
         myAppointmentsBaseModelObject = b.getParcelable(RescribeConstants.APPOINTMENT_DATA);
@@ -276,6 +288,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
             myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
             bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
+            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED,false);
             mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
             getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
             setUpNavigationDrawer();
@@ -299,6 +312,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
             myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
             bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
+            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED,false);
             mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
             getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
             setUpNavigationDrawer();
@@ -342,6 +356,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
             myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
             bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
+            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED,false);
             mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
             getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
             setUpNavigationDrawer();
@@ -350,6 +365,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
             myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
             bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
+            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED,true);
             mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
             getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
             setUpNavigationDrawer();
@@ -385,4 +401,27 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
        MyAppointmentsActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
+    @Override
+    public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+        int monthOfYearToShow = monthOfYear+1;
+        mAppointmentHelper = new AppointmentHelper(this, this);
+        mAppointmentHelper.doGetAppointmentData(year+"-"+monthOfYearToShow+"-"+dayOfMonth);
+        dateTextview.setVisibility(View.VISIBLE);
+        String timeToShow = CommonMethods.formatDateTime(dayOfMonth+"-"+monthOfYearToShow+"-"+year, RescribeConstants.DATE_PATTERN.MMM_YY,
+                RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE).toLowerCase();
+        String[] timeToShowSpilt = timeToShow.split(",");
+        month = timeToShowSpilt[0].substring(0, 1).toUpperCase() + timeToShowSpilt[0].substring(1);
+        mYear = timeToShowSpilt.length == 2 ? timeToShowSpilt[1] : "";
+        Date date = CommonMethods.convertStringToDate(dayOfMonth+"-"+monthOfYearToShow+"-"+year, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        timeToShow = timeToShow.substring(0, 1).toUpperCase() + timeToShow.substring(1);
+        String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + month + "'" + year;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            dateTextview.setText(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            dateTextview.setText(Html.fromHtml(toDisplay));
+        }
+
+    }
 }

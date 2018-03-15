@@ -239,7 +239,7 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp11"
                     app:customFont="@string/roboto_medium"
-                    tools:text="Outstanding Amount:" />
+                    tools:text="O/S Amount:" />
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/payableAmountTextView"

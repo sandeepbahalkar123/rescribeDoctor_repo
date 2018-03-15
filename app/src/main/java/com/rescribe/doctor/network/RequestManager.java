@@ -552,6 +552,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         TemplateBaseModel mCompleteCancel = new Gson().fromJson(data, TemplateBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mCompleteCancel, mOldDataTag);
                         break;
+                    case RescribeConstants.TASK_DARG_DROP: //This is for get archived list
+                        TemplateBaseModel mDragAndDrop = new Gson().fromJson(data, TemplateBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mDragAndDrop, mOldDataTag);
+                        break;
 
                     default:
 

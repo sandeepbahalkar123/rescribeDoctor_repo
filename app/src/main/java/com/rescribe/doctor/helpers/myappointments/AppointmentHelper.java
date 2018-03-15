@@ -1,24 +1,20 @@
 package com.rescribe.doctor.helpers.myappointments;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request;
-import com.google.gson.Gson;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
 import com.rescribe.doctor.model.my_appointments.RequestAppointmentData;
 import com.rescribe.doctor.model.my_appointments.request_cancel_or_complete_appointment.RequestAppointmentCancelModel;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.RequestSendSmsModel;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
-import com.rescribe.doctor.model.waiting_list.WaitingListBaseModel;
 import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.RequestForWaitingListPatients;
 import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
+import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAndDropBaseModel;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.network.ConnectionFactory;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -26,8 +22,6 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -69,6 +63,8 @@ public class AppointmentHelper implements ConnectionListener {
                     mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 }else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE)) {
                     mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
+                }else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DARG_DROP)) {
+                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 }
                 break;
             case ConnectionListener.PARSE_ERR0R:
@@ -98,7 +94,7 @@ public class AppointmentHelper implements ConnectionListener {
 
     }
 
-    public void doGetAppointmentData() {
+    public void doGetAppointmentData(String userSelectedDate) {
     /*  try {
             InputStream is = mContext.getAssets().open("my_appointments.json");
             int size = is.available();
@@ -118,8 +114,7 @@ public class AppointmentHelper implements ConnectionListener {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_APPOINTMENT_DATA, Request.Method.POST, true);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
-        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-        mRequestAppointmentData.setDate(date);
+        mRequestAppointmentData.setDate(userSelectedDate);
         mConnectionFactory.setPostParams(mRequestAppointmentData);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_MY_APPOINTMENTS_LIST);
@@ -192,22 +187,7 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void doGetWaitingList() {
-      /*  try {
-            InputStream is = mContext.getAssets().open("waiting_list.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
-            Log.e(TAG, "patients" + json);
 
-            Gson gson = new Gson();
-            WaitingListBaseModel mWaitingListBaseModel = gson.fromJson(json, WaitingListBaseModel.class);
-            onResponse(ConnectionListener.RESPONSE_OK, mWaitingListBaseModel, RescribeConstants.TASK_GET_PATIENT_DATA);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_WAITING_LIST, Request.Method.POST, true);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
@@ -241,7 +221,13 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setUrl(Config.CANCEL_OR_COMPLETE_APPOINTMENT);
         mConnectionFactory.createConnection(RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE);
     }
-
+   public void doDargAndDropApi(RequestForDragAndDropBaseModel requestForDragAndDropBaseModel){
+       ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DARG_DROP, Request.Method.POST, true);
+       mConnectionFactory.setPostParams(requestForDragAndDropBaseModel);
+       mConnectionFactory.setHeaderParams();
+       mConnectionFactory.setUrl(Config.DRAG_AND_DROP_API);
+       mConnectionFactory.createConnection(RescribeConstants.TASK_DARG_DROP);
+   }
 
 }
 
