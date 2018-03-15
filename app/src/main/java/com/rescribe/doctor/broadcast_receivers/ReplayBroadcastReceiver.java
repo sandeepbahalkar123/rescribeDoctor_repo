@@ -61,6 +61,10 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements Help
             messageL.setSenderImgUrl(imageUrl);
             messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
 
+            messageL.setSalutation(recievedMessage.getSalutation());
+            messageL.setReceiverName(recievedMessage.getReceiverName());
+            messageL.setReceiverImgUrl(recievedMessage.getReceiverImgUrl());
+
             messageL.setFileUrl("");
             messageL.setSpecialization(speciality);
             messageL.setPaidStatus(FREE);

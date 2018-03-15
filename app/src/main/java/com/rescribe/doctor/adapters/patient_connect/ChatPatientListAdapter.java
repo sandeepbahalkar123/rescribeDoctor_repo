@@ -25,6 +25,7 @@ import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import org.joda.time.DateTime;
 
@@ -34,6 +35,8 @@ import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 
 /**
  * Created by jeetal on 5/3/18.
@@ -76,18 +79,10 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
         holder.patientClinicAddress.setText(patientObject.getClinicName() + " - " + patientObject.getPatientCity());
         String patientName = "";
-        if (patientObject.getSalutation() == 1) {
-            patientName = mContext.getString(R.string.mr) + " " + patientObject.getPatientName();
-        } else if (patientObject.getSalutation() == 2) {
-            patientName = mContext.getString(R.string.mrs) + " " + patientObject.getPatientName();
 
-        } else if (patientObject.getSalutation() == 3) {
-            patientName = mContext.getString(R.string.miss) + " " + patientObject.getPatientName();
-
-        } else if (patientObject.getSalutation() == 4) {
-            patientName = patientObject.getPatientName();
-        }
-
+        if (patientObject.getSalutation() != 0)
+            patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
+        else patientName = toCamelCase(patientObject.getPatientName());
 
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName

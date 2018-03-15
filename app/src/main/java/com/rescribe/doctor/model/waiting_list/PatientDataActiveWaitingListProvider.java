@@ -76,6 +76,11 @@ public class PatientDataActiveWaitingListProvider extends AbstractDataProvider {
     }
 
     @Override
+    public List<PatientDataProvider.ConcreteData> getData() {
+        return null;
+    }
+
+    @Override
     public void moveItem(int fromPosition, int toPosition) {
         if (fromPosition == toPosition) {
             return;

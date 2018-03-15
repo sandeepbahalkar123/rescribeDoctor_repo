@@ -44,6 +44,8 @@ import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.model.waiting_list.WaitingPatientList;
 import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
 import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
+import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAndDropBaseModel;
+import com.rescribe.doctor.model.waiting_list.request_drag_drop.WaitingListSequence;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -277,7 +279,16 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
 
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
-
+                RequestForDragAndDropBaseModel requestForDragAndDropBaseModel = new RequestForDragAndDropBaseModel();
+                ArrayList<WaitingListSequence> waitingListSequences = new ArrayList<>();
+                for(int i = 0;i<mDraggableSwipeableActiveWaitingListAdapter.getAllItems().size();i++){
+                    WaitingListSequence waitingListSequence = new WaitingListSequence();
+                    waitingListSequence.setWaitingId(String.valueOf(mDraggableSwipeableActiveWaitingListAdapter.getAllItems().get(i).getWaitingId()));
+                    waitingListSequence.setWaitingSequence(mDraggableSwipeableActiveWaitingListAdapter.getAllItems().get(i).getWaitingSequence());
+                    waitingListSequences.add(waitingListSequence);
+                }
+                requestForDragAndDropBaseModel.setWaitingListSequence(waitingListSequences);
+                mAppointmentHelper.doDargAndDropApi(requestForDragAndDropBaseModel);
             }
         });
 

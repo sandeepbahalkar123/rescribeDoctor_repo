@@ -76,10 +76,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="@dimen/dp2"
+                            android:text="123"
                             android:textColor="@color/rating_color"
                             android:textSize="@dimen/sp13"
-                            app:customFont="@string/roboto_bold"
-                           android:text="123" />
+                            app:customFont="@string/roboto_bold" />
 
                     </LinearLayout>
 
@@ -93,12 +93,12 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ruppee_shadow" />
+                    android:src="@drawable/ruppee_shadow"
+                    android:visibility="gone" />
 
             </RelativeLayout>
         </RelativeLayout>
@@ -114,9 +114,9 @@
                 android:layout_width="@dimen/dp80"
                 android:layout_height="@dimen/dp80"
                 android:layout_gravity="center"
+                android:src="@drawable/layer_12"
                 app:border="true"
-                app:shadow="true"
-                android:src="@drawable/layer_12" />
+                app:shadow="true" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -138,18 +138,18 @@
                     android:textStyle="bold"
                     android:visibility="visible"
                     app:customFont="@string/roboto_bold"
-                   android:text="Neurology" />
+                    tools:text="Neurology" />
 
                 <!-- Artist Name -->
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/doctorName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Dr. Rahul Kalyanpur"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp16"
                     android:typeface="sans"
-                    app:customFont="@string/roboto_bold"
-                   android:text="Dr. Rahul Kalyanpur" />
+                    app:customFont="@string/roboto_bold" />
 
                 <!-- Rightend Duration -->
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -157,21 +157,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="right"
+                    android:text="MBBS, MD - Medicine, Neurology"
                     android:textColor="@color/about_doctor_color"
                     android:textSize="@dimen/sp13"
                     android:textStyle="bold"
-                    app:customFont="@string/roboto_medium"
-                   android:text="MBBS, MD - Medicine, Neurology" />
+                    app:customFont="@string/roboto_medium" />
             </LinearLayout>
 
         </LinearLayout>
 
         <RelativeLayout
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp6"
-            android:gravity="bottom">
+            android:gravity="bottom"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/docRatingBarLayout"
@@ -182,22 +182,22 @@
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/docRating"
-                    android:visibility="invisible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="4.5"
                     android:textColor="@color/tagColor"
                     android:textSize="@dimen/sp16"
-                    app:customFont="@string/roboto_regular"
-                   android:text="4.5" />
+                    android:visibility="invisible"
+                    app:customFont="@string/roboto_regular" />
 
                 <RatingBar
                     android:id="@+id/docRatingBar"
-                    android:visibility="invisible"
                     android:layout_width="wrap_content"
                     android:layout_height="10dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dp3"
                     android:stepSize="0.5"
+                    android:visibility="invisible"
                     tools:rating="3.5" />
 
             </LinearLayout>
@@ -245,16 +245,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="Practices at 1 location"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp14"
-                app:customFont="@string/roboto_regular"
-               android:text="Practices at 1 location" />
+                app:customFont="@string/roboto_regular" />
 
             <ImageView
                 android:id="@+id/viewAllClinicsOnMap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible" />
+                android:src="@drawable/view_on_map_btn"
+                android:visibility="visible" />
 
         </LinearLayout>
 
@@ -285,17 +286,17 @@
             <Spinner
                 android:id="@+id/clinicNameSpinner"
                 style="@style/SpinnerThemeProfile"
-                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:spinnerMode="dropdown" />
+                android:spinnerMode="dropdown"
+                android:visibility="visible" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 style="@style/SpinnerThemeProfile"
                 android:layout_width="match_parent"
-                android:visibility="gone"
                 android:layout_height="match_parent"
-                android:spinnerMode="dropdown"/>
+                android:spinnerMode="dropdown"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -329,10 +330,10 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:paddingBottom="@dimen/dp4"
+                    android:text="12"
                     android:textColor="@color/tagColor"
                     android:textSize="@dimen/sp12"
-                    app:customFont="@string/roboto_bold"
-                   android:text="12" />
+                    app:customFont="@string/roboto_bold" />
             </FrameLayout>
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -343,10 +344,10 @@
                 android:gravity="center|left"
                 android:paddingLeft="@dimen/dp10"
                 android:paddingStart="@dimen/dp10"
+                android:text="12 years of experience"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp15"
-                app:customFont="@string/roboto_regular"
-               android:text="12 years of experience" />
+                app:customFont="@string/roboto_regular" />
 
         </LinearLayout>
 

@@ -499,8 +499,7 @@ public class MQTTService extends Service {
             if (!doctorPhoto.isEmpty()) {
                 RequestOptions requestOptions = new RequestOptions();
                 requestOptions.dontAnimate();
-                requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-                requestOptions.skipMemoryCache(true);
+                requestOptions.circleCrop();
                 requestOptions.placeholder(mReceiverDrawable);
                 requestOptions.error(mReceiverDrawable);
 

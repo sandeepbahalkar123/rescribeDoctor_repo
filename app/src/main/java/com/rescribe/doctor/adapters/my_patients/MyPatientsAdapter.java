@@ -42,6 +42,8 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+
 /**
  * Created by jeetal on 31/1/18.
  */
@@ -78,18 +80,10 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
         holder.patientClinicAddress.setText(patientObject.getPatientCity());
         String patientName = "";
-        if (patientObject.getSalutation() == 1) {
-            patientName = mContext.getString(R.string.mr) + " " + CommonMethods.toCamelCase(patientObject.getPatientName());
-        } else if (patientObject.getSalutation() == 2) {
-            patientName = mContext.getString(R.string.mrs) + " " + CommonMethods.toCamelCase(patientObject.getPatientName());
 
-        } else if (patientObject.getSalutation() == 3) {
-            patientName = mContext.getString(R.string.miss) + " " + CommonMethods.toCamelCase(patientObject.getPatientName());
-
-        } else if (patientObject.getSalutation() == 4) {
-            patientName = CommonMethods.toCamelCase(patientObject.getPatientName());
-        }
-
+        if (patientObject.getSalutation() != 0)
+            patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
+        else patientName = toCamelCase(patientObject.getPatientName());
 
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName

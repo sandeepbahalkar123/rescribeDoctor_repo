@@ -13,7 +13,6 @@
         android:paddingBottom="@dimen/dp4"
         android:paddingEnd="@dimen/dp10"
         android:paddingStart="@dimen/dp10"
-        android:paddingTop="@dimen/dp4"
         android:textColor="@color/about_doctor_color"
         android:textSize="@dimen/sp15"
         tools:text="@string/select_date_text" />

@@ -97,15 +97,10 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     @BindView(R.id.searchEditText)
     EditTextWithDeleteButton searchEditText;
     private Unbinder unbinder;
-    private MyPatientBaseModel myPatientBaseModel;
     private MyPatientsAdapter mMyPatientsAdapter;
-    private ArrayList<BottomMenu> mBottomMenuList;
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
-    public int TOTAL_PAGE_COUNT = 1;
-    public boolean isLoading = false;
     public static final int PAGE_START = 0;
-    public int currentPage = PAGE_START;
     private String searchText = "";
     private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
     private ArrayList<PatientList> mPatientListsOriginal;
@@ -117,7 +112,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private boolean isFiltered = false;
     private boolean isFromDrawer;
     private RequestSearchPatients mRequestSearchPatientsForDrawer = new RequestSearchPatients();
-    private String patientName;
+    private ArrayList<PatientList> patientLists;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -131,7 +126,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     }
 
     private void init() {
-        mBottomMenuList = new ArrayList<>();
+        ArrayList<BottomMenu> mBottomMenuList = new ArrayList<>();
         isFromDrawer = args.getBoolean(RescribeConstants.IS_FROM_DRAWER);
         if (isFromDrawer) {
             mRequestSearchPatientsForDrawer = args.getParcelable(RescribeConstants.DRAWER_REQUEST);
@@ -143,43 +138,18 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             bottomMenu.setMenuName(mMenuName);
             mBottomMenuList.add(bottomMenu);
         }
-        myPatientBaseModel = args.getParcelable(RescribeConstants.MYPATIENTS_DATA);
+        MyPatientBaseModel patientBaseModel = args.getParcelable(RescribeConstants.MYPATIENTS_DATA);
+        patientLists = patientBaseModel.getPatientDataModel().getPatientList();
 
-        if (myPatientBaseModel.getPatientDataModel().getPatientList().size() > 0) {
-            recyclerView.setVisibility(View.VISIBLE);
-            recyclerView.setClipToPadding(false);
-            emptyListView.setVisibility(View.GONE);
-            LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(linearlayoutManager);
-            // off recyclerView Animation
-            RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-            recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
-            recyclerView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.divider));
-            if (animator instanceof SimpleItemAnimator)
-                ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        recyclerView.setClipToPadding(false);
+        // off recyclerView Animation
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
+        recyclerView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.divider));
+        if (animator instanceof SimpleItemAnimator)
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
-            for (PatientList patientList : myPatientBaseModel.getPatientDataModel().getPatientList()) {
-                patientList.setSelected(((MyPatientsActivity) getActivity()).selectedDoctorId.contains(patientList.getHospitalPatId()));
-            }
-
-            if (args.getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM).equals(RescribeConstants.HOME_PAGE)) {
-                mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), myPatientBaseModel.getPatientDataModel().getPatientList(), this, true);
-                recyclerView.setAdapter(mMyPatientsAdapter);
-            } else {
-                mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), myPatientBaseModel.getPatientDataModel().getPatientList(), this, false);
-                recyclerView.setAdapter(mMyPatientsAdapter);
-            }
-            recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
-                @Override
-                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                    loadNextPage(page);
-                }
-            });
-
-        } else {
-            recyclerView.setVisibility(View.GONE);
-            emptyListView.setVisibility(View.VISIBLE);
-        }
+        initAdapter();
 
         searchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
@@ -199,7 +169,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     isFiltered = true;
                 } else if (searchText.length() < 3 && isFiltered) {
                     isFiltered = false;
-                    init();
+                    initAdapter();
                 }
             }
         });
@@ -211,6 +181,37 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList, false);
             recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
             recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);
+        }
+    }
+
+    private void initAdapter() {
+        if (patientLists.size() > 0) {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyListView.setVisibility(View.GONE);
+
+            for (PatientList patientList : patientLists) {
+                patientList.setSelected(((MyPatientsActivity) getActivity()).selectedDoctorId.contains(patientList.getHospitalPatId()));
+            }
+
+            boolean isLongPress = mMyPatientsAdapter != null && mMyPatientsAdapter.isLongPressed;
+
+            LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(linearlayoutManager);
+            mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, args.getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM).equals(RescribeConstants.HOME_PAGE));
+            recyclerView.setAdapter(mMyPatientsAdapter);
+
+            recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                    loadNextPage(page);
+                }
+            });
+
+            mMyPatientsAdapter.isLongPressed = isLongPress;
+
+        } else {
+            recyclerView.setVisibility(View.GONE);
+            emptyListView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -233,10 +234,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     @Override
     public void onRecordFound(boolean isListEmpty) {
-        if (isListEmpty)
-            emptyListView.setVisibility(View.VISIBLE);
-        else
-            emptyListView.setVisibility(View.GONE);
+        emptyListView.setVisibility(isListEmpty ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -257,15 +255,12 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     @Override
     public void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired) {
         if (isClickOnPatientDetailsRequired) {
-            if (patientListObject.getSalutation() == 1) {
-                patientName = getString(R.string.mr) + " " + toCamelCase(patientListObject.getPatientName());
-            } else if (patientListObject.getSalutation() == 2) {
-                patientName = getString(R.string.mrs) + " " + toCamelCase(patientListObject.getPatientName());
-            } else if (patientListObject.getSalutation() == 3) {
-                patientName = getString(R.string.miss) + " " + toCamelCase(patientListObject.getPatientName());
-            } else if (patientListObject.getSalutation() == 4) {
-                patientName = toCamelCase(patientListObject.getPatientName());
-            }
+
+            String patientName;
+            if (patientListObject.getSalutation() != 0)
+                patientName = RescribeConstants.SALUTATION[patientListObject.getSalutation() - 1] + toCamelCase(patientListObject.getPatientName());
+            else patientName = toCamelCase(patientListObject.getPatientName());
+
             Bundle b = new Bundle();
             b.putString(RescribeConstants.PATIENT_NAME, patientName);
             b.putString(RescribeConstants.PATIENT_INFO, text);

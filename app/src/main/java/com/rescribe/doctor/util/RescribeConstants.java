@@ -170,12 +170,13 @@ public class RescribeConstants {
     public static final String IS_CALL_FROM_MY_PATEINTS = "call_from_my_patients_chat";
     public static final String TEMPLATE_LIST = "template_list";
     public static final String IS_BOOK_AND_CONFIRM_REQUIRED = "is_book_confirm_required";
+    public static final float ZOOM_CAMERA_VALUE = 7.0f;
 
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
 
-    public static final String[] SALUTATION = {"Mr.", "Mrs.", "Miss", "Other"};
+    public static final String[] SALUTATION = {"Mr. ", "Mrs. ", "Miss ", ""};
     public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};
 
     public interface USER_STATUS {

@@ -44,11 +44,14 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeabl
 import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
+import com.rescribe.doctor.model.waiting_list.PatientDataProvider;
 import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 import com.rescribe.doctor.util.dragable_swipable.DrawableUtils;
 import com.rescribe.doctor.util.dragable_swipable.ViewUtils;
+
+import java.util.ArrayList;
 
 public class DraggableSwipeableViewAllWaitingListAdapter
         extends RecyclerView.Adapter<DraggableSwipeableViewAllWaitingListAdapter.MyViewHolder>
@@ -63,6 +66,12 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         notifyItemRemoved(index);
     }
 
+    public ArrayList<ViewAll> getAllItems() {
+        ArrayList<ViewAll> viewAlls = new ArrayList<>();
+        for (PatientDataProvider.ConcreteData concreteData : mProvider.getData())
+            viewAlls.add(concreteData.getViewAll());
+        return viewAlls;
+    }
 
     public void addItem(ViewAll viewAll) {
         mProvider.addItem(viewAll);

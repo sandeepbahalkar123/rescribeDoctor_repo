@@ -84,4 +84,5 @@
     <color name="bg_white_color">#f4f4f4</color>
     <color name="bg_grey_color">#eaeaea</color>
     <color name="yellow">#FFFF33</color>
+    <color name="logo_color">#7f5b5b5b</color>
 </resources>

@@ -165,9 +165,6 @@
     <string name="file_extension">file_extension</string>
     <string name="title_activity_selected_docs">Selected Documents</string>
     <string name="follow">follow</string>
-    <string name="mr">Mr.</string>
-    <string name="mrs">Mrs.</string>
-    <string name="miss">Miss.</string>
     <string name="appointments">Appointments</string>
     <string name="normalRange">normal</string>
     <string name="moderateRange">Moderate</string>
@@ -219,5 +216,7 @@
     <string name="no_show">no show</string>
     <string name="other">other</string>
     <string name="enter_sms_text_here">Enter sms text here</string>
+    <string name="address">Address</string>
+    <string name="location">Location</string>
 
 </resources>

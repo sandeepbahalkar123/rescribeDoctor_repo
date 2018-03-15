@@ -221,7 +221,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             for (int i = 0; i < mArrayListDoctorLocationModel.size(); i++) {
                 mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getArea() + ", " + mArrayListDoctorLocationModel.get(i).getCity());
             }
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.global_item_simple_spinner, mClinicname);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.clinic_spinner_layout, mClinicname);
             clinicNameSpinner.setAdapter(arrayAdapter);
 
 
@@ -309,7 +309,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         super.onBottomMenuClick(bottomMenu);
     }
 
-    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices})
+    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices,R.id.viewAllClinicsOnMap})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -323,6 +323,15 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
                 showServiceDialog();
 
+                break;
+
+            case R.id.viewAllClinicsOnMap: // on view-all location clicked
+                //-----Show all doc clinic on map, copied from BookAppointFilteredDoctorListFragment.java----
+                //this list is sorted for plotting map for each clinic location, the values of clinicName and doctorAddress are set in string here, which are coming from arraylist.
+
+                Intent intentObjectMap = new Intent(this, MapActivityShowDoctorLocation.class);
+                intentObjectMap.putExtra(getString(R.string.address),doctorLocationModel.getArea()+", "+doctorLocationModel.getCity());
+                startActivity(intentObjectMap);
                 break;
         }
     }

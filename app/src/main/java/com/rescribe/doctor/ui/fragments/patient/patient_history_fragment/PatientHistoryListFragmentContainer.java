@@ -63,6 +63,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class PatientHistoryListFragmentContainer extends Fragment implements HelperResponse, DatePickerDialog.OnDateSetListener {
 
@@ -77,7 +79,6 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     CustomTextView titleTextView;
     @BindView(R.id.userInfoTextView)
     CustomTextView userInfoTextView;
-    private YearSpinnerAdapter mYearSpinnerAdapter;
     @BindView(R.id.year)
     Spinner mYearSpinnerView;
     @BindView(R.id.dateTextview)
@@ -92,17 +93,10 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private Year mCurrentSelectedTimePeriodTab;
     private PatientDetailHelper mPatientDetailHelper;
     private ViewPagerAdapter mViewPagerAdapter = null;
-    private HashSet<String> mGeneratedRequestForYearList = new HashSet<>();
+    private HashSet<String> mGeneratedRequestForYearList;
     private Context mContext;
 
     private PatientHistoryActivity mParentActivity;
-    private Fragment fragment;
-    private PatientHistoryCalenderListFragment mPatientHistoryCalenderListFragment;
-    private boolean longpressed;
-    private Bundle bundle = new Bundle();
-    ArrayList<DatesData> mDatesDataArrayList = new ArrayList<>();
-    private DatePickerDialog datePickerDialog;
-    private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
     private String mLocationId;
     private String mHospitalId;
     private String mPatientId;
@@ -121,12 +115,12 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         ButterKnife.bind(this, mRootView);
 
         mParentActivity = (PatientHistoryActivity) getActivity();
-        mContext = inflater.getContext();
+        mContext = getContext();
         initialize();
         return mRootView;
     }
 
-    private void initialize() {
+    public void initialize() {
         args = getArguments();
         titleTextView.setText(args.getString(RescribeConstants.PATIENT_NAME));
         userInfoTextView.setVisibility(View.VISIBLE);
@@ -145,6 +139,14 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mPatientId = args.getString(RescribeConstants.PATIENT_ID);
         mHospitalPatId = args.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
 
+        mGeneratedRequestForYearList = new HashSet<>();
+
+        Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedMyRecordInfoAndReports = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
+        if (yearWiseSortedMyRecordInfoAndReports.get(mCurrentSelectedTimePeriodTab.getYear()) == null) {
+            mPatientDetailHelper.doGetPatientHistory(args.getString(RescribeConstants.PATIENT_ID), mCurrentSelectedTimePeriodTab.getYear());
+            mGeneratedRequestForYearList.add(mCurrentSelectedTimePeriodTab.getYear());
+        }
+
     }
 
     @OnClick({R.id.backImageView, R.id.addRecordButton})
@@ -156,7 +158,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             case R.id.addRecordButton:
                 Calendar now = Calendar.getInstance();
 // As of version 2.3.0, `BottomSheetDatePickerDialog` is deprecated.
-                datePickerDialog = DatePickerDialog.newInstance(
+                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
                         this,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
@@ -175,8 +177,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mViewPagerAdapter.mFragmentTitleList.clear();
         for (Year data :
                 mTimePeriodList) {
-            mPatientHistoryCalenderListFragment = new PatientHistoryCalenderListFragment();
-            fragment = mPatientHistoryCalenderListFragment.createNewFragment(data, args); // pass data here
+            Fragment fragment = PatientHistoryCalenderListFragment.createNewFragment(data, args);
             mViewPagerAdapter.addFragment(fragment, data); // pass title here
         }
         mViewpager.setOffscreenPageLimit(0);
@@ -211,7 +212,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 if (mYearList.size() == 1) {
                     mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
                     mYearSpinnerView.setVisibility(View.GONE);
-                    mYearSpinnerSingleItem.setText(mYearList.get(0).toString());
+                    mYearSpinnerSingleItem.setText(mYearList.get(0));
                 } else {
                     mYearSpinnerSingleItem.setVisibility(View.GONE);
                     mYearSpinnerView.setVisibility(View.VISIBLE);
@@ -256,9 +257,9 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
-        mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
+        ArrayList<DoctorLocationModel> mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
 
-        showDialogToSelectLocation(mDoctorLocationModel, year, monthOfYear+1, dayOfMonth);
+        showDialogToSelectLocation(mDoctorLocationModel, year, monthOfYear + 1, dayOfMonth);
 
 
     }
@@ -298,7 +299,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                     if (!mLocationId.equals("0")) {
                         callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth);
                         dialog.cancel();
-                    } else Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
             }
@@ -411,34 +413,32 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         PatientHistoryBaseModel newBaseModel = (PatientHistoryBaseModel) customResponse;
         PatientHistoryDataModel dataModel = newBaseModel.getPatientHistoryDataModel();
-        if(dataModel.getYearsMonthsData().size()>0) {
+
+        mTimePeriodList = dataModel.getFormattedYearList();
+        if (mViewPagerAdapter == null) {
+            mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
+            mTabLayout.setupWithViewPager(mViewpager);
+            mYearList = dataModel.getUniqueYears();
+            YearSpinnerAdapter mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
+            mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
+        }
+
+        if (dataModel.getYearsMonthsData().isEmpty()) {
+            noRecords.setVisibility(View.VISIBLE);
+            mYearSpinnerView.setVisibility(View.GONE);
+            mTabLayout.setVisibility(View.GONE);
+        } else {
             noRecords.setVisibility(View.GONE);
-            mTimePeriodList = dataModel.getFormattedYearList();
-            if (mViewPagerAdapter == null) {
-                mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
-                mTabLayout.setupWithViewPager(mViewpager);
-                mYearList = dataModel.getUniqueYears();
-                mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
-                mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
-            }
-
-            if (dataModel.getYearsMonthsData().isEmpty()) {
-                noRecords.setVisibility(View.VISIBLE);
+            mYearSpinnerView.setVisibility(View.VISIBLE);
+            mTabLayout.setVisibility(View.VISIBLE);
+            if (mYearList.size() == 1) {
                 mYearSpinnerView.setVisibility(View.GONE);
-                mTabLayout.setVisibility(View.GONE);
+                mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
+                mYearSpinnerSingleItem.setText(mYearList.get(0));
             } else {
-                noRecords.setVisibility(View.GONE);
                 mYearSpinnerView.setVisibility(View.VISIBLE);
-                mTabLayout.setVisibility(View.VISIBLE);
-                if (mYearList.size() == 1) {
-                    mYearSpinnerView.setVisibility(View.GONE);
-                    mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
-                    mYearSpinnerSingleItem.setText(mYearList.get(0).toString());
-                } else {
-                    mYearSpinnerView.setVisibility(View.VISIBLE);
-                    mYearSpinnerSingleItem.setVisibility(View.GONE);
+                mYearSpinnerSingleItem.setVisibility(View.GONE);
 
-                }
             }
 
             if (mTabLayout != null) {
@@ -451,8 +451,6 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             }
 
             setupViewPager();
-        }else{
-            noRecords.setVisibility(View.VISIBLE);
         }
     }
 
@@ -473,19 +471,6 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     }
     //---------------
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!mGeneratedRequestForYearList.contains(mCurrentSelectedTimePeriodTab.getYear())) {
-            Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedMyRecordInfoAndReports = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
-            if (yearWiseSortedMyRecordInfoAndReports.get(mCurrentSelectedTimePeriodTab.getYear()) == null) {
-                mPatientDetailHelper.doGetPatientHistory(args.getString(RescribeConstants.PATIENT_ID), mCurrentSelectedTimePeriodTab.getYear());
-                mGeneratedRequestForYearList.add(mCurrentSelectedTimePeriodTab.getYear());
-            }
-        }
-    }
 
     public PatientDetailHelper getParentPatientDetailHelper() {
         return mPatientDetailHelper;

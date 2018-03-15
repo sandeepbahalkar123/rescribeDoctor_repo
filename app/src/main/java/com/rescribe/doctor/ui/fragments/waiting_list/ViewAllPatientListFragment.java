@@ -18,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
@@ -49,9 +48,7 @@ import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.OnStartDragListener;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -223,12 +220,13 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             public void onItemMoved(int fromPosition, int toPosition) {
                 RequestForDragAndDropBaseModel requestForDragAndDropBaseModel = new RequestForDragAndDropBaseModel();
                 ArrayList<WaitingListSequence> waitingListSequences = new ArrayList<>();
-                /*for(){
+
+                for(int i = 0;i<myItemAdapter.getAllItems().size();i++){
                     WaitingListSequence waitingListSequence = new WaitingListSequence();
-                    waitingListSequence.setWaitingId();
-                    waitingListSequence.setWaitingSequence();
+                    waitingListSequence.setWaitingId(String.valueOf(myItemAdapter.getAllItems().get(i).getWaitingId()));
+                    waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(i).getWaitingSequence());
                     waitingListSequences.add(waitingListSequence);
-                }*/
+                }
                 requestForDragAndDropBaseModel.setWaitingListSequence(waitingListSequences);
                 mAppointmentHelper.doDargAndDropApi(requestForDragAndDropBaseModel);
             }

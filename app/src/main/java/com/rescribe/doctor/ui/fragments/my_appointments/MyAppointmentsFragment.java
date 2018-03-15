@@ -360,15 +360,11 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
     @Override
     public void onClickOfPatientDetails(PatientList patientListObject, String patientDetails) {
-        if (patientListObject.getSalutation() == 1) {
-            patientName = getString(R.string.mr) + " " + toCamelCase(patientListObject.getPatientName());
-        } else if (patientListObject.getSalutation() == 2) {
-            patientName = getString(R.string.mrs) + " " + toCamelCase(patientListObject.getPatientName());
-        } else if (patientListObject.getSalutation() == 3) {
-            patientName = getString(R.string.miss) + " " + toCamelCase(patientListObject.getPatientName());
-        } else if (patientListObject.getSalutation() == 4) {
-            patientName = toCamelCase(patientListObject.getPatientName());
-        }
+
+        if (patientListObject.getSalutation() != 0)
+            patientName = RescribeConstants.SALUTATION[patientListObject.getSalutation() - 1] + toCamelCase(patientListObject.getPatientName());
+        else patientName = toCamelCase(patientListObject.getPatientName());
+
         Bundle b = new Bundle();
         b.putString(RescribeConstants.PATIENT_NAME, patientName);
         b.putString(RescribeConstants.PATIENT_INFO, patientDetails);
