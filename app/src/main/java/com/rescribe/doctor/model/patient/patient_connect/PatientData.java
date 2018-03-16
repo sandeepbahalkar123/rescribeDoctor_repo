@@ -47,7 +47,7 @@ public class PatientData implements Parcelable, CustomResponse {
     }
 
     public String getPatientName() {
-        return patientName;
+        return CommonMethods.toCamelCase(patientName);
     }
 
     public void setPatientName(String patientName) {

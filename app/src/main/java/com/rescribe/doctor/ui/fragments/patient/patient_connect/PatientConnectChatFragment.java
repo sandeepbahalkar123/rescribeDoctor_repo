@@ -216,7 +216,9 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         boolean isThere = false;
         for (int index = 0; index < mReceivedPatientDataList.size(); index++) {
             if (mReceivedPatientDataList.get(index).getId().equals(patientData.getId())) {
-                mReceivedPatientDataList.get(index).setLastChatTime(patientData.getLastChatTime());
+                PatientData patientData1 = mReceivedPatientDataList.remove(index);
+                patientData1.setLastChatTime(patientData.getLastChatTime());
+                mReceivedPatientDataList.add(0, patientData1);
                 isThere = true;
                 break;
             }

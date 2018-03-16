@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dp4"
+    android:paddingEnd="@dimen/dp4"
     android:background="@color/transparent">
 
     <LinearLayout
@@ -18,7 +20,7 @@
         <android.support.v4.widget.Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".6" />
+            android:layout_weight=".65" />
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -29,7 +31,7 @@
 
             <ImageButton
                 android:id="@+id/deleteButton"
-                android:layout_margin="@dimen/dp6"
+                android:layout_margin="@dimen/dp2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/ic_delete_24dp"
@@ -50,7 +52,7 @@
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp6"
+            android:layout_margin="@dimen/dp2"
             android:background="@drawable/bg_waiting_white_box"
             android:orientation="vertical">
 

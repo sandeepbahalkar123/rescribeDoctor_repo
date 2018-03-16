@@ -55,6 +55,9 @@ import com.rescribe.doctor.util.dragable_swipable.ViewUtils;
 
 import java.util.ArrayList;
 
+import static com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableViewAllWaitingListAdapter.CONFIRMED;
+import static com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableViewAllWaitingListAdapter.IN_QUEUE;
+
 public class DraggableSwipeableActiveWaitingListAdapter
         extends RecyclerView.Adapter<DraggableSwipeableActiveWaitingListAdapter.MyViewHolder>
         implements DraggableItemAdapter<DraggableSwipeableActiveWaitingListAdapter.MyViewHolder>,
@@ -319,12 +322,20 @@ public class DraggableSwipeableActiveWaitingListAdapter
     public void onMoveItem(int fromPosition, int toPosition) {
         Log.d(TAG, "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
 
-        mProvider.moveItem(fromPosition, toPosition);
+        move(fromPosition, toPosition);
+        if (toPosition < mProvider.getCount()) {
+            Active active = mProvider.getItem(toPosition + 1).getActiveAll();
+            if (active.getWaitingStatusId().equals(IN_QUEUE) || active.getWaitingStatusId().equals(CONFIRMED))
+                mEventListener.onItemMoved(fromPosition, toPosition);
+            else
+                move(toPosition, fromPosition);
+        } else mEventListener.onItemMoved(fromPosition, toPosition);
+    }
 
+    private void move(int fromPosition, int toPosition) {
+        mProvider.moveItem(fromPosition, toPosition);
         if (fromPosition == mPreLeftSwipePosition)
             mPreLeftSwipePosition = toPosition;
-
-        mEventListener.onItemMoved(fromPosition, toPosition);
     }
 
     @Override

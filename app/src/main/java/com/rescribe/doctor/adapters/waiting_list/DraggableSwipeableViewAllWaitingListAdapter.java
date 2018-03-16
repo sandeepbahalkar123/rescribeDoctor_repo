@@ -58,6 +58,8 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         implements DraggableItemAdapter<DraggableSwipeableViewAllWaitingListAdapter.MyViewHolder>,
         SwipeableItemAdapter<DraggableSwipeableViewAllWaitingListAdapter.MyViewHolder> {
     private static final String TAG = "MyDSItemAdapter";
+    public static final int IN_QUEUE = 8;
+    public static final int CONFIRMED = 2;
 
     private int mPreLeftSwipePosition = RecyclerView.NO_POSITION;
 
@@ -67,6 +69,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
     }
 
     public ArrayList<ViewAll> getAllItems() {
+
         ArrayList<ViewAll> viewAlls = new ArrayList<>();
         for (PatientDataProvider.ConcreteData concreteData : mProvider.getViewAllData())
             viewAlls.add(concreteData.getViewAll());
@@ -208,6 +211,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         return new MyViewHolder(v);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final AbstractDataProvider.Data item = mProvider.getItem(position);
@@ -300,7 +304,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             holder.mContainer.setBackgroundResource(bgResId);
         }
 
-        if (item.getViewAll().getWaitingStatus().equals("In Queue")||item.getViewAll().getWaitingStatus().equals("Confirmed")) {
+        if (item.getViewAll().getWaitingStatusId().equals(IN_QUEUE) || item.getViewAll().getWaitingStatusId().equals(CONFIRMED)) {
             holder.mDragHandle.setVisibility(View.VISIBLE);
             holder.setMaxLeftSwipeAmount(-0.4f);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
@@ -322,13 +326,22 @@ public class DraggableSwipeableViewAllWaitingListAdapter
     public void onMoveItem(int fromPosition, int toPosition) {
         Log.d(TAG, "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
 
-        mProvider.moveItem(fromPosition, toPosition);
+        move(fromPosition, toPosition);
+        if (toPosition < mProvider.getCount()) {
+            ViewAll viewAll = mProvider.getItem(toPosition + 1).getViewAll();
+            if (viewAll.getWaitingStatusId().equals(IN_QUEUE) || viewAll.getWaitingStatusId().equals(CONFIRMED))
+                mEventListener.onItemMoved(fromPosition, toPosition);
+            else
+                move(toPosition, fromPosition);
+        } else mEventListener.onItemMoved(fromPosition, toPosition);
+    }
 
+    private void move(int fromPosition, int toPosition) {
+        mProvider.moveItem(fromPosition, toPosition);
         if (fromPosition == mPreLeftSwipePosition)
             mPreLeftSwipePosition = toPosition;
-
-        mEventListener.onItemMoved(fromPosition, toPosition);
     }
+
 
     @Override
     public boolean onCheckCanStartDrag(MyViewHolder holder, int position, int x, int y) {

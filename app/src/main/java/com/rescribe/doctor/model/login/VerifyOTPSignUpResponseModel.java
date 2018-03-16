@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
+import com.rescribe.doctor.util.CommonMethods;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class VerifyOTPSignUpResponseModel implements CustomResponse, Serializabl
         }
 
         public String getPatientName() {
-            return patientName;
+            return CommonMethods.toCamelCase(patientName);
         }
 
         public void setPatientName(String patientName) {
