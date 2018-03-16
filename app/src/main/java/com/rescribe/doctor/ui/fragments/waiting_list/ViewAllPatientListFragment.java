@@ -83,8 +83,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     private Unbinder unbinder;
     private static Bundle args;
     private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
-    //    private ViewAllWaitingListAdapter mViewAllWaitingListAdapter;
-    private ArrayList<ViewAll> viewAllArrayList;
     private int adapterPos;
     private AppointmentHelper mAppointmentHelper;
     private int mLocationId;
