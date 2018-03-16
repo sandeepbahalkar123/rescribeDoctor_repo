@@ -221,10 +221,18 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
                 for(int i = 0;i<myItemAdapter.getAllItems().size();i++){
                     WaitingListSequence waitingListSequence = new WaitingListSequence();
+                    if(fromPosition==i){
+                        waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(toPosition).getWaitingSequence());
+                    }else if(toPosition==i){
+                        waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(fromPosition).getWaitingSequence());
+                    }else{
+                        waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(i).getWaitingSequence());
+                    }
                     waitingListSequence.setWaitingId(String.valueOf(myItemAdapter.getAllItems().get(i).getWaitingId()));
-                    waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(i).getWaitingSequence());
+
                     waitingListSequences.add(waitingListSequence);
                 }
+
                 requestForDragAndDropBaseModel.setWaitingListSequence(waitingListSequences);
                 mAppointmentHelper.doDargAndDropApi(requestForDragAndDropBaseModel);
             }
@@ -238,7 +246,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         });
 
         mAdapter = myItemAdapter;
-
         mWrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(myItemAdapter);      // wrap for dragging
         mWrappedAdapter = recyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);      // wrap for swiping
 
@@ -269,12 +276,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         recyclerViewSwipeManager.attachRecyclerView(recyclerView);
         recyclerViewDragDropManager.attachRecyclerView(recyclerView);
 
-        // for debugging
-//        animator.setDebug(true);
-//        animator.setMoveDuration(2000);
-//        animator.setRemoveDuration(2000);
-//        recyclerViewSwipeManager.setMoveToOutsideWindowAnimationDuration(2000);
-//        recyclerViewSwipeManager.setReturnToDefaultPositionAnimationDuration(2000);
     }
 
     public static ViewAllPatientListFragment newInstance(Bundle bundle) {

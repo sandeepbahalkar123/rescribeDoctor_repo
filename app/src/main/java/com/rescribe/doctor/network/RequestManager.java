@@ -50,6 +50,7 @@ import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
 import com.rescribe.doctor.model.waiting_list.WaitingListBaseModel;
+import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
@@ -533,8 +534,8 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mPatientHistoryBaseModel, mOldDataTag);
                         break;
                     case RescribeConstants.TASK_ADD_TO_WAITING_LIST: //This is for get archived list
-                        TemplateBaseModel mAddToWAitingList = new Gson().fromJson(data, TemplateBaseModel.class);
-                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mAddToWAitingList, mOldDataTag);
+                        AddToWaitingListBaseModel mAddToWaitingListBaseModel = new Gson().fromJson(data, AddToWaitingListBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mAddToWaitingListBaseModel, mOldDataTag);
                         break;
                     case RescribeConstants.TASK_GET_LOCATION_LIST: //This is for get archived list
                         DoctorLocationBaseModel mDoctorLocationBaseModel = new Gson().fromJson(data, DoctorLocationBaseModel.class);

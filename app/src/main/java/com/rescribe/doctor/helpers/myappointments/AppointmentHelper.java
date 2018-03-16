@@ -12,7 +12,7 @@ import com.rescribe.doctor.model.my_appointments.request_cancel_or_complete_appo
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.RequestSendSmsModel;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
-import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.RequestForWaitingListPatients;
+import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
 import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
 import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAndDropBaseModel;
 import com.rescribe.doctor.network.ConnectRequest;
@@ -199,12 +199,12 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_WAITING_LIST);
     }
 
-    public void doAddToWaitingList(RequestForWaitingListPatients mRequestForWaitingListPatients) {
+    public void doAddToWaitingListFromMyPatients(RequestToAddWaitingList mRequestForWaitingListPatients) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ADD_TO_WAITING_LIST, Request.Method.POST, true);
         mConnectionFactory.setPostParams(mRequestForWaitingListPatients);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.ADD_TO_WAITING_LIST);
-        mConnectionFactory.createConnection(RescribeConstants.TASK_REQUEST_SEND_SMS);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_ADD_TO_WAITING_LIST);
     }
     public void doDeleteWaitingList(RequestDeleteBaseModel mRequestDeleteBaseModel) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_WAITING_LIST, Request.Method.POST, true);
