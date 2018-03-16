@@ -128,7 +128,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:adjustViewBounds">true</item>
-        <item name="android:padding">@dimen/dp8</item>
+        <item name="android:padding">@dimen/dp2</item>
     </style>
 
     <style name="AppLoginNewMainStyle">

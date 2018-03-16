@@ -202,7 +202,6 @@
                             <com.rescribe.doctor.ui.customesViews.CustomTextView
                                 android:id="@+id/genderMaleText"
                                 style="@style/drawer_filter_gender_style"
-                                android:gravity="center"
                                 android:text="@string/male"
                                 android:textColor="@color/gender_drawer"
                                 app:customFont="@string/roboto_regular" />
