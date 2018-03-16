@@ -69,6 +69,9 @@ public class CommonMethods {
 
 
     public static String toCamelCase(String input) {
+        if (input == null)
+            return "null";
+
         if(!input.equals("")) {
             StringBuilder result = new StringBuilder();
             char firstChar = input.charAt(0);

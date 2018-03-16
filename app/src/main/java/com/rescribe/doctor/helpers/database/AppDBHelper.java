@@ -328,6 +328,10 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(CHAT_MESSAGES.DOWNLOAD_STATUS, mqttMessage.getDownloadStatus());
         contentValues.put(CHAT_MESSAGES.READ_STATUS, mqttMessage.getReadStatus());
 
+        contentValues.put(CHAT_MESSAGES.SALUTATION, mqttMessage.getSalutation());
+        contentValues.put(CHAT_MESSAGES.RECEIVER_NAME, mqttMessage.getReceiverName());
+        contentValues.put(CHAT_MESSAGES.RECEIVER_IMG_URL, mqttMessage.getReceiverImgUrl());
+
         if (getChatMessageCountByMessageId(mqttMessage.getMsgId()) == 0)
             db.insert(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, null, contentValues);
         else

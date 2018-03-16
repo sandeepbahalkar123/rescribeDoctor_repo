@@ -219,6 +219,10 @@ public class MediaFolderPickerFragment extends BaseFragment implements FolderGri
 
     @Override
     public void onCameraClicked() {
+        takePhoto();
+    }
+
+    private void takePhoto() {
         try {
             Intent intent = imageCaptureManager.dispatchTakePictureIntent(getActivity());
             if (intent != null)
@@ -250,9 +254,11 @@ public class MediaFolderPickerFragment extends BaseFragment implements FolderGri
                         @Override
                         public void run() {
                             getDataFromMedia();
-
                         }
                     }, 1000);
+
+                    if (PickerManager.getInstance().isEnableMultiplePhotos())
+                        takePhoto();
                 }
                 break;
         }

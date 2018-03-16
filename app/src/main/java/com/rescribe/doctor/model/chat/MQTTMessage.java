@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.rescribe.doctor.util.CommonMethods;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
@@ -26,11 +27,9 @@ public class MQTTMessage implements Parcelable {
     @SerializedName("msgTime")
     @Expose
     private String msgTime;
-
     @SerializedName("sender")
     @Expose
     private String sender = DOCTOR;
-
     @SerializedName("user2id")
     @Expose
     private int patId;
@@ -52,11 +51,9 @@ public class MQTTMessage implements Parcelable {
     @SerializedName("onlineStatus")
     @Expose
     private String onlineStatus;
-
     @SerializedName("msgStatus")
     @Expose
     private String msgStatus = SENT;
-
     @SerializedName("paidStatus")
     @Expose
     private int paidStatus;
@@ -72,15 +69,12 @@ public class MQTTMessage implements Parcelable {
     @SerializedName("fileType")
     @Expose
     private String fileType = "";
-
     @SerializedName("uploadStatus")
     @Expose
     private int uploadStatus = UPLOADING;
-
     @SerializedName("downloadStatus")
     @Expose
     private int downloadStatus = FAILED;
-
     private int readStatus = UNREAD;
     private Boolean isDateVisible = false;
 
@@ -242,7 +236,7 @@ public class MQTTMessage implements Parcelable {
     }
 
     public String getSenderName() {
-        return senderName;
+        return CommonMethods.toCamelCase(senderName);
     }
 
     public void setSenderName(String senderName) {
@@ -250,7 +244,7 @@ public class MQTTMessage implements Parcelable {
     }
 
     public String getReceiverName() {
-        return receiverName;
+        return CommonMethods.toCamelCase(receiverName);
     }
 
     public void setReceiverName(String receiverName) {

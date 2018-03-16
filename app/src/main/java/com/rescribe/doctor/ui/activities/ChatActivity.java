@@ -119,6 +119,7 @@ import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.PENDING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
+import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.IDLE;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
@@ -439,7 +440,13 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         } else
             chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
         isCallFromPatientList = getIntent().getBooleanExtra(RescribeConstants.IS_CALL_FROM_MY_PATEINTS, false);
-        receiverName.setText(chatList.getPatientName());
+
+        String salutation;
+        if (chatList.getSalutation() != 0)
+            salutation = SALUTATION[chatList.getSalutation() - 1];
+        else salutation = "";
+
+        receiverName.setText(salutation + chatList.getPatientName());
         String patientName = chatList.getPatientName();
 
         // Need to add self profile photo
@@ -661,18 +668,18 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 }
 
                 // Check Download
-                if (mqttMessage.getFileType().equals(DOC) || mqttMessage.getFileType().equals(AUD)) {
-                    if (cu.moveToFirst()) {
-                        do {
-                            String fileUri = cu.getString(cu.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-                            String fileName = cu.getString(cu.getColumnIndex(DownloadManager.COLUMN_TITLE));
-                            if (mqttMessage.getMsg().equals(fileName)) {
-                                mqttMessage.setDownloadStatus(COMPLETED);
-                                mqttMessage.setFileUrl(fileUri);
-                            }
-                        } while (cu.moveToNext());
+                    if (mqttMessage.getFileType().equals(DOC) || mqttMessage.getFileType().equals(AUD)) {
+                        if (cu.moveToFirst()) {
+                            do {
+                                String fileUri = cu.getString(cu.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                                String fileName = cu.getString(cu.getColumnIndex(DownloadManager.COLUMN_TITLE));
+                                if (mqttMessage.getMsg().equals(fileName)) {
+                                    mqttMessage.setDownloadStatus(COMPLETED);
+                                    mqttMessage.setFileUrl(fileUri);
+                                }
+                            } while (cu.moveToNext());
+                        }
                     }
-                }
 
                 if (searchedMessageString != null) {
                     String messageLowerCase = mqttMessage.getMsg().toLowerCase();

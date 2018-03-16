@@ -307,6 +307,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                     .setActivityTheme(R.style.AppTheme)
                     .enableVideoPicker(false)
                     .enableCameraSupport(true)
+                    .enableCameraMultiplePhotos(true)
                     .showGifs(false)
                     .showFolderView(true)
                     .enableOrientation(true)
