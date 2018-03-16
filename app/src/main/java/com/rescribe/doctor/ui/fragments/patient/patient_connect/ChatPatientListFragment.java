@@ -48,8 +48,7 @@ import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
-import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.PatientsListAddToWaitingList;
-import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.RequestForWaitingListPatients;
+import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.PatientAddToWaitingList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.ChatActivity;
@@ -112,7 +111,6 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
     private ArrayList<PatientList> mPatientListsOriginal;
     private int mLocationId;
-    private ArrayList<PatientsListAddToWaitingList> patientsListAddToWaitingLists;
     private ArrayList<PatientInfoList> patientInfoLists;
     private int mClinicId;
     private String mClinicName = "";

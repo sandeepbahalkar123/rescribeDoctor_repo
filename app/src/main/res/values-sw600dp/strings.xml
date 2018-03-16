@@ -3,4 +3,5 @@
     <string name="enter_sms_text_here">Enter sms text here</string>
     <string name="address">Address</string>
     <string name="location">Location</string>
+    <string name="complete_and_cancelled_status">Complete and cancel status patients cannot be added to waiting list</string>
 </resources>

@@ -47,8 +47,10 @@ import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateList;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
-import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.PatientsListAddToWaitingList;
-import com.rescribe.doctor.model.waiting_list.request_add_waiting_list.RequestForWaitingListPatients;
+import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.AddToList;
+import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.PatientAddToWaitingList;
+import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
+import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
@@ -105,7 +107,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
     private ArrayList<PatientList> mPatientListsOriginal;
     private int mLocationId;
-    private ArrayList<PatientsListAddToWaitingList> patientsListAddToWaitingLists;
+    private ArrayList<PatientAddToWaitingList> patientsListAddToWaitingLists;
     private ArrayList<PatientInfoList> patientInfoLists;
     private int mClinicId;
     private String mClinicName = "";
@@ -113,6 +115,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private boolean isFromDrawer;
     private RequestSearchPatients mRequestSearchPatientsForDrawer = new RequestSearchPatients();
     private ArrayList<PatientList> patientLists;
+    private ArrayList<AddToList> addToWaitingArrayList;
+    private String mClinicCity;
+    private String mClinicArea;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -269,12 +274,12 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
             intent.putExtra(RescribeConstants.PATIENT_INFO, b);
             startActivity(intent);
-        }else{
+        } else {
             patientsListAddToWaitingLists = new ArrayList<>();
             for (int childIndex = 0; childIndex < mMyPatientsAdapter.getGroupList().size(); childIndex++) {
                 PatientList patientList = mMyPatientsAdapter.getGroupList().get(childIndex);
                 if (patientList.getHospitalPatId().equals(patientListObject.getHospitalPatId())) {
-                    PatientsListAddToWaitingList patientInfoListObject = new PatientsListAddToWaitingList();
+                    PatientAddToWaitingList patientInfoListObject = new PatientAddToWaitingList();
                     patientInfoListObject.setPatientName(patientList.getPatientName());
                     patientInfoListObject.setPatientId(String.valueOf(patientList.getPatientId()));
                     patientInfoListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
@@ -288,7 +293,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 showDialogToSelectLocation(mDoctorLocationModel);
 
             } else {
-             //   CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
+                //   CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
 
             }
 
@@ -374,7 +379,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             for (int childIndex = 0; childIndex < mMyPatientsAdapter.getGroupList().size(); childIndex++) {
                 PatientList patientList = mMyPatientsAdapter.getGroupList().get(childIndex);
                 if (patientList.isSelected()) {
-                    PatientsListAddToWaitingList patientInfoListObject = new PatientsListAddToWaitingList();
+                    PatientAddToWaitingList patientInfoListObject = new PatientAddToWaitingList();
                     patientInfoListObject.setPatientName(patientList.getPatientName());
                     patientInfoListObject.setPatientId(String.valueOf(patientList.getPatientId()));
                     patientInfoListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
@@ -385,6 +390,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
 
             if (!patientsListAddToWaitingLists.isEmpty()) {
+
 
                 showDialogToSelectLocation(mDoctorLocationModel);
 
@@ -491,6 +497,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     mLocationId = clinicList.getLocationId();
                     mClinicId = clinicList.getClinicId();
                     mClinicName = clinicList.getClinicName();
+                    mClinicCity = clinicList.getCity();
+                    mClinicArea = clinicList.getArea();
                 }
             });
             radioGroup.addView(radioButton);
@@ -525,12 +533,17 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
 
     private void callWaitingListApi() {
-        RequestForWaitingListPatients requestForWaitingListPatients = new RequestForWaitingListPatients();
-        requestForWaitingListPatients.setPatientsListAddToWaitingList(patientsListAddToWaitingLists);
+        addToWaitingArrayList = new ArrayList<>();
+        AddToList addToList = new AddToList();
+        addToList.setPatientAddToWaitingList(patientsListAddToWaitingLists);
+        addToList.setLocationId(mLocationId);
+        addToList.setLocationDetails(mClinicName + ", " + mClinicArea + ", " + mClinicCity);
+        addToWaitingArrayList.add(addToList);
+        RequestToAddWaitingList requestForWaitingListPatients = new RequestToAddWaitingList();
+        requestForWaitingListPatients.setAddToList(addToWaitingArrayList);
         requestForWaitingListPatients.setDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
         requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-        requestForWaitingListPatients.setLocationId(mLocationId);
-        mAppointmentHelper.doAddToWaitingList(requestForWaitingListPatients);
+        mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);
     }
 
 
@@ -621,32 +634,30 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             }
 
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_ADD_TO_WAITING_LIST)) {
-            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
-            if (templateBaseModel.getCommon().isSuccess()) {
-                if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.all_patients_exists).toLowerCase())) {
-                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
-
-                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase())) {
+            AddToWaitingListBaseModel addToWaitingListBaseModel = (AddToWaitingListBaseModel) customResponse;
+            if (addToWaitingListBaseModel.getCommon().isSuccess()) {
+                if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase())) {
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
                     startActivity(intent);
-                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage(), Toast.LENGTH_LONG).show();
                     getActivity().finish();
                     getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
-                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patient_limit_exceeded).toLowerCase())) {
-                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                } else if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patient_limit_exceeded).toLowerCase())) {
+                    Toast.makeText(getActivity(), addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage(), Toast.LENGTH_LONG).show();
 
-                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.already_exists_in_waiting_list).toLowerCase())) {
-                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                } else if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.already_exists_in_waiting_list).toLowerCase())) {
+                    Toast.makeText(getActivity(), addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage(), Toast.LENGTH_LONG).show();
 
-                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
+                } else if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
                     startActivity(intent);
-                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage(), Toast.LENGTH_LONG).show();
                     getActivity().finish();
                     getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 }
             }
-        } if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
+        }
+        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
             ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
             if (!templateLists.isEmpty()) {
@@ -655,17 +666,17 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
                 intent.putExtra(RescribeConstants.CLINIC_NAME, mClinicName);
                 intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientInfoLists);
-                intent.putParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST,templateLists);
+                intent.putParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST, templateLists);
                 startActivity(intent);
             } else {
                 TemplateList templateList = null;
-                Intent intent = new Intent(getActivity(),SendSmsPatientActivity.class);
+                Intent intent = new Intent(getActivity(), SendSmsPatientActivity.class);
                 intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
                 intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
-                intent.putExtra(RescribeConstants.TEMPLATE_OBJECT,templateList);
-                intent.putExtra(RescribeConstants.CLINIC_NAME,mClinicName);
+                intent.putExtra(RescribeConstants.TEMPLATE_OBJECT, templateList);
+                intent.putExtra(RescribeConstants.CLINIC_NAME, mClinicName);
                 intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientInfoLists);
-                startActivityForResult(intent,RESULT_SEND_SMS);
+                startActivityForResult(intent, RESULT_SEND_SMS);
             }
         }
     }
