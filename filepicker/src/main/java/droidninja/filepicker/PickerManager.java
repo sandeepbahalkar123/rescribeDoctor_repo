@@ -34,6 +34,8 @@ public class PickerManager {
 
     private boolean enableCamera = true;
 
+    private boolean enableMultiplePhotos = false;
+
     private boolean enableOrientation = false;
 
     private boolean showFolderView = true;
@@ -208,5 +210,13 @@ public class PickerManager {
 
     public void setProviderAuthorities(String providerAuthorities) {
         this.providerAuthorities = providerAuthorities;
+    }
+
+    public void setEnableMultiplePhotos(boolean enableMultiplePhotos) {
+        this.enableMultiplePhotos = enableMultiplePhotos;
+    }
+
+    public boolean isEnableMultiplePhotos() {
+        return enableMultiplePhotos;
     }
 }

@@ -38,6 +38,7 @@ import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.PENDING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
+import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
 
 /**
@@ -101,10 +102,20 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
         else holder.headingText.setVisibility(View.GONE);
 
         String patientName = mqttMessage.getSenderName();
-        if (mqttMessage.getSender().equals(DOCTOR))
-            holder.doctorName.setText("You");
-        else
-            holder.doctorName.setText(patientName);
+
+        String salutation;
+        if (mqttMessage.getSalutation() != 0)
+            salutation = SALUTATION[mqttMessage.getSalutation() - 1];
+        else salutation = "";
+
+        if (mqttMessage.getSender().equals(DOCTOR)) {
+            String doctorName;
+            if (!mqttMessage.getSenderName().contains("Dr."))
+                doctorName = "Dr. " + mqttMessage.getSenderName();
+            else doctorName = mqttMessage.getSenderName();
+            holder.doctorName.setText(doctorName);
+        } else
+            holder.doctorName.setText(salutation + patientName);
 
         String timeT = CommonMethods.getDayFromDateTime(mqttMessage.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY, RescribeConstants.DATE_PATTERN.hh_mm_a);
         holder.timeText.setText(timeT);

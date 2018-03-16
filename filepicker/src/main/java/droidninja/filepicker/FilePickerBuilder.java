@@ -65,6 +65,12 @@ public class FilePickerBuilder {
         return this;
     }
 
+
+    public FilePickerBuilder enableCameraMultiplePhotos(boolean b) {
+        PickerManager.getInstance().setEnableMultiplePhotos(b);
+        return this;
+    }
+
     public FilePickerBuilder enableOrientation(boolean status) {
         PickerManager.getInstance().setEnableOrientation(status);
         return this;

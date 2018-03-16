@@ -36,7 +36,7 @@ public class PatientData implements Parcelable, CustomResponse {
 
     @SerializedName("salutation")
     @Expose
-    private Integer salutation;
+    private Integer salutation = 0;
 
     public Integer getId() {
         return patientId;
