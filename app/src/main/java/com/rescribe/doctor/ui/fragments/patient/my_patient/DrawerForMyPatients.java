@@ -331,7 +331,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
             case R.id.genderMaleLayout:
                 mSelectedGender = genderMaleText.getText().toString();
                 genderMaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filterhighlightedmaleicon));
-                genderMaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
+                genderMaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.genderSelectionColor));
                 genderFemaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filtergrayfemaleicon));
                 genderFemaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
                 transGenderMaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filtergraytransgendericon));
@@ -342,7 +342,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                 genderMaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filtergraymaleicon));
                 genderMaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
                 genderFemaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filterhighlightedfemaleicon));
-                genderFemaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
+                genderFemaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.genderSelectionColor));
                 transGenderMaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filtergraytransgendericon));
                 transGenderMaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
                 break;
@@ -353,7 +353,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                 genderFemaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filtergrayfemaleicon));
                 genderFemaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
                 transGenderMaleIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.filterhighlightedtransgendericon));
-                transGenderMaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.gender_drawer));
+                transGenderMaleText.setTextColor(ContextCompat.getColor(getActivity(), R.color.genderSelectionColor));
                 break;
 
         }

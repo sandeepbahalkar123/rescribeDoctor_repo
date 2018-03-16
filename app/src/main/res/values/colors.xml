@@ -52,6 +52,7 @@
     <color name="no_show_color">#77c0e2</color>
     <color name="book_color">#63c3d7</color>
     <color name="gender_drawer">#cacaca</color>
+    <color name="genderSelectionColor">#00aee4</color>
     <color name="choose_option_color">#6e6e6e</color>
     <color name="dashboard_divider_color">#98abb3</color>
     <color name="colorPrimary">#3F51B5</color>
