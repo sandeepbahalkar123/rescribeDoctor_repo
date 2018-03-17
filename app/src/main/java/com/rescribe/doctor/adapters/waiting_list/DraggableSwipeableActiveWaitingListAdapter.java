@@ -216,8 +216,6 @@ public class DraggableSwipeableActiveWaitingListAdapter
         // (if the item is *not pinned*, click event comes to the mContainer)
         holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
 
-        // set text
-        holder.mPatientNameTextView.setText(item.getActiveAll().getPatientName());
 
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,7 +241,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
         }
         if (!item.getActiveAll().getAppointmentTime().equals("")) {
             holder.mAppointmentTimeTextView.setVisibility(View.VISIBLE);
-            holder.mAppointmentTimeTextView.setVisibility(View.VISIBLE);
+            holder.mAppointmentLabelTextView.setVisibility(View.VISIBLE);
             String appointmentScheduleTime = CommonMethods.formatDateTime(item.getActiveAll().getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
             holder.mAppointmentTimeTextView.setText(appointmentScheduleTime);
 
@@ -254,7 +252,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
         holder.mPatientPhoneNumber.setText(item.getActiveAll().getPatientPhone());
         holder.mTokenNumber.setText(item.getActiveAll().getTokenNumber());
-        holder.mPatientNameTextView.setText(item.getActiveAll().getPatientName());
+        holder.mPatientNameTextView.setText(CommonMethods.toCamelCase(item.getActiveAll().getPatientName()));
         holder.mTypeStatus.setText(" " + item.getActiveAll().getWaitingStatus());
         TextDrawable textDrawable = CommonMethods.getTextDrawable(holder.mPatientImageView.getContext(), item.getActiveAll().getPatientName());
         RequestOptions requestOptions = new RequestOptions();
