@@ -333,7 +333,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
 
         move(fromPosition, toPosition);
         if (toPosition < mProvider.getCount()) {
-            ViewAll viewAll = mProvider.getItem(toPosition + 1).getViewAll();
+            ViewAll viewAll = mProvider.getItem(toPosition).getViewAll();
             if (viewAll.getWaitingStatusId().equals(IN_QUEUE) || viewAll.getWaitingStatusId().equals(CONFIRMED))
                 mEventListener.onItemMoved(fromPosition, toPosition);
             else
