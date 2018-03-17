@@ -335,14 +335,22 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
     @Override
     public void onCheckUncheckRemoveSelectAllSelection(boolean ischecked) {
-        if (ischecked) {
-            for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
-                if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
-                    mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
-                }
-            }
-            mBottomMenuAppointmentAdapter.notifyDataSetChanged();
+        selectAllButton(!ischecked);
+        int selectedCount = 0;
+        for (AppointmentList appointmentList : mAppointmentAdapter.getGroupList()) {
+            if (appointmentList.isSelectedGroupCheckbox())
+                selectedCount += 1;
         }
+        selectAllButton(mAppointmentAdapter.getGroupCount() == selectedCount);
+    }
+
+    private void selectAllButton(boolean isEnable) {
+        for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+            if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
+                mBottomMenuAppointmentAdapter.getList().get(i).setSelected(isEnable);
+            }
+        }
+        mBottomMenuAppointmentAdapter.notifyDataSetChanged();
     }
 
     @Override
