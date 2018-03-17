@@ -7,30 +7,34 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/dashBoradBgframeLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dashboard_back"
         android:background="@drawable/dashboard_image">
 
         <LinearLayout
             android:id="@+id/viewPagerDoctorItem"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="@dimen/dp2"
-            android:layout_marginEnd="@dimen/dp8"
+            android:layout_alignParentBottom="true"
             android:layout_marginStart="@dimen/dp8"
+            android:layout_marginEnd="@dimen/dp8"
             android:background="@drawable/curve_edge_dashbooard_display_count_bg"
             android:orientation="horizontal"
             android:visibility="visible">
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:id="@+id/todayAppointmentsOrWaitingList"
                 android:layout_height="wrap_content"
+                android:clickable="true"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp20"
-                android:layout_marginStart="@dimen/dp20">
+                android:layout_marginLeft="@dimen/dp8"
+                android:layout_marginStart="@dimen/dp8">
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/todayWaitingListOrAppointmentCount"
@@ -38,6 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:paddingTop="@dimen/dp16"
+                    android:clickable="false"
                     android:textColor="@color/timing_bg_color"
                     android:textSize="@dimen/sp24"
                     app:customFont="@string/roboto_bold"
@@ -45,11 +50,12 @@
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/todayWaitingListOrAppointmentTextView"
-                    android:layout_width="75dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/todayWaitingListOrAppointmentCount"
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
+                    android:clickable="false"
                     android:paddingBottom="@dimen/dp10"
                     android:paddingTop="@dimen/dp10"
                     android:textColor="@color/dashboard_text_color"
@@ -62,15 +68,18 @@
                 android:layout_width="@dimen/dp1"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/dp21"
-                android:layout_marginEnd="@dimen/dp20"
-                android:layout_marginStart="@dimen/dp20"
                 android:layout_marginTop="@dimen/dp21"
                 android:src="@drawable/vertical_line"
                 tools:ignore="ContentDescription" />
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:id="@+id/todayNewPatient"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp8"
+                android:layout_marginEnd="@dimen/dp8"
+                android:clickable="true"
                 android:layout_gravity="center_vertical">
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -79,6 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:paddingTop="@dimen/dp16"
+                    android:clickable="false"
                     android:textColor="@color/timing_bg_color"
                     android:textSize="@dimen/sp24"
                     app:customFont="@string/roboto_bold"
@@ -86,12 +96,14 @@
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/todayNewAppointmentTextView"
-                    android:layout_width="75dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/todayNewAppointmentCount"
                     android:gravity="center"
+                    android:clickable="false"
                     android:paddingBottom="@dimen/dp10"
                     android:paddingTop="@dimen/dp10"
+                    android:layout_centerHorizontal="true"
                     android:textColor="@color/dashboard_text_color"
                     android:textSize="@dimen/sp12"
                     app:customFont="@string/roboto_regular"
@@ -102,18 +114,20 @@
                 android:layout_width="@dimen/dp1"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/dp21"
-                android:layout_marginEnd="@dimen/dp20"
-                android:layout_marginStart="@dimen/dp20"
                 android:layout_marginTop="@dimen/dp21"
                 android:src="@drawable/vertical_line"
                 tools:ignore="ContentDescription" />
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/todayCompletedOpd"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:clickable="true"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/dp29"
-                android:layout_marginRight="@dimen/dp29">
+                android:layout_marginEnd="@dimen/dp8"
+                android:layout_marginRight="@dimen/dp8"
+                android:focusable="true">
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/todayFollowAppointmentCount"
@@ -124,15 +138,18 @@
                     android:textColor="@color/timing_bg_color"
                     android:textSize="@dimen/sp24"
                     app:customFont="@string/roboto_bold"
+                    android:clickable="false"
                     tools:text="21" />
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/todayFollowAppointmentTextView"
-                    android:layout_width="75dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/todayFollowAppointmentCount"
                     android:gravity="center"
                     android:paddingBottom="@dimen/dp10"
+                    android:clickable="false"
+                    android:layout_centerHorizontal="true"
                     android:paddingTop="@dimen/dp10"
                     android:textColor="@color/dashboard_text_color"
                     android:textSize="@dimen/sp12"
@@ -142,45 +159,14 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right">
-
-            <ImageView
-                android:id="@+id/locationImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp16"
-                android:layout_marginRight="@dimen/dp16"
-                android:layout_marginTop="@dimen/dp12"
-                android:src="@drawable/notification_icon"
-                tools:ignore="ContentDescription,RtlHardcoded,RtlSymmetry" />
-
-            <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:id="@+id/showCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignEnd="@id/locationImageView"
-                android:layout_alignParentTop="true"
-                android:layout_alignRight="@id/locationImageView"
-                android:layout_marginTop="@dimen/dp8"
-                android:background="@drawable/badge_notification"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="7sp"
-                android:visibility="gone"
-                app:customFont="@string/roboto_medium"
-                tools:text="19"
-                tools:visibility="visible" />
-        </RelativeLayout>
-
         <LinearLayout
             android:id="@+id/doctorInfoLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp14"
+            android:layout_marginBottom="@dimen/dp16"
+            android:gravity="center_vertical"
+            android:layout_above="@+id/viewPagerDoctorItem"
             android:layout_marginStart="@dimen/dp14"
             android:orientation="horizontal"
             android:visibility="visible">
@@ -188,23 +174,21 @@
             <com.rescribe.doctor.ui.customesViews.CircularImageView
                 android:layout_width="@dimen/dp100"
                 android:layout_height="@dimen/dp100"
+                app:border_width="@dimen/dp1"
+                app:border_color="@color/white"
                 android:id="@+id/doctorDashboardImage"
-                android:layout_marginBottom="@dimen/dp30"
-                android:layout_marginTop="@dimen/dp54"
                 android:src="@drawable/filtergrayfemaleicon" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp8"
-                android:layout_marginStart="@dimen/dp8"
-                android:layout_marginTop="@dimen/dp54">
+                android:layout_marginStart="@dimen/dp8">
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/welcomeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp20"
                     android:text="@string/welcome"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp18"
@@ -235,7 +219,7 @@
 
             </RelativeLayout>
         </LinearLayout>
-    </FrameLayout>
+    </RelativeLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nestedScrollView"

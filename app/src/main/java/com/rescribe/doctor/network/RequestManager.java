@@ -35,6 +35,7 @@ import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.case_details.CaseDetailsModel;
 import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
+import com.rescribe.doctor.model.completed_opd.CompletedOpdBaseModel;
 import com.rescribe.doctor.model.dashboard.DashboardBaseModel;
 import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
 import com.rescribe.doctor.model.doctor_connect_chat.DoctorConnectChatBaseModel;
@@ -324,9 +325,12 @@ public class RequestManager extends ConnectRequest implements Connector, Request
             } else if (error instanceof NoConnectionError) {
 
                 if (error.getMessage().equalsIgnoreCase("java.io.IOException: No authentication challenges found") || error.getMessage().equalsIgnoreCase("invalid_grant")) {
-                    if (!isTokenExpired) {
+                    /*if (!isTokenExpired) {
                         tokenRefreshRequest();
-                    }
+                    }*/
+                } else {
+                    if (getOfflineData() != null)
+                        succesResponse(getOfflineData(), false);
                 }
 
                 if (mViewById != null)
@@ -557,6 +561,11 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         TemplateBaseModel mDragAndDrop = new Gson().fromJson(data, TemplateBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mDragAndDrop, mOldDataTag);
                         break;
+                    case RescribeConstants.TASK_GET_COMPLETED_OPD: //This is for get archived list
+                        CompletedOpdBaseModel mCompletedOpdBaseModel = new Gson().fromJson(data, CompletedOpdBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mCompletedOpdBaseModel, mOldDataTag);
+                        break;
+
 
                     default:
 

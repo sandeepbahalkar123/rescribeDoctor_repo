@@ -65,6 +65,8 @@ public class AppointmentHelper implements ConnectionListener {
                     mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 }else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DARG_DROP)) {
                     mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
+                } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_COMPLETED_OPD)) {
+                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 }
                 break;
             case ConnectionListener.PARSE_ERR0R:
@@ -83,6 +85,7 @@ public class AppointmentHelper implements ConnectionListener {
                 CommonMethods.Log(TAG, mContext.getString(R.string.no_connection_error));
                 mHelperResponseManager.onNoConnectionError(mOldDataTag, mContext.getString(R.string.no_connection_error));
                 break;
+
             default:
                 CommonMethods.Log(TAG, mContext.getString(R.string.default_error));
                 break;
@@ -146,22 +149,7 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void doGetSearchResult(RequestSearchPatients mRequestSearchPatients) {
-       /* try {
-            InputStream is = mContext.getAssets().open("patients.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
-            Log.e(TAG, "patients" + json);
 
-            Gson gson = new Gson();
-            MyPatientBaseModel mMyPatientBaseModel = gson.fromJson(json, MyPatientBaseModel.class);
-            onResponse(ConnectionListener.RESPONSE_OK, mMyPatientBaseModel, RescribeConstants.TASK_GET_PATIENT_DATA);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT, Request.Method.POST, true);
         mConnectionFactory.setPostParams(mRequestSearchPatients);
         mConnectionFactory.setHeaderParams();
@@ -228,6 +216,18 @@ public class AppointmentHelper implements ConnectionListener {
        mConnectionFactory.setUrl(Config.DRAG_AND_DROP_API);
        mConnectionFactory.createConnection(RescribeConstants.TASK_DARG_DROP);
    }
+
+    public void doGetCompletedOpdList(){
+        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_COMPLETED_OPD, Request.Method.POST, true);
+        RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
+        mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+        mRequestAppointmentData.setDate(date);
+        mConnectionFactory.setPostParams(mRequestAppointmentData);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.GET_COMPELTED_OPD_URL);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_COMPLETED_OPD);
+    }
 
 }
 

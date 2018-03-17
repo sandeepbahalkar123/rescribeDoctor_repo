@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
  * Created by jeetal on 2/2/18.
  */
 
-public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMenuAppointmentAdapter.ListViewHolder> {
+public class BottomMenuForCompleteAppointmentAdapter extends RecyclerView.Adapter<BottomMenuForCompleteAppointmentAdapter.ListViewHolder> {
 
     private Context mContext;
     private ArrayList<BottomMenu> mBottomMenuList;
@@ -30,7 +30,7 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
     private boolean isAllMenuRequired;
 
 
-    public BottomMenuAppointmentAdapter(Context mContext, OnMenuBottomItemClickListener mOnMenuBottomItemClickListener, ArrayList<BottomMenu> mBottomMenuList, boolean isAllMenuRequired, String completeOpd) {
+    public BottomMenuForCompleteAppointmentAdapter(Context mContext, OnMenuBottomItemClickListener mOnMenuBottomItemClickListener, ArrayList<BottomMenu> mBottomMenuList, boolean isAllMenuRequired, String completeOpd) {
         this.mContext = mContext;
         this.mOnMenuBottomItemClickListener = mOnMenuBottomItemClickListener;
         this.mBottomMenuList = mBottomMenuList;
@@ -51,15 +51,12 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
         final BottomMenu mBottomMenu = mBottomMenuList.get(position);
         //TODO : NEED TO IMPLEMENT
         holder.bottomMenuName.setText(mBottomMenu.getMenuName());
-        if (!isAllMenuRequired) {
-            if (mBottomMenu.getMenuName().equals(mContext.getString(R.string.send_sms))) {
+
+            if (mBottomMenu.getMenuName().equals(mContext.getString(R.string.waiting_list))) {
                 holder.menuBottomLayout.setVisibility(View.GONE);
             } else {
                 holder.menuBottomLayout.setVisibility(View.VISIBLE);
             }
-        } else {
-            holder.menuBottomLayout.setVisibility(View.VISIBLE);
-        }
 
         if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.select_all))) {
             holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.select_all));

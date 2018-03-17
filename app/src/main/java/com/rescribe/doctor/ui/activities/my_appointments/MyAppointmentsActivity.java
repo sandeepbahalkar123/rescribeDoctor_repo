@@ -203,7 +203,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
         CommonMethods.showToast(mContext, serverErrorMessage);
-        emptyListView.setVisibility(View.VISIBLE);
+
     }
 
     @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})

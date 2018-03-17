@@ -102,7 +102,7 @@
     <string name="gynecologist">gynecologist</string>
     <string name="paediatric">paediatric</string>
     <string name="parse_error">parse error</string>
-    <string name="no_connection_error">no connection error</string>
+    <string name="no_connection_error">Internal server error</string>
     <string name="default_error">default error</string>
     <string name="dermatologist">dermatologist</string>
     <string name="neurologist">neurologist</string>
@@ -220,5 +220,14 @@
     <string name="address">Address</string>
     <string name="location">Location</string>
     <string name="complete_and_cancelled_status">Complete and cancel status patients cannot be added to waiting list</string>
+    <string name="today_follow_up">"Today's\nFollow Ups"</string>
+    <string name="today_new_patient">"Today's\nNew Patients"</string>
+    <string name="today_appointment">"Today's\nAppointments"</string>
+    <string name="today_waiting_list"> "Today's\nWaiting List"</string>
+    <string name="today_completed_opd"> "Today's\nCompleted Opd"</string>
+    <string name="completed_opd">Completed Opd</string>
+    <string name="consultation">Consultation</string>
+    <string name="follow_up">Follow Up</string>
+
 
 </resources>

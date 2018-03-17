@@ -19,9 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -42,8 +43,10 @@ import com.rescribe.doctor.model.dashboard.DashboardBaseModel;
 import com.rescribe.doctor.model.dashboard.DashboardDetails;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationBaseModel;
 import com.rescribe.doctor.model.login.ActiveRequest;
+import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
+import com.rescribe.doctor.ui.activities.completed_opd.CompletedOpdActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SettingsActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
@@ -95,12 +98,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     @BindView(R.id.viewPagerDoctorItem)
     LinearLayout viewPagerDoctorItem;
 
-    @BindView(R.id.locationImageView)
-    ImageView locationImageView;
-
-    @BindView(R.id.showCount)
-    CustomTextView showCount;
-
     @BindView(R.id.welcomeTextView)
     CustomTextView welcomeTextView;
 
@@ -114,7 +111,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     LinearLayout doctorInfoLayout;
 
     @BindView(R.id.dashBoradBgframeLayout)
-    FrameLayout dashBoradBgframeLayout;
+    RelativeLayout dashBoradBgframeLayout;
     @BindView(R.id.nestedScrollView)
     NestedScrollView nestedScrollView;
 
@@ -122,7 +119,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     CustomTextView appointmentTextView;
     CustomTextView viewTextView;
     RecyclerView recyclerView;
-
     ImageView menuImageWaitingList;
     CustomTextView menuNameTextView;
     ImageView dashboardArrowImageView;
@@ -131,7 +127,12 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     LinearLayout hostViewsLayout;
     @BindView(R.id.doctorDashboardImage)
     CircularImageView doctorDashboardImage;
-
+    @BindView(R.id.todayCompletedOpd)
+    RelativeLayout todayCompletedOpd;
+    @BindView(R.id.todayAppointmentsOrWaitingList)
+    RelativeLayout todayAppointmentsOrWaitingList;
+    @BindView(R.id.todayNewPatient)
+    RelativeLayout todayNewPatient;
     private Context mContext;
     private AppDBHelper appDBHelper;
     private String docId;
@@ -255,7 +256,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         });
     }
 
-    private void setLayoutForAppointment() {
+    private void setLayoutForAppointment(boolean isRecyclerViewRequired) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View inflatedLayout = inflater.inflate(R.layout.waiting_todays_appointment_common_layout, null, false);
         hostViewsLayout.addView(inflatedLayout);
@@ -269,14 +270,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         recyclerView.setVisibility(View.VISIBLE);
         viewTextView.setText("VIEW");
         recyclerView.setNestedScrollingEnabled(false);
-        mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList());
-        viewTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomePageActivity.this, MyAppointmentsActivity.class);
-                startActivity(intent);
-            }
-        });
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearlayoutManager);
         recyclerView.setNestedScrollingEnabled(false);
@@ -284,7 +277,21 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
         if (animator instanceof SimpleItemAnimator)
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-        recyclerView.setAdapter(mDashBoardAppointmentListAdapter);
+        if (isRecyclerViewRequired) {
+            mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList());
+            recyclerView.setAdapter(mDashBoardAppointmentListAdapter);
+        } else {
+            CommonMethods.Log(TAG, "Dont show recyclerView");
+        }
+        viewTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomePageActivity.this, MyAppointmentsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     private void setLayoutForWaitingListIfAppointmentListEmpty() {
@@ -454,13 +461,12 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayFollowUpCount() + "");
                     todayNewAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayNewPatientCount() + "");
                     todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount() + "");
-                    todayFollowAppointmentTextView.setText("Today's Follow Ups");
-                    todayNewAppointmentTextView.setText("Today's\nNew Patients");
-                    todayWaitingListOrAppointmentTextView.setText("Today's Appoinments");
-
+                    todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+                    todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
+                    todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
                     hostViewsLayout.removeAllViews();
 
-                    setLayoutForAppointment();
+                    setLayoutForAppointment(true);
                     // inflate waiting list layout
                     setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
                     // inflate patientConnect layout
@@ -473,9 +479,10 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
                     todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
                     todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayWaitingCount() + "");
-                    todayFollowAppointmentTextView.setText("Today's Follow Ups");
-                    todayNewAppointmentTextView.setText("Today's\nNew Patients");
-                    todayWaitingListOrAppointmentTextView.setText("Today's Waiting List");
+                    todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+                    todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
+                    todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
+
                     hostViewsLayout.removeAllViews();
                     setLayoutForWaitingListIfAppointmentListEmpty();
                     // inflate patientConnect layout
@@ -485,7 +492,21 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
 
                 } else {
+                    todayFollowAppointmentCount.setText("0");
+                    todayNewAppointmentCount.setText("0");
+                    todayWaitingListOrAppointmentCount.setText("0");
+                    todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+                    todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
+                    todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
 
+
+                    setLayoutForAppointment(false);
+                    // inflate waiting list layout
+                    setLayoutForWaitingList("0");
+                    // inflate patientConnect layout
+                    setLayoutForPatientConnect();
+                    // inflate MyPatientsActivity layout
+                    setLayoutForMyPatients();
                 }
             }
         }
@@ -525,43 +546,66 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
+        hostViewsLayout.removeAllViews();
+        todayFollowAppointmentCount.setText("0");
+        todayNewAppointmentCount.setText("0");
+        todayWaitingListOrAppointmentCount.setText("0");
+        todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+        todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
+        todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
+
+        Toast.makeText(mContext, errorMessage + "", Toast.LENGTH_SHORT).show();
+        setLayoutForAppointment(false);
+        setLayoutForWaitingList("0");
+        setLayoutForPatientConnect();
+        setLayoutForMyPatients();
 
     }
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
+        hostViewsLayout.removeAllViews();
+        todayFollowAppointmentCount.setText("0");
+        todayNewAppointmentCount.setText("0");
+        todayWaitingListOrAppointmentCount.setText("0");
+        todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+        todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
+        todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
 
+        Toast.makeText(mContext, serverErrorMessage + "", Toast.LENGTH_SHORT).show();
+        setLayoutForAppointment(false);
+        setLayoutForWaitingList("0");
+        setLayoutForPatientConnect();
+        setLayoutForMyPatients();
     }
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
+        Toast.makeText(mContext, serverErrorMessage + "", Toast.LENGTH_SHORT).show();
 
     }
 
-    @OnClick({R.id.todayNewAppointmentTextView, R.id.todayFollowAppointmentCount, R.id.todayFollowAppointmentTextView, R.id.viewPagerDoctorItem, R.id.locationImageView, R.id.showCount, R.id.welcomeTextView, R.id.doctorNameTextView, R.id.aboutDoctorTextView, R.id.doctorInfoLayout, R.id.dashBoradBgframeLayout})
+    @OnClick({R.id.todayCompletedOpd, R.id.viewPagerDoctorItem, R.id.todayAppointmentsOrWaitingList, R.id.todayNewPatient})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.todayNewAppointmentTextView:
-                break;
-            case R.id.todayFollowAppointmentCount:
-                break;
-            case R.id.todayFollowAppointmentTextView:
+            case R.id.todayCompletedOpd:
+                Intent intent = new Intent(this, CompletedOpdActivity.class);
+                startActivity(intent);
                 break;
             case R.id.viewPagerDoctorItem:
                 break;
-            case R.id.locationImageView:
+            case R.id.todayAppointmentsOrWaitingList:
+                if (todayWaitingListOrAppointmentTextView.getText().toString().equals(getString(R.string.today_appointment))) {
+                    Intent todayAppointmentsOrWaitingList = new Intent(this, MyAppointmentsActivity.class);
+                    startActivity(todayAppointmentsOrWaitingList);
+                } else {
+                    Intent todayAppointmentsOrWaitingList = new Intent(this, WaitingMainListActivity.class);
+                    startActivity(todayAppointmentsOrWaitingList);
+                }
                 break;
-            case R.id.showCount:
-                break;
-            case R.id.welcomeTextView:
-                break;
-            case R.id.doctorNameTextView:
-                break;
-            case R.id.aboutDoctorTextView:
-                break;
-            case R.id.doctorInfoLayout:
-                break;
-            case R.id.dashBoradBgframeLayout:
+            case R.id.todayNewPatient:
+                /*Intent todayNewPatient = new Intent(this, CompletedOpdActivity.class);
+                startActivity(todayNewPatient);*/
                 break;
         }
     }

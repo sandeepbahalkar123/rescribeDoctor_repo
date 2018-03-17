@@ -143,7 +143,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
         Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedMyRecordInfoAndReports = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
         if (yearWiseSortedMyRecordInfoAndReports.get(mCurrentSelectedTimePeriodTab.getYear()) == null) {
-            mPatientDetailHelper.doGetPatientHistory(args.getString(RescribeConstants.PATIENT_ID), mCurrentSelectedTimePeriodTab.getYear());
+            mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear());
             mGeneratedRequestForYearList.add(mCurrentSelectedTimePeriodTab.getYear());
         }
 

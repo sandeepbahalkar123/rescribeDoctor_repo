@@ -107,6 +107,7 @@ public class RescribeConstants {
     public static final String TASK_DELETE_WAITING_LIST = RescribeConstants.BLANK + 29;
     public static final String TASK_APPOINTMENT_CANCEL_OR_COMPLETE = RescribeConstants.BLANK + 30;
     public static final String TASK_DARG_DROP = RescribeConstants.BLANK + 31;
+    public static final String TASK_GET_COMPLETED_OPD = RescribeConstants.BLANK + 32;
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
 
@@ -171,6 +172,9 @@ public class RescribeConstants {
     public static final String TEMPLATE_LIST = "template_list";
     public static final String IS_BOOK_AND_CONFIRM_REQUIRED = "is_book_confirm_required";
     public static final float ZOOM_CAMERA_VALUE = 7.0f;
+    public static final String COMPLETE_OPD = "complete_opd";
+    public static final String NOT_FROM_COMPLETE_OPD = "not_complete_opd";
+
 
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
