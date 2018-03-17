@@ -263,6 +263,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
             db.update(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, contentValues, CHAT_MESSAGES.USER2ID + " = ? AND " + CHAT_MESSAGES.MSG_STATUS + " = ?", new String[]{String.valueOf(statusInfo.getPatId()), SENT});
     }
 
+    public Cursor getChatUsers() {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "SELECT * FROM " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " WHERE " + CHAT_MESSAGES.MSG_TIME + " in (select max(" + CHAT_MESSAGES.MSG_TIME + ") from " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " group by " + CHAT_MESSAGES.USER2ID + ") ORDER BY " + CHAT_MESSAGES.MSG_TIME + " DESC";
+        return db.rawQuery(sql, null);
+    }
+
     // All About Chat
 
     public interface CHAT_MESSAGES {

@@ -393,8 +393,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp11"
-                    android:layout_marginTop="@dimen/dp11">
+                    android:layout_marginTop="@dimen/dp3"
+                    android:layout_marginBottom="@dimen/dp8">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/patientPhoneNumber"

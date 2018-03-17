@@ -217,9 +217,9 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 doctorConnectChatModel.setId(patientObject.getPatientId());
                 doctorConnectChatModel.setImageUrl(patientObject.getPatientImageUrl());
                 doctorConnectChatModel.setPatientName(patientObject.getPatientName());
+                doctorConnectChatModel.setSalutation(patientObject.getSalutation());
                 intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
                 ((Activity) mContext).startActivityForResult(intent, Activity.RESULT_OK);
-
             }
         });
         holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {

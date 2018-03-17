@@ -69,6 +69,7 @@ import butterknife.Unbinder;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.ui.fragments.patient.my_patient.SendSmsPatientActivity.RESULT_SEND_SMS;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 
 
 /**
@@ -644,6 +645,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             if (addToWaitingListBaseModel.getCommon().isSuccess()) {
                 if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase())) {
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
+                    intent.putExtra(LOCATION_ID, mLocationId);
                     startActivity(intent);
                     Toast.makeText(getActivity(), addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage(), Toast.LENGTH_LONG).show();
                     getActivity().finish();
@@ -656,6 +658,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
                 } else if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
+                    intent.putExtra(LOCATION_ID, mLocationId);
                     startActivity(intent);
                     Toast.makeText(getActivity(), addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage(), Toast.LENGTH_LONG).show();
                     getActivity().finish();
@@ -668,7 +671,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
             if (!templateLists.isEmpty()) {
                 Intent intent = new Intent(getActivity(), TemplateListForMyPatients.class);
-                intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+                intent.putExtra(LOCATION_ID, mLocationId);
                 intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
                 intent.putExtra(RescribeConstants.CLINIC_NAME, mClinicName);
                 intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientInfoLists);
@@ -676,8 +679,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 startActivity(intent);
             } else {
                 TemplateList templateList = null;
-                Intent intent = new Intent(getActivity(), SendSmsPatientActivity.class);
-                intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+
+                Intent intent = new Intent(getActivity(),SendSmsPatientActivity.class);
+                intent.putExtra(LOCATION_ID, mLocationId);
                 intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
                 intent.putExtra(RescribeConstants.TEMPLATE_OBJECT, templateList);
                 intent.putExtra(RescribeConstants.CLINIC_NAME, mClinicName);

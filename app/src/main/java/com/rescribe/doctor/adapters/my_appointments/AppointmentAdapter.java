@@ -320,6 +320,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                              View convertView, final ViewGroup parent) {
 
         GroupViewHolder groupViewHolder;
+//        Log.d("SANDEEP","isExpanded: "+isExpanded);
+
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
@@ -379,6 +381,19 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
         }
 
+        if (appointmentListObject.getPatientList().size() == 1) {
+            groupViewHolder.mDownArrow.setVisibility(View.GONE);
+            groupViewHolder.upArrow.setVisibility(View.GONE);
+        }
+
+        if (isExpanded) {
+            groupViewHolder.mDownArrow.setVisibility(View.GONE);
+            groupViewHolder.upArrow.setVisibility(View.VISIBLE);
+        } else {
+            groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
+            groupViewHolder.upArrow.setVisibility(View.GONE);
+        }
+
         groupViewHolder.mPatientGenderTextView.setText(" " + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getGender()));
         if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
@@ -429,26 +444,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.mHospitalDetailsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(appointmentListObject.getPatientList().size()==1){
-                    if (isExpanded) {
-                        groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
-                        groupViewHolder.upArrow.setVisibility(View.GONE);
-                    } else {
-                        groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
-                        groupViewHolder.upArrow.setVisibility(View.GONE);
-                    }
-                    mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
-
-                }else {
-                    if (isExpanded) {
-                        groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
-                        groupViewHolder.upArrow.setVisibility(View.GONE);
-                    } else {
-                        groupViewHolder.mDownArrow.setVisibility(View.GONE);
-                        groupViewHolder.upArrow.setVisibility(View.VISIBLE);
-                    }
-                    mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
-                }
+                mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
             }
         });
         groupViewHolder.mGroupCheckbox.setChecked(appointmentListObject.isSelectedGroupCheckbox());

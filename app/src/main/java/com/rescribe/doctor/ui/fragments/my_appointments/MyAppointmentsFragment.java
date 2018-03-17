@@ -64,6 +64,7 @@ import butterknife.Unbinder;
 import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 
 /**
  * Created by jeetal on 31/1/18.
@@ -335,14 +336,22 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
     @Override
     public void onCheckUncheckRemoveSelectAllSelection(boolean ischecked) {
-        if (ischecked) {
-            for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
-                if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
-                    mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
-                }
-            }
-            mBottomMenuAppointmentAdapter.notifyDataSetChanged();
+        selectAllButton(!ischecked);
+        int selectedCount = 0;
+        for (AppointmentList appointmentList : mAppointmentAdapter.getGroupList()) {
+            if (appointmentList.isSelectedGroupCheckbox())
+                selectedCount += 1;
         }
+        selectAllButton(mAppointmentAdapter.getGroupCount() == selectedCount);
+    }
+
+    private void selectAllButton(boolean isEnable) {
+        for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+            if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
+                mBottomMenuAppointmentAdapter.getList().get(i).setSelected(isEnable);
+            }
+        }
+        mBottomMenuAppointmentAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -667,6 +676,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
                 } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase())) {
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
+                    intent.putExtra(LOCATION_ID, mLocationId);
                     startActivity(intent);
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
                     getActivity().finish();
@@ -680,6 +690,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
                 } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
+                    intent.putExtra(LOCATION_ID, mLocationId);
                     startActivity(intent);
                     Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
                     getActivity().finish();

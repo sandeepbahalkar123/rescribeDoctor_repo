@@ -418,8 +418,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         imageUrl = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, this);
         speciality = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY, this);
 
-//        swipeLayout.setRefreshing(true);
-
         downloadInit();
         uploadInit();
         audioSliderInit();
@@ -432,8 +430,9 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 MQTTMessage mqttMessage = gotIntent.getParcelableExtra(ReplayBroadcastReceiver.MESSAGE_LIST);
                 chatList.setPatientName(mqttMessage.getSenderName());
                 chatList.setId(mqttMessage.getPatId());
-                chatList.setOnlineStatus(ONLINE);
+                chatList.setOnlineStatus(ONLINE); // hardcoded
                 chatList.setUnreadMessages(0);
+                chatList.setSalutation(mqttMessage.getSalutation());
                 searchedMessageString = gotIntent.getStringExtra(SEARCHED_TEXT);
             } else
                 chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);

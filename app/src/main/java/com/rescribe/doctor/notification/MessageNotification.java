@@ -15,11 +15,14 @@ import android.support.v4.content.ContextCompat;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.services.MQTTService;
+import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 
+import static com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver.MESSAGE_LIST;
+import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.AUD;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.DOC;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
@@ -51,11 +54,16 @@ public class MessageNotification {
             title = userName + " (" + unread + " messages)";
         else title = userName;
 
-        Intent resultIntent = new Intent(context, PatientConnectActivity.class);
+        // start your activity for Android M and below
+        Intent resultIntent = new Intent(context, ChatActivity.class);
+        resultIntent.setAction(REPLY_ACTION);
+        resultIntent.putExtra(MESSAGE_LIST, lastMessage);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         context,
-                        0,
+                        lastMessage.getDocId(),
                         resultIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );

@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp130"
         android:background="@drawable/doctor_profile_bg"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dp5"
@@ -103,6 +103,8 @@
 
             </RelativeLayout>
         </RelativeLayout>
+
+
 
         <LinearLayout
             android:layout_width="match_parent"

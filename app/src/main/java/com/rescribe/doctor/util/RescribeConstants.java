@@ -145,6 +145,7 @@ public class RescribeConstants {
     public static final String VISIT_DATE = "visitDate";
     public static final String PATIENT_OBJECT = "patient_object";
     public static final String PATIENT_NAME = "patient_name";
+    public static final String PREMIUM = "Premium";
     public static final String LONGPRESSED = "long_pressed";
     public static final String DATES_LIST = "dates_list";
     public static final String DATES_INFO = "dates_info";
@@ -227,6 +228,7 @@ public class RescribeConstants {
         String UTC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         String YYYY_MM_DD = "yyyy-MM-dd";
         String DD_MM_YYYY = "dd-MM-yyyy";
+        String DD_MM_YYYY_SLASH = "dd/MM/yyyy";
         String DD_MMMM_YYYY = "dd MMMM yyyy"; // 12-September-2017
         String hh_mm_a = "hh:mm a";
         String TOTIMEZONE = "Asia/Kolkata";

@@ -61,6 +61,8 @@ import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
+
 /**
  * Created by jeetal on 22/2/18.
  */
@@ -80,11 +82,10 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     @BindView(R.id.hospitalDetailsLinearLayout)
     RelativeLayout hospitalDetailsLinearLayout;
     private Unbinder unbinder;
-    private static Bundle args;
     private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
     private WaitingListSpinnerAdapter mWaitingListSpinnerAdapter;
-    private ActiveWaitingListAdapter mActiveWaitingListAdapter;
-    private ArrayList<Active> activeArrayList = new ArrayList<>();
+    //    private ActiveWaitingListAdapter mActiveWaitingListAdapter;
+//    private ArrayList<Active> activeArrayList = new ArrayList<>();
     private int adapterPos;
     private int mLocationId;
     private AppointmentHelper mAppointmentHelper;
@@ -102,6 +103,13 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // unbind
+        unbinder.unbind();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View mRootView = inflater.inflate(R.layout.waiting_content_layout, container, false);
@@ -112,15 +120,12 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
 
     private void init() {
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
-        waitingclinicLists = args.getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
+        waitingclinicLists = getArguments().getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
         if (waitingclinicLists.size() > 1) {
             clinicListSpinner.setVisibility(View.VISIBLE);
             hospitalDetailsLinearLayout.setVisibility(View.GONE);
-
-
             mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
             clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
-
         } else {
             mLocationId = waitingclinicLists.get(0).getLocationId();
             clinicListSpinner.setVisibility(View.GONE);
@@ -147,7 +152,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mLocationId = waitingclinicLists.get(i).getLocationId();
-              waitingPatientTempList = new WaitingPatientList();
+                waitingPatientTempList = new WaitingPatientList();
                 for (WaitingclinicList waitingclinicList : waitingclinicLists) {
                     if (mLocationId == waitingclinicList.getLocationId()) {
                         waitingPatientTempList = waitingclinicList.getWaitingPatientList();
@@ -177,16 +182,20 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
 
             }
         });
+
+        for (int index = 0; index < waitingclinicLists.size(); index++) {
+            WaitingclinicList waitingclinicL = waitingclinicLists.get(index);
+            if (waitingclinicL.getLocationId() == getArguments().getInt(LOCATION_ID)) {
+                clinicListSpinner.setSelection(index);
+                break;
+            }
+        }
     }
 
     public static ActivePatientListFragment newInstance(Bundle bundle) {
-
         ActivePatientListFragment fragment = new ActivePatientListFragment();
-        args = new Bundle();
-        args = bundle;
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
-
     }
 
     @Override
@@ -200,7 +209,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
 
             }
-        }else if (mOldDataTag.equals(RescribeConstants.TASK_DARG_DROP)) {
+        } else if (mOldDataTag.equals(RescribeConstants.TASK_DARG_DROP)) {
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
             if (templateBaseModel.getCommon().isSuccess()) {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
@@ -281,7 +290,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
             public void onItemMoved(int fromPosition, int toPosition) {
                 RequestForDragAndDropBaseModel requestForDragAndDropBaseModel = new RequestForDragAndDropBaseModel();
                 ArrayList<WaitingListSequence> waitingListSequences = new ArrayList<>();
-                for(int i = 0;i<mDraggableSwipeableActiveWaitingListAdapter.getAllItems().size();i++){
+                for (int i = 0; i < mDraggableSwipeableActiveWaitingListAdapter.getAllItems().size(); i++) {
                     WaitingListSequence waitingListSequence = new WaitingListSequence();
                     waitingListSequence.setWaitingId(String.valueOf(mDraggableSwipeableActiveWaitingListAdapter.getAllItems().get(i).getWaitingId()));
                     waitingListSequence.setWaitingSequence(mDraggableSwipeableActiveWaitingListAdapter.getAllItems().get(i).getWaitingSequence());
@@ -334,7 +343,8 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
 
     @Override
     public void onPause() {
-        recyclerViewDragDropManager.cancelDrag();
+        if (recyclerViewDragDropManager != null)
+            recyclerViewDragDropManager.cancelDrag();
         super.onPause();
     }
 
@@ -394,6 +404,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         mAdapter.notifyItemInserted(position);
         recyclerView.scrollToPosition(position);
     }
+
     @NeedsPermission(Manifest.permission.CALL_PHONE)
     void doCallSupport() {
         callSupport(phoneNo);
@@ -408,7 +419,6 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
 
     public void onRequestPermssionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-       ActivePatientListFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        ActivePatientListFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
-
 }

@@ -43,6 +43,7 @@ import com.rescribe.doctor.ui.customesViews.BottomSheetDialog;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 
@@ -170,6 +171,12 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         doctorSpecialization.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, mContext));
         mServiceslist = RescribePreferencesManager.getListString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.D0C_SERVICES);
         setServicesInView(mServiceslist);
+        if(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, mContext)==true) {
+            premiumType.setText(RescribeConstants.PREMIUM);
+            premiumType.setVisibility(View.VISIBLE);
+        }else{
+            premiumType.setVisibility(View.INVISIBLE);
+        }
 
         if (size > 0) {
             allClinicPracticeLocationMainLayout.setVisibility(View.VISIBLE);
