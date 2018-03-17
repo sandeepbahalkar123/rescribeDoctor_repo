@@ -51,7 +51,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     public static boolean isLongPressed;
     private ArrayList<AppointmentList> mAppointmentListTemp;
     private Context mContext;
-    private final ViewBinderHelper binderHelper = new ViewBinderHelper();
+    private final ViewBinderHelper mBinderHelper = new ViewBinderHelper();
     private ArrayList<AppointmentList> mDataList;
 
     public AppointmentAdapter(Context context, ArrayList<AppointmentList> mAppointmentList, OnDownArrowClicked mOnDownArrowClicked) {
@@ -87,13 +87,13 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder = (ChildViewHolder) convertView.getTag();
         }
         final PatientList patientObject = mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition);
-        binderHelper.setOpenOnlyOne(true);
-        binderHelper.bindAppointmentChildList(viewHolder.swipe_layout, patientObject);
+        mBinderHelper.setOpenOnlyOne(true);
+        mBinderHelper.bindAppointmentChildList(viewHolder.swipe_layout, patientObject);
         bind(patientObject, groupPosition, childPosition, viewHolder);
-        if (patientObject.getAppointmentStatus().equals("Booked") || patientObject.getAppointmentStatus().equals("Confirmed")) {
-            binderHelper.unlockSwipe(patientObject.getPatientName());
+        if (patientObject.getAppointmentStatus().equals(mContext.getString(R.string.booked)) || patientObject.getAppointmentStatus().equals(mContext.getString(R.string.Confirmed))) {
+            mBinderHelper.unlockSwipe(patientObject.getPatientName());
         } else {
-            binderHelper.lockSwipe(patientObject.getPatientName());
+            mBinderHelper.lockSwipe(patientObject.getPatientName());
 
         }
         return convertView;
@@ -209,6 +209,11 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
 
         }
+        if(patientList.getAddedToWaiting().equals(0)){
+            viewHolder.waitingIcon.setVisibility(View.INVISIBLE);
+        }else{
+            viewHolder.waitingIcon.setVisibility(View.VISIBLE);
+        }
         viewHolder.appointmentTime.setVisibility(View.VISIBLE);
         viewHolder.appointmentTime.setText(CommonMethods.formatDateTime(patientList.getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
         TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, patientList.getPatientName());
@@ -259,14 +264,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public void onClick(View view) {
                 mOnDownArrowClicked.onAppointmentClicked(patientList.getAptId(), patientList.getPatientId(), 3, "complete", childPosition, groupPosition);
-                binderHelper.closeLayout(patientList.getPatientName());
+                mBinderHelper.closeLayout(patientList.getPatientName());
             }
         });
         viewHolder.appointmentCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mOnDownArrowClicked.onAppointmentCancelled(patientList.getAptId(), patientList.getPatientId(), 4, "cancel", childPosition, groupPosition);
-                binderHelper.closeLayout(patientList.getPatientName());
+                mBinderHelper.closeLayout(patientList.getPatientName());
             }
         });
         viewHolder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
@@ -326,14 +331,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             groupViewHolder = (GroupViewHolder) convertView.getTag();
         }
         final AppointmentList appointmentListObject = mAppointmentListTemp.get(groupPosition);
-        binderHelper.setOpenOnlyOne(true);
-        binderHelper.bindGroup(groupViewHolder.swipe_layout, appointmentListObject, groupPosition);
+        mBinderHelper.setOpenOnlyOne(true);
+        mBinderHelper.bindGroup(groupViewHolder.swipe_layout, appointmentListObject, groupPosition);
         bindGroupItem(appointmentListObject, groupPosition, isExpanded, groupViewHolder);
 
         if (appointmentListObject.getPatientHeader().getAppointmentStatus().equals("Booked") || appointmentListObject.getPatientHeader().getAppointmentStatus().equals("Confirmed")) {
-            binderHelper.unlockSwipe(groupPosition + "");
+            mBinderHelper.unlockSwipe(groupPosition + "");
         } else {
-            binderHelper.lockSwipe(groupPosition + "");
+            mBinderHelper.lockSwipe(groupPosition + "");
         }
         return convertView;
     }
@@ -354,7 +359,11 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             groupViewHolder.mPatientNameTextView.setText(RescribeConstants.SALUTATION[appointmentListObject.getPatientHeader().getSalutation() - 1] + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
         else
             groupViewHolder.mPatientNameTextView.setText(CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
-
+        if(appointmentListObject.getPatientHeader().getAddedToWaiting().equals(0)){
+            groupViewHolder.waitingIcon.setVisibility(View.INVISIBLE);
+        }else{
+            groupViewHolder.waitingIcon.setVisibility(View.VISIBLE);
+        }
         if (appointmentListObject.getPatientHeader().getAge().equals("") && !appointmentListObject.getPatientHeader().getDateOfBirth().equals("")) {
             groupViewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate();
@@ -510,14 +519,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public void onClick(View view) {
                 mOnDownArrowClicked.onGroupAppointmentCancelled(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 3, "complete", groupPosition);
-                binderHelper.closeLayout(groupPosition + "");
+                mBinderHelper.closeLayout(groupPosition + "");
             }
         });
         groupViewHolder.mAppointmentCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mOnDownArrowClicked.onGroupAppointmentCancelled(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 4, "cancel", groupPosition);
-                binderHelper.closeLayout(groupPosition + "");
+                mBinderHelper.closeLayout(groupPosition + "");
             }
         });
         groupViewHolder.mPatientPhoneNumber.setOnClickListener(new View.OnClickListener() {
@@ -653,6 +662,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         private LinearLayout cardView;
         private ImageView bluelineImageView;
         private CustomTextView appointmentTime;
+        private ImageView waitingIcon;
         private CustomTextView patientIdTextView;
         private CircularImageView patientImageView;
         private CustomTextView patientNameTextView;
@@ -669,7 +679,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
         ChildViewHolder(View convertView) {
             super(convertView);
-
+            waitingIcon = (ImageView)convertView.findViewById(R.id.waitingIcon);
             appointmentCancel = (LinearLayout) convertView.findViewById(R.id.appointmentCancel);
             appointmentComplete = (LinearLayout) convertView.findViewById(R.id.appointmentComplete);
             swipe_layout = (SwipeRevealLayout) convertView.findViewById(R.id.swipe_layout);
@@ -710,6 +720,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         private CustomTextView mPatientIdTextView;
         private CircularImageView mPatientImageView;
         private CustomTextView mPatientNameTextView;
+        private ImageView waitingIcon;
         private CustomTextView mPatientAgeTextView;
         private CustomTextView mPatientGenderTextView;
         private LinearLayout mPatientDetailsLinearLayout;
@@ -724,6 +735,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
         GroupViewHolder(View convertView) {
             super(convertView);
+            waitingIcon = (ImageView)convertView.findViewById(R.id.waitingIcon);
             mAppointmentCancel = (LinearLayout) convertView.findViewById(R.id.appointmentCancel);
             mAppointmentComplete = (LinearLayout) convertView.findViewById(R.id.appointmentComplete);
             swipe_layout = (SwipeRevealLayout) convertView.findViewById(R.id.swipe_layout);

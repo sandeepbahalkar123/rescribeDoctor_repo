@@ -180,7 +180,7 @@
                         android:id="@+id/genderContentView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp10"
+                        android:layout_marginBottom="@dimen/dp0"
                         android:background="@color/otp_background_layout"
                         android:gravity="center"
                         android:orientation="horizontal"
@@ -191,18 +191,20 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
+                            android:layout_weight="1.5"
                             android:orientation="vertical">
 
                             <ImageView
+                                android:layout_gravity="center"
                                 android:id="@+id/genderMaleIcon"
                                 style="@style/drawer_filter_gender_style"
                                 android:layout_height="wrap_content"
                                 android:src="@drawable/filtergraymaleicon" />
 
                             <com.rescribe.doctor.ui.customesViews.CustomTextView
+                                android:layout_gravity="center"
                                 android:id="@+id/genderMaleText"
                                 style="@style/drawer_filter_gender_style"
-                                android:gravity="center"
                                 android:text="@string/male"
                                 android:textColor="@color/gender_drawer"
                                 app:customFont="@string/roboto_regular" />
@@ -213,8 +215,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dp16"
-                            android:layout_marginStart="@dimen/dp16"
+                            android:layout_weight="1.2"
                             android:orientation="vertical">
 
                             <ImageView
@@ -228,7 +229,7 @@
                                 style="@style/drawer_filter_gender_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:gravity="center"
+                                android:layout_gravity="center"
                                 android:text="@string/female"
                                 android:textColor="@color/gender_drawer"
                                 app:customFont="@string/roboto_regular" />
@@ -238,6 +239,7 @@
                             android:id="@+id/transGenderMaleLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="0.8"
                             android:orientation="vertical">
 
                             <ImageView
@@ -250,7 +252,7 @@
                             <com.rescribe.doctor.ui.customesViews.CustomTextView
                                 android:id="@+id/transGenderMaleText"
                                 style="@style/drawer_filter_gender_style"
-                                android:gravity="center"
+                                android:layout_gravity="center"
                                 android:text="@string/transgender"
                                 android:textColor="@color/gender_drawer"
                                 app:customFont="@string/roboto_regular" />
@@ -292,6 +294,7 @@
                         android:gravity="center"
                         android:orientation="vertical"
                         android:paddingBottom="@dimen/dp20"
+                        android:paddingLeft="@dimen/dp10"
                         android:visibility="visible">
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -310,7 +313,7 @@
                             android:layout_marginStart="@dimen/dp10"
                             android:orientation="horizontal">
 
-                            <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
                                 android:id="@+id/clinicFeesSeekBarMinValue"
                                 style="@style/drawer_filter_header_layout"
                                 android:layout_width="wrap_content"

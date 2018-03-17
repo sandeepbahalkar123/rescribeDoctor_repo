@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="@dimen/dp4"
+    android:paddingStart="@dimen/dp4"
+    android:orientation="horizontal"
+    android:paddingEnd="@dimen/dp4"
+    android:paddingLeft="@dimen/dp4">
+
+    <ImageView
+        android:layout_gravity="center_vertical"
+        android:id="@+id/bulletImageView"
+        android:layout_width="@dimen/dp8"
+        android:layout_height="@dimen/dp8"
+        android:src="@drawable/circular_bullet"/>
+    <com.rescribe.doctor.ui.customesViews.CustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/waitingStatusText"
+        app:customFont="@string/roboto_medium"
+        android:textColor="@color/black"
+        android:paddingStart="@dimen/dp8"
+        android:paddingLeft="@dimen/dp8"
+        tools:text="sdsddfdsdfs"/>
+</LinearLayout>

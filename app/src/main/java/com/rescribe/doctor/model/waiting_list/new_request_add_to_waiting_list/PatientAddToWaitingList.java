@@ -1,5 +1,5 @@
 
-package com.rescribe.doctor.model.waiting_list.request_add_waiting_list;
+package com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PatientsListAddToWaitingList implements Parcelable
+public class PatientAddToWaitingList implements Parcelable
 {
 
     @SerializedName("patientId")
@@ -19,39 +19,30 @@ public class PatientsListAddToWaitingList implements Parcelable
     @SerializedName("patientName")
     @Expose
     private String patientName;
-
-    @SerializedName("appointmentStatusId")
-    @Expose
-    private Integer appointmentStatusId;
-    @SerializedName("appointmentId")
-    @Expose
-    private Integer appointmentId;
-    public final static Creator<PatientsListAddToWaitingList> CREATOR = new Creator<PatientsListAddToWaitingList>() {
+    public final static Creator<PatientAddToWaitingList> CREATOR = new Creator<PatientAddToWaitingList>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public PatientsListAddToWaitingList createFromParcel(Parcel in) {
-            return new PatientsListAddToWaitingList(in);
+        public PatientAddToWaitingList createFromParcel(Parcel in) {
+            return new PatientAddToWaitingList(in);
         }
 
-        public PatientsListAddToWaitingList[] newArray(int size) {
-            return (new PatientsListAddToWaitingList[size]);
+        public PatientAddToWaitingList[] newArray(int size) {
+            return (new PatientAddToWaitingList[size]);
         }
 
     }
     ;
 
-    protected PatientsListAddToWaitingList(Parcel in) {
+    protected PatientAddToWaitingList(Parcel in) {
         this.patientId = ((String) in.readValue((String.class.getClassLoader())));
         this.hospitalPatId = ((String) in.readValue((String.class.getClassLoader())));
         this.patientName = ((String) in.readValue((String.class.getClassLoader())));
-        this.appointmentStatusId = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.appointmentId = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
-    public PatientsListAddToWaitingList() {
+    public PatientAddToWaitingList() {
     }
 
     public String getPatientId() {
@@ -77,28 +68,11 @@ public class PatientsListAddToWaitingList implements Parcelable
     public void setPatientName(String patientName) {
         this.patientName = patientName;
     }
-    public Integer getAppointmentStatusId() {
-        return appointmentStatusId;
-    }
-
-    public void setAppointmentStatusId(Integer appointmentStatusId) {
-        this.appointmentStatusId = appointmentStatusId;
-    }
-
-    public Integer getAppointmentId() {
-        return appointmentId;
-    }
-
-    public void setAppointmentId(Integer appointmentId) {
-        this.appointmentId = appointmentId;
-    }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(patientId);
         dest.writeValue(hospitalPatId);
         dest.writeValue(patientName);
-        dest.writeValue(appointmentStatusId);
-        dest.writeValue(appointmentId);
     }
 
     public int describeContents() {

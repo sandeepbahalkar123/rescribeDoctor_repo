@@ -455,7 +455,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     todayNewAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayNewPatientCount() + "");
                     todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount() + "");
                     todayFollowAppointmentTextView.setText("Today's Follow Ups");
-                    todayNewAppointmentTextView.setText("Today's New Patients");
+                    todayNewAppointmentTextView.setText("Today's\nNew Patients");
                     todayWaitingListOrAppointmentTextView.setText("Today's Appoinments");
 
                     hostViewsLayout.removeAllViews();
@@ -474,7 +474,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
                     todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayWaitingCount() + "");
                     todayFollowAppointmentTextView.setText("Today's Follow Ups");
-                    todayNewAppointmentTextView.setText("Today's New Patients");
+                    todayNewAppointmentTextView.setText("Today's\nNew Patients");
                     todayWaitingListOrAppointmentTextView.setText("Today's Waiting List");
                     hostViewsLayout.removeAllViews();
                     setLayoutForWaitingListIfAppointmentListEmpty();

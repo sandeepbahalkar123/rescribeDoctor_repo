@@ -144,6 +144,7 @@ public class RescribeConstants {
     public static final String VISIT_DATE = "visitDate";
     public static final String PATIENT_OBJECT = "patient_object";
     public static final String PATIENT_NAME = "patient_name";
+    public static final String PREMIUM = "Premium";
     public static final String LONGPRESSED = "long_pressed";
     public static final String DATES_LIST = "dates_list";
     public static final String DATES_INFO = "dates_info";

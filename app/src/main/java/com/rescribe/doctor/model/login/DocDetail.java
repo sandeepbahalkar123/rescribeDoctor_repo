@@ -43,6 +43,10 @@ public class DocDetail implements Parcelable {
     @SerializedName("clinicList")
     @Expose
     private ArrayList<ClinicList> clinicList = new ArrayList<ClinicList>();
+    @SerializedName("premium")
+    @Expose
+    private boolean premium;
+
     public final static Parcelable.Creator<DocDetail> CREATOR = new Creator<DocDetail>() {
 
 
@@ -69,11 +73,20 @@ public class DocDetail implements Parcelable {
         this.docDegree = ((String) in.readValue((String.class.getClassLoader())));
         this.docExperience = ((String) in.readValue((String.class.getClassLoader())));
         this.docInfo = ((String) in.readValue((String.class.getClassLoader())));
+        this.premium = ((Boolean) in.readValue((String.class.getClassLoader())));
         in.readList(this.docService, (java.lang.String.class.getClassLoader()));
         in.readList(this.clinicList, (ClinicList.class.getClassLoader()));
     }
 
     public DocDetail() {
+    }
+
+    public boolean isPremium() {
+        return premium;
+    }
+
+    public void setPremium(boolean premium) {
+        this.premium = premium;
     }
 
     public int getDocId() {

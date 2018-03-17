@@ -76,9 +76,6 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         mFragmentTitleList[1] = getString(R.string.view_all);
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetWaitingList();
-
-      /*  setupViewPager(viewpager);
-        tabs.setupWithViewPager(viewpager);*/
     }
 
     private void setupViewPager(ViewPager viewPager) {
