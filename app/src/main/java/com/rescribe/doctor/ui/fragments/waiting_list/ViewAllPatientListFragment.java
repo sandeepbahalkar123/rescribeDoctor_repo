@@ -89,7 +89,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     ImageView noRecords;
 
     private Unbinder unbinder;
-    private static Bundle args;
     private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
     private int adapterPos;
     private AppointmentHelper mAppointmentHelper;
@@ -118,7 +117,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
     private void init() {
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
-        waitingclinicLists = args.getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
+        waitingclinicLists = getArguments().getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
         if (waitingclinicLists != null) {
             if (waitingclinicLists.size() > 1) {
                 clinicListSpinner.setVisibility(View.VISIBLE);
@@ -282,9 +281,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
     public static ViewAllPatientListFragment newInstance(Bundle bundle) {
         ViewAllPatientListFragment fragment = new ViewAllPatientListFragment();
-        args = new Bundle();
-        args = bundle;
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
