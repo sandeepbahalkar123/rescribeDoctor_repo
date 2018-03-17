@@ -1,21 +1,16 @@
 package com.rescribe.doctor.ui.fragments.my_appointments;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,7 +31,6 @@ import android.widget.Toast;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.AppointmentAdapter;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
-import com.rescribe.doctor.adapters.my_patients.TemplateAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -70,8 +64,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
@@ -348,14 +340,22 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
     @Override
     public void onCheckUncheckRemoveSelectAllSelection(boolean ischecked) {
-        if (ischecked) {
-            for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
-                if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
-                    mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
-                }
-            }
-            mBottomMenuAppointmentAdapter.notifyDataSetChanged();
+        selectAllButton(!ischecked);
+        int selectedCount = 0;
+        for (AppointmentList appointmentList : mAppointmentAdapter.getGroupList()) {
+            if (appointmentList.isSelectedGroupCheckbox())
+                selectedCount += 1;
         }
+        selectAllButton(mAppointmentAdapter.getGroupCount() == selectedCount);
+    }
+
+    private void selectAllButton(boolean isEnable) {
+        for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
+            if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.select_all))) {
+                mBottomMenuAppointmentAdapter.getList().get(i).setSelected(isEnable);
+            }
+        }
+        mBottomMenuAppointmentAdapter.notifyDataSetChanged();
     }
 
     @Override
