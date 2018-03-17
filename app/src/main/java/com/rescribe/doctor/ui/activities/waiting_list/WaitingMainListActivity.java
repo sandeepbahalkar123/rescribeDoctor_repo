@@ -32,6 +32,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
+
 /**
  * Created by jeetal on 22/2/18.
  */
@@ -96,6 +98,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
             mWaitingClinicList = waitingListBaseModel.getWaitingListDataModel().getWaitingclinicList();
             bundle = new Bundle();
             bundle.putParcelableArrayList(RescribeConstants.WAITING_LIST_INFO, mWaitingClinicList);
+            bundle.putInt(LOCATION_ID, getIntent().getIntExtra(LOCATION_ID, -1));
             setupViewPager(viewpager);
             tabs.setupWithViewPager(viewpager);
         }

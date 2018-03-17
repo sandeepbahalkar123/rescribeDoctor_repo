@@ -49,6 +49,11 @@ public class Active implements Parcelable
     @SerializedName("appointmentStatusId")
     @Expose
     private String appointmentStatusId;
+
+    @SerializedName("salutation")
+    @Expose
+    private Integer salutation = 0;
+
     public final static Creator<Active> CREATOR = new Creator<Active>() {
 
 
@@ -79,6 +84,7 @@ public class Active implements Parcelable
         this.waitingStatus = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentTime = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentStatusId = ((String) in.readValue((String.class.getClassLoader())));
+        this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public Active() {
@@ -188,6 +194,14 @@ public class Active implements Parcelable
         this.appointmentStatusId = appointmentStatusId;
     }
 
+    public Integer getSalutation() {
+        return salutation;
+    }
+
+    public void setSalutation(Integer salutation) {
+        this.salutation = salutation;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(waitingId);
         dest.writeValue(hospitalPatId);
@@ -202,6 +216,7 @@ public class Active implements Parcelable
         dest.writeValue(waitingStatus);
         dest.writeValue(appointmentTime);
         dest.writeValue(appointmentStatusId);
+        dest.writeValue(salutation);
     }
 
     public int describeContents() {

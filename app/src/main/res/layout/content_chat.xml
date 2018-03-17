@@ -8,36 +8,29 @@
     tools:context=".ui.activities.ChatActivity"
     tools:showIn="@layout/activity_chat">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeLayout"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chatList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/messageTypeLayout">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/chatList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/layer_3"
-            android:paddingEnd="@dimen/dp6"
-            android:paddingStart="@dimen/dp6" />
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_above="@+id/messageTypeLayout"
+        android:background="@drawable/layer_3"
+        android:paddingEnd="@dimen/dp6"
+        android:paddingStart="@dimen/dp6" />
 
     <com.rescribe.doctor.ui.customesViews.CustomTextView
         android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="12 September 2017"
-        android:textColor="@color/Gray"
-        android:textSize="@dimen/sp12"
-        android:textAllCaps="true"
-        android:visibility="gone"
-        android:clickable="false"
-        android:padding="@dimen/dp6"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp6"
         android:background="@drawable/date_time_back"
-        android:layout_centerHorizontal="true"/>
+        android:clickable="false"
+        android:padding="@dimen/dp6"
+        android:textAllCaps="true"
+        android:textColor="@color/Gray"
+        android:textSize="@dimen/sp12"
+        android:visibility="gone"
+        tools:text="12 September 2017" />
 
     <RelativeLayout
         android:id="@+id/messageTypeLayout"
@@ -55,8 +48,8 @@
             app:buttonBackgroundColor="@android:color/transparent"
             app:buttonImage="@drawable/speak"
             app:reverseSlide="true"
-            app:slideText="@string/timing"
             app:slideBackgroundColor="@color/tagColor"
+            app:slideText="@string/timing"
             app:slideTextColor="@android:color/white"
             app:strokeColor="@color/tagColor" />
 
@@ -98,11 +91,11 @@
                     android:background="@color/transparent"
                     android:paddingBottom="@dimen/dp14"
                     android:paddingEnd="@dimen/dp18"
+                    android:paddingLeft="@dimen/dp9"
+                    android:paddingRight="@dimen/dp18"
                     android:paddingStart="@dimen/dp9"
                     android:paddingTop="@dimen/dp14"
-                    android:src="@drawable/attach"
-                    android:paddingLeft="@dimen/dp9"
-                    android:paddingRight="@dimen/dp18" />
+                    android:src="@drawable/attach" />
 
                 <ImageButton
                     android:id="@+id/cameraButton"
@@ -111,11 +104,11 @@
                     android:background="@color/transparent"
                     android:paddingBottom="@dimen/dp14"
                     android:paddingEnd="@dimen/dp18"
+                    android:paddingLeft="@dimen/dp9"
+                    android:paddingRight="@dimen/dp18"
                     android:paddingStart="@dimen/dp9"
                     android:paddingTop="@dimen/dp14"
-                    android:src="@drawable/photo_camera"
-                    android:paddingRight="@dimen/dp18"
-                    android:paddingLeft="@dimen/dp9" />
+                    android:src="@drawable/photo_camera" />
 
             </LinearLayout>
 
@@ -131,8 +124,8 @@
             android:layout_marginEnd="@dimen/dp2"
             android:layout_marginRight="@dimen/dp2"
             android:padding="@dimen/dp6"
-            android:visibility="invisible"
-            android:src="@drawable/send" />
+            android:src="@drawable/send"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 

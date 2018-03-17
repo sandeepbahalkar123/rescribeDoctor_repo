@@ -114,13 +114,12 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
 
         } else {
             holder.headingText.setVisibility(View.GONE);
-
             holder.messageTextView.setVisibility(View.GONE); // this is last message text view currently not using
         }
 
         if (doctorConnectChatModel.getLastChatTime() != null) {
-            String time = CommonMethods.formatDateTime(doctorConnectChatModel.getLastChatTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.TIME);
-            holder.dateTimeText.setText(time);
+            String timeT = CommonMethods.getDayFromDateTime(doctorConnectChatModel.getLastChatTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY_SLASH, RescribeConstants.DATE_PATTERN.hh_mm_a);
+            holder.dateTimeText.setText(timeT);
         }
 
         String patientName = doctorConnectChatModel.getPatientName();

@@ -1,11 +1,13 @@
 
 package com.rescribe.doctor.model.waiting_list;
 
+import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.rescribe.doctor.util.CommonMethods;
 
 public class ViewAll implements Parcelable
 {
@@ -49,6 +51,11 @@ public class ViewAll implements Parcelable
     @SerializedName("appointmentStatusId")
     @Expose
     private String appointmentStatusId;
+
+    @SerializedName("salutation")
+    @Expose
+    private Integer salutation = 0;
+
     public final static Creator<ViewAll> CREATOR = new Creator<ViewAll>() {
 
 
@@ -79,6 +86,7 @@ public class ViewAll implements Parcelable
         this.waitingStatus = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentTime = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentStatusId = ((String) in.readValue((String.class.getClassLoader())));
+        this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public ViewAll() {
@@ -109,7 +117,7 @@ public class ViewAll implements Parcelable
     }
 
     public String getPatientName() {
-        return patientName;
+        return CommonMethods.toCamelCase(patientName);
     }
 
     public void setPatientName(String patientName) {
@@ -188,6 +196,14 @@ public class ViewAll implements Parcelable
         this.appointmentStatusId = appointmentStatusId;
     }
 
+    public Integer getSalutation() {
+        return salutation;
+    }
+
+    public void setSalutation(Integer salutation) {
+        this.salutation = salutation;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(waitingId);
         dest.writeValue(hospitalPatId);
@@ -202,6 +218,7 @@ public class ViewAll implements Parcelable
         dest.writeValue(waitingStatus);
         dest.writeValue(appointmentTime);
         dest.writeValue(appointmentStatusId);
+        dest.writeValue(salutation);
     }
 
     public int describeContents() {

@@ -37,6 +37,7 @@ public class PatientData implements Parcelable, CustomResponse {
     @SerializedName("salutation")
     @Expose
     private Integer salutation = 0;
+    private String lastChat;
 
     public Integer getId() {
         return patientId;
@@ -92,6 +93,14 @@ public class PatientData implements Parcelable, CustomResponse {
 
     public void setSalutation(Integer salutation) {
         this.salutation = salutation;
+    }
+
+    public String getLastChat() {
+        return lastChat;
+    }
+
+    public void setLastChat(String lastChat) {
+        this.lastChat = lastChat;
     }
 
     public final static Creator<PatientData> CREATOR = new Creator<PatientData>() {

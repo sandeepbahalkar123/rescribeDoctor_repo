@@ -292,7 +292,6 @@
                         android:gravity="center"
                         android:orientation="vertical"
                         android:paddingBottom="@dimen/dp20"
-                        android:paddingLeft="@dimen/dp20"
                         android:visibility="visible">
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -307,7 +306,8 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="@dimen/dp14"
+                            android:layout_marginEnd="@dimen/dp10"
+                            android:layout_marginStart="@dimen/dp10"
                             android:orientation="horizontal">
 
                             <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -340,9 +340,11 @@
                             android:id="@+id/clinicFeesSeekBar"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp40"
+                            android:layout_marginEnd="@dimen/dp8"
+                            android:layout_marginStart="@dimen/dp8"
+                            android:minHeight="@dimen/dp40"
                             android:paddingEnd="@dimen/dp10"
-                            android:paddingStart="@dimen/dp10"
-                            android:minHeight="@dimen/dp40"/>
+                            android:paddingStart="@dimen/dp10" />
 
                     </LinearLayout>
 

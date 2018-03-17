@@ -18,7 +18,6 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_connect.PatientConnectAdapter;
 import com.rescribe.doctor.adapters.patient_connect.SearchedMessagesAdapter;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
-import com.rescribe.doctor.helpers.patient_connect.PatientConnectHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
@@ -34,7 +33,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.rescribe.doctor.services.MQTTService.PATIENT;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.PATIENT_CONNECT_REQUEST;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
 
 /**
  * Created by jeetal on 6/9/17.
@@ -55,6 +56,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     private PatientConnectAdapter mPatientConnectAdapter;
     private SearchedMessagesAdapter searchedMessagesAdapter;
     private ArrayList<MQTTMessage> mqttMessages = new ArrayList<>();
+    private AppDBHelper appDBHelper;
 
     public static PatientConnectChatFragment newInstance() {
         PatientConnectChatFragment fragment = new PatientConnectChatFragment();
@@ -78,10 +80,15 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     }
 
     private void initialize() {
-        PatientConnectHelper mPatientConnectHelper = new PatientConnectHelper(getActivity(), this);
+
+        appDBHelper = new AppDBHelper(getContext());
+
+//        PatientConnectHelper mPatientConnectHelper = new PatientConnectHelper(getActivity(), this);
 
         mRecyclerView.setNestedScrollingEnabled(false);
         searchRecyclerView.setNestedScrollingEnabled(false);
+
+        getPatientList();
 
         mPatientConnectAdapter = new PatientConnectAdapter(getActivity(), mReceivedPatientDataList, this);
 
@@ -96,11 +103,11 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
         mRecyclerView.setAdapter(mPatientConnectAdapter);
 
-        if (mReceivedPatientDataList.isEmpty()) {
+        /*if (mReceivedPatientDataList.isEmpty()) {
             mPatientConnectHelper.doGetChatPatientList();
         } else {
             notifyDataChanged();
-        }
+        }*/
 
         searchedMessagesAdapter = new SearchedMessagesAdapter(getContext(), mqttMessages);
         searchRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -108,6 +115,58 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         LinearLayoutManager mLayoutM = new LinearLayoutManager(getActivity());
         searchRecyclerView.setLayoutManager(mLayoutM);
         searchRecyclerView.setAdapter(searchedMessagesAdapter);
+    }
+
+    private void getPatientList() {
+        mReceivedPatientDataList.clear();
+        Cursor cursor = appDBHelper.getChatUsers();
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+
+                    PatientData patientData = new PatientData();
+                    patientData.setOnlineStatus(OFFLINE); // hardcoded
+                    patientData.setLastChatTime(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_TIME)));
+                    patientData.setLastChat(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG)));
+//                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_ID)
+                    patientData.setId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER2ID)));
+//                    cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER1ID));
+
+                    String patientName = cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER)).equals(PATIENT) ? cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER_NAME)) : cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.RECEIVER_NAME));
+                    patientData.setPatientName(patientName);
+
+//                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SPECIALITY));
+//                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_STATUS));
+                    patientData.setImageUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER_IMG_URL)));
+//                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILE_URL));
+//                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILE_TYPE));
+
+                    patientData.setSalutation(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SALUTATION)));
+//                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.RECEIVER_NAME));
+//                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.RECEIVER_IMG_URL));
+
+//                    cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.UPLOAD_STATUS));
+//                    cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.DOWNLOAD_STATUS));
+//                    cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.READ_STATUS));
+
+                    mReceivedPatientDataList.add(patientData);
+                    cursor.moveToNext();
+                }
+
+                cursor.close();
+            }
+
+            appDBHelper.close();
+        }
+
+        if (mReceivedPatientDataList.isEmpty()) {
+            mEmptyListView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            mEmptyListView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -169,24 +228,13 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         notifyDataChanged();
     }
 
-    /*public void isDataListViewVisible(boolean flag) {
-        if (mEmptyListView != null) {
-            if (flag) {
-                mEmptyListView.setVisibility(View.GONE);
-                mRecyclerView.setVisibility(View.VISIBLE);
-            } else {
-                mEmptyListView.setVisibility(View.VISIBLE);
-                mRecyclerView.setVisibility(View.GONE);
-            }
-        }
-    }*/
-
     public void notifyCount(MQTTMessage message) {
         boolean isThere = false;
         if (mReceivedPatientDataList != null && mPatientConnectAdapter != null) {
             for (int index = 0; index < mReceivedPatientDataList.size(); index++) {
                 if (mReceivedPatientDataList.get(index).getId() == message.getPatId()) {
-                    mPatientConnectAdapter.notifyItemChanged(index);
+                    if (index != 0)
+                        moveItemOnTop(message.getMsgTime(), index);
                     isThere = true;
                     break;
                 }
@@ -200,14 +248,17 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                 patientData.setUnreadMessages(1);
                 patientData.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
                 mReceivedPatientDataList.add(0, patientData);
-                notifyDataChanged();
             }
 
-            if (!mReceivedPatientDataList.isEmpty()) {
+            if (mReceivedPatientDataList.isEmpty()) {
+                mEmptyListView.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            } else {
                 mEmptyListView.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
             }
 
+            mPatientConnectAdapter.notifyDataSetChanged();
         }
     }
 
@@ -216,9 +267,8 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         boolean isThere = false;
         for (int index = 0; index < mReceivedPatientDataList.size(); index++) {
             if (mReceivedPatientDataList.get(index).getId().equals(patientData.getId())) {
-                PatientData patientData1 = mReceivedPatientDataList.remove(index);
-                patientData1.setLastChatTime(patientData.getLastChatTime());
-                mReceivedPatientDataList.add(0, patientData1);
+                if (index != 0)
+                    moveItemOnTop(patientData.getLastChatTime(), index);
                 isThere = true;
                 break;
             }
@@ -227,7 +277,21 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         if (!isThere)
             mReceivedPatientDataList.add(0, patientData);
 
+        if (mReceivedPatientDataList.isEmpty()) {
+            mEmptyListView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            mEmptyListView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
+
         mPatientConnectAdapter.notifyDataSetChanged();
+    }
+
+    private void moveItemOnTop(String time, int index) {
+        PatientData patientData1 = mReceivedPatientDataList.remove(index);
+        patientData1.setLastChatTime(time);
+        mReceivedPatientDataList.add(0, patientData1);
     }
 
     public void setOnClickOfSearchBar(String searchText) {
@@ -253,8 +317,6 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         searchRecyclerView.setVisibility(View.VISIBLE);
 
         mqttMessages.clear();
-
-        AppDBHelper appDBHelper = new AppDBHelper(getContext());
         Cursor cursor = appDBHelper.searchChatMessagesByChars(searchText);
 
         if (cursor != null) {

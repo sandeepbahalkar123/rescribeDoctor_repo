@@ -57,6 +57,7 @@ import java.util.ArrayList;
 
 import static com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableViewAllWaitingListAdapter.CONFIRMED;
 import static com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableViewAllWaitingListAdapter.IN_QUEUE;
+import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
 public class DraggableSwipeableActiveWaitingListAdapter
         extends RecyclerView.Adapter<DraggableSwipeableActiveWaitingListAdapter.MyViewHolder>
@@ -219,9 +220,6 @@ public class DraggableSwipeableActiveWaitingListAdapter
         // (if the item is *not pinned*, click event comes to the mContainer)
         holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
 
-        // set text
-        holder.mPatientNameTextView.setText(item.getActiveAll().getPatientName());
-
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,7 +255,13 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
         holder.mPatientPhoneNumber.setText(item.getActiveAll().getPatientPhone());
         holder.mTokenNumber.setText(item.getActiveAll().getTokenNumber());
-        holder.mPatientNameTextView.setText(item.getActiveAll().getPatientName());
+
+        String salutation;
+        if (item.getActiveAll().getSalutation() != 0)
+            salutation = SALUTATION[item.getActiveAll().getSalutation() - 1];
+        else salutation = "";
+
+        holder.mPatientNameTextView.setText(salutation + item.getActiveAll().getPatientName());
         holder.mTypeStatus.setText(" " + item.getActiveAll().getWaitingStatus());
         TextDrawable textDrawable = CommonMethods.getTextDrawable(holder.mPatientImageView.getContext(), item.getActiveAll().getPatientName());
         RequestOptions requestOptions = new RequestOptions();

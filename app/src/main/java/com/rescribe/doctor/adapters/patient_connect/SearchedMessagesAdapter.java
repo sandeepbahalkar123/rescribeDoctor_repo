@@ -117,7 +117,7 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
         } else
             holder.doctorName.setText(salutation + patientName);
 
-        String timeT = CommonMethods.getDayFromDateTime(mqttMessage.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MMMM_YYYY, RescribeConstants.DATE_PATTERN.hh_mm_a);
+        String timeT = CommonMethods.getDayFromDateTime(mqttMessage.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY_SLASH, RescribeConstants.DATE_PATTERN.hh_mm_a);
         holder.timeText.setText(timeT);
 
         patientName = patientName.replace("Dr. ", "");
