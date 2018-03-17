@@ -156,7 +156,6 @@ public class EditTextWithDeleteButton extends LinearLayout {
         clearTextButton.setLayoutParams(params);
         clearTextButton.setPadding(CommonMethods.convertDpToPixel(R.dimen.dp3), CommonMethods.convertDpToPixel(R.dimen.dp3), CommonMethods.convertDpToPixel(R.dimen.dp3), CommonMethods.convertDpToPixel(R.dimen.dp3));
         clearTextButton.setBackgroundResource(deleteButtonRes);
-        clearTextButton.setVisibility(View.GONE);
         return clearTextButton;
     }
 
