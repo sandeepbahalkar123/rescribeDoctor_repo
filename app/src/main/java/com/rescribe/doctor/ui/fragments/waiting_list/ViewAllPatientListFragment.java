@@ -15,9 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
@@ -48,7 +50,9 @@ import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.OnStartDragListener;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -80,8 +84,11 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     CustomTextView clinicAddress;
     @BindView(R.id.hospitalDetailsLinearLayout)
     RelativeLayout hospitalDetailsLinearLayout;
+
+    @BindView(R.id.noRecords)
+    ImageView noRecords;
+
     private Unbinder unbinder;
-    private static Bundle args;
     private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
     private int adapterPos;
     private AppointmentHelper mAppointmentHelper;
@@ -91,6 +98,12 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     private String phoneNo;
 
     public ViewAllPatientListFragment() {
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 
     @Override
@@ -104,7 +117,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
     private void init() {
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
-        waitingclinicLists = args.getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
+        waitingclinicLists = getArguments().getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
         if (waitingclinicLists != null) {
             if (waitingclinicLists.size() > 1) {
                 clinicListSpinner.setVisibility(View.VISIBLE);
@@ -114,7 +127,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
             } else {
                 mLocationId = waitingclinicLists.get(0).getLocationId();
-                waitingPatientTempList = new WaitingPatientList();
                 waitingPatientTempList = waitingclinicLists.get(0).getWaitingPatientList();
                 clinicListSpinner.setVisibility(View.GONE);
                 hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
@@ -122,19 +134,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
                 recyclerView.setVisibility(View.VISIBLE);
                 recyclerView.setClipToPadding(false);
-                /*WaitingPatientList waitingPatientSingleList = waitingclinicLists.get(0).getWaitingPatientList();
-                mViewAllWaitingListAdapter = new ViewAllWaitingListAdapter(getActivity(), waitingPatientSingleList.getViewAll(),this);
-                LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                recyclerView.setLayoutManager(linearlayoutManager);
-                // off recyclerView Animation
-                RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-                if (animator instanceof SimpleItemAnimator)
-                    ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-
-                recyclerView.setAdapter(mViewAllWaitingListAdapter);*/
-
                 setAdapter();
-
             }
         }
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -143,12 +143,8 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mLocationId = waitingclinicLists.get(i).getLocationId();
-                waitingPatientTempList = new WaitingPatientList();
-                for (WaitingclinicList waitingclinicList : waitingclinicLists) {
-                    if (mLocationId == waitingclinicList.getLocationId()) {
-                        waitingPatientTempList = waitingclinicList.getWaitingPatientList();
-                    }
-                }
+                waitingPatientTempList = waitingclinicLists.get(i).getWaitingPatientList();
+
                 if (waitingPatientTempList != null) {
 
                     recyclerView.setVisibility(View.VISIBLE);
@@ -199,8 +195,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
                 requestDeleteBaseModel.setWaitingSequence(viewAll.getWaitingSequence());
                 mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);
-
-                CommonMethods.showToast(getContext(), "Position " + position);
             }
 
             @Override
@@ -216,16 +210,19 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
 
+                ViewAll removed = waitingPatientTempList.getViewAll().remove(fromPosition);
+                waitingPatientTempList.getViewAll().add(toPosition, removed);
+
                 RequestForDragAndDropBaseModel requestForDragAndDropBaseModel = new RequestForDragAndDropBaseModel();
                 ArrayList<WaitingListSequence> waitingListSequences = new ArrayList<>();
 
-                for(int i = 0;i<myItemAdapter.getAllItems().size();i++){
+                for (int i = 0; i < myItemAdapter.getAllItems().size(); i++) {
                     WaitingListSequence waitingListSequence = new WaitingListSequence();
-                    if(fromPosition==i){
+                    if (fromPosition == i) {
                         waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(toPosition).getWaitingSequence());
-                    }else if(toPosition==i){
+                    } else if (toPosition == i) {
                         waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(fromPosition).getWaitingSequence());
-                    }else{
+                    } else {
                         waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(i).getWaitingSequence());
                     }
                     waitingListSequence.setWaitingId(String.valueOf(myItemAdapter.getAllItems().get(i).getWaitingId()));
@@ -276,13 +273,15 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         recyclerViewSwipeManager.attachRecyclerView(recyclerView);
         recyclerViewDragDropManager.attachRecyclerView(recyclerView);
 
+        if (myItemAdapter.getItemCount() == 0)
+            noRecords.setVisibility(View.VISIBLE);
+        else noRecords.setVisibility(View.GONE);
+
     }
 
     public static ViewAllPatientListFragment newInstance(Bundle bundle) {
         ViewAllPatientListFragment fragment = new ViewAllPatientListFragment();
-        args = new Bundle();
-        args = bundle;
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -317,17 +316,23 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             if (templateBaseModel.getCommon().isSuccess()) {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
                 myItemAdapter.removeItem(adapterPos);
+                waitingPatientTempList.getViewAll().remove(adapterPos);
+
+                // remove from original
+
+                if (myItemAdapter.getItemCount() == 0)
+                    noRecords.setVisibility(View.VISIBLE);
+                else noRecords.setVisibility(View.GONE);
+
             } else {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
-
             }
-        }else if (mOldDataTag.equals(RescribeConstants.TASK_DARG_DROP)) {
+        } else if (mOldDataTag.equals(RescribeConstants.TASK_DARG_DROP)) {
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
             if (templateBaseModel.getCommon().isSuccess()) {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
-
             }
         }
     }
@@ -409,6 +414,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         mAdapter.notifyItemInserted(position);
         recyclerView.scrollToPosition(position);
     }
+
     @NeedsPermission(Manifest.permission.CALL_PHONE)
     void doCallSupport() {
         callSupport(phoneNo);

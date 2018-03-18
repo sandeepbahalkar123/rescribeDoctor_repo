@@ -48,9 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp10"
                     android:visibility="visible"
-                    app:hintText="@string/search_hint">
-
-                </com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton>
+                    app:hintText="@string/search_hint"/>
 
                 <ImageView
                     android:id="@+id/whiteUnderLine"
@@ -93,8 +91,6 @@
             android:id="@+id/rightFab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginRight="@dimen/fab_margin"

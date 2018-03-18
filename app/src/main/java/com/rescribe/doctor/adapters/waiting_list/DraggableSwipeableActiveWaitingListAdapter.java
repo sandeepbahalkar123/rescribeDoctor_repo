@@ -210,6 +210,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
         return new MyViewHolder(v);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final AbstractDataProvider.Data item = mProvider.getItem(position);
@@ -328,7 +329,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
         move(fromPosition, toPosition);
         if (toPosition < mProvider.getCount()) {
-            Active active = mProvider.getItem(toPosition + 1).getActiveAll();
+            Active active = mProvider.getItem(toPosition).getActiveAll();
             if (active.getWaitingStatusId().equals(IN_QUEUE) || active.getWaitingStatusId().equals(CONFIRMED))
                 mEventListener.onItemMoved(fromPosition, toPosition);
             else
