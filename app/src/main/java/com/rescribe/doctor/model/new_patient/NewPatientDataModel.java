@@ -2,7 +2,7 @@
 package com.rescribe.doctor.model.new_patient;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
@@ -14,7 +14,7 @@ public class NewPatientDataModel implements Parcelable
 
     @SerializedName("newPatientsDetails")
     @Expose
-    private List<NewPatientsDetail> newPatientsDetails = new ArrayList<NewPatientsDetail>();
+    private ArrayList<NewPatientsDetail> newPatientsDetails = new ArrayList<NewPatientsDetail>();
     public final static Creator<NewPatientDataModel> CREATOR = new Creator<NewPatientDataModel>() {
 
 
@@ -39,11 +39,11 @@ public class NewPatientDataModel implements Parcelable
     public NewPatientDataModel() {
     }
 
-    public List<NewPatientsDetail> getNewPatientsDetails() {
+    public ArrayList<NewPatientsDetail> getNewPatientsDetails() {
         return newPatientsDetails;
     }
 
-    public void setNewPatientsDetails(List<NewPatientsDetail> newPatientsDetails) {
+    public void setNewPatientsDetails(ArrayList<NewPatientsDetail> newPatientsDetails) {
         this.newPatientsDetails = newPatientsDetails;
     }
 

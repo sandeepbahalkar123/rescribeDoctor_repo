@@ -67,6 +67,8 @@ public class AppointmentHelper implements ConnectionListener {
                     mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_COMPLETED_OPD)) {
                     mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
+                }else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_NEW_PATIENT_LIST)) {
+                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 }
                 break;
             case ConnectionListener.PARSE_ERR0R:
@@ -227,6 +229,18 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_COMPELTED_OPD_URL);
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_COMPLETED_OPD);
+    }
+
+    public void doGetNewPatientList(){
+        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_NEW_PATIENT_LIST, Request.Method.POST, true);
+        RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
+        mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+        mRequestAppointmentData.setDate(date);
+        mConnectionFactory.setPostParams(mRequestAppointmentData);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.GET_NEW_PATIENTS_URL);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_NEW_PATIENT_LIST);
     }
 
 }

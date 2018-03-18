@@ -6,15 +6,16 @@ import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
 
-public class NewPatientBaseModel implements Parcelable
+public class NewPatientBaseModel implements Parcelable,CustomResponse
 {
 
     @SerializedName("common")
     @Expose
     private Common common;
-    @SerializedName("newPatientDataModel")
+    @SerializedName("data")
     @Expose
     private NewPatientDataModel newPatientDataModel;
     public final static Creator<NewPatientBaseModel> CREATOR = new Creator<NewPatientBaseModel>() {

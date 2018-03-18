@@ -25,6 +25,7 @@ public class Config {
     public static final String CANCEL_OR_COMPLETE_APPOINTMENT = "api/patient/updateAppointmentStatus";
     public static final String DRAG_AND_DROP_API = "doctor/api/appointment/dragDropPatientWaiting";
     public static final String GET_COMPELTED_OPD_URL = "doctor/api/appointment/getCompletedOpd";
+    public static final String GET_NEW_PATIENTS_URL = "doctor/api/appointment/getNewPatients";
     public static boolean DEV_BUILD = true;
     //Declared all URL used in app here
 

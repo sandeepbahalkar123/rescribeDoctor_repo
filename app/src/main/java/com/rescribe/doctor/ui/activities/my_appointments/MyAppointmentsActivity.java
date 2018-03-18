@@ -48,7 +48,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by jeetal on 31/1/18.
  */
 @RuntimePermissions
-public class MyAppointmentsActivity extends AppCompatActivity implements HelperResponse, DrawerForMyAppointment.OnDrawerInteractionListener,DatePickerDialog.OnDateSetListener  {
+public class MyAppointmentsActivity extends AppCompatActivity implements HelperResponse, DrawerForMyAppointment.OnDrawerInteractionListener, DatePickerDialog.OnDateSetListener {
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -176,7 +176,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                 myAppointmentsBaseMainModel = (MyAppointmentsBaseModel) customResponse;
                 bundle = new Bundle();
                 bundle.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsBaseMainModel.getMyAppointmentsDataModel());
-                bundle.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED,true);
+                bundle.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, true);
                 mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
                 setUpNavigationDrawer();
@@ -241,8 +241,8 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.closeDrawer(GravityCompat.END);
         } else {
-            if(mMyAppointmentsFragment!=null)
-            isLongPressed = mMyAppointmentsFragment.callOnBackPressed();
+            if (mMyAppointmentsFragment != null)
+                isLongPressed = mMyAppointmentsFragment.callOnBackPressed();
             if (isLongPressed) {
                 mMyAppointmentsFragment.removeCheckBox();
             } else {
@@ -288,7 +288,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
             myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
             bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
-            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED,false);
+            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, false);
             mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
             getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
             setUpNavigationDrawer();
@@ -312,7 +312,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
             myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
             bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
-            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED,false);
+            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, false);
             mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
             getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
             setUpNavigationDrawer();
@@ -356,7 +356,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
             myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
             bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
-            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED,false);
+            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, false);
             mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
             getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
             setUpNavigationDrawer();
@@ -365,7 +365,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
             myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
             bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
-            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED,true);
+            bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, true);
             mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
             getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
             setUpNavigationDrawer();
@@ -391,28 +391,28 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
 
     private void callSupport(String phoneNo) {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:"+phoneNo));
+        callIntent.setData(Uri.parse("tel:" + phoneNo));
         startActivity(callIntent);
     }
 
 
     public void onRequestPermssionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-       MyAppointmentsActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        MyAppointmentsActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
-        int monthOfYearToShow = monthOfYear+1;
+        int monthOfYearToShow = monthOfYear + 1;
         mAppointmentHelper = new AppointmentHelper(this, this);
-        mAppointmentHelper.doGetAppointmentData(year+"-"+monthOfYearToShow+"-"+dayOfMonth);
+        mAppointmentHelper.doGetAppointmentData(year + "-" + monthOfYearToShow + "-" + dayOfMonth);
         dateTextview.setVisibility(View.VISIBLE);
-        String timeToShow = CommonMethods.formatDateTime(dayOfMonth+"-"+monthOfYearToShow+"-"+year, RescribeConstants.DATE_PATTERN.MMM_YY,
+        String timeToShow = CommonMethods.formatDateTime(dayOfMonth + "-" + monthOfYearToShow + "-" + year, RescribeConstants.DATE_PATTERN.MMM_YY,
                 RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE).toLowerCase();
         String[] timeToShowSpilt = timeToShow.split(",");
         month = timeToShowSpilt[0].substring(0, 1).toUpperCase() + timeToShowSpilt[0].substring(1);
         mYear = timeToShowSpilt.length == 2 ? timeToShowSpilt[1] : "";
-        Date date = CommonMethods.convertStringToDate(dayOfMonth+"-"+monthOfYearToShow+"-"+year, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
+        Date date = CommonMethods.convertStringToDate(dayOfMonth + "-" + monthOfYearToShow + "-" + year, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         timeToShow = timeToShow.substring(0, 1).toUpperCase() + timeToShow.substring(1);

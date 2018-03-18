@@ -51,6 +51,7 @@ import com.rescribe.doctor.ui.activities.dashboard.SettingsActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
+import com.rescribe.doctor.ui.activities.new_patient.NewPatientActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -604,8 +605,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 }
                 break;
             case R.id.todayNewPatient:
-                /*Intent todayNewPatient = new Intent(this, CompletedOpdActivity.class);
-                startActivity(todayNewPatient);*/
+                Intent todayNewPatient = new Intent(this, NewPatientActivity.class);
+                startActivity(todayNewPatient);
                 break;
         }
     }

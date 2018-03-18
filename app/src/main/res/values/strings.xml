@@ -228,6 +228,7 @@
     <string name="completed_opd">Completed Opd</string>
     <string name="consultation">Consultation</string>
     <string name="follow_up">Follow Up</string>
+    <string name="new_patients">New Patients</string>
 
 
 </resources>
