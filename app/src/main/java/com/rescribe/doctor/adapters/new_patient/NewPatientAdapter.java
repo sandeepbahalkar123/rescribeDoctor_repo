@@ -40,6 +40,8 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+
 /**
  * Created by jeetal on 17/3/18.
  */
@@ -51,14 +53,13 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
     private ArrayList<NewPatientsDetail> mOriginalPatientList;
     public boolean isLongPressed;
     private NewPatientAdapter.OnDownArrowClicked mOnDownArrowClicked;
-    private boolean isClickOnPatientDetailsRequired;
+
 
     public NewPatientAdapter(Context mContext, ArrayList<NewPatientsDetail> dataList, NewPatientAdapter.OnDownArrowClicked mOnDownArrowClicked) {
         this.mDataList = new ArrayList<>(dataList);
         this.mOriginalPatientList = new ArrayList<>(dataList);
         this.mContext = mContext;
         this.mOnDownArrowClicked = mOnDownArrowClicked;
-        this.isClickOnPatientDetailsRequired = isClickOnPatientDetailsRequired;
     }
 
     @Override
@@ -72,15 +73,10 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
     @Override
     public void onBindViewHolder(final NewPatientAdapter.ListViewHolder holder, final int position) {
         final NewPatientsDetail patientObject = mDataList.get(position);
-        holder.opdTypeTextView.setVisibility(View.GONE);
+        holder.opdTypeTextView.setVisibility(View.VISIBLE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
-        holder.patientClinicAddress.setText(patientObject.getPatientCity());
-        String patientName = "";
-
-      /*  if (patientObject.getSalutation().equals(0))
-            patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
-        else patientName = toCamelCase(patientObject.getPatientName());
-*/
+        String patientName = toCamelCase(patientObject.getPatientName());
+        holder.chatImageView.setVisibility(View.GONE);
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName
             if (patientObject.getPatientName().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
@@ -163,7 +159,7 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
 
         }
-        holder.chatImageView.setVisibility(View.VISIBLE);
+
         TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, patientObject.getPatientName());
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
@@ -201,7 +197,7 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
         holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString(), isClickOnPatientDetailsRequired);
+                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString());
             }
         });
 
@@ -317,7 +313,7 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
 
                         if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
                                 || patientListObject.getPatientPhon().contains(charString)
-                                || String.valueOf(patientListObject.getPatientID()).contains(charString)) {
+                                || String.valueOf(patientListObject.getHospitalPatId()).contains(charString)) {
                             //--------
                             patientListObject.setSpannableString(charString);
                             mListToShowAfterFilter.add(patientListObject);
@@ -351,7 +347,7 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
 
         void onCheckUncheckRemoveSelectAllSelection(boolean ischecked, NewPatientsDetail patientObject);
 
-        void onClickOfPatientDetails(NewPatientsDetail patientListObject, String text, boolean isClickOnPatientDetailsRequired);
+        void onClickOfPatientDetails(NewPatientsDetail patientListObject, String text);
         void onPhoneNoClick(String patientPhone);
 
     }
