@@ -72,7 +72,7 @@ public class CommonMethods {
         if (input == null)
             return "null";
 
-        if(!input.equals("")) {
+        if (!input.equals("")) {
             StringBuilder result = new StringBuilder();
             char firstChar = input.charAt(0);
             result.append(Character.toUpperCase(firstChar));
@@ -85,7 +85,7 @@ public class CommonMethods {
                     result.append(Character.toLowerCase(currentChar));
             }
             return result.toString();
-        }else{
+        } else {
             return input;
         }
     }
@@ -120,6 +120,7 @@ public class CommonMethods {
             Log.d(TAG, "null snacbar view" + msg);
         }
     }
+
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
@@ -139,6 +140,7 @@ public class CommonMethods {
         listView.setLayoutParams(params);
         listView.requestLayout();
     }
+
     public static int getVitalIcons(String vitalDetailName) {
 
         // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
@@ -190,6 +192,7 @@ public class CommonMethods {
 
         return abbreviation;
     }
+
     public static int getCaseStudyIcons(String caseStudyName) {
 
         // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
@@ -300,7 +303,8 @@ public class CommonMethods {
         group.setBackgroundColor(mContext.getResources().getColor(R.color.errorColor));
         snack.show();
     }
-    public static DateTime convertToDateTime(String stringToConvert){
+
+    public static DateTime convertToDateTime(String stringToConvert) {
         String[] newStringArray = convertStringToArray(stringToConvert);
         int year = Integer.parseInt(newStringArray[2].trim());
         int day = Integer.parseInt(newStringArray[0].trim());
@@ -309,7 +313,8 @@ public class CommonMethods {
         DateTime firstDateTime = mLocalDate.toDateTime(LocalTime.fromDateFields(mLocalDate.toDate()));
         return firstDateTime;
     }
-    public static String[] convertStringToArray(String stringToConvert){
+
+    public static String[] convertStringToArray(String stringToConvert) {
         String[] newStringArray = stringToConvert.split("-");
         return newStringArray;
     }
@@ -383,6 +388,10 @@ public class CommonMethods {
         Date date = new Date(cal.getTimeInMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat(inFormat, Locale.US);
         return dateFormat.format(date);
+    }
+
+    public static String stripExtension(final String s) {
+        return s != null && s.lastIndexOf(".") > 0 ? s.substring(0, s.lastIndexOf(".")) : s;
     }
 
     public static String getDayFromDateTime(String dateText, String originalDateFormat, String expectedDateFormat, String expectedTimeFromat) {

@@ -18,6 +18,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
@@ -32,15 +33,18 @@ import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.rescribe.doctor.util.CommonMethods.stripExtension;
 
 public class SingleVisitAdapter extends BaseExpandableListAdapter {
     private int mPosition = 0;
     private Context mContext;
 
     private static final String CHILD_TYPE_VITALS = "vitals";
-    private static final String CHILD_TYPE_ATTACHMENTS = "attachments";
+    public static final String CHILD_TYPE_ATTACHMENTS = "attachments";
     private static final String CHILD_TYPE_ALLERGIES = "allergies";
     private static final String CHILD_TYPE_PRESCRIPTIONS = "prescriptions";
 
@@ -297,7 +301,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             ImageView attachmentImage = (ImageView) item.findViewById(R.id.attachmentImage);
             TextView titleText = (TextView) item.findViewById(R.id.titleText);
 
-            titleText.setText(attachments.get(i).getName());
+            titleText.setText(stripExtension(attachments.get(i).getName()));
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.dontAnimate();
@@ -548,6 +552,13 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                             groupViewHolder.mDetailFirstPoint.setText(mVisitDetailList.get(0).getName() + "...");
 
                         }
+                } else if (mListDataHeader.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_ATTACHMENTS)) {
+
+                    String text = stripExtension(mVisitDetailList.get(0).getName());
+                    if (text.length() > TEXT_LIMIT)
+                        groupViewHolder.mDetailFirstPoint.setText(text.substring(0, TEXT_LIMIT - 1) + "...");
+                    else groupViewHolder.mDetailFirstPoint.setText(text);
+
                 } else if (mVisitDetailList.size() > 1) {
                     groupViewHolder.mDetailFirstPoint.setText(mVisitDetailList.get(0).getName() + "...");
                 } else {
@@ -671,7 +682,6 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                             String finalString = getSortedRangeValues(rangeList.get(i).getCategory(), rangeList.get(i).getOperator(), rangeList.get(i).getValue(), rangeList.get(i).getMin(), rangeList.get(i).getMax());
                             severe += ", " + finalString;
                             severeBpMaxRange.setText(severe);
-
                         }
                     }
                 } else if (rangeList.get(i).getNameOfVital().equalsIgnoreCase(context.getString(R.string.bp_min))) {
@@ -739,7 +749,6 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                         String finalString = getSortedRangeValues(rangeList.get(i).getCategory(), rangeList.get(i).getOperator(), rangeList.get(i).getValue(), rangeList.get(i).getMin(), rangeList.get(i).getMax());
                         severeBpmin += ", " + finalString;
                         severeRange.setText(severeBpmin);
-
                     }
                 }
             }
