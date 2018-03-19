@@ -50,17 +50,20 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
-    <style name="SpinnerTheme" parent="android:Widget.Spinner">
+    <style name="SpinnerTheme" parent="android:Widget.DeviceDefault.DropDownItem.Spinner">
         <item name="android:background">@drawable/spinner_bg</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:popupBackground">@drawable/curve_white_back</item>
+        <item name="android:popupElevation">0dp</item>
+        <item name="android:popupBackground">@drawable/location_spinner_border</item>
     </style>
-    <style name="SpinnerThemeProfile" parent="android:Widget.Spinner">
+    <style name="SpinnerThemeProfile" parent="android:Widget.DeviceDefault.DropDownItem.Spinner">
         <item name="android:background">@drawable/spinner_bg_profile</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:popupBackground">@color/white</item>
+        <item name="android:popupElevation">0dp</item>
+        <item name="android:popupBackground">@drawable/location_spinner_border</item>
+
     </style>
 
 

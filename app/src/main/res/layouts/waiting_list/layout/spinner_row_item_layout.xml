@@ -3,21 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_marginStart="@dimen/dp8"
-    android:layout_width="wrap_content"
+    android:layout_marginStart="@dimen/dp4"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/dp8">
+    android:layout_marginEnd="@dimen/dp4">
     <RelativeLayout
         android:padding="@dimen/dp8"
         android:id="@+id/hospitalDetailsLinearLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.rescribe.doctor.ui.customesViews.CircularImageView
             android:id="@+id/bulletImageView"
             android:layout_width="@dimen/dp8"
             android:layout_height="@dimen/dp8"
-            android:layout_margin="@dimen/dp10"
+            android:layout_marginRight="@dimen/dp8"
+            android:layout_marginTop="@dimen/dp6"
+            android:layout_marginBottom="@dimen/dp6"
             android:background="@drawable/circular_bullet" />
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -34,7 +36,7 @@
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/clinicAddress"
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:paddingTop="@dimen/dp3"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
