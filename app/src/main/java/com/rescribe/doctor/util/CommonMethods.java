@@ -207,27 +207,27 @@ public class CommonMethods {
         else if (caseStudyName.contains("investigation"))
             abbreviation = R.drawable.investigations;
         else if (caseStudyName.contains("advice"))
-            abbreviation = R.drawable.advice; // not found
+            abbreviation = R.drawable.advice;
         else if (caseStudyName.contains("treatment plan"))
-            abbreviation = R.drawable.treatment_plan; // not found
+            abbreviation = R.drawable.treatment_plan;
         else if (caseStudyName.contains("surgery"))
-            abbreviation = R.drawable.surgery; // not found
+            abbreviation = R.drawable.surgery;
         else if (caseStudyName.contains("vaccination"))
-            abbreviation = R.drawable.vaccination; // not found
+            abbreviation = R.drawable.vaccination;
         else if (caseStudyName.contains("general precaution"))
-            abbreviation = R.drawable.generalprecautions; // not found
+            abbreviation = R.drawable.generalprecautions;
         else if (caseStudyName.contains("pre-operative precaution"))
-            abbreviation = R.drawable.preoperativeprecautions; // not found
+            abbreviation = R.drawable.preoperativeprecautions;
         else if (caseStudyName.contains("post-operative care"))
-            abbreviation = R.drawable.postoperativecare; // not found
-        else if (caseStudyName.contains("pain score"))
-            abbreviation = R.drawable.painscore; // not found
+            abbreviation = R.drawable.postoperativecare;
+        else if (caseStudyName.contains("pain score")|| caseStudyName.contains("pain scale"))
+            abbreviation = R.drawable.painscore;
         else if (caseStudyName.contains("exercise"))
-            abbreviation = R.drawable.exercise; // not found
+            abbreviation = R.drawable.exercise;
         else if (caseStudyName.contains("finding"))
-            abbreviation = R.drawable.finding; // not found
+            abbreviation = R.drawable.finding;
         else if (caseStudyName.contains("allergie"))
-            abbreviation = R.drawable.allergy; // not found
+            abbreviation = R.drawable.allergy;
 
         return abbreviation;
     }

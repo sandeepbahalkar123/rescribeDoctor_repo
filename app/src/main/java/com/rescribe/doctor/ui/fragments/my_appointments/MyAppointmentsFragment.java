@@ -186,8 +186,13 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                             mAppointListForBookAndConfirm.get(i).setPatientHeader(mPatientLists.get(0));
                         }
                     }
-                    mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointListForBookAndConfirm, this);
-                    expandableListView.setAdapter(mAppointmentAdapter);
+                    if(!mAppointListForBookAndConfirm.isEmpty()) {
+                        mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointListForBookAndConfirm, this);
+                        expandableListView.setAdapter(mAppointmentAdapter);
+                    }else{
+                        expandableListView.setVisibility(View.GONE);
+                        emptyListView.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointmentList, this);
                     expandableListView.setAdapter(mAppointmentAdapter);
@@ -573,58 +578,6 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
     }
 
-    /*private void showDialogToSelectLocation(ArrayList<DoctorLocationModel> mPatientListsOriginal) {
-        final Dialog dialog = new Dialog(getActivity());
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
-        dialog.setCancelable(true);
-
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-
-        RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
-        for (int index = 0; index < mPatientListsOriginal.size(); index++) {
-            final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
-
-            RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
-            radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
-            radioButton.setId(CommonMethods.generateViewId());
-            radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mLocationId = clinicList.getLocationId();
-                }
-            });
-            radioGroup.addView(radioButton);
-        }
-
-        TextView okButton = (TextView) dialog.findViewById(R.id.okButton);
-        okButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (mLocationId != 0) {
-                    callWaitingListApi();
-                    dialog.cancel();
-                } else
-                    Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.gravity = Gravity.CENTER;
-        dialog.getWindow().setAttributes(lp);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
-
-    }
-*/
     private void callWaitingListApi() {
         RequestToAddWaitingList requestForWaitingListPatients = new RequestToAddWaitingList();
         requestForWaitingListPatients.setAddToList(addToArrayList);
@@ -672,31 +625,6 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             if (mAddToWaitingListBaseModel.getCommon().isSuccess()) {
 
                 showDialogForWaitingStatus(mAddToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse());
-               /* if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.all_patients_exists).toLowerCase())) {
-                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
-                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase())) {
-                    Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
-                    intent.putExtra(LOCATION_ID, mLocationId);
-                    startActivity(intent);
-                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
-                    getActivity().finish();
-                    getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
-                    mAppointmentAdapter.setLongPressed(false);
-                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.patient_limit_exceeded).toLowerCase())) {
-                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
-
-                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.already_exists_in_waiting_list).toLowerCase())) {
-                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
-
-                } else if (templateBaseModel.getCommon().getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
-                    Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
-                    intent.putExtra(LOCATION_ID, mLocationId);
-                    startActivity(intent);
-                    Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
-                    getActivity().finish();
-                    getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
-                    mAppointmentAdapter.setLongPressed(false);
-                }*/
             }
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE)) {
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
@@ -707,22 +635,28 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                     if (templateBaseModel.getCommon().getStatusMessage().equalsIgnoreCase(getString(R.string.appointment_completed))) {
                         mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Completed");
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(0).setAppointmentStatus("Completed");
+                        mAppointmentListOfAdapter.get(groupPos).getPatientList().get(0).setAddedToWaiting(0);
                     } else if (templateBaseModel.getCommon().getStatusMessage().equalsIgnoreCase(getString(R.string.appointment_cancelled))) {
                         mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Cancelled");
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(0).setAppointmentStatus("Cancelled");
+                        mAppointmentListOfAdapter.get(groupPos).getPatientList().get(0).setAddedToWaiting(0);
                     }
 
                 } else {
                     if (templateBaseModel.getCommon().getStatusMessage().equalsIgnoreCase(getString(R.string.appointment_completed))) {
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAppointmentStatus("Completed");
+                        mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAddedToWaiting(0);
                         if (childPos == 0) {
                             mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Completed");
+                            mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAddedToWaiting(0);
 
                         }
                     } else if (templateBaseModel.getCommon().getStatusMessage().equalsIgnoreCase(getString(R.string.appointment_cancelled))) {
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAppointmentStatus("Cancelled");
+                        mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAddedToWaiting(0);
                         if (childPos == 0) {
                             mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Cancelled");
+                            mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAddedToWaiting(0);
 
                         }
                     }

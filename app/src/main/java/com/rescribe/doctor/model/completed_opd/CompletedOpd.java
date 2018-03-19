@@ -13,16 +13,16 @@ public class CompletedOpd implements Parcelable
     @SerializedName("salutation")
     @Expose
     private Integer salutation;
-    @SerializedName("patientID")
+    @SerializedName("patientId")
     @Expose
     private Integer patientID;
-    @SerializedName("patient_name")
+    @SerializedName("patientName")
     @Expose
     private String patientName;
-    @SerializedName("patient_gender")
+    @SerializedName("gender")
     @Expose
     private String patientGender;
-    @SerializedName("patient_phon")
+    @SerializedName("patientPhone")
     @Expose
     private String patientPhon;
     @SerializedName("age")
@@ -37,25 +37,22 @@ public class CompletedOpd implements Parcelable
     @SerializedName("patient_city")
     @Expose
     private String patientCity;
-    @SerializedName("profilePhoto")
+    @SerializedName("patientImageUrl")
     @Expose
     private String profilePhoto;
-    @SerializedName("patient_email")
+    @SerializedName("patientEmail")
     @Expose
     private String patientEmail;
-    @SerializedName("outstanding_amount")
+    @SerializedName("outstandingAmount")
     @Expose
     private Integer outstandingAmount;
-    @SerializedName("city_name")
+    @SerializedName("patientCity")
     @Expose
     private String cityName;
-    @SerializedName("hospital_name")
-    @Expose
-    private String hospitalName;
-    @SerializedName("hospital_pat_id")
+    @SerializedName("hospitalPatId")
     @Expose
     private Integer hospitalPatId;
-    @SerializedName("Opdid")
+    @SerializedName("opdId")
     @Expose
     private Integer opdid;
     @SerializedName("opdFollowUpStatus")
@@ -94,7 +91,6 @@ public class CompletedOpd implements Parcelable
         this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
         this.outstandingAmount = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.cityName = ((String) in.readValue((String.class.getClassLoader())));
-        this.hospitalName = ((String) in.readValue((String.class.getClassLoader())));
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.opdid = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.opdFollowUpStatus = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -224,14 +220,6 @@ public class CompletedOpd implements Parcelable
         this.cityName = cityName;
     }
 
-    public String getHospitalName() {
-        return hospitalName;
-    }
-
-    public void setHospitalName(String hospitalName) {
-        this.hospitalName = hospitalName;
-    }
-
     public Integer getHospitalPatId() {
         return hospitalPatId;
     }
@@ -270,7 +258,6 @@ public class CompletedOpd implements Parcelable
         dest.writeValue(patientEmail);
         dest.writeValue(outstandingAmount);
         dest.writeValue(cityName);
-        dest.writeValue(hospitalName);
         dest.writeValue(hospitalPatId);
         dest.writeValue(opdid);
         dest.writeValue(opdFollowUpStatus);

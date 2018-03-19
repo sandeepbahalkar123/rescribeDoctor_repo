@@ -176,11 +176,14 @@ public class RescribeConstants {
     public static final float ZOOM_CAMERA_VALUE = 7.0f;
     public static final String COMPLETE_OPD = "complete_opd";
     public static final String NOT_FROM_COMPLETE_OPD = "not_complete_opd";
+    public static final String FORGOT_PASSWORD_URL = "https://drrescribe.com/app.html#/access/forgotPassword";
+    public static final String PATIENT_DETAILS = "patient_details";
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
 
-    public static final String[] SALUTATION = {"Mr. ", "Mrs. ", "Miss ", ""};
+    public static final String[] SALUTATION = {"Mr. ", "M" +
+            "rs. ", "Miss. ", ""};
     public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};
 
     public interface USER_STATUS {

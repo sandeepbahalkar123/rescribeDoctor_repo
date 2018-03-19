@@ -30,14 +30,14 @@ import butterknife.ButterKnife;
 
 public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecordsAdapter.FileViewHolder> {
 
-    private final ArrayList<Image> paths;
-    private final Context context;
-    private int imageSize;
+    private final ArrayList<Image> mPaths;
+    private final Context mContext;
+    private int mImageSize;
     private OnClickOfComponentsOnSelectedPhoto mOnClickOfComponentsOnSelectedPhoto;
 
     public SelectedRecordsAdapter(Context context, ArrayList<Image> paths, OnClickOfComponentsOnSelectedPhoto mOnClickOfComponentsOnSelectedPhoto) {
-        this.context = context;
-        this.paths = paths;
+        this.mContext = context;
+        this.mPaths = paths;
         this.mOnClickOfComponentsOnSelectedPhoto = mOnClickOfComponentsOnSelectedPhoto;
         setColumnNumber(context, 2);
     }
@@ -47,29 +47,29 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
         DisplayMetrics metrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metrics);
         int widthPixels = metrics.widthPixels;
-        imageSize = (widthPixels / columnNum) - context.getResources().getDimensionPixelSize(R.dimen.dp30);
+        mImageSize = (widthPixels / columnNum) - context.getResources().getDimensionPixelSize(R.dimen.dp30);
     }
 
     @Override
     public FileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context)
+        View view = LayoutInflater.from(mContext)
                 .inflate(R.layout.selected_records_item_layout, parent, false);
         return new FileViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final FileViewHolder holder, final int position) {
-        final Image image = paths.get(position);
+        final Image image = mPaths.get(position);
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
         requestOptions.skipMemoryCache(true);
-        requestOptions.override(imageSize, imageSize);
+        requestOptions.override(mImageSize, mImageSize);
         requestOptions.error(R.drawable.ic_file);
         requestOptions.placeholder(R.drawable.ic_file);
 
-        Glide.with(context)
+        Glide.with(mContext)
                 .load(new File(image.getImagePath()))
                 .apply(requestOptions).thumbnail(0.5f)
                 .into(holder.ivPhoto);
@@ -143,7 +143,7 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
 
     @Override
     public int getItemCount() {
-        return paths.size();
+        return mPaths.size();
     }
 
     static class FileViewHolder extends RecyclerView.ViewHolder {
@@ -169,7 +169,7 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
     }
 
     public ArrayList<Image> getAdapterList() {
-        return paths;
+        return mPaths;
     }
 
     public interface OnClickOfComponentsOnSelectedPhoto {

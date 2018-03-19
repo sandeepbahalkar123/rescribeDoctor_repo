@@ -24,22 +24,22 @@ public class DoctorSpinnerAdapter extends ArrayAdapter<SpinnerDoctor> {
 
     Context mContext;
     private List<SpinnerDoctor> items;
-    private ArrayList<SpinnerDoctor> tempItems;
-    private ArrayList<SpinnerDoctor> suggestions;
-    private TextEnterListener textEnterListener;
+    private ArrayList<SpinnerDoctor> mTempItems;
+    private ArrayList<SpinnerDoctor> mSuggestions;
+    private TextEnterListener mTextEnterListener;
     private ColorGenerator mColorGenerator;
-    private String doctorName;
+    private String mDoctorName;
 
     public DoctorSpinnerAdapter(Context context, int resource, int textViewResourceId, ArrayList<SpinnerDoctor> items) {
         super(context, resource, textViewResourceId, items);
         this.mContext = context;
         this.items = items;
-        tempItems = new ArrayList<SpinnerDoctor>(items); // this makes the difference.
-        suggestions = new ArrayList<SpinnerDoctor>();
+        mTempItems = new ArrayList<SpinnerDoctor>(items); // this makes the difference.
+        mSuggestions = new ArrayList<SpinnerDoctor>();
         mColorGenerator = ColorGenerator.MATERIAL;
 
         try {
-            this.textEnterListener = ((TextEnterListener) context);
+            this.mTextEnterListener = ((TextEnterListener) context);
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement TextEnterListener.");
         }
@@ -62,12 +62,12 @@ public class DoctorSpinnerAdapter extends ArrayAdapter<SpinnerDoctor> {
             TextView doctorAddress = (TextView) view.findViewById(R.id.doctorAddress);
 
             if(doctor_details.getDoctorName().contains("Dr. ")){
-                doctorName = doctor_details.getDoctorName();
+                mDoctorName = doctor_details.getDoctorName();
             }else{
-                doctorName = "Dr. " + doctor_details.getDoctorName();
+                mDoctorName = "Dr. " + doctor_details.getDoctorName();
             }
             if (lblName != null)
-                lblName.setText(doctorName);
+                lblName.setText(mDoctorName);
             doctorSpecialist.setText(doctor_details.getSpecialization());
             doctorAddress.setText(doctor_details.getAddress());
             int color2 = mColorGenerator.getColor(doctor_details.getDoctorName());
@@ -101,7 +101,7 @@ public class DoctorSpinnerAdapter extends ArrayAdapter<SpinnerDoctor> {
     }
 
     /**
-     * Custom Filter implementation for custom suggestions we provide.
+     * Custom Filter implementation for custom mSuggestions we provide.
      */
     private Filter nameFilter = new Filter() {
         @Override
@@ -112,15 +112,15 @@ public class DoctorSpinnerAdapter extends ArrayAdapter<SpinnerDoctor> {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             if (constraint != null) {
-                suggestions.clear();
-                for (SpinnerDoctor doctor_details : tempItems) {
+                mSuggestions.clear();
+                for (SpinnerDoctor doctor_details : mTempItems) {
                     if (doctor_details.getDoctorName().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                        suggestions.add(doctor_details);
+                        mSuggestions.add(doctor_details);
                     }
                 }
                 FilterResults filterResults = new FilterResults();
-                filterResults.values = suggestions;
-                filterResults.count = suggestions.size();
+                filterResults.values = mSuggestions;
+                filterResults.count = mSuggestions.size();
                 return filterResults;
             } else {
                 return new FilterResults();
@@ -137,12 +137,12 @@ public class DoctorSpinnerAdapter extends ArrayAdapter<SpinnerDoctor> {
                     notifyDataSetChanged();
                 }
             }
-            textEnterListener.onTextEnter(constraint != null && constraint.length() > 0);
+            mTextEnterListener.onTextEnter(constraint != null && constraint.length() > 0);
         }
     };
 
     public SpinnerDoctor getDoctor(int position) {
-        return suggestions.get(position);
+        return mSuggestions.get(position);
     }
 
     public interface TextEnterListener {

@@ -231,7 +231,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                             }
                         } else {
                             Vital vital = new Vital();
-                            vital.setUnitName(vitalList.get(j).getUnitName());
+                            vital.setUnitName(vitalList.get(j).getDisplayName());
                             vital.setUnitValue(vitalList.get(j).getUnitValue());
                             vital.setCategory(vitalList.get(j).getCategory());
                             vital.setRanges(vitalList.get(j).getRanges());
@@ -254,6 +254,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                             vitalSortedList.add(vital);
                         } else {
                             vital = vitalList.get(j);
+                            vital.setUnitName(vitalList.get(j).getDisplayName());
                             vitalSortedList.add(vital);
                         }
                     }

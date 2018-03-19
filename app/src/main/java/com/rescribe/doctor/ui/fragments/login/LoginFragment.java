@@ -23,6 +23,7 @@ import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.AppGlobalContainerActivity;
+import com.rescribe.doctor.ui.activities.ForgotPasswordWebViewActivity;
 import com.rescribe.doctor.ui.activities.HomePageActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -125,14 +126,10 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 }
                 break;
             case R.id.forgotPasswordView:
-                // on click of forgotPassword
-                Uri uri = Uri.parse("https://drrescribe.com/app.html#/access/forgotPassword"); // missing 'http://' will cause crashed
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+                Intent intent = new Intent(getActivity(), ForgotPasswordWebViewActivity.class);
                 startActivity(intent);
-              /*  Intent intentObj = new Intent(getActivity(), AppGlobalContainerActivity.class);
-                intentObj.putExtra(getString(R.string.type), getString(R.string.forgot_password));
-                intentObj.putExtra(getString(R.string.title), getString(R.string.forgot_password_header));
-                startActivity(intentObj);*/
+
                 break;
             case R.id.signup:
                 //on click of signup , Signup fragment is loaded here.

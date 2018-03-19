@@ -43,6 +43,7 @@ import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryDataModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
@@ -272,17 +273,25 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         dialog.setCancelable(true);
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
-
+        if(!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
+            mLocationId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity());
         RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
         for (int index = 0; index < mPatientListsOriginal.size(); index++) {
             final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
 
             RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
+
+            if (mLocationId.equals(String.valueOf(clinicList.getLocationId()))) {
+                mHospitalId = String.valueOf(clinicList.getClinicId());
+                radioButton.setChecked(true);
+            }else{
+                radioButton.setChecked(false);
+            }
             radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
             radioButton.setId(CommonMethods.generateViewId());
-            radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                public void onClick(View view) {
                     mLocationId = String.valueOf(clinicList.getLocationId());
                     mHospitalId = String.valueOf(clinicList.getClinicId());
                 }
@@ -322,6 +331,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     }
 
     private void callAddRecordsActivity(String mLocationId, String mHospitalId, int year, int monthOfYear, int dayOfMonth) {
+        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, String.valueOf(mLocationId), getActivity());
         Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
         intent.putExtra(RescribeConstants.OPD_ID, "0");
         intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
@@ -428,17 +438,18 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             mYearSpinnerView.setVisibility(View.GONE);
             mTabLayout.setVisibility(View.GONE);
         } else {
+            mYearList = dataModel.getUniqueYears();
             noRecords.setVisibility(View.GONE);
-            mYearSpinnerView.setVisibility(View.VISIBLE);
             mTabLayout.setVisibility(View.VISIBLE);
-            if (mYearList.size() == 1) {
-                mYearSpinnerView.setVisibility(View.GONE);
-                mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
-                mYearSpinnerSingleItem.setText(mYearList.get(0));
-            } else {
-                mYearSpinnerView.setVisibility(View.VISIBLE);
-                mYearSpinnerSingleItem.setVisibility(View.GONE);
-
+            if(mYearList.size()>0) {
+                if (mYearList.size() == 1) {
+                    mYearSpinnerView.setVisibility(View.GONE);
+                    mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
+                    mYearSpinnerSingleItem.setText(mYearList.get(0));
+                } else {
+                    mYearSpinnerView.setVisibility(View.VISIBLE);
+                    mYearSpinnerSingleItem.setVisibility(View.GONE);
+                }
             }
 
             if (mTabLayout != null) {

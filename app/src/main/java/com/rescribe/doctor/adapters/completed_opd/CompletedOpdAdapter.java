@@ -17,6 +17,7 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -29,10 +30,13 @@ import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -71,13 +75,16 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
         final CompletedOpd patientObject = mDataList.get(position);
         holder.opdTypeTextView.setVisibility(View.VISIBLE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
-        if(patientObject.getOpdFollowUpStatus().equals(0)) {
+        if (patientObject.getOpdFollowUpStatus().equals(0)) {
             holder.opdTypeTextView.setText(mContext.getString(R.string.consultation));
-        }else{
+        } else {
             holder.opdTypeTextView.setText(mContext.getString(R.string.follow_up));
         }
         String patientName = toCamelCase(patientObject.getPatientName());
-          holder.chatImageView.setVisibility(View.GONE);
+        if (patientObject.getSalutation() != 0)
+            patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
+        else patientName = toCamelCase(patientObject.getPatientName());
+        holder.chatImageView.setVisibility(View.GONE);
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName
             if (patientObject.getPatientName().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
@@ -186,15 +193,6 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
             holder.checkbox.setVisibility(View.VISIBLE);
         else holder.checkbox.setVisibility(View.GONE);
 
-        holder.patientDetailsClickLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                isLongPressed = !isLongPressed;
-                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed, position);
-                notifyDataSetChanged();
-                return false;
-            }
-        });
         holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,19 +200,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
             }
         });
 
-        holder.chatImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, ChatActivity.class);
-                PatientData doctorConnectChatModel = new PatientData();
-                doctorConnectChatModel.setId(patientObject.getPatientId());
-                doctorConnectChatModel.setImageUrl(patientObject.getProfilePhoto());
-                doctorConnectChatModel.setPatientName(patientObject.getPatientName());
-                intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
-                ((Activity) mContext).startActivityForResult(intent, Activity.RESULT_OK);
 
-            }
-        });
         holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -349,10 +335,10 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
         void onCheckUncheckRemoveSelectAllSelection(boolean ischecked, CompletedOpd patientObject);
 
         void onClickOfPatientDetails(CompletedOpd patientListObject, String text);
+
         void onPhoneNoClick(String patientPhone);
 
     }
-
 
 
 }

@@ -3,7 +3,6 @@ package com.rescribe.doctor.model.new_patient;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -12,17 +11,17 @@ public class NewPatientsDetail implements Parcelable
 
     @SerializedName("salutation")
     @Expose
-    private String salutation;
-    @SerializedName("patientID")
+    private Integer salutation;
+    @SerializedName("patientId")
     @Expose
     private Integer patientID;
-    @SerializedName("patient_name")
+    @SerializedName("patientName")
     @Expose
     private String patientName;
-    @SerializedName("patient_gender")
+    @SerializedName("gender")
     @Expose
     private String patientGender;
-    @SerializedName("patient_phon")
+    @SerializedName("patientPhone")
     @Expose
     private String patientPhon;
     @SerializedName("age")
@@ -31,25 +30,20 @@ public class NewPatientsDetail implements Parcelable
     @SerializedName("patientDob")
     @Expose
     private String patientDob;
-    @SerializedName("blood_group")
-    @Expose
-    private String bloodGroup;
-    @SerializedName("patient_city")
-    @Expose
-    private String patientCity;
-    @SerializedName("profilePhoto")
+
+    @SerializedName("patientImageUrl")
     @Expose
     private String profilePhoto;
-    @SerializedName("patient_email")
+    @SerializedName("patientEmail")
     @Expose
     private String patientEmail;
-    @SerializedName("outstanding_amount")
+    @SerializedName("outstandingAmount")
     @Expose
     private String outstandingAmount;
-    @SerializedName("city_name")
+    @SerializedName("patientCity")
     @Expose
     private String cityName;
-    @SerializedName("hospital_pat_id")
+    @SerializedName("hospitalPatId")
     @Expose
     private Integer hospitalPatId;
     private String spannableString;
@@ -72,15 +66,13 @@ public class NewPatientsDetail implements Parcelable
     ;
 
     protected NewPatientsDetail(Parcel in) {
-        this.salutation = ((String) in.readValue((String.class.getClassLoader())));
+        this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientID = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientName = ((String) in.readValue((String.class.getClassLoader())));
         this.patientGender = ((String) in.readValue((String.class.getClassLoader())));
         this.patientPhon = ((String) in.readValue((String.class.getClassLoader())));
         this.age = ((String) in.readValue((String.class.getClassLoader())));
         this.patientDob = ((String) in.readValue((String.class.getClassLoader())));
-        this.bloodGroup = ((String) in.readValue((String.class.getClassLoader())));
-        this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
         this.profilePhoto = ((String) in.readValue((String.class.getClassLoader())));
         this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
         this.outstandingAmount = ((String) in.readValue((String.class.getClassLoader())));
@@ -107,11 +99,11 @@ public class NewPatientsDetail implements Parcelable
         this.selected = selected;
     }
 
-    public String getSalutation() {
+    public Integer getSalutation() {
         return salutation;
     }
 
-    public void setSalutation(String salutation) {
+    public void setSalutation(Integer salutation) {
         this.salutation = salutation;
     }
 
@@ -163,22 +155,6 @@ public class NewPatientsDetail implements Parcelable
         this.patientDob = patientDob;
     }
 
-    public String getBloodGroup() {
-        return bloodGroup;
-    }
-
-    public void setBloodGroup(String bloodGroup) {
-        this.bloodGroup = bloodGroup;
-    }
-
-    public String getPatientCity() {
-        return patientCity;
-    }
-
-    public void setPatientCity(String patientCity) {
-        this.patientCity = patientCity;
-    }
-
     public String getProfilePhoto() {
         return profilePhoto;
     }
@@ -227,8 +203,6 @@ public class NewPatientsDetail implements Parcelable
         dest.writeValue(patientPhon);
         dest.writeValue(age);
         dest.writeValue(patientDob);
-        dest.writeValue(bloodGroup);
-        dest.writeValue(patientCity);
         dest.writeValue(profilePhoto);
         dest.writeValue(patientEmail);
         dest.writeValue(outstandingAmount);

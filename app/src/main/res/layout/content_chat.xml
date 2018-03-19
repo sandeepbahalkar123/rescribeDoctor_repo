@@ -32,6 +32,35 @@
         android:visibility="gone"
         tools:text="12 September 2017" />
 
+    <LinearLayout
+        android:id="@+id/bookAppointmentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/messageTypeLayout"
+        android:background="@color/clickHere"
+        android:gravity="center">
+
+
+        <com.rescribe.doctor.ui.customesViews.CustomTextView
+            android:id="@+id/consultationLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp14"
+            android:text="@string/consultation_details"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp16"
+            android:visibility="visible"
+            app:customFont="@string/roboto_medium" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp6"
+            android:src="@drawable/arrow" />
+
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/messageTypeLayout"
         android:layout_width="match_parent"

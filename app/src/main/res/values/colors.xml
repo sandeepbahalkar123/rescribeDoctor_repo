@@ -86,4 +86,5 @@
     <color name="bg_grey_color">#eaeaea</color>
     <color name="yellow">#FFFF33</color>
     <color name="logo_color">#7f5b5b5b</color>
+    <color name="clickHere">#3676a3</color>
 </resources>

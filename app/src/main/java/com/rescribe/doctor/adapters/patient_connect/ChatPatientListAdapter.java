@@ -15,7 +15,6 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -26,17 +25,12 @@ import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 
 /**
  * Created by jeetal on 5/3/18.
@@ -81,8 +75,8 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         String patientName = "";
 
         if (patientObject.getSalutation() != 0)
-            patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
-        else patientName = toCamelCase(patientObject.getPatientName());
+            patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + CommonMethods.toCamelCase(patientObject.getPatientName());
+        else patientName = CommonMethods.toCamelCase(patientObject.getPatientName());
 
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName

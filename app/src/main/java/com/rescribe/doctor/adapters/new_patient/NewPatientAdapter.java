@@ -74,9 +74,14 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
     public void onBindViewHolder(final NewPatientAdapter.ListViewHolder holder, final int position) {
         final NewPatientsDetail patientObject = mDataList.get(position);
         holder.opdTypeTextView.setVisibility(View.VISIBLE);
+        holder.opdTypeTextView.setVisibility(View.GONE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
+        holder.patientClinicAddress.setText(patientObject.getCityName());
         String patientName = toCamelCase(patientObject.getPatientName());
         holder.chatImageView.setVisibility(View.GONE);
+        if (patientObject.getSalutation() != 0)
+            patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
+        else patientName = toCamelCase(patientObject.getPatientName());
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName
             if (patientObject.getPatientName().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
@@ -185,35 +190,7 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
             holder.checkbox.setVisibility(View.VISIBLE);
         else holder.checkbox.setVisibility(View.GONE);
 
-        holder.patientDetailsClickLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                isLongPressed = !isLongPressed;
-                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed, position);
-                notifyDataSetChanged();
-                return false;
-            }
-        });
-        holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString());
-            }
-        });
 
-        holder.chatImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, ChatActivity.class);
-                PatientData doctorConnectChatModel = new PatientData();
-                doctorConnectChatModel.setId(patientObject.getPatientID());
-                doctorConnectChatModel.setImageUrl(patientObject.getProfilePhoto());
-                doctorConnectChatModel.setPatientName(patientObject.getPatientName());
-                intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
-                ((Activity) mContext).startActivityForResult(intent, Activity.RESULT_OK);
-
-            }
-        });
         holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

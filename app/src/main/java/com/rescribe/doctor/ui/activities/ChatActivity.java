@@ -63,6 +63,7 @@ import com.rescribe.doctor.notification.MessageNotification;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.singleton.Device;
+import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -109,6 +110,7 @@ import static com.rescribe.doctor.services.MQTTService.TOPIC;
 import static com.rescribe.doctor.services.MQTTService.USER_STATUS_TOPIC;
 import static com.rescribe.doctor.services.MQTTService.USER_TYPING_STATUS_TOPIC;
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
+import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.AUD;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.DOC;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
@@ -132,6 +134,10 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     private static final String LOG_TAG = "AudioRecordTest";
     public static final String SEARCHED_TEXT = "searched_string";
     private static String mFileName = null;
+    @BindView(R.id.consultationLayout)
+    CustomTextView consultationLayout;
+    @BindView(R.id.bookAppointmentLayout)
+    LinearLayout bookAppointmentLayout;
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
     private ImageView audioIcon;
@@ -210,6 +216,8 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     private boolean hidden = true;
     private String searchedMessageString;
     private int scrollPosition = -1;
+    private String patientName = "";
+    private int mHospitalPatId;
 
     private void typingStatus() {
         StatusInfo statusInfo = new StatusInfo();
@@ -381,6 +389,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     private String authorizationString;
     private UploadNotificationConfig uploadNotificationConfig;
     private DownloadManager downloadManager;
+    private String mPatientsDetails = "";
 
     @Override
     public void onBackPressed() {
@@ -425,6 +434,8 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         Intent gotIntent = getIntent();
 
         if (gotIntent.getAction() != null) {
+            mPatientsDetails = gotIntent.getStringExtra(RescribeConstants.PATIENT_DETAILS);
+            mHospitalPatId = gotIntent.getIntExtra(RescribeConstants.PATIENT_HOS_PAT_ID,0);
             if (gotIntent.getAction().equals(REPLY_ACTION)) {
                 chatList = new PatientData();
                 MQTTMessage mqttMessage = gotIntent.getParcelableExtra(ReplayBroadcastReceiver.MESSAGE_LIST);
@@ -667,18 +678,18 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 }
 
                 // Check Download
-                    if (mqttMessage.getFileType().equals(DOC) || mqttMessage.getFileType().equals(AUD)) {
-                        if (cu.moveToFirst()) {
-                            do {
-                                String fileUri = cu.getString(cu.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-                                String fileName = cu.getString(cu.getColumnIndex(DownloadManager.COLUMN_TITLE));
-                                if (mqttMessage.getMsg().equals(fileName)) {
-                                    mqttMessage.setDownloadStatus(COMPLETED);
-                                    mqttMessage.setFileUrl(fileUri);
-                                }
-                            } while (cu.moveToNext());
-                        }
+                if (mqttMessage.getFileType().equals(DOC) || mqttMessage.getFileType().equals(AUD)) {
+                    if (cu.moveToFirst()) {
+                        do {
+                            String fileUri = cu.getString(cu.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                            String fileName = cu.getString(cu.getColumnIndex(DownloadManager.COLUMN_TITLE));
+                            if (mqttMessage.getMsg().equals(fileName)) {
+                                mqttMessage.setDownloadStatus(COMPLETED);
+                                mqttMessage.setFileUrl(fileUri);
+                            }
+                        } while (cu.moveToNext());
                     }
+                }
 
                 if (searchedMessageString != null) {
                     String messageLowerCase = mqttMessage.getMsg().toLowerCase();
@@ -913,7 +924,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         UploadService.UPLOAD_POOL_SIZE = 10;
     }
 
-    @OnClick({R.id.backButton, R.id.attachmentButton, R.id.cameraButton, R.id.sendButton, R.id.exitRevealDialog, R.id.camera, R.id.document, R.id.location})
+    @OnClick({R.id.backButton, R.id.attachmentButton, R.id.cameraButton, R.id.sendButton, R.id.exitRevealDialog, R.id.camera, R.id.document, R.id.location,R.id.consultationLayout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.camera:
@@ -946,6 +957,20 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 break;
             case R.id.cameraButton:
                 ChatActivityPermissionsDispatcher.onPickPhotoWithCheck(ChatActivity.this);
+                break;
+            case R.id.consultationLayout:
+                if (chatList.getSalutation() != 0)
+                    patientName = RescribeConstants.SALUTATION[chatList.getSalutation() - 1] + toCamelCase(chatList.getPatientName());
+                else patientName = toCamelCase(chatList.getPatientName());
+
+                Bundle b = new Bundle();
+                b.putString(RescribeConstants.PATIENT_NAME, patientName);
+                b.putString(RescribeConstants.PATIENT_INFO, mPatientsDetails);
+                b.putString(RescribeConstants.PATIENT_ID, String.valueOf(chatList.getId()));
+                b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mHospitalPatId));
+                Intent intent = new Intent(this, PatientHistoryActivity.class);
+                intent.putExtra(RescribeConstants.PATIENT_INFO, b);
+                startActivity(intent);
                 break;
             case R.id.sendButton:
                 // SendButton

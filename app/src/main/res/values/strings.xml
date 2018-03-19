@@ -10,6 +10,7 @@
     <string name="mlunch">LUNCH</string>
     <string name="msnacks">SNACKS</string>
     <string name="mdinner">DINNER</string>
+    <string name="consultation_details">Consultation Details</string>
     <string name="resend_in_text">Resend in</string>
     <string name="resend"><u>Resend OTP</u></string>
     <string name="ok">OK</string>
