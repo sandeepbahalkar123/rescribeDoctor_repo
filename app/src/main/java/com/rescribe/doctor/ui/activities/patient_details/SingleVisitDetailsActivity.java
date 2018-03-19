@@ -95,7 +95,6 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     private void initialize() {
 
-        Context mContext = SingleVisitDetailsActivity.this;
         intent = getIntent();
         userInfoTextView.setVisibility(View.VISIBLE);
         dateTextview.setVisibility(View.VISIBLE);

@@ -1,5 +1,6 @@
 package com.rescribe.doctor.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -50,6 +51,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.rescribe.doctor.ui.activities.MapActivityShowDoctorLocation.ADDRESS;
 
 /**
  * Created by jeetal on 16/2/18.
@@ -138,7 +141,6 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     private ColorGenerator mColorGenerator;
     private String mDoctorName;
     private DoctorLocationModel doctorLocationModel;
-    private int mSelectedClinicDataPosition;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,6 +151,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         initialize();
     }
 
+    @SuppressLint("CheckResult")
     private void initialize() {
         mContext = ProfileActivity.this;
         mColorGenerator = ColorGenerator.MATERIAL;
@@ -171,10 +174,10 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         doctorSpecialization.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, mContext));
         mServiceslist = RescribePreferencesManager.getListString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.D0C_SERVICES);
         setServicesInView(mServiceslist);
-        if(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, mContext)==true) {
+        if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, mContext) == true) {
             premiumType.setText(RescribeConstants.PREMIUM);
             premiumType.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             premiumType.setVisibility(View.INVISIBLE);
         }
 
@@ -245,8 +248,6 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
                     }
 
-                    mSelectedClinicDataPosition = position;
-
                 }
 
                 @Override
@@ -258,7 +259,6 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             if (mArrayListDoctorLocationModel.size() == 1) {
                 clinicNameSpinner.setEnabled(false);
                 clinicNameSpinner.setClickable(false);
-                mSelectedClinicDataPosition = 0;
                 clinicNameSpinner.setBackgroundColor(ContextCompat.getColor(mContext, R.color.transparent));
             } else {
                 clinicNameSpinner.setEnabled(true);
@@ -316,7 +316,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         super.onBottomMenuClick(bottomMenu);
     }
 
-    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices,R.id.viewAllClinicsOnMap})
+    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices, R.id.viewAllClinicsOnMap})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -337,7 +337,12 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                 //this list is sorted for plotting map for each clinic location, the values of clinicName and doctorAddress are set in string here, which are coming from arraylist.
 
                 Intent intentObjectMap = new Intent(this, MapActivityShowDoctorLocation.class);
-                intentObjectMap.putExtra(getString(R.string.address),doctorLocationModel.getArea()+", "+doctorLocationModel.getCity());
+
+                ArrayList<String> locations = new ArrayList<>();
+                for (DoctorLocationModel doctorLocationM: mArrayListDoctorLocationModel)
+                    locations.add(doctorLocationM.getArea() + ", " + doctorLocationM.getCity());
+
+                intentObjectMap.putExtra(ADDRESS, locations);
                 startActivity(intentObjectMap);
                 break;
         }

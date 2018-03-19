@@ -22,6 +22,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,10 +31,9 @@ import butterknife.ButterKnife;
 public class MapActivityShowDoctorLocation extends AppCompatActivity implements OnMapReadyCallback {
 
 
-    public static Bundle args;
+    public static final String ADDRESS = "address";
+
     Address p1 = null;
-    String address;
-    Intent intent;
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -48,18 +48,15 @@ public class MapActivityShowDoctorLocation extends AppCompatActivity implements 
     ImageView addImageView;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         ButterKnife.bind(this);
         init();
-
     }
 
     private void init() {
-        intent = getIntent();
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,12 +83,16 @@ public class MapActivityShowDoctorLocation extends AppCompatActivity implements 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        // Add a marker in Sydney and move the camera
-        p1 = getLocationFromAddress(intent.getStringExtra(getString(R.string.address)));
-        if (p1 != null) {
-            LatLng currentLocation = new LatLng(p1.getLatitude(), p1.getLongitude());
-            googleMap.addMarker(new MarkerOptions().position(currentLocation).title(address).icon(getMarkerIcon("#04abdf")));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p1.getLatitude(), p1.getLongitude()), RescribeConstants.ZOOM_CAMERA_VALUE));
+        ArrayList<String> locationArray = getIntent().getStringArrayListExtra(ADDRESS);
+
+        for (String address : locationArray) {
+            // Add a marker in Sydney and move the camera
+            p1 = getLocationFromAddress(address);
+            if (p1 != null) {
+                LatLng currentLocation = new LatLng(p1.getLatitude(), p1.getLongitude());
+                googleMap.addMarker(new MarkerOptions().position(currentLocation).title(address).icon(getMarkerIcon("#04abdf")));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(p1.getLatitude(), p1.getLongitude()), RescribeConstants.ZOOM_CAMERA_VALUE));
+            }
         }
     }
 

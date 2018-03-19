@@ -383,14 +383,10 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     patientInfoListObject.setPatientId(String.valueOf(patientList.getPatientId()));
                     patientInfoListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
                     patientsListAddToWaitingLists.add(patientInfoListObject);
-
                 }
             }
 
-
             if (!patientsListAddToWaitingLists.isEmpty()) {
-
-
                 showDialogToSelectLocation(mDoctorLocationModel);
 
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
@@ -420,16 +416,16 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         dialog.setCancelable(true);
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        if(!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
+        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
             mLocationId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()));
         RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
         for (int index = 0; index < mDoctorLocationModel.size(); index++) {
             final DoctorLocationModel clinicList = mDoctorLocationModel.get(index);
 
-           final RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
-            if (mLocationId==clinicList.getLocationId()) {
+            final RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
+            if (mLocationId == clinicList.getLocationId()) {
                 radioButton.setChecked(true);
-            }else{
+            } else {
                 radioButton.setChecked(false);
             }
             radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
@@ -483,16 +479,16 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         dialog.setCancelable(true);
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        if(!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
-        mLocationId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()));
+        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
+            mLocationId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()));
         RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
         for (int index = 0; index < mPatientListsOriginal.size(); index++) {
             final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
 
             final RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
-            if (mLocationId==clinicList.getLocationId()) {
+            if (mLocationId == clinicList.getLocationId()) {
                 radioButton.setChecked(true);
-            }else{
+            } else {
                 radioButton.setChecked(false);
             }
             radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
@@ -678,12 +674,11 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 intent.putParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST, templateLists);
                 startActivity(intent);
             } else {
-                TemplateList templateList = null;
 
-                Intent intent = new Intent(getActivity(),SendSmsPatientActivity.class);
+                Intent intent = new Intent(getActivity(), SendSmsPatientActivity.class);
                 intent.putExtra(LOCATION_ID, mLocationId);
                 intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
-                intent.putExtra(RescribeConstants.TEMPLATE_OBJECT, templateList);
+//                intent.putExtra(RescribeConstants.TEMPLATE_OBJECT, templateList);
                 intent.putExtra(RescribeConstants.CLINIC_NAME, mClinicName);
                 intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientInfoLists);
                 startActivityForResult(intent, RESULT_SEND_SMS);
