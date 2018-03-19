@@ -230,6 +230,6 @@
     <string name="consultation">Consultation</string>
     <string name="follow_up">Follow Up</string>
     <string name="new_patients">New Patients</string>
-
-
+    <string name="appointment_completed_button">Appointment\nCompleted</string>
+    <string name="appointment_cancelled_button">Appointment\nCancelled</string>
 </resources>

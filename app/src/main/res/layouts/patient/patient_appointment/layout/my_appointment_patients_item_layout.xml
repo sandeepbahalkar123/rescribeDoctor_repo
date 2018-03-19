@@ -136,72 +136,38 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="157dp"
-                android:layout_marginEnd="@dimen/dp4"
-                android:layout_marginRight="@dimen/dp4"
-                android:layout_marginTop="@dimen/dp7"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/dp4"
                 android:background="@drawable/result_white_box_copy"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <Button
                     android:id="@+id/appointmentComplete"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp8"
-                    android:layout_marginTop="@dimen/dp8"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Appointment"
-                        android:textColor="@color/tagColor" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center_horizontal"
-                        android:text="Completed"
-                        android:textColor="@color/tagColor" />
-                </LinearLayout>
+                    android:layout_height="0dp"
+                    android:background="@color/transparent"
+                    android:text="@string/appointment_completed_button"
+                    android:textColor="@color/tagColor"
+                    android:textAllCaps="false"
+                    android:layout_weight="1"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginEnd="@dimen/dp1"
-                    android:layout_marginStart="@dimen/dp1"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:layout_marginStart="@dimen/dp3"
                     android:background="@color/tagColor" />
 
-                <LinearLayout
-                    android:id="@+id/appointmentCancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp8"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="@dimen/dp8"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                <Button
+                    android:id="@+id/appointmentCancelled"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:textColor="@color/Red"
+                    android:textAllCaps="false"
+                    android:background="@color/transparent"
+                    android:text="@string/appointment_cancelled_button"
+                    android:layout_weight="1"/>
 
-                    <com.rescribe.doctor.ui.customesViews.CustomTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Appointment"
-                        android:textColor="@color/Red"
-                        app:customFont="@string/roboto_medium" />
-
-                    <com.rescribe.doctor.ui.customesViews.CustomTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cancelled"
-                        android:textColor="@color/Red"
-                        app:customFont="@string/roboto_medium" />
-                </LinearLayout>
             </LinearLayout>
         </FrameLayout>
 

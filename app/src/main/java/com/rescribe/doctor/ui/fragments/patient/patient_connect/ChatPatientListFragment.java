@@ -270,19 +270,34 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
                 //Paginated items added here
                 MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
                 ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
-                mMyPatientsAdapter.addAll(mLoadedPatientList);
+                int size = mMyPatientsAdapter.addAll(mLoadedPatientList);
 
+                if (size > 0){
+                    recyclerView.setVisibility(View.VISIBLE);
+                    emptyListView.setVisibility(View.GONE);
+                } else {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyListView.setVisibility(View.VISIBLE);
+                }
             }
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT)) {
 
             MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
             ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
             mMyPatientsAdapter.clear();
+
             for (PatientList patientList : mLoadedPatientList) {
                 patientList.setSpannableString(searchText);
             }
-            mMyPatientsAdapter.addAll(mLoadedPatientList);
 
+            int size = mMyPatientsAdapter.addAll(mLoadedPatientList);
+            if (size > 0){
+                recyclerView.setVisibility(View.VISIBLE);
+                emptyListView.setVisibility(View.GONE);
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                emptyListView.setVisibility(View.VISIBLE);
+            }
         }
     }
 

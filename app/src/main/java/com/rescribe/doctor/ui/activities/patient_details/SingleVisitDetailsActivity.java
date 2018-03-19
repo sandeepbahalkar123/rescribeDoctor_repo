@@ -37,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_ATTACHMENTS;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.TEXT_LIMIT;
 
 /**
@@ -94,7 +95,6 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     private void initialize() {
 
-        Context mContext = SingleVisitDetailsActivity.this;
         intent = getIntent();
         userInfoTextView.setVisibility(View.VISIBLE);
         dateTextview.setVisibility(View.VISIBLE);
@@ -136,11 +136,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 List<PatientHistory> listDataList = mSingleVisitAdapter.getListDataList();
                 List<VisitCommonData> childObject = listDataList.get(groupPosition).getCommonData();
 
-                if (mSingleVisitAdapter.getListDataList().get(groupPosition).getCaseDetailName().equalsIgnoreCase("vitals") || mSingleVisitAdapter.getListDataList().get(groupPosition).getCaseDetailName().equalsIgnoreCase("vitals")) {
-                    if (mSingleVisitAdapter.getListDataList().get(groupPosition).getVitals().isEmpty()) {
-                        mHistoryExpandableListView.collapseGroup(groupPosition);
-                    }
-                } else if (childObject.size() == 1) {
+                if (childObject.size() == 1 && !listDataList.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_ATTACHMENTS)) {
                     if (childObject.get(0).getName().length() <= TEXT_LIMIT)
                         mHistoryExpandableListView.collapseGroup(groupPosition);
                 }

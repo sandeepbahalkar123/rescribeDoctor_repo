@@ -18,6 +18,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
@@ -32,22 +33,23 @@ import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.rescribe.doctor.util.CommonMethods.stripExtension;
 
 public class SingleVisitAdapter extends BaseExpandableListAdapter {
     private int mPosition = 0;
     private Context mContext;
 
     private static final String CHILD_TYPE_VITALS = "vitals";
-    private static final String CHILD_TYPE_ATTACHMENTS = "attachments";
+    public static final String CHILD_TYPE_ATTACHMENTS = "attachments";
     private static final String CHILD_TYPE_ALLERGIES = "allergies";
     private static final String CHILD_TYPE_PRESCRIPTIONS = "prescriptions";
 
     private List<PatientHistory> mListDataHeader = new ArrayList<>(); // header titles
-    List<VisitCommonData> mVisitDetailList = new ArrayList<>();
-    List<VisitCommonData> mCommonDataVisitList = new ArrayList<>();
-    public static final int TEXT_LIMIT = 36;
+    public static final int TEXT_LIMIT = 33;
 
     public SingleVisitAdapter(Context context, List<PatientHistory> listDataHeader) {
         this.mContext = context;
@@ -65,6 +67,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                     commonVitals.setId(0);
                     commonVitals.setVitalValue(listDataHeader.get(i).getVitals().get(0).getUnitValue());
                     commonVitals.setName(listDataHeader.get(i).getVitals().get(0).getUnitName());
+                    List<VisitCommonData> mCommonDataVisitList = new ArrayList<>();
                     mCommonDataVisitList.add(commonVitals);
                     listDataHeader.get(i).setCommonData(mCommonDataVisitList);
                     mListDataHeader.add(listDataHeader.get(i));
@@ -297,7 +300,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             ImageView attachmentImage = (ImageView) item.findViewById(R.id.attachmentImage);
             TextView titleText = (TextView) item.findViewById(R.id.titleText);
 
-            titleText.setText(attachments.get(i).getName());
+            titleText.setText(stripExtension(attachments.get(i).getName()));
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.dontAnimate();
@@ -496,7 +499,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             groupViewHolder.mViewDetailIcon.setImageResource(CommonMethods.getCaseStudyIcons(mListDataHeader.get(groupPosition).getCaseDetailName()));
 
             if (mListDataHeader.get(groupPosition).getCommonData() != null) {
-                mVisitDetailList = mListDataHeader.get(groupPosition).getCommonData();
+                List<VisitCommonData> mVisitDetailList = mListDataHeader.get(groupPosition).getCommonData();
 
                 if (mListDataHeader.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_PRESCRIPTIONS)) {
 
@@ -514,7 +517,6 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                             textToShow += name + " ";
                         if (!dosage.isEmpty())
                             textToShow += dosage;
-
                         if (mListDataHeader.get(groupPosition).getCommonData().size() > 1)
                             textToShow += "...";
                         groupViewHolder.mDetailFirstPoint.setText(textToShow);
@@ -543,13 +545,20 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                             String finalString = digitSystolic + "/ " + digitDiastolic + " " + unitString + "...";
 
                             groupViewHolder.mDetailFirstPoint.setText(mVisitDetailList.get(0).getName() + " - " + finalString);
-
                         } else {
                             groupViewHolder.mDetailFirstPoint.setText(mVisitDetailList.get(0).getName() + "...");
-
                         }
+                } else if (mListDataHeader.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_ATTACHMENTS)) {
+
+                    String text = stripExtension(mVisitDetailList.get(0).getName());
+                    if (text.length() > TEXT_LIMIT)
+                        groupViewHolder.mDetailFirstPoint.setText(text.substring(0, TEXT_LIMIT - 1) + "...");
+                    else groupViewHolder.mDetailFirstPoint.setText(text);
+
                 } else if (mVisitDetailList.size() > 1) {
-                    groupViewHolder.mDetailFirstPoint.setText(mVisitDetailList.get(0).getName() + "...");
+                    int length = mVisitDetailList.get(0).getName().length();
+                    String text = mVisitDetailList.get(0).getName().substring(0, length < TEXT_LIMIT ? length - 1 : TEXT_LIMIT - 1) + "...";
+                    groupViewHolder.mDetailFirstPoint.setText(text);
                 } else {
                     String text = mVisitDetailList.get(0).getName();
                     if (text.length() > TEXT_LIMIT)
@@ -671,7 +680,6 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                             String finalString = getSortedRangeValues(rangeList.get(i).getCategory(), rangeList.get(i).getOperator(), rangeList.get(i).getValue(), rangeList.get(i).getMin(), rangeList.get(i).getMax());
                             severe += ", " + finalString;
                             severeBpMaxRange.setText(severe);
-
                         }
                     }
                 } else if (rangeList.get(i).getNameOfVital().equalsIgnoreCase(context.getString(R.string.bp_min))) {
@@ -739,7 +747,6 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                         String finalString = getSortedRangeValues(rangeList.get(i).getCategory(), rangeList.get(i).getOperator(), rangeList.get(i).getValue(), rangeList.get(i).getMin(), rangeList.get(i).getMax());
                         severeBpmin += ", " + finalString;
                         severeRange.setText(severeBpmin);
-
                     }
                 }
             }

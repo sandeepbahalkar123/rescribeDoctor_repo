@@ -49,7 +49,6 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:visibility="gone"
-                    tools:visibility="visible"
                     android:layout_margin="2dp"
                     app:srcCompat="@drawable/online_icon" />
 
@@ -70,7 +69,7 @@
                     android:layout_height="wrap_content"
                     tools:text="Rashmi Gangar"
                     app:customFont="@string/roboto_bold"
-                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp18" />
 
@@ -80,6 +79,7 @@
                     android:layout_height="wrap_content"
                     app:customFont="@string/roboto_medium"
                     tools:text="Last seen today at 10:30 am"
+                    android:visibility="gone"
                     android:layout_alignParentBottom="true"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp12" />

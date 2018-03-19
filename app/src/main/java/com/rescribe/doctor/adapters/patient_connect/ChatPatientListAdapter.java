@@ -246,7 +246,6 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
     }
 
 
-
     @Override
     public Filter getFilter() {
 
@@ -306,17 +305,9 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
 
     }
 
-
-    public void add(PatientList mc) {
-        mDataList.add(mc);
-        notifyItemInserted(mDataList.size() - 1);
-    }
-
-    public void addAll(ArrayList<PatientList> mcList) {
-
-        for (PatientList mc : mcList) {
-            add(mc);
-        }
+    public int addAll(ArrayList<PatientList> mcList) {
+        mDataList.addAll(mcList);
+        return mcList.size();
     }
 
     public void clear() {
