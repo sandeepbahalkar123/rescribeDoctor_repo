@@ -34,7 +34,9 @@
                 android:layout_width="@dimen/dp8"
                 android:layout_height="@dimen/dp8"
                 android:layout_centerVertical="true"
-                android:layout_margin="@dimen/dp10"
+                android:layout_marginRight="@dimen/dp8"
+                android:layout_marginTop="@dimen/dp6"
+                android:layout_marginBottom="@dimen/dp6"
                 android:background="@drawable/circular_bullet" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -51,7 +53,7 @@
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/clinicAddress"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/clinicNameTextView"
@@ -61,16 +63,9 @@
                 android:textColor="@color/clinic_address_color"
                 android:textSize="@dimen/sp13"
                 app:customFont="@string/roboto_medium"
+                android:layout_marginRight="@dimen/dp10"
                 tools:text="Worli, Mumbaifgfdgfdgfgf" />
         </RelativeLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dp8"
-            android:src="@drawable/appointment_count_arrow_copy_2"
-            android:visibility="gone"
-            tools:visibility="visible" />
 
     </LinearLayout>
 

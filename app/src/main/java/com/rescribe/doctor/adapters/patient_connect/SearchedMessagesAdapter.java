@@ -112,10 +112,11 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
             String doctorName;
             if (!mqttMessage.getSenderName().contains("Dr."))
                 doctorName = "Dr. " + mqttMessage.getSenderName();
-            else doctorName = mqttMessage.getSenderName();
-            holder.doctorName.setText(doctorName);
+            else
+                doctorName = mqttMessage.getSenderName();
+            holder.doctorName.setText(CommonMethods.toCamelCase(doctorName));//sandeep
         } else
-            holder.doctorName.setText(salutation + patientName);
+            holder.doctorName.setText(salutation + CommonMethods.toCamelCase(patientName));//sandeep
 
         String timeT = CommonMethods.getDayFromDateTime(mqttMessage.getMsgTime(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY_SLASH, RescribeConstants.DATE_PATTERN.hh_mm_a);
         holder.timeText.setText(timeT);

@@ -417,7 +417,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
-        dialog.setCancelable(true);
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         if(!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
@@ -462,7 +461,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         });
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(true);
+
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
@@ -472,6 +471,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
         dialog.getWindow().setAttributes(lp);
         dialog.show();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
 
     }
 
@@ -480,7 +481,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
-        dialog.setCancelable(true);
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         if(!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
@@ -524,7 +524,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         });
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(true);
+
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
@@ -534,6 +534,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
         dialog.getWindow().setAttributes(lp);
         dialog.show();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+
 
     }
 

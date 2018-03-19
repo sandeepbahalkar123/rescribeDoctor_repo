@@ -152,9 +152,9 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
                         Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 holder.doctorName.setText(spannableStringSearch);
             } else
-                holder.doctorName.setText(salutation + doctorConnectChatModel.getPatientName());
+                holder.doctorName.setText(salutation + CommonMethods.toCamelCase(doctorConnectChatModel.getPatientName()));//sandeep
         } else
-            holder.doctorName.setText(salutation + doctorConnectChatModel.getPatientName());
+            holder.doctorName.setText(salutation + CommonMethods.toCamelCase(doctorConnectChatModel.getPatientName()));//sandeep
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
