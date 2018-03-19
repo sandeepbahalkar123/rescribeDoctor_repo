@@ -269,11 +269,16 @@
 
         <View
             android:id="@+id/dragHandle"
-            android:layout_width="@dimen/dp28"
-            android:layout_height="@dimen/dp48"
+            android:layout_width="@dimen/dp22"
+            android:layout_height="@dimen/dp24"
             android:layout_gravity="end|center_vertical"
-            android:layout_margin="@dimen/dp16"
-            android:background="@drawable/ic_drag_handle_black_24dp" />
+           android:layout_marginBottom="@dimen/dp16"
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginEnd="@dimen/dp24"
+            android:layout_marginTop="@dimen/dp16"
+            android:background="@drawable/drag_n_drop"
+            android:layout_marginLeft="@dimen/dp16"
+            android:layout_marginRight="@dimen/dp24" />
 
     </FrameLayout>
 

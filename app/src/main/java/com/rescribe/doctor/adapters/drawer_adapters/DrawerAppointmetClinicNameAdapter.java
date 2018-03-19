@@ -43,7 +43,7 @@ public class DrawerAppointmetClinicNameAdapter extends RecyclerView.Adapter<Draw
     @Override
     public void onBindViewHolder(final DrawerAppointmetClinicNameAdapter.ListViewHolder holder, final int position) {
 
-        holder.menuName.setText(mClinicList.get(position).getClinicName()+", "+mClinicList.get(position).getCity());
+        holder.menuName.setText(mClinicList.get(position).getClinicName()+", "+mClinicList.get(position).getArea()+", "+mClinicList.get(position).getCity());
         holder.menuName.setChecked(mClinicList.get(position).isSelected());
         holder.menuName.setOnClickListener(new View.OnClickListener() {
             @Override

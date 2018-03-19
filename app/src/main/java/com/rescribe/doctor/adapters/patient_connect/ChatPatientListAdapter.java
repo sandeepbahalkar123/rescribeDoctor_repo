@@ -71,7 +71,7 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         holder.blueLineDivider.setVisibility(View.GONE);
         holder.patientInfoDetailLayout.setVisibility(View.GONE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
-        holder.patientClinicAddress.setText(patientObject.getClinicName() + " - " + patientObject.getPatientCity());
+        holder.patientClinicAddress.setText(patientObject.getPatientCity());
         String patientName = "";
 
         if (patientObject.getSalutation() != 0)

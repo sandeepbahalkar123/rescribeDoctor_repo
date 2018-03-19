@@ -9,7 +9,7 @@
         android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
         android:id="@+id/menuName"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp40"
+        android:layout_height="@dimen/dp50"
         android:padding="@dimen/dp5"
         android:focusable="false"
         android:text="Nagpur"
