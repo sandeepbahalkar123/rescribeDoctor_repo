@@ -182,8 +182,7 @@ public class RescribeConstants {
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
 
-    public static final String[] SALUTATION = {"Mr. ", "M" +
-            "rs. ", "Miss. ", ""};
+    public static final String[] SALUTATION = {"Mr. ", "Mrs. ", "Miss ", ""};
     public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};
 
     public interface USER_STATUS {

@@ -88,7 +88,9 @@
                 android:paddingLeft="@dimen/dp3"
                 android:paddingStart="@dimen/dp3"
                 android:src="@drawable/appointment_count_arrow"
-                tools:ignore="ContentDescription,ObsoleteLayoutParam" />
+                tools:ignore="ContentDescription,ObsoleteLayoutParam"
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
             <ImageView
                 android:id="@+id/upArrow"
@@ -103,6 +105,7 @@
                 android:scaleY="-1"
                 android:src="@drawable/appointment_count_arrow"
                 android:visibility="gone"
+                tools:visibility="visible"
                 tools:ignore="ContentDescription,ObsoleteLayoutParam" />
         </LinearLayout>
 

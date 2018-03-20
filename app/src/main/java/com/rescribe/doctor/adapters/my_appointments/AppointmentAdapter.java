@@ -184,7 +184,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
         }
 
-        viewHolder.patientGenderTextView.setText(" " + CommonMethods.toCamelCase(patientList.getGender()));
+        viewHolder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientList.getGender()));
         if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.booked));
@@ -205,7 +205,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.other_color));
         }
         viewHolder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-        if (patientList.getOutStandingAmount() == 0) {
+        if (patientList.getOutStandingAmount().equals("0.00")||patientList.getOutStandingAmount().equals("0.0")||patientList.getOutStandingAmount().equals("0")) {
             viewHolder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
 
@@ -401,20 +401,22 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             groupViewHolder.mPatientAgeTextView.setVisibility(View.GONE);
         }
 
-        if (appointmentListObject.getPatientList().size() == 1) {
-            groupViewHolder.mDownArrow.setVisibility(View.GONE);
-            groupViewHolder.upArrow.setVisibility(View.GONE);
-        }
 
         if (isExpanded) {
             groupViewHolder.mDownArrow.setVisibility(View.GONE);
             groupViewHolder.upArrow.setVisibility(View.VISIBLE);
         } else {
-            groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
-            groupViewHolder.upArrow.setVisibility(View.GONE);
+            if (appointmentListObject.getPatientList().size() == 1) {
+                groupViewHolder.mDownArrow.setVisibility(View.GONE);
+                groupViewHolder.upArrow.setVisibility(View.GONE);
+            }else{
+                groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
+                groupViewHolder.upArrow.setVisibility(View.GONE);
+            }
+
         }
 
-        groupViewHolder.mPatientGenderTextView.setText(" " + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getGender()));
+        groupViewHolder.mPatientGenderTextView.setText(CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getGender()));
         if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.booked));
@@ -436,7 +438,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
         groupViewHolder.mPatientPhoneNumber.setText(appointmentListObject.getPatientHeader().getPatientPhone());
         groupViewHolder.mOutstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-        if (appointmentListObject.getPatientHeader().getOutStandingAmount() == 0) {
+        if (appointmentListObject.getPatientHeader().getOutStandingAmount().equals("0.00") || appointmentListObject.getPatientHeader().getOutStandingAmount().equals("0.0") || appointmentListObject.getPatientHeader().getOutStandingAmount().equals("0")) {
             groupViewHolder.mPayableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             groupViewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
 
