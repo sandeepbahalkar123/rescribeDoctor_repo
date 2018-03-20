@@ -281,11 +281,13 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
             RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
 
-            if (mLocationId.equals(String.valueOf(clinicList.getLocationId()))) {
-                mHospitalId = String.valueOf(clinicList.getClinicId());
-                radioButton.setChecked(true);
-            }else{
-                radioButton.setChecked(false);
+            if (mLocationId != null) {
+                if (mLocationId.equals(String.valueOf(clinicList.getLocationId()))) {
+                    mHospitalId = String.valueOf(clinicList.getClinicId());
+                    radioButton.setChecked(true);
+                } else {
+                    radioButton.setChecked(false);
+                }
             }
             radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
             radioButton.setId(CommonMethods.generateViewId());
