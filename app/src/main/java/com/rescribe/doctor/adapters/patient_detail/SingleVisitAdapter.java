@@ -43,7 +43,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
     private int mPosition = 0;
     private Context mContext;
 
-    private static final String CHILD_TYPE_VITALS = "vitals";
+    public static final String CHILD_TYPE_VITALS = "vitals";
     public static final String CHILD_TYPE_ATTACHMENTS = "attachments";
     private static final String CHILD_TYPE_ALLERGIES = "allergies";
     private static final String CHILD_TYPE_PRESCRIPTIONS = "prescriptions";

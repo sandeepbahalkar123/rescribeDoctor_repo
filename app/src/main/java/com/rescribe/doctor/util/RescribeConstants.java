@@ -178,6 +178,10 @@ public class RescribeConstants {
     public static final String NOT_FROM_COMPLETE_OPD = "not_complete_opd";
     public static final String FORGOT_PASSWORD_URL = "https://drrescribe.com/app.html#/access/forgotPassword";
     public static final String PATIENT_DETAILS = "patient_details";
+
+    public static final String STARTFOREGROUND_ACTION = "com.rescribe.download";
+    public static final int FOREGROUND_SERVICE = 21;
+
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";

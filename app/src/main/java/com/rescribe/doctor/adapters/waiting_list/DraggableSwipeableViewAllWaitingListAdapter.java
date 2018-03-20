@@ -109,7 +109,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
 
     public static class MyViewHolder extends AbstractDraggableSwipeableItemViewHolder {
         FrameLayout mContainer;
-        View mDragHandle;
+        ImageButton mDragHandle;
 
         LinearLayout mBehindViews;
         ImageButton deleteButton;

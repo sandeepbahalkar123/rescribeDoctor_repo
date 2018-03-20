@@ -435,7 +435,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         if (gotIntent.getAction() != null) {
             mPatientsDetails = gotIntent.getStringExtra(RescribeConstants.PATIENT_DETAILS);
-            mHospitalPatId = gotIntent.getIntExtra(RescribeConstants.PATIENT_HOS_PAT_ID,0);
+            mHospitalPatId = gotIntent.getIntExtra(RescribeConstants.PATIENT_HOS_PAT_ID, 0);
             if (gotIntent.getAction().equals(REPLY_ACTION)) {
                 chatList = new PatientData();
                 MQTTMessage mqttMessage = gotIntent.getParcelableExtra(ReplayBroadcastReceiver.MESSAGE_LIST);
@@ -924,7 +924,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         UploadService.UPLOAD_POOL_SIZE = 10;
     }
 
-    @OnClick({R.id.backButton, R.id.attachmentButton, R.id.cameraButton, R.id.sendButton, R.id.exitRevealDialog, R.id.camera, R.id.document, R.id.location,R.id.consultationLayout})
+    @OnClick({R.id.backButton, R.id.attachmentButton, R.id.cameraButton, R.id.sendButton, R.id.exitRevealDialog, R.id.camera, R.id.document, R.id.location, R.id.consultationLayout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.camera:
