@@ -23,12 +23,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp8"
-                android:layout_marginStart="@dimen/dp8"
+                android:layout_marginLeft="@dimen/dp10"
+                android:layout_marginStart="@dimen/dp10"
                 android:adjustViewBounds="true"
                 android:visibility="invisible"
                 android:src="@drawable/dashboard_arrow"
-                android:padding="@dimen/dp8" />
+                android:padding="@dimen/dp10" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/logout"
@@ -38,8 +38,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/menuIcon"
                 android:layout_toRightOf="@+id/menuIcon"
-                android:paddingEnd="@dimen/dp8"
-                android:paddingStart="@dimen/dp8"
+                android:paddingStart="@dimen/dp16"
                 android:text="@string/logout"
                 android:textColor="@color/tagColor"
                 android:textSize="@dimen/sp16"

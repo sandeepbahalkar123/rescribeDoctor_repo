@@ -29,7 +29,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     private String gender;
     @SerializedName("outstandingAmount")
     @Expose
-    private Double outStandingAmount;
+    private String outStandingAmount;
     @SerializedName("patientId")
     @Expose
     private Integer patientId;
@@ -98,7 +98,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         this.age = ((String) in.readValue((String.class.getClassLoader())));
         this.dateOfBirth = ((String) in.readValue((String.class.getClassLoader())));
         this.gender = ((String) in.readValue((String.class.getClassLoader())));
-        this.outStandingAmount = ((Double) in.readValue((Integer.class.getClassLoader())));
+        this.outStandingAmount = ((String) in.readValue((String.class.getClassLoader())));
         this.patientId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.opdId = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -155,11 +155,11 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         this.gender = gender;
     }
 
-    public Double getOutStandingAmount() {
+    public String getOutStandingAmount() {
         return outStandingAmount;
     }
 
-    public void setOutStandingAmount(Double outStandingAmount) {
+    public void setOutStandingAmount(String outStandingAmount) {
         this.outStandingAmount = outStandingAmount;
     }
 

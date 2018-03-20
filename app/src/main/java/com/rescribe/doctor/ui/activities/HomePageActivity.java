@@ -590,23 +590,39 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.todayCompletedOpd:
-                Intent intent = new Intent(this, CompletedOpdActivity.class);
-                startActivity(intent);
+                if(!todayFollowAppointmentCount.getText().toString().equals("0")) {
+                    Intent intent = new Intent(this, CompletedOpdActivity.class);
+                    startActivity(intent);
+                }else{
+
+                }
                 break;
             case R.id.viewPagerDoctorItem:
                 break;
             case R.id.todayAppointmentsOrWaitingList:
                 if (todayWaitingListOrAppointmentTextView.getText().toString().equals(getString(R.string.today_appointment))) {
-                    Intent todayAppointmentsOrWaitingList = new Intent(this, MyAppointmentsActivity.class);
-                    startActivity(todayAppointmentsOrWaitingList);
+                    if(!todayWaitingListOrAppointmentCount.getText().toString().equals("0")){
+                        Intent todayAppointmentsOrWaitingList = new Intent(this, MyAppointmentsActivity.class);
+                        startActivity(todayAppointmentsOrWaitingList);
+                    }else{
+
+                    }
                 } else {
-                    Intent todayAppointmentsOrWaitingList = new Intent(this, WaitingMainListActivity.class);
-                    startActivity(todayAppointmentsOrWaitingList);
+                    if(!todayWaitingListOrAppointmentCount.getText().toString().equals("0")) {
+                        Intent todayAppointmentsOrWaitingList = new Intent(this, WaitingMainListActivity.class);
+                        startActivity(todayAppointmentsOrWaitingList);
+                    }else{
+
+                    }
                 }
                 break;
             case R.id.todayNewPatient:
-                Intent todayNewPatient = new Intent(this, NewPatientActivity.class);
-                startActivity(todayNewPatient);
+                if(!todayNewAppointmentCount.getText().toString().equals("0")) {
+                    Intent todayNewPatient = new Intent(this, NewPatientActivity.class);
+                    startActivity(todayNewPatient);
+                }else{
+
+                }
                 break;
         }
     }

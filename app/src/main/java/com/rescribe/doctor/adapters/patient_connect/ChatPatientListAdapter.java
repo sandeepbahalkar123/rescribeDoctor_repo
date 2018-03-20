@@ -149,10 +149,10 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
             holder.patientAgeTextView.setVisibility(View.GONE);
         }
 
-        holder.patientGenderTextView.setText(" " + patientObject.getGender());
+        holder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientObject.getGender()));
 
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-        if (patientObject.getOutStandingAmount() == 0) {
+        if (patientObject.getOutStandingAmount().equals("0.00")||patientObject.getOutStandingAmount().equals("0.0")||patientObject.getOutStandingAmount().equals("0")) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
 
