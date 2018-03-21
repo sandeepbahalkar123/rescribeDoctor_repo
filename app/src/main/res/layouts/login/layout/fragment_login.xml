@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp20"
+        android:layout_marginTop="@dimen/dp60"
         android:layout_weight="0.7"
         android:orientation="vertical">
 
@@ -34,7 +34,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingLeft="@dimen/dp30"
-            android:paddingRight="@dimen/dp30">
+            android:paddingRight="@dimen/dp30"
+            android:layout_marginTop="@dimen/dp40">
 
             <EditText
                 android:id="@+id/editTextEmailID"
@@ -67,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
-                android:layout_marginBottom="@dimen/dp16"
+                android:layout_marginBottom="@dimen/dp0"
                 android:layout_marginTop="@dimen/dp16"
                 android:background="@drawable/rectangle_box"
                 android:drawablePadding="@dimen/dp10"
@@ -108,7 +109,7 @@
                     android:id="@+id/forgotPasswordView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:gravity="right"
                     android:padding="@dimen/dp6"
                     android:text="@string/forgot_password"
                     android:textColor="@color/white"

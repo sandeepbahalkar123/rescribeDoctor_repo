@@ -189,7 +189,6 @@
                         android:background="@color/otp_background_layout"
                         android:focusable="false"
                         android:paddingBottom="@dimen/dp20"
-                        android:paddingTop="@dimen/dp10"
                         android:visibility="visible" />
                 </LinearLayout>
 
@@ -248,7 +247,6 @@
                             android:background="@color/otp_background_layout"
                             android:focusable="false"
                             android:paddingBottom="@dimen/dp10"
-                            android:paddingTop="@dimen/dp10"
                             android:visibility="visible" />
 
                     </LinearLayout>

@@ -36,7 +36,7 @@ public class ForgotPasswordWebViewActivity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view_forgot_password);
         ButterKnife.bind(this);
-        titleTextView.setText(getString(R.string.forgot_password));
+        titleTextView.setText(getString(R.string.forgot_password_header));
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
 
