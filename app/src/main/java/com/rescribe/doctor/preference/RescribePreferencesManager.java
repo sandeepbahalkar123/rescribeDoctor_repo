@@ -54,11 +54,11 @@ public class RescribePreferencesManager {
     }
 
 
-    public static void putListString(String key, ArrayList<String> stringList) {
+    public static void putListString(String key, ArrayList<String> stringList, Context mContext) {
         if (key == null) return;
         if (stringList ==null)return;
         String[] myStringList = stringList.toArray(new String[stringList.size()]);
-        sharedPreferences.edit().putString(key, TextUtils.join(",=,", myStringList)).apply();
+        getSharedPreference(mContext).edit().putString(key, TextUtils.join(",=,", myStringList)).apply();
     }
 
     public static String getString(String key, Context context) {
