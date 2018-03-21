@@ -18,6 +18,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -200,7 +201,11 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADDRESS, docDetail.getDocAddress(), getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, editTextPassword.getText().toString(), getActivity());
-                RescribePreferencesManager.putListString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.D0C_SERVICES, docDetail.getDocService());
+                ArrayList<String> docservice=new ArrayList<>();
+                for(ClinicList clinicList: docDetail.getClinicList()){
+                    docservice =clinicList.getServices();
+                }
+                RescribePreferencesManager.putListString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.D0C_SERVICES, docservice, getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, docDetail.getDocInfo(), getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_EXPERIENCE, docDetail.getDocExperience(), getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, docDetail.getDocDegree(), getActivity());

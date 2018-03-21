@@ -45,7 +45,7 @@ public class CompletedOpd implements Parcelable
     private String patientEmail;
     @SerializedName("outstandingAmount")
     @Expose
-    private Integer outstandingAmount;
+    private String outstandingAmount;
     @SerializedName("patientCity")
     @Expose
     private String cityName;
@@ -89,7 +89,7 @@ public class CompletedOpd implements Parcelable
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
         this.profilePhoto = ((String) in.readValue((String.class.getClassLoader())));
         this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
-        this.outstandingAmount = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.outstandingAmount = ((String) in.readValue((String.class.getClassLoader())));
         this.cityName = ((String) in.readValue((String.class.getClassLoader())));
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.opdid = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -204,11 +204,11 @@ public class CompletedOpd implements Parcelable
         this.patientEmail = patientEmail;
     }
 
-    public Integer getOutstandingAmount() {
+    public String getOutstandingAmount() {
         return outstandingAmount;
     }
 
-    public void setOutstandingAmount(Integer outstandingAmount) {
+    public void setOutstandingAmount(String outstandingAmount) {
         this.outstandingAmount = outstandingAmount;
     }
 

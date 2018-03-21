@@ -1,12 +1,15 @@
 package com.rescribe.doctor.model.login;
 
+import java.util.ArrayList;
+import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ClinicList implements Parcelable {
+public class ClinicList implements Parcelable
+{
 
     @SerializedName("clinicName")
     @Expose
@@ -14,6 +17,12 @@ public class ClinicList implements Parcelable {
     @SerializedName("clinicAddress")
     @Expose
     private String clinicAddress;
+    @SerializedName("locationId")
+    @Expose
+    private Integer locationId;
+    @SerializedName("services")
+    @Expose
+    private ArrayList<String> services = new ArrayList<>();
     public final static Parcelable.Creator<ClinicList> CREATOR = new Creator<ClinicList>() {
 
 
@@ -28,11 +37,14 @@ public class ClinicList implements Parcelable {
             return (new ClinicList[size]);
         }
 
-    };
+    }
+            ;
 
     protected ClinicList(Parcel in) {
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.clinicAddress = ((String) in.readValue((String.class.getClassLoader())));
+        this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        in.readList(this.services, (java.lang.String.class.getClassLoader()));
     }
 
     public ClinicList() {
@@ -54,9 +66,27 @@ public class ClinicList implements Parcelable {
         this.clinicAddress = clinicAddress;
     }
 
+    public Integer getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(Integer locationId) {
+        this.locationId = locationId;
+    }
+
+    public ArrayList<String> getServices() {
+        return services;
+    }
+
+    public void setServices(ArrayList<String> services) {
+        this.services = services;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(clinicName);
         dest.writeValue(clinicAddress);
+        dest.writeValue(locationId);
+        dest.writeList(services);
     }
 
     public int describeContents() {

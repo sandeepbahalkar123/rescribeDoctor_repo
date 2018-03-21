@@ -60,6 +60,7 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
     private void initialize() {
         mContext = SupportActivity.this;
         titleTextView.setText(getString(R.string.support));
+        backImageView.setVisibility(View.GONE);
     }
 
     @NeedsPermission(Manifest.permission.CALL_PHONE)

@@ -134,6 +134,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     CustomTextView aboutDoctorDescription;
     @BindView(R.id.aboutLayout)
     LinearLayout aboutLayout;
+
     private Context mContext;
     private BottomSheetDialog mBottomSheetDialog;
     private String doctorNameToDisplay;
@@ -159,6 +160,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         mArrayListDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
         int size = mArrayListDoctorLocationModel.size();
         titleTextView.setText(getString(R.string.profile));
+        backImageView.setVisibility(View.GONE);
         aboutDoctorDescription.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, mContext));
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
             doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
