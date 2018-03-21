@@ -1,6 +1,7 @@
 package com.rescribe.doctor.ui.activities.add_records;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -114,22 +115,14 @@ public class AddRecordsActivity extends AppCompatActivity implements DoctorSpinn
 
     private int PLACE_PICKER_REQUEST = 1;
 
-    private boolean isManual = true;
-
     private Context mContext;
     private DoctorSpinnerAdapter doctorSpinnerAdapter;
     private DatePickerDialog datePickerDialog;
-    private String mSelectDoctorString = "";
-    private String mSelectDateString = "Select Date";
-    private boolean isDatesThere = false;
-    private String visitDate;
     private int doctorId = -1;
     private int opdId;
-    private int mSelectedId;
     private MyRecordsHelper myRecordsHelper;
     private ColorGenerator mColorGenerator;
     private int mImageSize;
-    private String mSelectDatePicker = "";
     private String doctorNameString;
 
     @Override
@@ -183,12 +176,8 @@ public class AddRecordsActivity extends AppCompatActivity implements DoctorSpinn
                 dateSpinnerLayout.setVisibility(View.GONE);
                 selectDateLayout.setVisibility(View.VISIBLE);
                 selectAddressLayout.setVisibility(View.GONE);
-                isManual = true;
-                mSelectedId = -1;
                 doctorId = -1;
                 opdId = 0;
-                mSelectDoctorString = "";
-                mSelectDateString = getResources().getString(R.string.select_date_text);
                 break;
             case R.id.selectDateTextView:
                 datePickerDialog.show(getSupportFragmentManager(), getResources().getString(R.string.select_date_text));
@@ -201,53 +190,7 @@ public class AddRecordsActivity extends AppCompatActivity implements DoctorSpinn
                 requestAddDoctorModel.setAddress(selectAddressText.getText().toString());
                 requestAddDoctorModel.setName(mSelectDoctorName.getText().toString());
                 myRecordsHelper.addDoctor(requestAddDoctorModel);
-               /* if (isManual) {
-                    if (mSelectDoctorName.getText().length() == 0) {
-                        CommonMethods.showToast(mContext, getResources().getString(R.string.please_select_doctor_name));
-                        return;
-                    }
-                    if (selectDate.getText().length() == 0) {
-                        CommonMethods.showToast(mContext, getResources().getString(R.string.please_enter_date));
-                        return;
-                    }
-                    if (selectAddressText.getText().length() == 0) {
-                        CommonMethods.showToast(mContext, getResources().getString(R.string.please_enter_doctor_address));
-                        return;
-                    }
-                    visitDate = mSelectDatePicker;
-                } else {
-                    doctorId = mSelectedId;
-                    if (isDatesThere) {
-                        if (mSelectDoctorString.length() == 0) {
-                            CommonMethods.showToast(mContext, getResources().getString(R.string.please_select_doctor_name));
-                            return;
-                        }
-                        if (mSelectDateString.equals(getResources().getString(R.string.select_date_text))) {
-                            CommonMethods.showToast(mContext, getResources().getString(R.string.please_enter_date));
-                            return;
-                        }
-                        visitDate = mSelectDateString;
-                    } else {
-                        if (mSelectDoctorString.length() == 0) {
-                            CommonMethods.showToast(mContext, getResources().getString(R.string.please_select_doctor_name));
-                            return;
-                        }
-                        if (selectDate.getText().length() == 0) {
-                            CommonMethods.showToast(mContext, getResources().getString(R.string.please_enter_date));
-                            return;
-                        }
-                        visitDate = mSelectDatePicker;
-                    }
-                }
 
-                if (doctorId != -1) {
-                    callRecordsActivity();
-                } else {
-                    RequestAddDoctorModel requestAddDoctorModel = new RequestAddDoctorModel();
-                    requestAddDoctorModel.setAddress(selectAddressText.getText().toString());
-                    requestAddDoctorModel.setSenderName(mSelectDoctorName.getText().toString());
-                    myRecordsHelper.addDoctor(requestAddDoctorModel);
-                }*/
                 callRecordsActivity();
                 break;
             case R.id.searchButton:
@@ -266,7 +209,6 @@ public class AddRecordsActivity extends AppCompatActivity implements DoctorSpinn
         Intent intent = new Intent(mContext, SelectedRecordsActivity.class);
         intent.putExtra(RescribeConstants.DOCTORS_ID, doctorId);
         intent.putExtra(RescribeConstants.OPD_ID, opdId);
-        intent.putExtra(RescribeConstants.VISIT_DATE, visitDate);
         startActivity(intent);
     }
 
@@ -326,7 +268,6 @@ public class AddRecordsActivity extends AppCompatActivity implements DoctorSpinn
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
         selectDate.setText(CommonMethods.ordinal(String.valueOf(dayOfMonth)) + " " + CommonMethods.getFormattedDate(String.valueOf(monthOfYear + 1), RescribeConstants.DATE_PATTERN.MM, RescribeConstants.DATE_PATTERN.MMM) + " " + year);
-        mSelectDatePicker = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
     }
 
     @Override
@@ -362,23 +303,20 @@ public class AddRecordsActivity extends AppCompatActivity implements DoctorSpinn
                 });
 
                 mSelectDoctorName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @SuppressLint("CheckResult")
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                         CommonMethods.hideKeyboard(AddRecordsActivity.this);
 
                         final ArrayList<VisitDate> spinnerList = new ArrayList<VisitDate>();
-                        mSelectDateString = getResources().getString(R.string.select_date_text);
                         if (doctorSpinnerAdapter.getDoctor(position).getDoctorName().contains("Dr.")) {
                             doctorNameString = doctorSpinnerAdapter.getDoctor(position).getDoctorName();
                         } else {
                             doctorNameString = "Dr. " + doctorSpinnerAdapter.getDoctor(position).getDoctorName();
                         }
-                        mSelectDoctorString = doctorSpinnerAdapter.getDoctor(position).getDoctorName();
 
-                        mSelectedId = doctorSpinnerAdapter.getDoctor(position).getId();
                         if (!doctorSpinnerAdapter.getDoctor(position).getDates().isEmpty()) {
-                            isDatesThere = true;
 
                             dropdownLayout.setVisibility(View.VISIBLE);
                             autocompleteLayout.setVisibility(View.GONE);
@@ -412,7 +350,7 @@ public class AddRecordsActivity extends AppCompatActivity implements DoctorSpinn
 
                             selectAddressLayout.setVisibility(View.GONE);
                         } else {
-                            isDatesThere = false;
+
 
                             mSelectDoctorName.setText("");
                             dropdownLayout.setVisibility(View.VISIBLE);
@@ -446,8 +384,6 @@ public class AddRecordsActivity extends AppCompatActivity implements DoctorSpinn
                             selectAddressLayout.setVisibility(View.GONE);
                         }
 
-                        isManual = false;
-
                         for (VisitDate date : doctorSpinnerAdapter.getDoctor(position).getDates()) {
                             String formatedDate = CommonMethods.getFormattedDate(date.getOpdDate(), RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DD_MM_YYYY);
 
@@ -478,7 +414,6 @@ public class AddRecordsActivity extends AppCompatActivity implements DoctorSpinn
                         selectDateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                mSelectDateString = spinnerList.get(position).getOpdDate();
                                 opdId = spinnerList.get(position).getOpdId();
                             }
 

@@ -232,4 +232,6 @@
     <string name="appointment_completed_button">Appointment\nCompleted</string>
     <string name="appointment_cancelled_button">Appointment\nCancelled</string>
     <string name="years">yrs -\u0020</string>
+    <string name="skip">Skip</string>
+    <string name="do_you_want_to_restore_backup">Do you want to restore backup?</string>
 </resources>

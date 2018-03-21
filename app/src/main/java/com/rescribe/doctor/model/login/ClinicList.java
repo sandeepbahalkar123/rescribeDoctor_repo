@@ -11,6 +11,9 @@ import com.google.gson.annotations.SerializedName;
 public class ClinicList implements Parcelable
 {
 
+    @SerializedName("clinicId")
+    @Expose
+    private Integer clinicId;
     @SerializedName("clinicName")
     @Expose
     private String clinicName;
@@ -37,10 +40,10 @@ public class ClinicList implements Parcelable
             return (new ClinicList[size]);
         }
 
-    }
-            ;
+    };
 
     protected ClinicList(Parcel in) {
+        this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.clinicAddress = ((String) in.readValue((String.class.getClassLoader())));
         this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -48,6 +51,14 @@ public class ClinicList implements Parcelable
     }
 
     public ClinicList() {
+    }
+
+    public Integer getClinicId() {
+        return clinicId;
+    }
+
+    public void setClinicId(Integer clinicId) {
+        this.clinicId = clinicId;
     }
 
     public String getClinicName() {
@@ -83,6 +94,7 @@ public class ClinicList implements Parcelable
     }
 
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(clinicId);
         dest.writeValue(clinicName);
         dest.writeValue(clinicAddress);
         dest.writeValue(locationId);

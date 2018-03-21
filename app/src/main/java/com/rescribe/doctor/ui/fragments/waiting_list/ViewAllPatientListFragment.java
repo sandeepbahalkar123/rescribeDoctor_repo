@@ -59,6 +59,8 @@ import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
+
 /**
  * Created by jeetal on 22/2/18.
  */
@@ -137,9 +139,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 setAdapter();
             }
         }
-        clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-
-        {
+        clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mLocationId = waitingclinicLists.get(i).getLocationId();
@@ -160,6 +160,14 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
             }
         });
+
+        for (int index = 0; index < waitingclinicLists.size(); index++) {
+            WaitingclinicList waitingclinicL = waitingclinicLists.get(index);
+            if (waitingclinicL.getLocationId() == getArguments().getInt(LOCATION_ID)) {
+                clinicListSpinner.setSelection(index);
+                break;
+            }
+        }
     }
 
 

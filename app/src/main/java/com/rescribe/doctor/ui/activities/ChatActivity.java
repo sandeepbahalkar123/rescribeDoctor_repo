@@ -1297,19 +1297,19 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     };
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Intent mIntent = new Intent(this, MQTTService.class);
-        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mBounded) {
-            unbindService(mConnection);
-            mBounded = false;
+        protected void onStart() {
+            super.onStart();
+            Intent mIntent = new Intent(this, MQTTService.class);
+            bindService(mIntent, mConnection, BIND_AUTO_CREATE);
         }
+
+        @Override
+        protected void onStop() {
+            super.onStop();
+            if (mBounded) {
+                unbindService(mConnection);
+                mBounded = false;
+            }
 
         if (mRecorder != null) {
             try {

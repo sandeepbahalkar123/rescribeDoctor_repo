@@ -41,16 +41,20 @@ import java.util.List;
 import java.util.Map;
 
 import static com.android.volley.Request.Method.GET;
-import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class ChatBackUpService extends Service {
     private static final String LOG_TAG = "ChatBackUpService";
+
+    public static final String STATUS = "status";
+    public static final String CHAT_BACKUP = "com.rescribe.doctor.BACKUP";
+
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
     private int patientIndex = 0;
+    private boolean isFailed = true;
     private AppDBHelper appDBHelper;
 
     @Override
@@ -68,67 +72,67 @@ public class ChatBackUpService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
 
-        if (intent.getAction().equals(RescribeConstants.STARTFOREGROUND_ACTION)) {
+        if (intent.getAction() != null) {
+            if (intent.getAction().equals(RescribeConstants.STARTFOREGROUND_ACTION)) {
 
-            RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.BACK_UP, true, this);
+                Log.i(LOG_TAG, "Received Start Foreground Intent ");
+                Intent notificationIntent = new Intent(this, PatientConnectActivity.class);
+                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                        notificationIntent, 0);
 
-            Log.i(LOG_TAG, "Received Start Foreground Intent ");
-            Intent notificationIntent = new Intent(this, PatientConnectActivity.class);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0);
+                mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mBuilder = new NotificationCompat.Builder(this);
+                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 
-            mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            mBuilder = new NotificationCompat.Builder(this);
-            Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+                Notification notification = mBuilder
+                        .setContentTitle("Chat Backup")
+                        .setTicker("Restoring messages")
+                        .setContentText("Restoring messages")
+                        .setSmallIcon(R.drawable.logosmall)
+                        .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                        .setContentIntent(pendingIntent).build();
 
-            Notification notification = mBuilder
-                    .setContentTitle("Chat Backup")
-                    .setTicker("Restoring messages")
-                    .setContentText("Restoring messages")
-                    .setSmallIcon(R.drawable.logosmall)
-                    .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                    .setContentIntent(pendingIntent).build();
+                startForeground(RescribeConstants.FOREGROUND_SERVICE, notification);
 
-            startForeground(RescribeConstants.FOREGROUND_SERVICE, notification);
-
-            // Start Downloading
-            try {
-                request();
-            } catch (JSONException e) {
-                e.printStackTrace();
+                // Start Downloading
+                try {
+                    request();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-
+        } else stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }
 
     private void request() throws JSONException {
 
-        mBuilder.setContentText("Uploading")
+        mBuilder.setContentText("Backup Restoring")
                 // Removes the progress bar
                 .setProgress(0, 0, true);
         mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
 
         String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this);
-        StringRequest stringRequest = new StringRequest(GET, Config.GET_PATIENT_LIST + id,
+        StringRequest stringRequest = new StringRequest(GET, Config.BASE_URL + Config.GET_PATIENT_LIST + id,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         ChatPatientConnectModel patientConnectModel = new Gson().fromJson(response, ChatPatientConnectModel.class);
                         if (patientConnectModel.getCommon().getStatusCode().equals(SUCCESS)) {
                             restoreMessages(patientConnectModel.getPatientListData().getPatientDataList());
+                        } else {
+                            stopSelf();
+                            CommonMethods.showToast(ChatBackUpService.this, patientConnectModel.getCommon().getStatusMessage());
+                            RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.BACK_UP, true, ChatBackUpService.this);
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        mBuilder.setContentText("Restore Failed")
-                                // Removes the progress bar
-                                .setProgress(0, 0, false);
-                        mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
+                        restored();
                     }
                 }
         )
@@ -159,7 +163,7 @@ public class ChatBackUpService extends Service {
         PatientData patientData = patientDataList.get(patientIndex);
 
         String docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this);
-        String url = Config.CHAT_HISTORY + "user1id=" + docId + "&user2id=" + patientData.getId();
+        String url = Config.BASE_URL + Config.CHAT_HISTORY + "user1id=" + docId + "&user2id=" + patientData.getId();
 
         patientIndex += 1;
 
@@ -167,9 +171,8 @@ public class ChatBackUpService extends Service {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        ChatPatientConnectModel patientConnectModel = new Gson().fromJson(response, ChatPatientConnectModel.class);
-                        if (patientConnectModel.getCommon().getStatusCode().equals(SUCCESS)) {
-                            ChatHistoryModel chatHistoryModel = new Gson().fromJson(response, ChatHistoryModel.class);
+                        ChatHistoryModel chatHistoryModel = new Gson().fromJson(response, ChatHistoryModel.class);
+                        if (chatHistoryModel.getCommon().getStatusCode().equals(SUCCESS)) {
                             List<ChatHistory> chatHistory = chatHistoryModel.getHistoryData().getChatHistory();
 
                             for (int index = chatHistory.size() - 1; index == 0; index -= 1) {
@@ -201,35 +204,23 @@ public class ChatBackUpService extends Service {
 
                                 appDBHelper.insertChatMessage(messageL);
                             }
-                        }
 
-                        if (patientDataList.size() > patientIndex) {
-                            restoreMessages(patientDataList);
-                        } else {
-
-                            mBuilder.setContentText("Uploading")
-                                    // Removes the progress bar
-                                    .setProgress(0, 0, false);
-                            mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
+                            if (patientDataList.size() > patientIndex) {
+                                restoreMessages(patientDataList);
+                            } else {
+                                isFailed = false;
+                                restored();
+                            }
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        mBuilder.setContentText("Restore Failed")
-                                // Removes the progress bar
-                                .setProgress(0, 0, false);
-                        mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
-
                         if (patientDataList.size() > patientIndex) {
                             restoreMessages(patientDataList);
                         } else {
-
-                            mBuilder.setContentText("Uploading")
-                                    // Removes the progress bar
-                                    .setProgress(0, 0, false);
-                            mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
+                            restored();
                         }
                     }
                 }
@@ -252,6 +243,22 @@ public class ChatBackUpService extends Service {
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(1000 * 60, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         stringRequest.setTag("BackUpRequest");
         RequestPool.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
+    private void restored() {
+
+        patientIndex = 0;
+
+        Intent intent = new Intent(CHAT_BACKUP);
+        intent.putExtra(STATUS, isFailed);
+        sendBroadcast(intent);
+
+        mBuilder.setContentText(!isFailed ? "Backup Restored" : "Backup Restore Failed")
+                // Removes the progress bar
+                .setProgress(0, 0, false);
+        mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
+
+        RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.BACK_UP, isFailed, ChatBackUpService.this);
     }
 
     @Override

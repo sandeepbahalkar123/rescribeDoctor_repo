@@ -139,6 +139,8 @@ public class MQTTService extends Service {
                                         if (!mqttClient.isConnected()) {
                                             mqttClient.reconnect();
                                         } else Log.d(TAG, "Connected");
+
+                                        new CheckPendingUploads(MQTTService.this);
                                     }
                                 } catch (MqttException ignored) {
                                     ignored.getStackTrace();

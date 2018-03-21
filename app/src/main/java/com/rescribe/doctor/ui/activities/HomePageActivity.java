@@ -29,6 +29,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.dashboard.DashBoardAppointmentListAdapter;
 import com.rescribe.doctor.adapters.dashboard.DashBoardWaitingList;
@@ -43,6 +44,7 @@ import com.rescribe.doctor.model.dashboard.DashboardBaseModel;
 import com.rescribe.doctor.model.dashboard.DashboardDetails;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationBaseModel;
 import com.rescribe.doctor.model.login.ActiveRequest;
+import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
@@ -169,16 +171,19 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     private void initialize() {
 
+        String doctorDetails = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, this);
+        final DocDetail docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
+
         mDashboardHelper = new DashboardHelper(this, this);
         mDashboardHelper.doDoctorGetLocationList();
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
             doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
         } else {
             doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
-
         }
+
         doctorNameTextView.setText(doctorNameToDisplay);
-        aboutDoctorTextView.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, mContext));
+        aboutDoctorTextView.setText(docDetail.getDocDegree());
         setUpImage();
 
         //setWaitingOrAppointmentLayoutHere

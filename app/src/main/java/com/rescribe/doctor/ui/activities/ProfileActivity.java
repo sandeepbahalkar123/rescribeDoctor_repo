@@ -32,11 +32,14 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.bottom_menus.BottomMenuAdapter;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
+import com.rescribe.doctor.model.login.ClinicList;
+import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.dashboard.SettingsActivity;
@@ -138,11 +141,12 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     private Context mContext;
     private BottomSheetDialog mBottomSheetDialog;
     private String doctorNameToDisplay;
-    private ArrayList<String> mServiceslist = new ArrayList<>();
+
     private ArrayList<DoctorLocationModel> mArrayListDoctorLocationModel = new ArrayList<>();
     private ColorGenerator mColorGenerator;
     private String mDoctorName;
     private DoctorLocationModel doctorLocationModel;
+    private ArrayList<String> mServices;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,20 +165,24 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         int size = mArrayListDoctorLocationModel.size();
         titleTextView.setText(getString(R.string.profile));
         backImageView.setVisibility(View.GONE);
-        aboutDoctorDescription.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, mContext));
+
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
             doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
         } else {
-
             doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
         }
         doctorName.setText(doctorNameToDisplay);
-        countDoctorExperience.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_EXPERIENCE, mContext));
-        doctorExperience.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_EXPERIENCE, mContext) + " years of experience");
-        doctorSpecialization.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, mContext));
-        mServiceslist = RescribePreferencesManager.getListString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.D0C_SERVICES);
-        setServicesInView(mServiceslist);
-        if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, mContext) == true) {
+
+        String doctorDetails = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, this);
+        final DocDetail docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
+
+        aboutDoctorDescription.setText(docDetail.getDocInfo());
+
+        countDoctorExperience.setText(docDetail.getDocExperience());
+        doctorExperience.setText(docDetail.getDocExperience() + " years of experience");
+        doctorSpecialization.setText(docDetail.getDocDegree());
+
+        if (docDetail.isPremium()) {
             premiumType.setText(RescribeConstants.PREMIUM);
             premiumType.setVisibility(View.VISIBLE);
         } else {
@@ -238,16 +246,21 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             clinicNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
                     doctorLocationModel = mArrayListDoctorLocationModel.get(position);
+
+                    for (ClinicList clinicList:docDetail.getClinicList()) {
+                        if (clinicList.getLocationId().equals(doctorLocationModel.getLocationId())) {
+                            setServicesInView(clinicList.getServices());
+                            break;
+                        }
+                    }
+
                     if (doctorLocationModel.getClinicName().equals("")) {
                         clinicName.setVisibility(View.GONE);
                     } else {
                         clinicName.setVisibility(View.VISIBLE);
                         clinicName.setText("" + doctorLocationModel.getClinicName());
-
                     }
-
                 }
 
                 @Override
@@ -275,6 +288,8 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
     private void setServicesInView(ArrayList<String> receivedDocService) {
         //---------
+
+        mServices = receivedDocService;
 
         int receivedDocServiceSize = receivedDocService.size();
         if (receivedDocServiceSize > 0) {
@@ -327,9 +342,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             case R.id.userInfoTextView:
                 break;
             case R.id.readMoreDocServices:
-
-                showServiceDialog();
-
+                showServiceDialog(mServices);
                 break;
 
             case R.id.viewAllClinicsOnMap: // on view-all location clicked
@@ -348,7 +361,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         }
     }
 
-    public void showServiceDialog() {
+    public void showServiceDialog(ArrayList<String> mServiceslist) {
         mBottomSheetDialog = new BottomSheetDialog(mContext, R.style.Material_App_BottomSheetDialog);
         View v = getLayoutInflater().inflate(R.layout.services_dialog_modal, null);
         ///  CommonMethods.setBackground(v, new ThemeDrawable(R.array.bg_window));
