@@ -182,6 +182,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".services.MQTTService" />
+        <service android:name=".services.ChatBackUpService" />
 
         <receiver
             android:name=".broadcast_receivers.ReplayBroadcastReceiver"

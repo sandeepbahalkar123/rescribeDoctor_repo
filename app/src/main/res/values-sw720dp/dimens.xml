@@ -61,6 +61,6 @@
     <dimen name="dp26">39dp</dimen>
     <dimen name="dp86">129dp</dimen>
     <dimen name="dp222">333dp</dimen>
-    <dimen name="dashboard_back">426dp</dimen>
+    <dimen name="dashboard_back">375</dimen>
     <dimen name="dp130">195dp</dimen>
 </resources>

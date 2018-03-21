@@ -128,7 +128,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp12"
                         app:customFont="@string/roboto_medium"
-                        tools:text="36 yrs -" />
+                        tools:text="36 yrs - " />
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/patientGenderTextView"
@@ -137,7 +137,7 @@
                         android:textColor="@color/rating_color"
                         android:textSize="@dimen/sp12"
                         app:customFont="@string/roboto_medium"
-                        tools:text=" Male" />
+                        tools:text="Male" />
                 </LinearLayout>
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView

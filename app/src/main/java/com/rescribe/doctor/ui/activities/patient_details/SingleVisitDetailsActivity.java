@@ -38,6 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_ATTACHMENTS;
+import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_VITALS;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.TEXT_LIMIT;
 
 /**
@@ -136,9 +137,16 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 List<PatientHistory> listDataList = mSingleVisitAdapter.getListDataList();
                 List<VisitCommonData> childObject = listDataList.get(groupPosition).getCommonData();
 
-                if (childObject.size() == 1 && !listDataList.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_ATTACHMENTS)) {
-                    if (childObject.get(0).getName().length() <= TEXT_LIMIT)
-                        mHistoryExpandableListView.collapseGroup(groupPosition);
+                if (childObject.size() == 1) {
+
+                    boolean flag = true;
+                    if (listDataList.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_ATTACHMENTS) || listDataList.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_VITALS))
+                        flag = false;
+
+                    if (flag) {
+                        if (childObject.get(0).getName().length() <= TEXT_LIMIT)
+                            mHistoryExpandableListView.collapseGroup(groupPosition);
+                    }
                 }
 
                 collapseOther(groupPosition);

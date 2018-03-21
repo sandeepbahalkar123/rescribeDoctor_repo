@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
@@ -111,7 +112,7 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
                     intent.putExtra(Intent.EXTRA_TEXT, "your_text");
                     startActivity(intent);
                 } catch (ActivityNotFoundException e) {
-                    //TODO smth
+                    Toast.makeText(mContext, "Respective Application not supported to this device", Toast.LENGTH_SHORT).show();
                 }
 
                 break;

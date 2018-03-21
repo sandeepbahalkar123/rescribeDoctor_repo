@@ -3,6 +3,7 @@ package com.rescribe.doctor.ui.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -166,9 +167,6 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
         }
         doctorName.setText(doctorNameToDisplay);
-        SpannableString content = new SpannableString("Services");
-        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        servicesHeaderView.setText(content);
         countDoctorExperience.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_EXPERIENCE, mContext));
         doctorExperience.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_EXPERIENCE, mContext) + " years of experience");
         doctorSpecialization.setText(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, mContext));

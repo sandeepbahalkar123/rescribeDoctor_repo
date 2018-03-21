@@ -84,17 +84,15 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         if (position % 2 == 0) {
             holder.parentDataContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bg_white_color));
             holder.sideBarView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.tagColor));
-
         } else {
             holder.parentDataContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bg_grey_color));
             holder.sideBarView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.statusbar));
-
         }
 
         String opdLabel = patientHistoryInfoObject.getOpdLabel();
         String opdLabelToShow = opdLabel.substring(0, 1).toUpperCase() + opdLabel.substring(1);
         holder.doctorName.setText(opdLabelToShow);
-        holder.doctorAddress.setText(patientHistoryInfoObject.getOpdValue());
+        holder.doctorAddress.setText(CommonMethods.stripExtension(patientHistoryInfoObject.getOpdValue()));
         holder.time.setText(CommonMethods.formatDateTime(patientHistoryInfoObject.getOpdTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
         SpannableString patientID = new SpannableString("VIEW MORE");
         patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
@@ -105,19 +103,17 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
             holder.circularBulletChildElement.setVisibility(View.GONE);
             holder.upperLine.setVisibility(View.INVISIBLE);
             holder.circularBulletMainElement.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.blue_dot));
-
         } else {
             holder.circularBulletMainElement.setVisibility(View.GONE);
             holder.circularBulletChildElement.setVisibility(View.VISIBLE);
             holder.upperLine.setVisibility(View.VISIBLE);
             holder.circularBulletChildElement.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.dark_blue_circle));
-
         }
+
         holder.viewMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate(), String.valueOf(patientHistoryInfoObject.getOpdId()),patientHistoryInfoObject.getOpdTime());
-
+                mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate(), String.valueOf(patientHistoryInfoObject.getOpdId()), patientHistoryInfoObject.getOpdTime());
             }
         });
 
