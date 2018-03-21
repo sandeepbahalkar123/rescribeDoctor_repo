@@ -15,6 +15,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -29,6 +30,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -316,7 +319,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                                 dateTime.setTextColor(Color.WHITE);
                             } else {
                                 dateTime.setText(chatList.getOnlineStatus());
-                                setUserStatusColor(chatList.getOnlineStatus());
+                                //setUserStatusColor(chatList.getOnlineStatus());
                             }
                         }
                     } else if (topic.equals(TOPIC[USER_STATUS_TOPIC])) {
@@ -329,7 +332,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
             } else CommonMethods.Log(TAG, "null action");
         }
     };
-
+/*
     private void setUserStatusColor(String onlineStatus) {
         if (onlineStatus.equalsIgnoreCase(ONLINE)) {
             onlineStatusIcon.setVisibility(View.VISIBLE);
@@ -341,7 +344,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
             dateTime.setTextColor(ContextCompat.getColor(ChatActivity.this, R.color.grey_500));
             onlineStatusIcon.setVisibility(View.INVISIBLE);
         }
-    }
+    }*/
 
     void checkDownloaded() {
         DownloadManager.Query query = new DownloadManager.Query();
@@ -435,7 +438,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         if (gotIntent.getAction() != null) {
             mPatientsDetails = gotIntent.getStringExtra(RescribeConstants.PATIENT_DETAILS);
-            mHospitalPatId = gotIntent.getIntExtra(RescribeConstants.PATIENT_HOS_PAT_ID,0);
+            mHospitalPatId = gotIntent.getIntExtra(RescribeConstants.PATIENT_HOS_PAT_ID, 0);
             if (gotIntent.getAction().equals(REPLY_ACTION)) {
                 chatList = new PatientData();
                 MQTTMessage mqttMessage = gotIntent.getParcelableExtra(ReplayBroadcastReceiver.MESSAGE_LIST);
@@ -502,12 +505,15 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         }
 
         dateTime.setText("" + chatList.getOnlineStatus());
-        setUserStatusColor(chatList.getOnlineStatus());
 
-        if (chatList.getOnlineStatus().equalsIgnoreCase(ONLINE))
+        // this online status feature removed for now. :START ;;;;;
+        //setUserStatusColor(chatList.getOnlineStatus());
+
+        /*   if (chatList.getOnlineStatus().equalsIgnoreCase(ONLINE))
             onlineStatusIcon.setVisibility(View.VISIBLE);
         else
-            onlineStatusIcon.setVisibility(View.GONE);
+            onlineStatusIcon.setVisibility(View.GONE);*/
+        // this online status feature removed for now.END ;;;;;
 
 //        chatHelper = new ChatHelper(this, this);
 
@@ -716,7 +722,9 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         ChatActivityPermissionsDispatcher.getAudioPermissionWithCheck(ChatActivity.this);
 
-        audioSlider.getTextView().setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_mic_red_24dp, 0, 0, 0);
+        Drawable drawable = AppCompatResources.getDrawable(this, R.drawable.ic_mic_red_24dp);
+        audioSlider.getTextView().setCompoundDrawablesWithIntrinsicBounds(drawable, drawable, null, null);
+
         audioSlider.getTextView().setCompoundDrawablePadding(CommonMethods.convertDpToPixel(5));
         audioSlider.setOnSlideCompleteListener(new SlideView.OnSlideCompleteListener() {
             @Override
@@ -924,7 +932,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         UploadService.UPLOAD_POOL_SIZE = 10;
     }
 
-    @OnClick({R.id.backButton, R.id.attachmentButton, R.id.cameraButton, R.id.sendButton, R.id.exitRevealDialog, R.id.camera, R.id.document, R.id.location,R.id.consultationLayout})
+    @OnClick({R.id.backButton, R.id.attachmentButton, R.id.cameraButton, R.id.sendButton, R.id.exitRevealDialog, R.id.camera, R.id.document, R.id.location, R.id.consultationLayout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.camera:

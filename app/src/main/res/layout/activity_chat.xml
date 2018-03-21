@@ -14,7 +14,7 @@
         <RelativeLayout
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="@dimen/dp56"
             android:background="?attr/colorPrimary"
             android:padding="@dimen/dp8"
             app:popupTheme="@style/AppTheme.PopupOverlay">
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/dp10"
-                android:src="@drawable/back_arrow_a_01" />
+                app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
 
             <RelativeLayout
                 android:id="@+id/profilePhotoLayout"
@@ -48,8 +48,8 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:visibility="gone"
                     android:layout_margin="2dp"
+                    android:visibility="gone"
                     app:srcCompat="@drawable/online_icon" />
 
             </RelativeLayout>
@@ -67,22 +67,22 @@
                     android:id="@+id/receiverName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="Rashmi Gangar"
-                    app:customFont="@string/roboto_bold"
                     android:layout_centerVertical="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/sp18" />
+                    android:textSize="@dimen/sp18"
+                    app:customFont="@string/roboto_bold"
+                    tools:text="Rashmi Gangar" />
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/onlineStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:customFont="@string/roboto_medium"
-                    tools:text="Last seen today at 10:30 am"
-                    android:visibility="gone"
                     android:layout_alignParentBottom="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/sp12" />
+                    android:textSize="@dimen/sp12"
+                    android:visibility="gone"
+                    app:customFont="@string/roboto_medium"
+                    tools:text="Last seen today at 10:30 am" />
 
             </RelativeLayout>
 

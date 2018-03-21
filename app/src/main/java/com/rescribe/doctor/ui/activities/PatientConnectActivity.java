@@ -11,10 +11,12 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -107,6 +109,7 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +161,12 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main, menu);
 
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        //---------------
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) item.getActionView();
+        SearchView.SearchAutoComplete theTextArea = searchView.findViewById(R.id.search_src_text);
+        theTextArea.setTextSize(getResources().getDimension(R.dimen.sp18));
+        //---------------
         searchView.setOnQueryTextListener(this);
 
         return super.onCreateOptionsMenu(menu);

@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.AppointmentAdapter;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
@@ -55,12 +56,15 @@ import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
 import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
@@ -125,6 +129,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     }
 
     private void init() {
+
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         mBottomMenuList = new ArrayList<>();
         isBookAndConfirmedRequired = args.getBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED);
@@ -186,10 +191,10 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                             mAppointListForBookAndConfirm.get(i).setPatientHeader(mPatientLists.get(0));
                         }
                     }
-                    if(!mAppointListForBookAndConfirm.isEmpty()) {
+                    if (!mAppointListForBookAndConfirm.isEmpty()) {
                         mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointListForBookAndConfirm, this);
                         expandableListView.setAdapter(mAppointmentAdapter);
-                    }else{
+                    } else {
                         expandableListView.setVisibility(View.GONE);
                         emptyListView.setVisibility(View.VISIBLE);
                     }

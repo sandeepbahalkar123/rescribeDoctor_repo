@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="?attr/actionBarSize"
+    android:layout_marginTop="@dimen/dp56"
     android:orientation="vertical">
 
     <LinearLayout
@@ -40,8 +40,8 @@
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/callTextView"
-            android:layout_width="222dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/dp222"
+            android:layout_height="@dimen/dp40"
             android:layout_marginTop="@dimen/dp8"
             android:background="@drawable/call_bg"
             android:gravity="center"
@@ -52,8 +52,8 @@
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/emailtextView"
-            android:layout_width="222dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/dp222"
+            android:layout_height="@dimen/dp40"
             android:layout_marginTop="@dimen/dp10"
             android:background="@drawable/type_here_bg"
             android:gravity="center"
@@ -78,27 +78,27 @@
             android:orientation="vertical">
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:textSize="@dimen/sp13"
                 android:id="@+id/rescribeTagLine"
                 android:layout_width="wrap_content"
-                android:textColor="@color/logo_color"
                 android:layout_height="wrap_content"
                 android:src="@drawable/scrog_product"
-                app:customFont="@string/roboto_regular"
-                android:text="Doctor Rescribe is a unique product of" />
+                android:text="Doctor Rescribe is a unique product of"
+                android:textColor="@color/logo_color"
+                android:textSize="@dimen/sp13"
+                app:customFont="@string/roboto_regular" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:textSize="@dimen/sp13"
                 android:id="@+id/taglinesecond"
-                android:textColor="@color/logo_color"
-                app:customFont="@string/roboto_regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_below="@id/rescribeTagLine"
                 android:layout_gravity="center"
                 android:src="@drawable/scrog_product"
-                android:text="SCORG TECHNOLOGIES Pvt.Ltd." />
+                android:text="SCORG TECHNOLOGIES Pvt.Ltd."
+                android:textColor="@color/logo_color"
+                android:textSize="@dimen/sp13"
+                app:customFont="@string/roboto_regular" />
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

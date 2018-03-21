@@ -59,7 +59,9 @@
             android:layout_gravity="bottom"
             android:background="@drawable/button_selector"
             android:text="@string/add_record"
+            android:fontFamily="@font/roboto_bold"
             android:textColor="@color/white"
+            android:textSize="@dimen/sp14"
             android:visibility="visible"
             tools:visibility="visible" />
 

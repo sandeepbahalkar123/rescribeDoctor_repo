@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,7 @@ public class EditTextWithDeleteButton extends LinearLayout {
                 R.styleable.EditTextWithDeleteButton, 0, 0);
         String hintText;
         int deleteButtonRes;
+        float textSize = 14;
         try {
             // get the text and colors specified using the names in attrs.xml
             hintText = a.getString(R.styleable.EditTextWithDeleteButton_hintText);
@@ -60,10 +62,15 @@ public class EditTextWithDeleteButton extends LinearLayout {
                     R.styleable.EditTextWithDeleteButton_deleteButtonRes,
                     R.drawable.icon_text_field_clear_btn);
 
+            textSize = a.getDimension(
+                    R.styleable.EditTextWithDeleteButton_textSize,
+                    14);
+
+
         } finally {
             a.recycle();
         }
-        editText = createEditText(context, hintText);
+        editText = createEditText(context, hintText, textSize);
         clearTextButton = createImageButton(context, deleteButtonRes);
 
         this.addView(editText);
@@ -126,7 +133,7 @@ public class EditTextWithDeleteButton extends LinearLayout {
     }
 
     @SuppressLint("NewApi")
-    private EditText createEditText(Context context, String hintText) {
+    private EditText createEditText(Context context, String hintText, float textSize) {
         editText = new EditText(context);
         editText.setRawInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -139,7 +146,7 @@ public class EditTextWithDeleteButton extends LinearLayout {
         editText.setHorizontallyScrolling(false);
         editText.setPadding((int) getResources().getDimension(R.dimen.dp12), (int) getResources().getDimension(R.dimen.dp8), 0, 0);
         editText.setVerticalScrollBarEnabled(true);
-        editText.setTextSize(14);
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         editText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         editText.setBackground(null);
         editText.setHint(hintText);

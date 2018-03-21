@@ -195,16 +195,16 @@
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_gravity="center"
                                 android:id="@+id/genderMaleIcon"
                                 style="@style/drawer_filter_gender_style"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:src="@drawable/filtergraymaleicon" />
 
                             <com.rescribe.doctor.ui.customesViews.CustomTextView
-                                android:layout_gravity="center"
                                 android:id="@+id/genderMaleText"
                                 style="@style/drawer_filter_gender_style"
+                                android:layout_gravity="center"
                                 android:text="@string/male"
                                 android:textColor="@color/gender_drawer"
                                 app:customFont="@string/roboto_regular" />
@@ -313,7 +313,7 @@
                             android:layout_marginStart="@dimen/dp10"
                             android:orientation="horizontal">
 
-                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                            <com.rescribe.doctor.ui.customesViews.CustomTextView
                                 android:id="@+id/clinicFeesSeekBarMinValue"
                                 style="@style/drawer_filter_header_layout"
                                 android:layout_width="wrap_content"
