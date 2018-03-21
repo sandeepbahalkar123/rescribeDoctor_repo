@@ -97,7 +97,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         titleTextView.setText(getString(R.string.appointments));
         setDateInToolbar();
         //Call api for AppointmentData
-        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetAppointmentData(date);
 
@@ -151,12 +151,12 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private void setDateInToolbar() {
         //Set Date in Required Format i.e 13thJuly'18
         dateTextview.setVisibility(View.VISIBLE);
-        String timeToShow = CommonMethods.formatDateTime(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.MMM_YY,
+        String timeToShow = CommonMethods.formatDateTime(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DATE_PATTERN.MMM_YY,
                 RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE).toLowerCase();
         String[] timeToShowSpilt = timeToShow.split(",");
         month = timeToShowSpilt[0].substring(0, 1).toUpperCase() + timeToShowSpilt[0].substring(1);
         mYear = timeToShowSpilt.length == 2 ? timeToShowSpilt[1] : "";
-        Date date = CommonMethods.convertStringToDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
+        Date date = CommonMethods.convertStringToDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         timeToShow = timeToShow.substring(0, 1).toUpperCase() + timeToShow.substring(1);

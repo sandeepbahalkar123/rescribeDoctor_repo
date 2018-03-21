@@ -64,7 +64,6 @@ import butterknife.Unbinder;
 import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
-import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 
 /**
  * Created by jeetal on 31/1/18.
@@ -581,7 +580,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     private void callWaitingListApi() {
         RequestToAddWaitingList requestForWaitingListPatients = new RequestToAddWaitingList();
         requestForWaitingListPatients.setAddToList(addToArrayList);
-        requestForWaitingListPatients.setDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+        requestForWaitingListPatients.setDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
         requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
         mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);
     }

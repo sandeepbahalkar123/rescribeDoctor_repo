@@ -26,7 +26,6 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
-import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -144,10 +143,10 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
         if (patientObject.getAge().equals("") && !patientObject.getDateOfBirth().equals("")) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);
-            String getTodayDate = CommonMethods.getCurrentDate();
+            String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = patientObject.getDateOfBirth();
-            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate);
-            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate);
+            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             holder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
         } else if (!patientObject.getAge().equals("")) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);

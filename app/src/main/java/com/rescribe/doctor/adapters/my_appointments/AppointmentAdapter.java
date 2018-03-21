@@ -171,10 +171,10 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
         if (patientList.getAge().equals("") && !patientList.getDateOfBirth().equals("")) {
             viewHolder.patientAgeTextView.setVisibility(View.VISIBLE);
-            String getTodayDate = CommonMethods.getCurrentDate();
+            String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = patientList.getDateOfBirth();
-            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate);
-            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate);
+            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             viewHolder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
         } else if (!patientList.getAge().equals("")) {
             viewHolder.patientAgeTextView.setVisibility(View.VISIBLE);
@@ -389,10 +389,10 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
         if (appointmentListObject.getPatientHeader().getAge().equals("") && !appointmentListObject.getPatientHeader().getDateOfBirth().equals("")) {
             groupViewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);
-            String getTodayDate = CommonMethods.getCurrentDate();
+            String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = appointmentListObject.getPatientHeader().getDateOfBirth();
-            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate);
-            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate);
+            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             groupViewHolder.mPatientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
         } else if (!appointmentListObject.getPatientHeader().getAge().equals("")) {
             groupViewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);

@@ -134,7 +134,7 @@ public class PatientDetailHelper implements ConnectionListener {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_PATIENT_HISTORY, Request.Method.POST, true);
         RequestForPatientHistory mRequestForPatientHistory = new RequestForPatientHistory();
         mRequestForPatientHistory.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
-        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         mRequestForPatientHistory.setPatientId(Integer.valueOf(patientID));
         mRequestForPatientHistory.setYear(year);
         mConnectionFactory.setPostParams(mRequestForPatientHistory);

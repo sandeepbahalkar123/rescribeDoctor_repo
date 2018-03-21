@@ -34,11 +34,11 @@ import com.rescribe.doctor.interfaces.DatePickerDialogListener;
 import com.rescribe.doctor.model.patient.patient_history.DatesData;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.joda.time.Weeks;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -51,7 +51,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class CommonMethods {
 
@@ -290,10 +289,10 @@ public class CommonMethods {
         return dString.toString();
     }
 
-    public static String getCurrentDate() // for enrollmentId
+    public static String getCurrentDate(String yyyyMmDd) // for enrollmentId
     {
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat(RescribeConstants.DD_MM_YYYY, Locale.US);
+        SimpleDateFormat df = new SimpleDateFormat(yyyyMmDd, Locale.US);
         return df.format(c.getTime());
     }
 
@@ -304,21 +303,10 @@ public class CommonMethods {
         snack.show();
     }
 
-    public static DateTime convertToDateTime(String stringToConvert) {
-        String[] newStringArray = convertStringToArray(stringToConvert);
-        int year = Integer.parseInt(newStringArray[2].trim());
-        int day = Integer.parseInt(newStringArray[0].trim());
-        int month = Integer.parseInt(newStringArray[1].trim());
-        LocalDate mLocalDate = new LocalDate(year, month, day);
-        DateTime firstDateTime = mLocalDate.toDateTime(LocalTime.fromDateFields(mLocalDate.toDate()));
-        return firstDateTime;
+    public static DateTime convertToDateTime(String stringToConvert, String currentFormat) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern(currentFormat);
+        return formatter.parseDateTime(stringToConvert);
     }
-
-    public static String[] convertStringToArray(String stringToConvert) {
-        String[] newStringArray = stringToConvert.split("-");
-        return newStringArray;
-    }
-
 
     public static String getCurrentTimeStamp(String expectedFormat) {
         try {

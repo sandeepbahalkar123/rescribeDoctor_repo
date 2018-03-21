@@ -81,7 +81,7 @@ public class DashboardHelper implements ConnectionListener {
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         //   mRequestAppointmentData.setDocId(2602);
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
-        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         mRequestAppointmentData.setDate(date);
         mConnectionFactory.setPostParams(mRequestAppointmentData);
         mConnectionFactory.setHeaderParams();

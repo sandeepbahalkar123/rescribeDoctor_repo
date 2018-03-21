@@ -33,7 +33,12 @@ public class ChatHistory implements Parcelable {
 
     @SerializedName("senderName")
     @Expose
-    private String name;
+    private String senderName;
+
+    @SerializedName("receiverName")
+    @Expose
+    private String receiverName;
+
     @SerializedName("speciality")
     @Expose
     private String specialization;
@@ -45,7 +50,12 @@ public class ChatHistory implements Parcelable {
     private int paidStatus;
     @SerializedName("senderImgUrl")
     @Expose
-    private String imageUrl = "";
+    private String senderImgUrl = "";
+
+    @SerializedName("receiverImgUrl")
+    @Expose
+    private String receiverImgUrl = "";
+
     @SerializedName("address")
     @Expose
     private String address;
@@ -81,10 +91,12 @@ public class ChatHistory implements Parcelable {
 
             instance.paidStatus = ((int) in.readValue((int.class.getClassLoader())));
 
-            instance.name = ((String) in.readValue((String.class.getClassLoader())));
+            instance.senderName = ((String) in.readValue((String.class.getClassLoader())));
+            instance.receiverName = ((String) in.readValue((String.class.getClassLoader())));
             instance.specialization = ((String) in.readValue((String.class.getClassLoader())));
             instance.onlineStatus = ((String) in.readValue((String.class.getClassLoader())));
-            instance.imageUrl = ((String) in.readValue((String.class.getClassLoader())));
+            instance.senderImgUrl = ((String) in.readValue((String.class.getClassLoader())));
+            instance.receiverImgUrl = ((String) in.readValue((String.class.getClassLoader())));
             instance.address = ((String) in.readValue((String.class.getClassLoader())));
 
             instance.fileType = ((String) in.readValue((String.class.getClassLoader())));
@@ -175,12 +187,12 @@ public class ChatHistory implements Parcelable {
         this.paidStatus = paidStatus;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getSenderImgUrl() {
+        return senderImgUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setSenderImgUrl(String imageUrl) {
+        this.senderImgUrl = imageUrl;
     }
 
     public String getAddress() {
@@ -191,12 +203,12 @@ public class ChatHistory implements Parcelable {
         this.address = address;
     }
 
-    public String getName() {
-        return name;
+    public String getSenderName() {
+        return senderName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSenderName(String name) {
+        this.senderName = name;
     }
 
     public String getFileType() {
@@ -223,6 +235,22 @@ public class ChatHistory implements Parcelable {
         this.msgStatus = msgStatus;
     }
 
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    public String getReceiverImgUrl() {
+        return receiverImgUrl;
+    }
+
+    public void setReceiverImgUrl(String receiverImgUrl) {
+        this.receiverImgUrl = receiverImgUrl;
+    }
+
     // End Added
 
     public void writeToParcel(Parcel dest, int flags) {
@@ -234,10 +262,12 @@ public class ChatHistory implements Parcelable {
         dest.writeValue(msgTime);
 
         dest.writeValue(paidStatus);
-        dest.writeValue(name);
+        dest.writeValue(senderName);
+        dest.writeValue(receiverName);
         dest.writeValue(specialization);
         dest.writeValue(onlineStatus);
-        dest.writeValue(imageUrl);
+        dest.writeValue(senderImgUrl);
+        dest.writeValue(receiverImgUrl);
         dest.writeValue(address);
 
         dest.writeValue(fileType);

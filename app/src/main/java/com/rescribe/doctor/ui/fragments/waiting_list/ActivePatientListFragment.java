@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +29,7 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeMana
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.waiting_list.ActiveWaitingListAdapter;
 import com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableActiveWaitingListAdapter;
-import com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableViewAllWaitingListAdapter;
 import com.rescribe.doctor.adapters.waiting_list.WaitingListSpinnerAdapter;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -41,7 +38,6 @@ import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
 import com.rescribe.doctor.model.waiting_list.Active;
 import com.rescribe.doctor.model.waiting_list.PatientDataActiveWaitingListProvider;
-import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.model.waiting_list.WaitingPatientList;
 import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
 import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
@@ -50,7 +46,6 @@ import com.rescribe.doctor.model.waiting_list.request_drag_drop.WaitingListSeque
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
-import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.OnStartDragListener;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -250,7 +245,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
                 requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
                 requestDeleteBaseModel.setLocationId(mLocationId);
-                requestDeleteBaseModel.setWaitingDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+                requestDeleteBaseModel.setWaitingDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
                 requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
                 requestDeleteBaseModel.setWaitingSequence(viewAll.getWaitingSequence());
                 mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);

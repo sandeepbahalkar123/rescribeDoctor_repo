@@ -252,5 +252,6 @@ public class RescribePreferencesManager {
         String DOC_DEGREE = "doc_degree";
         String SELECTED_LOCATION_ID = "selected_location_id";
         String PREMIUM = "premium";
+        String BACK_UP = "back_up";
     }
 }
