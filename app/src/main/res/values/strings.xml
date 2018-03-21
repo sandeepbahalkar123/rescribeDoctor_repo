@@ -46,7 +46,7 @@
     <string name="investigations">Investigations</string>
     <string name="name">Name</string>
     <string name="details">&#160;Details</string>
-    <string name="forgot_password">Forgot  password?</string>
+    <string name="forgot_password">Forgot Password?</string>
     <string name="forgot_password_header">Forgot Password</string>
     <string name="message_for_mobile_otp">Please input the OTP received on your Mobile No.&#160; %1$s</string>
     <string name="message_forgot_password">Please provide your email id to access the reset password link.</string>
@@ -149,6 +149,7 @@
     <string name="clinic_names">Clinic Names</string>
     <string name="select_clinic">Select Clinic</string>
     <string name="search_hint"><![CDATA[Search by Name, Phone & Patient ID]]></string>
+    <string name="search_hint_patientconnect_to_mypatient"><![CDATA[Search by Name & Patient ID]]></string>
     <string name="home">Home</string>
     <string name="profile">Profile</string>
     <string name="app_logo">AppLogo</string>

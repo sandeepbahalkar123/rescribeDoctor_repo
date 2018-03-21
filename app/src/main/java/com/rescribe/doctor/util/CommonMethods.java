@@ -195,6 +195,7 @@ public class CommonMethods {
     public static int getCaseStudyIcons(String caseStudyName) {
 
         // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
+       caseStudyName=caseStudyName.toLowerCase();
         int abbreviation = R.drawable.commonicon;
         if (caseStudyName.contains("complaint"))
             abbreviation = R.drawable.complaints;
@@ -230,6 +231,8 @@ public class CommonMethods {
             abbreviation = R.drawable.finding;
         else if (caseStudyName.contains("allergie"))
             abbreviation = R.drawable.allergy;
+        else if (caseStudyName.contains("attachment"))
+            abbreviation = R.drawable.attachment;
 
         return abbreviation;
     }

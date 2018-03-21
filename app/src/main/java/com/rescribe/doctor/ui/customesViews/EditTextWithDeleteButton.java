@@ -24,6 +24,10 @@ public class EditTextWithDeleteButton extends LinearLayout {
     protected ImageButton clearTextButton;
     private OnClearButtonClickedInEditTextListener mClearButtonClickedInEditTextListener;
 
+    public void setHint(String string) {
+        editText.setHint(string);
+    }
+
     public interface TextChangedListener extends TextWatcher {
     }
 
