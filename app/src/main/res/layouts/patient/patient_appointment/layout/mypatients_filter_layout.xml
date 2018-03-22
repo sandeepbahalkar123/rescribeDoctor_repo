@@ -4,7 +4,7 @@
     android:id="@+id/mainParentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/otp_background_layout"
     android:orientation="vertical">
 
     <LinearLayout
@@ -80,6 +80,7 @@
                         android:id="@+id/sortingHeaderView"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp40"
+                        android:background="@color/white"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -153,6 +154,7 @@
                         android:id="@+id/genderHeaderView"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp40"
+                        android:background="@color/white"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -271,6 +273,7 @@
                         android:id="@+id/clinicFeesHeaderView"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp40"
+                        android:background="@color/white"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -365,6 +368,7 @@
                         android:id="@+id/locationHeaderView"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp40"
+                        android:background="@color/white"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -391,7 +395,7 @@
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/locationContentRecycleView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:background="@color/otp_background_layout"
                         android:focusable="false"
                         android:paddingBottom="@dimen/dp20"

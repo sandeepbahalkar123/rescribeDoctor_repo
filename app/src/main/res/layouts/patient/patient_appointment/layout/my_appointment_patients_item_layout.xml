@@ -88,9 +88,9 @@
                 android:paddingLeft="@dimen/dp3"
                 android:paddingStart="@dimen/dp3"
                 android:src="@drawable/appointment_count_arrow"
-                tools:ignore="ContentDescription,ObsoleteLayoutParam"
                 android:visibility="gone"
-                tools:visibility="visible"/>
+                tools:ignore="ContentDescription,ObsoleteLayoutParam"
+                tools:visibility="visible" />
 
             <ImageView
                 android:id="@+id/upArrow"
@@ -105,8 +105,8 @@
                 android:scaleY="-1"
                 android:src="@drawable/appointment_count_arrow"
                 android:visibility="gone"
-                tools:visibility="visible"
-                tools:ignore="ContentDescription,ObsoleteLayoutParam" />
+                tools:ignore="ContentDescription,ObsoleteLayoutParam"
+                tools:visibility="visible" />
         </LinearLayout>
 
         <CheckBox
@@ -148,11 +148,11 @@
                     android:id="@+id/appointmentComplete"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:background="@color/transparent"
                     android:text="@string/appointment_completed_button"
-                    android:textColor="@color/tagColor"
                     android:textAllCaps="false"
-                    android:layout_weight="1"/>
+                    android:textColor="@color/tagColor" />
 
                 <View
                     android:layout_width="match_parent"
@@ -165,11 +165,11 @@
                     android:id="@+id/appointmentCancelled"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:textColor="@color/Red"
-                    android:textAllCaps="false"
+                    android:layout_weight="1"
                     android:background="@color/transparent"
                     android:text="@string/appointment_cancelled_button"
-                    android:layout_weight="1"/>
+                    android:textAllCaps="false"
+                    android:textColor="@color/Red" />
 
             </LinearLayout>
         </FrameLayout>
@@ -183,7 +183,9 @@
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp4"
+                android:layout_marginBottom="@dimen/dp4"
+                android:layout_marginLeft="@dimen/dp4"
+                android:layout_marginRight="@dimen/dp4"
                 android:background="@drawable/result_white_box"
                 android:orientation="vertical"
                 android:visibility="gone"
@@ -192,7 +194,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp12">
+                    android:layout_marginTop="@dimen/dp8">
 
                     <ImageView
                         android:id="@+id/bluelineImageView"
@@ -237,6 +239,7 @@
                         app:customFont="@string/roboto_bold"
                         tools:text="03:20 pm"
                         tools:visibility="invisible" />
+
                     <ImageView
                         android:id="@+id/waitingIcon"
                         android:layout_width="wrap_content"
@@ -359,49 +362,50 @@
                     android:layout_marginStart="@dimen/dp2"
                     android:background="@color/tagColor" />
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp3"
-                    android:layout_marginBottom="@dimen/dp8">
+                    android:layout_marginBottom="@dimen/dp8"
+                    android:layout_marginTop="@dimen/dp3">
 
-                    <com.rescribe.doctor.ui.customesViews.CustomTextView
-                        android:id="@+id/patientPhoneNumber"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/dp28"
-                        android:layout_marginStart="@dimen/dp28"
-                        android:drawableLeft="@drawable/mobile_icon"
-                        android:drawablePadding="@dimen/dp9"
-                        android:drawableStart="@drawable/mobile_icon"
-                        android:textColor="@color/rating_color"
-                        android:textSize="@dimen/sp12"
-                        app:customFont="@string/roboto_medium"
-                        tools:ignore="RtlHardcoded"
-                        tools:text="987678999" />
+                        android:layout_weight=".4"
+                        android:gravity="center_horizontal">
+
+                        <com.rescribe.doctor.ui.customesViews.CustomTextView
+                            android:id="@+id/patientPhoneNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/mobile_icon"
+                            android:drawablePadding="@dimen/dp9"
+                            android:drawableStart="@drawable/mobile_icon"
+                            android:textColor="@color/rating_color"
+                            android:textSize="@dimen/sp12"
+                            app:customFont="@string/roboto_medium"
+                            tools:ignore="RtlHardcoded"
+                            tools:text="987678999" />
+
+                    </LinearLayout>
 
                     <View
                         android:id="@+id/separatorView"
                         android:layout_width="@dimen/dp1"
                         android:layout_height="@dimen/dp20"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/dp32"
-                        android:layout_marginStart="@dimen/dp32"
-                        android:layout_toEndOf="@id/patientPhoneNumber"
-                        android:layout_toRightOf="@id/patientPhoneNumber"
                         android:background="@color/tagColor" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_horizontal"
                         android:layout_marginEnd="@dimen/dp10"
                         android:layout_marginLeft="@dimen/dp20"
                         android:layout_marginRight="@dimen/dp10"
                         android:layout_marginStart="@dimen/dp20"
                         android:layout_toEndOf="@id/separatorView"
                         android:layout_toRightOf="@id/separatorView"
+                        android:layout_weight=".6"
                         android:gravity="center"
                         android:orientation="horizontal">
 
@@ -426,7 +430,7 @@
                             tools:text=" Rs.450/-" />
 
                     </LinearLayout>
-                </RelativeLayout>
+                </LinearLayout>
             </LinearLayout>
         </FrameLayout>
     </com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout>

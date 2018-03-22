@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
-        tools:visibility="invisible">
+        tools:visibility="visible">
 
         <LinearLayout
             android:id="@+id/cardView"
@@ -198,49 +198,48 @@
                 android:layout_marginStart="@dimen/dp2"
                 android:background="@color/tagColor" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp2">
 
-                <com.rescribe.doctor.ui.customesViews.CustomTextView
-                    android:id="@+id/patientPhoneNumber"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dp28"
-                    android:layout_marginStart="@dimen/dp28"
-                    android:drawableLeft="@drawable/mobile_icon"
-                    android:drawablePadding="@dimen/dp9"
-                    android:drawableStart="@drawable/mobile_icon"
-                    android:textColor="@color/rating_color"
-                    android:textSize="@dimen/sp12"
-                    app:customFont="@string/roboto_medium"
-                    tools:ignore="RtlHardcoded"
-                    tools:text="987678999" />
+                    android:layout_gravity="center"
+                    android:layout_weight=".4"
+                    android:gravity="center_horizontal">
+
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/patientPhoneNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/mobile_icon"
+                        android:drawablePadding="@dimen/dp9"
+                        android:drawableStart="@drawable/mobile_icon"
+                        android:textColor="@color/rating_color"
+                        android:textSize="@dimen/sp12"
+                        app:customFont="@string/roboto_medium"
+                        tools:ignore="RtlHardcoded"
+                        tools:text="987678999" />
+                </LinearLayout>
 
                 <View
                     android:id="@+id/separatorView"
                     android:layout_width="@dimen/dp1"
                     android:layout_height="@dimen/dp20"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dp32"
-                    android:layout_marginStart="@dimen/dp32"
-                    android:layout_toEndOf="@id/patientPhoneNumber"
-                    android:layout_toRightOf="@id/patientPhoneNumber"
                     android:background="@color/tagColor" />
 
                 <LinearLayout
-
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginEnd="@dimen/dp10"
-                    android:layout_marginLeft="@dimen/dp60"
+                    android:layout_marginLeft="@dimen/dp20"
                     android:layout_marginRight="@dimen/dp10"
-                    android:layout_marginStart="@dimen/dp60"
-                    android:layout_toEndOf="@id/separatorView"
-                    android:layout_toRightOf="@id/separatorView"
+                    android:layout_marginStart="@dimen/dp20"
+                    android:layout_weight=".6"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -264,7 +263,7 @@
                         tools:text=" 02" />
 
                 </LinearLayout>
-            </RelativeLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <ImageButton
@@ -272,8 +271,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            android:padding="@dimen/dp24"
             android:background="@color/transparent"
+            android:padding="@dimen/dp24"
             app:srcCompat="@drawable/drag_n_drop" />
 
     </FrameLayout>

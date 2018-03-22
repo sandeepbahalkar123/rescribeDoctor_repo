@@ -15,6 +15,7 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -25,10 +26,13 @@ import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -152,7 +156,7 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         holder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientObject.getGender()));
 
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-        if (patientObject.getOutStandingAmount().equals("0.00")||patientObject.getOutStandingAmount().equals("0.0")||patientObject.getOutStandingAmount().equals("0")) {
+        if (patientObject.getOutStandingAmount().equals("0.00") || patientObject.getOutStandingAmount().equals("0.0") || patientObject.getOutStandingAmount().equals("0")) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
 
@@ -233,7 +237,7 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         @BindView(R.id.blueLineDivider)
         View blueLineDivider;
         @BindView(R.id.patientInfoDetailLayout)
-        RelativeLayout patientInfoDetailLayout;
+        LinearLayout patientInfoDetailLayout;
         @BindView(R.id.patientDetailsClickLinearLayout)
         RelativeLayout patientDetailsClickLinearLayout;
         View view;

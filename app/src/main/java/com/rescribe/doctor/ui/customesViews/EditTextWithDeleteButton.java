@@ -16,9 +16,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.util.CommonMethods;
+
+import java.lang.reflect.Field;
 
 public class EditTextWithDeleteButton extends LinearLayout {
     protected EditText editText;
@@ -150,6 +153,19 @@ public class EditTextWithDeleteButton extends LinearLayout {
         editText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         editText.setBackground(null);
         editText.setHint(hintText);
+        //--------
+        try {
+            Field f = null;
+            f = TextView.class.getDeclaredField("mCursorDrawableRes");
+            f.setAccessible(true);
+
+            f.set(editText, R.drawable.cursor_color_white);
+
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        //--------
         return editText;
     }
 

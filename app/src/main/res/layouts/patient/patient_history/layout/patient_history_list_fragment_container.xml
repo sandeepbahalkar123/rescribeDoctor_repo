@@ -18,8 +18,9 @@
             android:layout_height="wrap_content"
             android:visibility="visible"
             app:tabGravity="fill"
-            app:tabMaxWidth="500dp"
-            app:tabMode="scrollable" />
+            app:tabMaxWidth="@dimen/dp0"
+            app:tabMode="scrollable"
+            app:tabTextAppearance="@style/tabTextSize" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -58,8 +59,8 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
             android:background="@drawable/button_selector"
-            android:text="@string/add_record"
             android:fontFamily="@font/roboto_bold"
+            android:text="@string/add_record"
             android:textColor="@color/white"
             android:textSize="@dimen/sp14"
             android:visibility="visible"

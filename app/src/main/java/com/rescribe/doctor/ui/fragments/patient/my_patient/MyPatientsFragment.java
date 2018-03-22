@@ -539,8 +539,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     private void callWaitingListApi() {
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, String.valueOf(mLocationId), getActivity());
-        for(int i = 0;i<mDoctorLocationModel.size();i++){
-            if(mLocationId==mDoctorLocationModel.get(i).getLocationId()){
+        for (int i = 0; i < mDoctorLocationModel.size(); i++) {
+            if (mLocationId == mDoctorLocationModel.get(i).getLocationId()) {
                 mClinicId = mDoctorLocationModel.get(i).getClinicId();
                 mClinicName = mDoctorLocationModel.get(i).getClinicName();
                 mClinicCity = mDoctorLocationModel.get(i).getCity();
