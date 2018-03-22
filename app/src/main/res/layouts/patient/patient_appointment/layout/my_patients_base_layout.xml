@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="end">
 
-    <include
-        layout="@layout/common_action_bar" />
+    <include layout="@layout/common_action_bar" />
 
     <FrameLayout
         android:id="@+id/viewContainer"
@@ -24,6 +23,7 @@
         android:layout_gravity="end"
         android:background="@color/white"
         android:fitsSystemWindows="true" />
-    <include layout="@layout/common_no_records_found"/>
+
+    <include layout="@layout/common_no_records_found" />
 
 </android.support.v4.widget.DrawerLayout>

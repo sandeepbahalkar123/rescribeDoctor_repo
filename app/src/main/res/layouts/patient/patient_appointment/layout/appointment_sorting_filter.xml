@@ -86,7 +86,7 @@
                         <ImageView
                             style="@style/drawer_filter_header_icon_layout"
                             android:layout_gravity="center"
-                            android:src="@drawable/filtersortingicon"
+                            app:srcCompat="@drawable/filtersortingicon"
                             tools:ignore="ContentDescription" />
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -163,7 +163,7 @@
                         <ImageView
                             style="@style/drawer_filter_header_icon_layout"
                             android:layout_gravity="center"
-                            android:src="@drawable/appointment_status"
+                            app:srcCompat="@drawable/appointment_status"
                             tools:ignore="ContentDescription" />
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -208,7 +208,7 @@
                         <ImageView
                             style="@style/drawer_filter_header_icon_layout"
                             android:layout_gravity="center"
-                            android:src="@drawable/clinic_icon"
+                            app:srcCompat="@drawable/clinic_icon"
                             tools:ignore="ContentDescription" />
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -316,7 +316,7 @@
             <ImageView
                 style="@style/drawer_filter_header_icon_layout"
                 android:layout_gravity="center"
-                android:src="@drawable/filtersortingicon"
+                app:srcCompat="@drawable/filtersortingicon"
                 tools:ignore="ContentDescription" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView

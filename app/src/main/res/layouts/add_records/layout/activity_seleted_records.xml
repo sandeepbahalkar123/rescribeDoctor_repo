@@ -14,7 +14,7 @@
         android:elevation="@dimen/dp5"
         android:visibility="gone"
         tools:visibility="gone"
-        android:src="@drawable/coachmark"/>
+        app:srcCompat="@drawable/coachmark"/>
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

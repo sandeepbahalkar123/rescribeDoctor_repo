@@ -57,7 +57,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
-        android:src="@drawable/search_patient"
+        app:srcCompat="@drawable/search_patient"
         android:visibility="visible"
         app:backgroundTint="@color/floating_blue_color" />
     </RelativeLayout>

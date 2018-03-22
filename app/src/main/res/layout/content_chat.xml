@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/dp6"
-            android:src="@drawable/arrow" />
+            app:srcCompat="@drawable/arrow" />
 
     </LinearLayout>
 
@@ -124,7 +124,7 @@
                     android:paddingRight="@dimen/dp18"
                     android:paddingStart="@dimen/dp9"
                     android:paddingTop="@dimen/dp14"
-                    android:src="@drawable/attach" />
+                    app:srcCompat="@drawable/attach" />
 
                 <ImageButton
                     android:id="@+id/cameraButton"
@@ -137,7 +137,7 @@
                     android:paddingRight="@dimen/dp18"
                     android:paddingStart="@dimen/dp9"
                     android:paddingTop="@dimen/dp14"
-                    android:src="@drawable/photo_camera" />
+                    app:srcCompat="@drawable/photo_camera" />
 
             </LinearLayout>
 
@@ -153,7 +153,7 @@
             android:layout_marginEnd="@dimen/dp2"
             android:layout_marginRight="@dimen/dp2"
             android:padding="@dimen/dp6"
-            android:src="@drawable/send"
+            app:srcCompat="@drawable/send"
             android:visibility="invisible" />
 
     </RelativeLayout>

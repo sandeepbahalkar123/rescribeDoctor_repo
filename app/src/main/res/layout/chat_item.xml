@@ -79,7 +79,7 @@
                             android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/image_placeholder" />
+                            app:srcCompat="@drawable/image_placeholder" />
 
                         <RelativeLayout
                             android:id="@+id/senderPhotoProgressLayout"
@@ -271,7 +271,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/dp10"
             android:layout_marginStart="@dimen/dp10"
-            android:src="@drawable/doctor_speciality" />
+            app:srcCompat="@drawable/doctor_speciality" />
 
     </RelativeLayout>
 
@@ -288,7 +288,7 @@
             android:layout_height="@dimen/dp40"
             android:layout_marginEnd="@dimen/dp10"
             android:layout_marginRight="@dimen/dp10"
-            android:src="@drawable/exercise" />
+            app:srcCompat="@drawable/exercise" />
 
         <LinearLayout
             android:id="@+id/receiverLayoutChild"
@@ -342,7 +342,7 @@
                             android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/image_placeholder" />
+                            app:srcCompat="@drawable/image_placeholder" />
 
                         <RelativeLayout
                             android:id="@+id/receiverPhotoProgressLayout"

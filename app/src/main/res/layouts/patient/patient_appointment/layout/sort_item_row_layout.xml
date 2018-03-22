@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/tick_mark" />
+                app:srcCompat="@drawable/tick_mark" />
 
         </LinearLayout>
     </LinearLayout>

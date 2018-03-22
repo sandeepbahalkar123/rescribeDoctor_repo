@@ -27,7 +27,7 @@
                 android:layout_marginStart="@dimen/dp10"
                 android:adjustViewBounds="true"
                 android:visibility="gone"
-                android:src="@drawable/dashboard_arrow"
+                app:srcCompat="@drawable/dashboard_arrow"
                 android:padding="@dimen/dp10" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -50,7 +50,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/dp16"
                 android:layout_marginRight="@dimen/dp16"
-                android:src="@drawable/layer_5" />
+                app:srcCompat="@drawable/layer_5" />
 
         </RelativeLayout>
 

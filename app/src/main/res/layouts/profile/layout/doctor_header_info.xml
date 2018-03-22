@@ -70,7 +70,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/about_ruppee_icon" />
+                            app:srcCompat="@drawable/about_ruppee_icon" />
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
                             android:id="@+id/doctorFees"
@@ -90,7 +90,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/dp4"
-                        android:src="@drawable/ruppee_line" />
+                        app:srcCompat="@drawable/ruppee_line" />
                 </LinearLayout>
 
                 <ImageView
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ruppee_shadow"
+                    app:srcCompat="@drawable/ruppee_shadow"
                     android:visibility="gone" />
 
             </RelativeLayout>
@@ -117,7 +117,7 @@
                 android:layout_width="@dimen/dp86"
                 android:layout_height="@dimen/dp86"
                 android:layout_gravity="center"
-                android:src="@drawable/layer_12"
+                app:srcCompat="@drawable/layer_12"
                 app:border="true"
                 app:shadow="true" />
 
@@ -216,7 +216,7 @@
                     android:id="@+id/doChat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/chat_icon" />
+                    app:srcCompat="@drawable/chat_icon" />
 
                 <ImageView
                     android:id="@+id/favorite"
@@ -257,7 +257,7 @@
                 android:id="@+id/viewAllClinicsOnMap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/view_on_map_btn"
+                app:srcCompat="@drawable/view_on_map_btn"
                 android:visibility="visible" />
 
         </LinearLayout>
@@ -283,7 +283,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:padding="@dimen/dp1"
-                    android:src="@drawable/location_icon_bluecircle" />
+                    app:srcCompat="@drawable/location_icon_bluecircle" />
             </LinearLayout>
 
             <Spinner
@@ -324,7 +324,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:src="@drawable/experience_icon" />
+                    app:srcCompat="@drawable/experience_icon" />
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/countDoctorExperience"

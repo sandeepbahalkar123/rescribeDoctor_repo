@@ -15,7 +15,7 @@
         android:id="@+id/bulletImageView"
         android:layout_width="@dimen/dp8"
         android:layout_height="@dimen/dp8"
-        android:src="@drawable/circular_bullet"/>
+        app:srcCompat="@drawable/circular_bullet"/>
     <com.rescribe.doctor.ui.customesViews.CustomTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

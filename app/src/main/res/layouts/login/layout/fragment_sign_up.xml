@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/vector_smart_object" />
+            app:srcCompat="@drawable/vector_smart_object" />
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:layout_width="wrap_content"
@@ -141,7 +141,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_gravity="center"
-            android:src="@drawable/or"
+            app:srcCompat="@drawable/or"
             android:layout_marginLeft="@dimen/dp10"
             android:layout_marginRight="@dimen/dp10"
             android:textColor="@color/white" />
@@ -153,7 +153,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp16"
             android:gravity="center_vertical"
-            android:src="@drawable/fb_logo_copy"
+            app:srcCompat="@drawable/fb_logo_copy"
             android:layout_marginLeft="@dimen/dp20"
             android:layout_marginRight="@dimen/dp20"
             android:textColor="@color/white" />
@@ -167,7 +167,7 @@
             android:layout_marginRight="@dimen/dp20"
             android:layout_marginTop="@dimen/dp16"
             android:gravity="center_vertical"
-            android:src="@drawable/gmail_copy"
+            app:srcCompat="@drawable/gmail_copy"
             android:textColor="@color/white" />
 
         <ImageView
@@ -177,7 +177,7 @@
             android:layout_marginTop="@dimen/dp16"
             android:gravity="center_vertical"
             android:layout_marginBottom="@dimen/dp8"
-            android:src="@drawable/by_continuing_you_accept_the_terms_of_use_and_privacy_policy"
+            app:srcCompat="@drawable/by_continuing_you_accept_the_terms_of_use_and_privacy_policy"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

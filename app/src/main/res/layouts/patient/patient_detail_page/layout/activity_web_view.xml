@@ -42,7 +42,7 @@
                 android:layout_gravity="center"
                 android:gravity="center|right"
                 android:padding="@dimen/dp10"
-                android:src="@drawable/bookmark_line"
+                app:srcCompat="@drawable/bookmark_line"
                 android:visibility="gone" />
         </LinearLayout>
 

@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/dp10"
-                android:src="@drawable/back_arrow_a_01" />
+                app:srcCompat="@drawable/back_arrow_a_01" />
 
             <RelativeLayout
                 android:id="@+id/profilePhotoLayout"

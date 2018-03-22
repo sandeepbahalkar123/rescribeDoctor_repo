@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.android.volley.Request.Method.GET;
+import static com.rescribe.doctor.services.MQTTService.NOTIFY;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
@@ -49,7 +50,7 @@ public class ChatBackUpService extends Service {
     private static final String LOG_TAG = "ChatBackUpService";
 
     public static final String STATUS = "status";
-    public static final String CHAT_BACKUP = "com.rescribe.doctor.BACKUP";
+    public static final String CHAT_BACKUP = "com.rescribe.doctor.CHAT_BACKUP";
 
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
@@ -258,7 +259,7 @@ public class ChatBackUpService extends Service {
                 .setProgress(0, 0, false);
         mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
 
-        RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.BACK_UP, isFailed, ChatBackUpService.this);
+        RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.BACK_UP, !isFailed, ChatBackUpService.this);
     }
 
     @Override

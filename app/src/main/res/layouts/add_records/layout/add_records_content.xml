@@ -23,7 +23,7 @@
             android:layout_marginEnd="@dimen/dp20"
             android:layout_marginStart="@dimen/dp20"
             android:adjustViewBounds="true"
-            android:src="@drawable/ref" />
+            app:srcCompat="@drawable/ref" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,7 +99,7 @@
                     android:layout_marginEnd="@dimen/dp8"
                     android:layout_marginRight="@dimen/dp8"
                     android:padding="@dimen/dp8"
-                    android:src="@drawable/del" />
+                    app:srcCompat="@drawable/del" />
 
             </RelativeLayout>
 
@@ -135,7 +135,7 @@
                     android:layout_marginEnd="@dimen/dp8"
                     android:layout_marginRight="@dimen/dp8"
                     android:padding="@dimen/dp8"
-                    android:src="@drawable/magnifying_glass" />
+                    app:srcCompat="@drawable/magnifying_glass" />
             </RelativeLayout>
         </LinearLayout>
 
@@ -193,7 +193,7 @@
                     android:layout_marginEnd="@dimen/dp8"
                     android:layout_marginRight="@dimen/dp8"
                     android:padding="@dimen/dp8"
-                    android:src="@drawable/calendar" />
+                    app:srcCompat="@drawable/calendar" />
 
             </RelativeLayout>
 
@@ -237,7 +237,7 @@
                 android:layout_marginEnd="@dimen/dp4"
                 android:layout_marginRight="@dimen/dp8"
                 android:padding="@dimen/dp8"
-                android:src="@drawable/location_grey" />
+                app:srcCompat="@drawable/location_grey" />
 
         </RelativeLayout>
 
