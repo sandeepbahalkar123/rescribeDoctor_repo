@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.add_records.SelectedRecordsAdapter;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
@@ -43,12 +44,15 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.MultipartUploadTask;
 import net.gotev.uploadservice.ServerResponse;
 import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadNotificationConfig;
 import net.gotev.uploadservice.UploadService;
 import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
+
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -56,6 +60,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -226,11 +231,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
 
         docId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
 
-
-        boolean isUploading = getIntent().getBooleanExtra(RescribeConstants.UPLOADING_STATUS, false);
-        if (isUploading)
-            uploadButton.setEnabled(false);
-
         appDBHelper = new AppDBHelper(SelectedRecordsActivity.this);
         device = Device.getInstance(SelectedRecordsActivity.this);
 
@@ -397,14 +397,15 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                 } else {
                     if (NetworkUtil.isInternetAvailable(SelectedRecordsActivity.this)) {
                         uploadButton.setEnabled(false);
-
                         count = 0;
-
                         for (int parentIndex = 0; parentIndex < imagePaths.size(); parentIndex++) {
                             uploadImage(parentIndex + "", imagePaths.get(parentIndex));
                         }
-                    } else
-                        CommonMethods.showToast(SelectedRecordsActivity.this, getResources().getString(R.string.internet));
+                    } else {
+                        for (int parentIndex = 0; parentIndex < imagePaths.size(); parentIndex++) {
+                            addInDatabase(parentIndex + "", imagePaths.get(parentIndex));
+                        }
+                    }
                 }
                 break;
             case R.id.addImageView:
@@ -416,9 +417,11 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         }
     }
 
-    @Override
-    public void onClickOfCaptionEditext() {
-
+    private void addInDatabase(String uploadId, Image image) {
+        if (image.getParentCaption() == null || image.getChildCaption().equals(""))
+            image.setChildCaption(OTHERS);
+        String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDateToPass, mOpdtime, opdId, mHospitalId, mHospitalPatId, mLocationId, image.getParentCaption(), image.getImagePath());
     }
 
     @Override
@@ -428,7 +431,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         selectedRecordsAdapter.notifyDataSetChanged();
     }
 
-    @Override
     public void uploadImage(String uploadId, Image image) {
         try {
 
@@ -440,57 +442,31 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                 currentOpdTime = mOpdtime;
             }
             String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-            if (!image.getParentCaption().equals("")) {
-                MultipartUploadRequest uploadRequest = new MultipartUploadRequest(SelectedRecordsActivity.this, uploadId, Url)
-                        .setNotificationConfig(uploadNotificationConfig)
-                        .setMaxRetries(RescribeConstants.MAX_RETRIES)
 
-                        .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
-                        .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
-                        .addHeader(RescribeConstants.OS, device.getOS())
-                        .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
-                        .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
+            MultipartUploadRequest uploadRequest = new MultipartUploadRequest(SelectedRecordsActivity.this, uploadId, Url)
+                    .setNotificationConfig(uploadNotificationConfig)
+                    .setMaxRetries(RescribeConstants.MAX_RETRIES)
+                    .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
+                    .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
+                    .addHeader(RescribeConstants.OS, device.getOS())
+                    .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
+                    .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
 
-                        .addHeader("patientid", patientId)
-                        .addHeader("docid", String.valueOf(docId))
-                        .addHeader("opddate", visitDateToPass)
-                        .addHeader("opdtime", currentOpdTime)
-                        .addHeader("opdid", opdId)
-                        .addHeader("hospitalid", mHospitalId)
-                        .addHeader("hospitalpatid", mHospitalPatId)
-                        .addHeader("locationid", mLocationId)
-                        .addHeader("captionname", image.getParentCaption())
-                   /* .addHeader("imageId", image.getImageId())*/
-                   /* .addHeader("parentCaptionName", image.getParentCaption())*/
+                    .addHeader("patientid", patientId)
+                    .addHeader("docid", String.valueOf(docId))
+                    .addHeader("opddate", visitDateToPass)
+                    .addHeader("opdtime", currentOpdTime)
+                    .addHeader("opdid", opdId)
+                    .addHeader("hospitalid", mHospitalId)
+                    .addHeader("hospitalpatid", mHospitalPatId)
+                    .addHeader("locationid", mLocationId);
 
-                        .addFileToUpload(image.getImagePath(), "attachment");
-                uploadRequest.startUpload();
-            } else {
-                MultipartUploadRequest uploadRequest = new MultipartUploadRequest(SelectedRecordsActivity.this, uploadId, Url)
-                        .setNotificationConfig(uploadNotificationConfig)
-                        .setMaxRetries(RescribeConstants.MAX_RETRIES)
+            if (!image.getChildCaption().isEmpty())
+                uploadRequest.addHeader("captionname", image.getParentCaption())
 
-                        .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
-                        .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
-                        .addHeader(RescribeConstants.OS, device.getOS())
-                        .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
-                        .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
-                        .addHeader("patientid", patientId)
-                        .addHeader("docid", String.valueOf(docId))
-                        .addHeader("opddate", visitDateToPass)
-                        .addHeader("opdtime", currentOpdTime)
-                        .addHeader("opdid", opdId)
-                        .addHeader("hospitalid", mHospitalId)
-                        .addHeader("hospitalpatid", mHospitalPatId)
-                        .addHeader("locationid", mLocationId)
-
-                   /* .addHeader("imageId", image.getImageId())*/
-                   /* .addHeader("parentCaptionName", image.getParentCaption())*/
 
                         .addFileToUpload(image.getImagePath(), "attachment");
-                uploadRequest.startUpload();
-            }
-
+            uploadRequest.startUpload();
 
         } catch (FileNotFoundException | MalformedURLException e) {
             e.printStackTrace();
@@ -553,9 +529,9 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
 
             navigate();*/
 
-          count+=1;
+            count += 1;
 
-            if (imagePaths.size() == count){
+            if (imagePaths.size() == count) {
                 allDone();
             }
         }
@@ -563,9 +539,9 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         @Override
         public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
 
-            count+=1;
+            count += 1;
 
-            if (imagePaths.size() == count){
+            if (imagePaths.size() == count) {
                 allDone();
             }
 

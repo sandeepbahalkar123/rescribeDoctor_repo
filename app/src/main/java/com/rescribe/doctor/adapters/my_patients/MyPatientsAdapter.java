@@ -77,7 +77,8 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         final PatientList patientObject = mDataList.get(position);
         holder.opdTypeTextView.setVisibility(View.GONE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
-        holder.patientClinicAddress.setText(patientObject.getPatientCity());
+        String area = patientObject.getPatientArea().isEmpty() ? "" : (patientObject.getPatientCity().isEmpty() ? patientObject.getPatientArea() : patientObject.getPatientArea() + ", ");
+        holder.patientClinicAddress.setText(CommonMethods.toCamelCase(area + patientObject.getPatientCity()));
         String patientName = "";
 
         if (patientObject.getSalutation() != 0)
@@ -157,7 +158,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
         holder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientObject.getGender()));
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-        if (patientObject.getOutStandingAmount().equals("0.00")|| patientObject.getOutStandingAmount().equals("0.0")||patientObject.getOutStandingAmount().equals("0")) {
+        if (patientObject.getOutStandingAmount().equals("0.00") || patientObject.getOutStandingAmount().equals("0.0") || patientObject.getOutStandingAmount().equals("0")) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
 
@@ -355,6 +356,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         void onCheckUncheckRemoveSelectAllSelection(boolean ischecked, PatientList patientObject);
 
         void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired);
+
         void onPhoneNoClick(String patientPhone);
 
     }

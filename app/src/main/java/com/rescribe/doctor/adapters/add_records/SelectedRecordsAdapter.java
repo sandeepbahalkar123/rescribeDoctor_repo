@@ -1,5 +1,6 @@
 package com.rescribe.doctor.adapters.add_records;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -57,6 +58,7 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
         return new FileViewHolder(view);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(final FileViewHolder holder, final int position) {
         final Image image = mPaths.get(position);
@@ -98,7 +100,6 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
             }
         });
 
-        //holder.removeCheckbox.setChecked(image.isSelected());
         holder.addCaptionText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -112,11 +113,6 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
 
             @Override
             public void afterTextChanged(Editable s) {
-               /* if(holder.addCaptionText.getText().toString().equals("Add caption")) {
-                    image.setParentCaption("");
-                }else{
-                    image.setParentCaption(holder.addCaptionText.getText().toString());
-                }*/
                 image.setParentCaption(s.toString());
                 notifyItemChanged(position);
             }
@@ -127,18 +123,6 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
                 mOnClickOfComponentsOnSelectedPhoto.onClickOfCrossImage(position);
             }
         });
-
-        /*holder.removeCheckbox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (image.isSelected())
-                    image.setSelected(false);
-                else
-                    image.setSelected(true);
-
-                notifyItemChanged(position);
-            }
-        });*/
     }
 
     @Override
@@ -173,11 +157,6 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
     }
 
     public interface OnClickOfComponentsOnSelectedPhoto {
-        public void onClickOfCaptionEditext();
-
         public void onClickOfCrossImage(int position);
-
-        void uploadImage(String uploadId, Image image);
-
     }
 }

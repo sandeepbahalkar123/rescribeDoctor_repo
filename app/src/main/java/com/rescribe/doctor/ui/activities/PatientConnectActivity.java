@@ -12,11 +12,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,6 +48,7 @@ import butterknife.OnClick;
 
 import static com.rescribe.doctor.preference.RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.BACK_UP;
 import static com.rescribe.doctor.services.ChatBackUpService.CHAT_BACKUP;
+import static com.rescribe.doctor.services.ChatBackUpService.RUNNING;
 import static com.rescribe.doctor.services.ChatBackUpService.STATUS;
 import static com.rescribe.doctor.services.MQTTService.MESSAGE_TOPIC;
 import static com.rescribe.doctor.services.MQTTService.NOTIFY;
@@ -91,7 +90,7 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
                     }
                 } else if (intent.getAction().equals(CHAT_BACKUP)) {
                     boolean isFailed = intent.getBooleanExtra(STATUS, false);
-                    if (!isFailed){
+                    if (!isFailed) {
                         addFragment();
                         customProgressDialog.dismiss();
                     } else {
@@ -121,6 +120,7 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     //-----
     private PatientConnectChatFragment mPatientConnectChatFragment;
     private ArrayList<PatientData> mReceivedConnectedPatientDataList;
+    private boolean isCanceled = true;
     //-----
 
     @Override
@@ -139,50 +139,63 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         });
         title.setText("" + getString(R.string.patient_connect));
         customProgressDialog = new CustomProgressDialog(this);
+        customProgressDialog.setCancelable(true);
+        customProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (isCanceled)
+                    onBackPressed();
+            }
+        });
         initialize();
     }
 
 
     private void initialize() {
 
-        boolean isBackupTaken = RescribePreferencesManager.getBoolean(BACK_UP, this);
+        if (RUNNING)
+            customProgressDialog.show();
+        else {
+            boolean isBackupTaken = RescribePreferencesManager.getBoolean(BACK_UP, this);
 
-        if (!isBackupTaken) {
+            if (!isBackupTaken) {
 
-            final Dialog dialog = new Dialog(this);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.chat_backup_prompt);
-            dialog.setCancelable(false);
+                final Dialog dialog = new Dialog(this);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.chat_backup_prompt);
+                dialog.setCancelable(false);
 
-            Button button_skip = (Button) dialog.findViewById(R.id.button_skip);
-            Button button_ok = (Button) dialog.findViewById(R.id.button_ok);
+                Button button_skip = (Button) dialog.findViewById(R.id.button_skip);
+                Button button_ok = (Button) dialog.findViewById(R.id.button_ok);
 
-            button_skip.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    RescribePreferencesManager.putBoolean(BACK_UP, true, PatientConnectActivity.this);
-                    dialog.dismiss();
-                    addFragment();
-                }
-            });
+                button_skip.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        RescribePreferencesManager.putBoolean(BACK_UP, true, PatientConnectActivity.this);
+                        dialog.dismiss();
+                        addFragment();
+                    }
+                });
 
-            button_ok.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Intent startIntentUpload = new Intent(PatientConnectActivity.this, ChatBackUpService.class);
-                    startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
-                    startService(startIntentUpload);
-                    dialog.dismiss();
-                    customProgressDialog.show();
-                }
-            });
-            dialog.show();
+                button_ok.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent startIntentUpload = new Intent(PatientConnectActivity.this, ChatBackUpService.class);
+                        startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
+                        startService(startIntentUpload);
+                        dialog.dismiss();
+                        customProgressDialog.show();
+                    }
+                });
+                dialog.show();
 
-        } else {
-            addFragment();
+            } else {
+                addFragment();
+            }
         }
     }
 
     private void addFragment() {
+        isCanceled = false;
         mPatientConnectChatFragment = PatientConnectChatFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.container, mPatientConnectChatFragment);

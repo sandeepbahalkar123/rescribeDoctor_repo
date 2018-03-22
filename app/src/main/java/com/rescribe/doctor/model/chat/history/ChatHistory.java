@@ -1,5 +1,6 @@
 package com.rescribe.doctor.model.chat.history;
 
+import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,35 +11,6 @@ import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 
 public class ChatHistory implements Parcelable {
 
-    @SerializedName("chat_id")
-    @Expose
-    private String chatId = "";
-    @SerializedName("user_1_id")
-    @Expose
-    private int user1Id;
-    @SerializedName("user_2_id")
-    @Expose
-    private int user2Id;
-    @SerializedName("sender")
-    @Expose
-    private String sender;
-    @SerializedName("msg")
-    @Expose
-    private String msg = "";
-    @SerializedName("msgTime")
-    @Expose
-    private String msgTime;
-
-    // Added
-
-    @SerializedName("senderName")
-    @Expose
-    private String senderName;
-
-    @SerializedName("receiverName")
-    @Expose
-    private String receiverName;
-
     @SerializedName("speciality")
     @Expose
     private String specialization;
@@ -48,29 +20,56 @@ public class ChatHistory implements Parcelable {
     @SerializedName("paidStatus")
     @Expose
     private int paidStatus;
-    @SerializedName("senderImgUrl")
-    @Expose
-    private String senderImgUrl = "";
-
-    @SerializedName("receiverImgUrl")
-    @Expose
-    private String receiverImgUrl = "";
 
     @SerializedName("address")
     @Expose
     private String address;
 
-    @SerializedName("fileType")
+    @SerializedName("chat_id")
     @Expose
-    private String fileType;
-
+    private String chatId;
+    @SerializedName("user_1_id")
+    @Expose
+    private Integer user1Id;
+    @SerializedName("user_2_id")
+    @Expose
+    private Integer user2Id;
+    @SerializedName("salutation")
+    @Expose
+    private Integer salutation;
+    @SerializedName("sender")
+    @Expose
+    private String sender;
+    @SerializedName("senderName")
+    @Expose
+    private String senderName;
+    @SerializedName("senderImgUrl")
+    @Expose
+    private String senderImgUrl;
+    @SerializedName("receiverName")
+    @Expose
+    private String receiverName;
+    @SerializedName("receiverImgUrl")
+    @Expose
+    private String receiverImgUrl;
+    @SerializedName("msg")
+    @Expose
+    private String msg;
+    @SerializedName("msgTime")
+    @Expose
+    private String msgTime;
     @SerializedName("fileUrl")
     @Expose
     private String fileUrl;
-
+    @SerializedName("fileType")
+    @Expose
+    private String fileType;
     @SerializedName("msgStatus")
     @Expose
-    private String msgStatus = SENT;
+    private String msgStatus;
+    @SerializedName("msgId")
+    @Expose
+    private String msgId;
 
     // Added End
 
@@ -103,6 +102,8 @@ public class ChatHistory implements Parcelable {
             instance.fileUrl = ((String) in.readValue((String.class.getClassLoader())));
 
             instance.msgStatus = ((String) in.readValue((String.class.getClassLoader())));
+
+            instance.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
 
             return instance;
         }
@@ -251,6 +252,14 @@ public class ChatHistory implements Parcelable {
         this.receiverImgUrl = receiverImgUrl;
     }
 
+    public Integer getSalutation() {
+        return salutation;
+    }
+
+    public void setSalutation(Integer salutation) {
+        this.salutation = salutation;
+    }
+
     // End Added
 
     public void writeToParcel(Parcel dest, int flags) {
@@ -274,6 +283,7 @@ public class ChatHistory implements Parcelable {
         dest.writeValue(fileUrl);
 
         dest.writeValue(msgStatus);
+        dest.writeValue(salutation);
     }
 
     public int describeContents() {

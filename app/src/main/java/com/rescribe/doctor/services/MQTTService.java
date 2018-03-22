@@ -98,11 +98,13 @@ public class MQTTService extends Service {
     private AppDBHelper appDBHelper;
     private MqttConnectOptions connOpts = new MqttConnectOptions();
     private Context mContext;
+    private CheckPendingUploads checkPendingUploads = new CheckPendingUploads();
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = this;
+        checkPendingUploads.onCreate(mContext);
         initRxNetwork();
         appDBHelper = new AppDBHelper(mContext);
 
@@ -138,8 +140,7 @@ public class MQTTService extends Service {
                                         if (!mqttClient.isConnected()) {
                                             mqttClient.reconnect();
                                         } else Log.d(TAG, "Connected");
-
-                                        new CheckPendingUploads(MQTTService.this);
+                                        checkPendingUploads.check();
                                     }
                                 } catch (MqttException ignored) {
                                     ignored.getStackTrace();
@@ -433,6 +434,7 @@ public class MQTTService extends Service {
         } else CommonMethods.Log(TAG, "Not Connected 1");
         sendStateSubscription.unsubscribe();
         sendStateSubscription = null;
+        checkPendingUploads.onDestroy();
     }
 
 

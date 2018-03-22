@@ -41,12 +41,14 @@ import java.util.List;
 import java.util.Map;
 
 import static com.android.volley.Request.Method.GET;
-import static com.rescribe.doctor.services.MQTTService.NOTIFY;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
+import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.READ;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class ChatBackUpService extends Service {
+    public static boolean RUNNING = false;
+
     private static final String LOG_TAG = "ChatBackUpService";
 
     public static final String STATUS = "status";
@@ -110,6 +112,8 @@ public class ChatBackUpService extends Service {
 
     private void request() throws JSONException {
 
+        RUNNING = true;
+
         mBuilder.setContentText("Backup Restoring")
                 // Removes the progress bar
                 .setProgress(0, 0, true);
@@ -122,11 +126,17 @@ public class ChatBackUpService extends Service {
                     public void onResponse(String response) {
                         ChatPatientConnectModel patientConnectModel = new Gson().fromJson(response, ChatPatientConnectModel.class);
                         if (patientConnectModel.getCommon().getStatusCode().equals(SUCCESS)) {
-                            restoreMessages(patientConnectModel.getPatientListData().getPatientDataList());
+                            ArrayList<PatientData> patientDataList = patientConnectModel.getPatientListData().getPatientDataList();
+                            if (patientDataList.isEmpty()) {
+                                CommonMethods.showToast(ChatBackUpService.this, patientConnectModel.getCommon().getStatusMessage());
+                                restored();
+                            } else
+                                restoreMessages(patientDataList);
                         } else {
-                            stopSelf();
+                            restored();
                             CommonMethods.showToast(ChatBackUpService.this, patientConnectModel.getCommon().getStatusMessage());
                             RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.BACK_UP, true, ChatBackUpService.this);
+                            stopSelf();
                         }
                     }
                 },
@@ -176,7 +186,7 @@ public class ChatBackUpService extends Service {
                         if (chatHistoryModel.getCommon().getStatusCode().equals(SUCCESS)) {
                             List<ChatHistory> chatHistory = chatHistoryModel.getHistoryData().getChatHistory();
 
-                            for (int index = chatHistory.size() - 1; index == 0; index -= 1) {
+                            for (int index = chatHistory.size() - 1; index >= 0; index -= 1) {
 
                                 ChatHistory chatH = chatHistory.get(index);
 
@@ -202,6 +212,9 @@ public class ChatBackUpService extends Service {
                                 messageL.setMsgStatus(chatH.getMsgStatus() == null ? SENT : chatH.getMsgStatus());
                                 messageL.setUploadStatus(FAILED);
                                 messageL.setDownloadStatus(FAILED);
+                                messageL.setSalutation(chatH.getSalutation());
+
+                                messageL.setReadStatus(READ);
 
                                 appDBHelper.insertChatMessage(messageL);
                             }
@@ -248,6 +261,8 @@ public class ChatBackUpService extends Service {
 
     private void restored() {
 
+        RUNNING = false;
+
         patientIndex = 0;
 
         Intent intent = new Intent(CHAT_BACKUP);
@@ -260,6 +275,9 @@ public class ChatBackUpService extends Service {
         mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
 
         RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.BACK_UP, !isFailed, ChatBackUpService.this);
+
+        stopForeground(true);
+        stopSelf();
     }
 
     @Override

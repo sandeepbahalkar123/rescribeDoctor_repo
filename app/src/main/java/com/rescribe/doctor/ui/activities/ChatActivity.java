@@ -464,14 +464,16 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         // Need to add self profile photo
 
         if (patientName != null) {
-            int color2 = ColorGenerator.MATERIAL.getColor(patientName);
-            mReceiverDrawable = TextDrawable.builder()
-                    .beginConfig()
-                    .width(Math.round(getResources().getDimension(R.dimen.dp40)))  // width in px
-                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
-                    .endConfig()
-                    .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
-            profilePhoto.setImageDrawable(mReceiverDrawable);
+            if (!patientName.isEmpty()) {
+                int color2 = ColorGenerator.MATERIAL.getColor(patientName);
+                mReceiverDrawable = TextDrawable.builder()
+                        .beginConfig()
+                        .width(Math.round(getResources().getDimension(R.dimen.dp40)))  // width in px
+                        .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                        .endConfig()
+                        .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
+                profilePhoto.setImageDrawable(mReceiverDrawable);
+            }
         }
 
         if (!chatList.getImageUrl().equals("")) {
