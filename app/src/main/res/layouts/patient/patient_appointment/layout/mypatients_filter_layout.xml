@@ -86,7 +86,7 @@
                         <ImageView
                             style="@style/drawer_filter_header_icon_layout"
                             android:layout_gravity="center"
-                            android:src="@drawable/filtersortingicon" />
+                            app:srcCompat="@drawable/filtersortingicon" />
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
                             style="@style/drawer_filter_header_layout"
@@ -160,7 +160,7 @@
                         <ImageView
                             style="@style/drawer_filter_header_icon_layout"
                             android:layout_gravity="center"
-                            android:src="@drawable/filtergendericon" />
+                            app:srcCompat="@drawable/filtergendericon" />
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
                             style="@style/drawer_filter_header_layout"
@@ -201,7 +201,8 @@
                                 style="@style/drawer_filter_gender_style"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:src="@drawable/filtergraymaleicon" />
+                                app:srcCompat="@drawable/filtergraymaleicon" />
+
 
                             <com.rescribe.doctor.ui.customesViews.CustomTextView
                                 android:id="@+id/genderMaleText"
@@ -224,7 +225,7 @@
                                 android:id="@+id/genderFemaleIcon"
                                 style="@style/drawer_filter_gender_style"
                                 android:layout_gravity="center"
-                                android:src="@drawable/filtergrayfemaleicon" />
+                                app:srcCompat="@drawable/filtergrayfemaleicon" />
 
                             <com.rescribe.doctor.ui.customesViews.CustomTextView
                                 android:id="@+id/genderFemaleText"
@@ -249,7 +250,7 @@
                                 style="@style/drawer_filter_gender_style"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:src="@drawable/filtergraytransgendericon" />
+                                app:srcCompat="@drawable/filtergraytransgendericon" />
 
                             <com.rescribe.doctor.ui.customesViews.CustomTextView
                                 android:id="@+id/transGenderMaleText"
@@ -279,7 +280,7 @@
                         <ImageView
                             style="@style/drawer_filter_header_icon_layout"
                             android:layout_gravity="center"
-                            android:src="@drawable/filterageicon" />
+                            app:srcCompat="@drawable/filterageicon" />
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
                             style="@style/drawer_filter_header_layout"
@@ -373,7 +374,7 @@
 
                         <ImageView
                             style="@style/drawer_filter_header_icon_layout"
-                            android:src="@drawable/filterlocationicon" />
+                            app:srcCompat="@drawable/filterlocationicon" />
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
                             style="@style/drawer_filter_header_layout"
@@ -465,7 +466,7 @@
             <ImageView
                 style="@style/drawer_filter_header_icon_layout"
                 android:layout_gravity="center"
-                android:src="@drawable/filtersortingicon" />
+                app:srcCompat="@drawable/filtersortingicon" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 style="@style/drawer_filter_header_layout"

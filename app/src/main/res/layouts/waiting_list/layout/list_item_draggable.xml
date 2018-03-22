@@ -68,7 +68,7 @@
                     android:paddingLeft="@dimen/dp2"
                     android:paddingStart="@dimen/dp2"
                     android:paddingTop="@dimen/dp2"
-                    android:src="@drawable/result_blue_line"
+                    app:srcCompat="@drawable/result_blue_line"
                     tools:ignore="ContentDescription,RtlSymmetry" />
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView

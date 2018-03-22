@@ -64,7 +64,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/send_button" />
+            app:srcCompat="@drawable/send_button" />
 
     </RelativeLayout>
 

@@ -27,11 +27,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatDrawableManager;
+
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -722,8 +721,8 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         ChatActivityPermissionsDispatcher.getAudioPermissionWithCheck(ChatActivity.this);
 
-        Drawable drawable = AppCompatResources.getDrawable(this, R.drawable.ic_mic_red_24dp);
-        audioSlider.getTextView().setCompoundDrawablesWithIntrinsicBounds(drawable, drawable, null, null);
+        Drawable leftDrawable = AppCompatResources.getDrawable(this, R.drawable.ic_mic_red_24dp);
+        audioSlider.getTextView().setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null);
 
         audioSlider.getTextView().setCompoundDrawablePadding(CommonMethods.convertDpToPixel(5));
         audioSlider.setOnSlideCompleteListener(new SlideView.OnSlideCompleteListener() {

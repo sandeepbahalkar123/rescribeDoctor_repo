@@ -49,17 +49,17 @@ public class RescribePreferencesManager {
         return sharedPreferences;
     }
 
-    public static ArrayList<String> getListString(String key) {
+    /*public static ArrayList<String> getListString(String key) {
         return new ArrayList<String>(Arrays.asList(TextUtils.split(sharedPreferences.getString(key, ""), ",=,")));
-    }
+    }*/
 
 
-    public static void putListString(String key, ArrayList<String> stringList) {
+    /*public static void putListString(String key, ArrayList<String> stringList, Context mContext) {
         if (key == null) return;
         if (stringList ==null)return;
         String[] myStringList = stringList.toArray(new String[stringList.size()]);
-        sharedPreferences.edit().putString(key, TextUtils.join(",=,", myStringList)).apply();
-    }
+        getSharedPreference(mContext).edit().putString(key, TextUtils.join(",=,", myStringList)).apply();
+    }*/
 
     public static String getString(String key, Context context) {
         //String mKey = encrypt(key);
@@ -246,11 +246,8 @@ public class RescribePreferencesManager {
         String IS_EXIT = "isExit";
         String PATIENT_ID = "patient_id";
         String CHAT_IS_CHECKED = "is_checked";
-        String D0C_SERVICES = "doc_services";
         String DOC_INFO = "doc_info";
-        String DOC_EXPERIENCE = "doc_experience";
-        String DOC_DEGREE = "doc_degree";
         String SELECTED_LOCATION_ID = "selected_location_id";
-        String PREMIUM = "premium";
+        String BACK_UP = "back_up";
     }
 }

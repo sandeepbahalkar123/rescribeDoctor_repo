@@ -1,8 +1,6 @@
 package com.rescribe.doctor.adapters.completed_opd;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -24,8 +22,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.completed_opd.CompletedOpd;
-import com.rescribe.doctor.model.patient.patient_connect.PatientData;
-import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -40,7 +36,7 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+
 
 /**
  * Created by jeetal on 17/3/18.
@@ -80,10 +76,10 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
         } else {
             holder.opdTypeTextView.setText(mContext.getString(R.string.follow_up));
         }
-        String patientName = toCamelCase(patientObject.getPatientName());
+        String patientName;
         if (patientObject.getSalutation() != 0)
-            patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
-        else patientName = toCamelCase(patientObject.getPatientName());
+            patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + CommonMethods.toCamelCase(patientObject.getPatientName());
+        else patientName = CommonMethods.toCamelCase(patientObject.getPatientName());
         holder.chatImageView.setVisibility(View.GONE);
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName
@@ -144,10 +140,10 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
 
         if (patientObject.getAge().equals("") && !patientObject.getPatientDob().equals("")) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);
-            String getTodayDate = CommonMethods.getCurrentDate();
+            String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = patientObject.getPatientDob();
-            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate);
-            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate);
+            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             holder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
         } else if (!patientObject.getAge().equals("")) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);
@@ -156,9 +152,9 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
             holder.patientAgeTextView.setVisibility(View.GONE);
         }
 
-        holder.patientGenderTextView.setText(" " + CommonMethods.toCamelCase(patientObject.getPatientGender()));
+        holder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientObject.getPatientGender()));
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-        if (patientObject.getOutstandingAmount() == 0) {
+        if (patientObject.getOutstandingAmount().equals("0.00")||patientObject.getOutstandingAmount().equals("0.0")||patientObject.getOutstandingAmount().equals("0")) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
 
@@ -189,16 +185,19 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
                 mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(holder.checkbox.isChecked(), patientObject);
             }
         });
-        if (isLongPressed)
-            holder.checkbox.setVisibility(View.VISIBLE);
-        else holder.checkbox.setVisibility(View.GONE);
 
-        holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString());
-            }
-        });
+        //Long press event disabled by sandeep
+//        if (isLongPressed)
+//            holder.checkbox.setVisibility(View.VISIBLE);
+//        else holder.checkbox.setVisibility(View.GONE);
+
+        //Click event disabled by sandeep
+//        holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString());
+//            }
+//        });
 
 
         holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {

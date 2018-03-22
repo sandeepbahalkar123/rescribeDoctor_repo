@@ -1,22 +1,30 @@
 package com.rescribe.doctor.ui.activities;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
-import android.util.TypedValue;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
+
+import android.view.Window;
+import android.widget.Button;
+
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,7 +34,10 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.services.ChatBackUpService;
 import com.rescribe.doctor.services.MQTTService;
+import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.fragments.patient.patient_connect.PatientConnectChatFragment;
@@ -39,6 +50,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.rescribe.doctor.preference.RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.BACK_UP;
+import static com.rescribe.doctor.services.ChatBackUpService.CHAT_BACKUP;
+import static com.rescribe.doctor.services.ChatBackUpService.STATUS;
 import static com.rescribe.doctor.services.MQTTService.MESSAGE_TOPIC;
 import static com.rescribe.doctor.services.MQTTService.NOTIFY;
 import static com.rescribe.doctor.services.MQTTService.TOPIC;
@@ -53,6 +67,8 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
 
     private final static String TAG = "DoctorConnect";
     public static final int PATIENT_CONNECT_REQUEST = 1111;
+
+    private CustomProgressDialog customProgressDialog;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -74,6 +90,14 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
                         CommonMethods.Log(TAG, "User message");
                         MQTTMessage message = intent.getParcelableExtra(MQTTService.MESSAGE);
                         mPatientConnectChatFragment.notifyCount(message);
+                    }
+                } else if (intent.getAction().equals(CHAT_BACKUP)) {
+                    boolean isFailed = intent.getBooleanExtra(STATUS, false);
+                    if (!isFailed){
+                        addFragment();
+                        customProgressDialog.dismiss();
+                    } else {
+                        // Retry
                     }
                 }
             }
@@ -117,12 +141,51 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
             }
         });
         title.setText("" + getString(R.string.patient_connect));
+        customProgressDialog = new CustomProgressDialog(this);
         initialize();
     }
 
 
     private void initialize() {
 
+        boolean isBackupTaken = RescribePreferencesManager.getBoolean(BACK_UP, this);
+
+        if (!isBackupTaken) {
+
+            final Dialog dialog = new Dialog(this);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.chat_backup_prompt);
+            dialog.setCancelable(false);
+
+            Button button_skip = (Button) dialog.findViewById(R.id.button_skip);
+            Button button_ok = (Button) dialog.findViewById(R.id.button_ok);
+
+            button_skip.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    RescribePreferencesManager.putBoolean(BACK_UP, true, PatientConnectActivity.this);
+                    dialog.dismiss();
+                    addFragment();
+                }
+            });
+
+            button_ok.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent startIntentUpload = new Intent(PatientConnectActivity.this, ChatBackUpService.class);
+                    startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
+                    startService(startIntentUpload);
+                    dialog.dismiss();
+                    customProgressDialog.show();
+                }
+            });
+            dialog.show();
+
+        } else {
+            addFragment();
+        }
+    }
+
+    private void addFragment() {
         mPatientConnectChatFragment = PatientConnectChatFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.container, mPatientConnectChatFragment);
@@ -174,11 +237,8 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
-
         return id == R.id.action_search || super.onOptionsItemSelected(item);
-
     }
 
     // Recent
@@ -186,8 +246,10 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(receiver, new IntentFilter(
-                NOTIFY));
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(NOTIFY);
+        intentFilter.addAction(CHAT_BACKUP);
+        registerReceiver(receiver, intentFilter);
     }
 
     @Override
@@ -236,4 +298,5 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
 
     }
+
 }

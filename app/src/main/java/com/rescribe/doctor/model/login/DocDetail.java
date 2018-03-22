@@ -37,9 +37,9 @@ public class DocDetail implements Parcelable {
     @SerializedName("docInfo")
     @Expose
     private String docInfo;
-    @SerializedName("docService")
+    @SerializedName("cityId")
     @Expose
-    private ArrayList<String> docService = new ArrayList<String>();
+    private Integer cityId;
     @SerializedName("clinicList")
     @Expose
     private ArrayList<ClinicList> clinicList = new ArrayList<ClinicList>();
@@ -73,12 +73,20 @@ public class DocDetail implements Parcelable {
         this.docDegree = ((String) in.readValue((String.class.getClassLoader())));
         this.docExperience = ((String) in.readValue((String.class.getClassLoader())));
         this.docInfo = ((String) in.readValue((String.class.getClassLoader())));
-        this.premium = ((Boolean) in.readValue((String.class.getClassLoader())));
-        in.readList(this.docService, (java.lang.String.class.getClassLoader()));
+        this.premium = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.cityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         in.readList(this.clinicList, (ClinicList.class.getClassLoader()));
     }
 
     public DocDetail() {
+    }
+
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
     }
 
     public boolean isPremium() {
@@ -161,13 +169,6 @@ public class DocDetail implements Parcelable {
         this.docInfo = docInfo;
     }
 
-    public ArrayList<String> getDocService() {
-        return docService;
-    }
-
-    public void setDocService(ArrayList<String> docService) {
-        this.docService = docService;
-    }
 
     public ArrayList<ClinicList> getClinicList() {
         return clinicList;
@@ -187,7 +188,7 @@ public class DocDetail implements Parcelable {
         dest.writeValue(docDegree);
         dest.writeValue(docExperience);
         dest.writeValue(docInfo);
-        dest.writeList(docService);
+        dest.writeValue(cityId);
         dest.writeList(clinicList);
     }
 

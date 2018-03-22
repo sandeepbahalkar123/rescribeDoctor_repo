@@ -67,7 +67,7 @@
                     android:id="@+id/circularBulletChildElement"
                     android:layout_width="20dp"
                     android:layout_height="26dp"
-                    android:src="@drawable/dark_blue_circle"
+                    app:srcCompat="@drawable/dark_blue_circle"
                     android:layout_gravity="center_horizontal"
                     android:visibility="gone"
                     tools:visibility="visible"/>

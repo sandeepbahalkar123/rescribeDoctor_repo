@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:paddingTop="@dimen/dp10"
-                android:src="@drawable/support_bg" />
+                app:srcCompat="@drawable/support_bg" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:layout_width="wrap_content"
@@ -85,24 +85,24 @@
                 android:id="@+id/rescribeTagLine"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/scrog_product"
+
                 android:text="Doctor Rescribe is a unique product of"
                 android:textColor="@color/logo_color"
                 android:textSize="@dimen/sp13"
-                app:customFont="@string/roboto_regular" />
+                app:customFont="@string/roboto_regular"
+                app:srcCompat="@drawable/scrog_product" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/taglinesecond"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_below="@id/rescribeTagLine"
                 android:layout_gravity="center"
-                android:src="@drawable/scrog_product"
                 android:text="SCORG TECHNOLOGIES Pvt.Ltd."
                 android:textColor="@color/logo_color"
                 android:textSize="@dimen/sp13"
-                app:customFont="@string/roboto_regular" />
+                app:customFont="@string/roboto_regular"
+                app:srcCompat="@drawable/scrog_product" />
+
         </LinearLayout>
     </LinearLayout>
 

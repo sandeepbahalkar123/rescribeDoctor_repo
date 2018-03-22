@@ -41,7 +41,7 @@
                 android:layout_width="@dimen/dp40"
                 android:layout_height="@dimen/dp40"
                 android:layout_centerInParent="true"
-                android:src="@drawable/layer_12" />
+                app:srcCompat="@drawable/layer_12" />
 
             <ImageView
                 android:id="@+id/onlineStatusIcon"

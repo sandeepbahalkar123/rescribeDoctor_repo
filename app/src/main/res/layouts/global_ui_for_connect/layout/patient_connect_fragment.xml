@@ -55,11 +55,14 @@
             android:id="@+id/leftFab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
             android:layout_marginBottom="16dp"
             android:layout_marginEnd="12dp"
             android:layout_marginRight="12dp"
             android:src="@drawable/search_patient"
             android:visibility="visible"
             app:backgroundTint="@color/floating_blue_color" />
+
     </RelativeLayout>
 </RelativeLayout>

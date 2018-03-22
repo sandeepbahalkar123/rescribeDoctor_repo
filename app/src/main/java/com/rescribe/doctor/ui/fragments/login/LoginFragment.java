@@ -14,10 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.gson.Gson;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -200,11 +203,10 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADDRESS, docDetail.getDocAddress(), getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, editTextPassword.getText().toString(), getActivity());
-                RescribePreferencesManager.putListString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.D0C_SERVICES, docDetail.getDocService());
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, docDetail.getDocInfo(), getActivity());
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_EXPERIENCE, docDetail.getDocExperience(), getActivity());
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_DEGREE, docDetail.getDocDegree(), getActivity());
-                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, docDetail.isPremium(), getActivity());
+
+                String doctorDetails = new Gson().toJson(docDetail);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, doctorDetails, getActivity());
+
                 Intent intent = new Intent(getActivity(), HomePageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

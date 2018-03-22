@@ -34,7 +34,7 @@ public class ChatPatientConnectModel implements CustomResponse {
     }
 
     public class PatientListData {
-        @SerializedName("chatUsers")
+        @SerializedName("patientList")
         @Expose
         private ArrayList<PatientData> patientDataList;
 

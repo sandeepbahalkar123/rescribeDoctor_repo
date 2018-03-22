@@ -74,6 +74,7 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         appDBHelper = new AppDBHelper(mContext);
         loginHelper = new LoginHelper(mContext,this);
         titleTextView.setText(getString(R.string.settings));
+        backImageView.setVisibility(View.GONE);
     }
 
 

@@ -80,7 +80,7 @@
                     android:paddingLeft="@dimen/dp2"
                     android:paddingStart="@dimen/dp2"
                     android:paddingTop="@dimen/dp2"
-                    android:src="@drawable/result_blue_line"
+                    app:srcCompat="@drawable/result_blue_line"
                     tools:ignore="ContentDescription,RtlSymmetry" />
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -125,7 +125,7 @@
                     android:layout_marginRight="13dp"
                     android:layout_toLeftOf="@+id/appointmentTime"
                     android:layout_toStartOf="@+id/appointmentTime"
-                    android:src="@drawable/waiting"
+                    app:srcCompat="@drawable/waiting"
                     android:visibility="gone"
                     tools:ignore="ContentDescription"
                     tools:visibility="visible" />
@@ -138,7 +138,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginEnd="@dimen/dp16"
                     android:layout_marginRight="@dimen/dp16"
-                    android:src="@drawable/chat_icon"
+                    app:srcCompat="@drawable/chat_icon"
                     android:visibility="gone"
                     tools:ignore="ContentDescription"
                     tools:visibility="visible" />

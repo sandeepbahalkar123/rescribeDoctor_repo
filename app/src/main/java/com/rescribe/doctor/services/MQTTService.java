@@ -19,7 +19,6 @@ import android.util.Log;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -139,6 +138,8 @@ public class MQTTService extends Service {
                                         if (!mqttClient.isConnected()) {
                                             mqttClient.reconnect();
                                         } else Log.d(TAG, "Connected");
+
+                                        new CheckPendingUploads(MQTTService.this);
                                     }
                                 } catch (MqttException ignored) {
                                     ignored.getStackTrace();
@@ -344,8 +345,7 @@ public class MQTTService extends Service {
                 ArrayList<MQTTMessage> chatMessageByMessageStatus = appDBHelper.getChatMessageByMessageStatus(PENDING);
                 for (MQTTMessage mqttMessage : chatMessageByMessageStatus)
                     passMessage(mqttMessage);
-            }
-            else
+            } else
                 mqttClient.reconnect();
             CommonMethods.Log("passInternetStatus: ", content);
         } catch (MqttException e) {

@@ -21,7 +21,8 @@
             android:paddingRight="@dimen/dp10"
             android:paddingStart="@dimen/dp14"
             android:paddingTop="@dimen/dp6"
-            android:src="@drawable/back_arrow_a_01" />
+            app:srcCompat="@drawable/back_arrow_a_01" />
+
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/titleTextView"

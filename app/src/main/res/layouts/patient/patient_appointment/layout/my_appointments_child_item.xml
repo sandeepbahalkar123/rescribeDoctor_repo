@@ -30,7 +30,7 @@
                 android:paddingLeft="@dimen/dp2"
                 android:paddingStart="@dimen/dp2"
                 android:paddingTop="@dimen/dp2"
-                android:src="@drawable/result_blue_line"
+                app:srcCompat="@drawable/result_blue_line"
                 tools:ignore="ContentDescription,RtlSymmetry" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -74,7 +74,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginEnd="@dimen/dp16"
                 android:layout_marginRight="@dimen/dp16"
-                android:src="@drawable/chat_icon"
+                app:srcCompat="@drawable/chat_icon"
                 android:visibility="gone"
                 tools:ignore="ContentDescription"
                 tools:visibility="visible" />

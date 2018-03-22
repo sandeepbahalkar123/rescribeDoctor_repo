@@ -14,7 +14,9 @@
         android:scaleType="centerCrop"
         android:src="@drawable/coachmark"
         android:visibility="gone"
+        app:srcCompat="@drawable/coachmark"
         tools:visibility="gone" />
+
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

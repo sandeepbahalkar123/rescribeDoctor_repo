@@ -21,9 +21,9 @@ import com.rescribe.doctor.util.RescribeConstants;
 
 public class ChatHelper implements ConnectionListener {
 
-    String TAG = this.getClass().getName();
-    Context mContext;
-    HelperResponse mHelperResponseManager;
+    private String TAG = this.getClass().getName();
+    private Context mContext;
+    private HelperResponse mHelperResponseManager;
 
     public ChatHelper(Context context) {
         this.mContext = context;

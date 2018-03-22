@@ -171,10 +171,10 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
         if (patientList.getAge().equals("") && !patientList.getDateOfBirth().equals("")) {
             viewHolder.patientAgeTextView.setVisibility(View.VISIBLE);
-            String getTodayDate = CommonMethods.getCurrentDate();
+            String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = patientList.getDateOfBirth();
-            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate);
-            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate);
+            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             viewHolder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
         } else if (!patientList.getAge().equals("")) {
             viewHolder.patientAgeTextView.setVisibility(View.VISIBLE);
@@ -184,6 +184,12 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
         }
 
+        if (patientList.getAddedToWaiting().equals(0)) {
+            viewHolder.waitingIcon.setVisibility(View.INVISIBLE);
+        } else {
+            viewHolder.waitingIcon.setVisibility(View.VISIBLE);
+        }
+
         viewHolder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientList.getGender()));
         if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
@@ -191,12 +197,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         } else if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.capitalcompleted));
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
+            viewHolder.waitingIcon.setVisibility(View.INVISIBLE);
         } else if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.confirmed))) {
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientList.getAppointmentStatus());
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.confirm_color));
         } else if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.cancelled))) {
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientList.getAppointmentStatus());
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.cancel_color));
+            viewHolder.waitingIcon.setVisibility(View.INVISIBLE);
         } else if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.no_show))) {
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientList.getAppointmentStatus());
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.no_show_color));
@@ -214,11 +222,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
 
         }
-        if (patientList.getAddedToWaiting().equals(0)) {
-            viewHolder.waitingIcon.setVisibility(View.INVISIBLE);
-        } else {
-            viewHolder.waitingIcon.setVisibility(View.VISIBLE);
-        }
+
         viewHolder.appointmentTime.setVisibility(View.VISIBLE);
         viewHolder.appointmentTime.setText(CommonMethods.formatDateTime(patientList.getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
         TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, patientList.getPatientName());
@@ -389,10 +393,10 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
         if (appointmentListObject.getPatientHeader().getAge().equals("") && !appointmentListObject.getPatientHeader().getDateOfBirth().equals("")) {
             groupViewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);
-            String getTodayDate = CommonMethods.getCurrentDate();
+            String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = appointmentListObject.getPatientHeader().getDateOfBirth();
-            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate);
-            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate);
+            DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+            DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             groupViewHolder.mPatientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
         } else if (!appointmentListObject.getPatientHeader().getAge().equals("")) {
             groupViewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);
@@ -423,12 +427,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         } else if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.capitalcompleted));
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
+            groupViewHolder.waitingIcon.setVisibility(View.INVISIBLE);
         } else if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.confirmed))) {
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + appointmentListObject.getPatientHeader().getAppointmentStatus());
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.confirm_color));
         } else if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.cancelled))) {
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + appointmentListObject.getPatientHeader().getAppointmentStatus());
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.cancel_color));
+            groupViewHolder.waitingIcon.setVisibility(View.INVISIBLE);
         } else if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.no_show))) {
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + appointmentListObject.getPatientHeader().getAppointmentStatus());
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.no_show_color));

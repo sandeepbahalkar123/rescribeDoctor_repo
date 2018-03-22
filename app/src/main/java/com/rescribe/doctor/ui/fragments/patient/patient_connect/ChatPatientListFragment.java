@@ -164,7 +164,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
             recyclerView.setVisibility(View.GONE);
             emptyListView.setVisibility(View.VISIBLE);
         }
-
+        searchEditText.setHint(getString(R.string.search_hint_patientconnect_to_mypatient));
         searchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
