@@ -35,6 +35,7 @@ import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.ChatBackUpService;
 import com.rescribe.doctor.services.MQTTService;
+import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.fragments.patient.patient_connect.PatientConnectChatFragment;
@@ -65,6 +66,8 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     private final static String TAG = "DoctorConnect";
     public static final int PATIENT_CONNECT_REQUEST = 1111;
 
+    private CustomProgressDialog customProgressDialog;
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -90,6 +93,7 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
                     boolean isFailed = intent.getBooleanExtra(STATUS, false);
                     if (!isFailed){
                         addFragment();
+                        customProgressDialog.dismiss();
                     } else {
                         // Retry
                     }
@@ -134,6 +138,7 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
             }
         });
         title.setText("" + getString(R.string.patient_connect));
+        customProgressDialog = new CustomProgressDialog(this);
         initialize();
     }
 
@@ -167,6 +172,7 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
                     startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
                     startService(startIntentUpload);
                     dialog.dismiss();
+                    customProgressDialog.show();
                 }
             });
             dialog.show();
@@ -234,7 +240,7 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(NOTIFY);
-        intentFilter.addAction(BACK_UP);
+        intentFilter.addAction(CHAT_BACKUP);
         registerReceiver(receiver, intentFilter);
     }
 

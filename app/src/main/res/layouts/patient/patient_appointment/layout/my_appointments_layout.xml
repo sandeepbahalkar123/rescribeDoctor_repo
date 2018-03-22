@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp10"
                     android:visibility="visible"
-                    app:hintText="@string/search_hint"/>
+                    app:hintText="@string/search_hint" />
 
                 <ImageView
                     android:id="@+id/whiteUnderLine"
@@ -95,9 +95,9 @@
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginRight="@dimen/fab_margin"
             android:layout_marginTop="@dimen/dp5"
-            android:src="@drawable/filter"
             android:visibility="visible"
-            app:backgroundTint="@color/Red" />
+            app:backgroundTint="@color/Red"
+            app:srcCompat="@drawable/filter" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/leftFab"
@@ -108,10 +108,11 @@
             android:layout_gravity="bottom|left"
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginStart="@dimen/fab_margin"
             android:layout_marginTop="@dimen/dp5"
-            android:src="@drawable/ic_add_action"
             android:visibility="gone"
-            app:backgroundTint="@color/floating_blue_color" />
+            app:backgroundTint="@color/floating_blue_color"
+            app:srcCompat="@drawable/ic_add_action" />
 
     </FrameLayout>
 

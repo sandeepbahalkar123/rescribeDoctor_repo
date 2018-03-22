@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/vector_smart_object" />
+            app:srcCompat="@drawable/vector_smart_object" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -158,7 +158,7 @@
             android:layout_marginLeft="@dimen/dp10"
             android:layout_marginRight="@dimen/dp10"
             android:gravity="center_vertical"
-            android:src="@drawable/or"
+            app:srcCompat="@drawable/or"
             android:textColor="@color/white" />
 
         <ImageView
@@ -170,7 +170,7 @@
             android:layout_marginRight="@dimen/dp20"
             android:layout_marginTop="@dimen/dp16"
             android:gravity="center_vertical"
-            android:src="@drawable/fb_logo"
+            app:srcCompat="@drawable/fb_logo"
             android:textColor="@color/white" />
 
         <ImageView
@@ -182,7 +182,7 @@
             android:layout_marginRight="@dimen/dp20"
             android:layout_marginTop="@dimen/dp16"
             android:gravity="center_vertical"
-            android:src="@drawable/gmail"
+            app:srcCompat="@drawable/gmail"
             android:textColor="@color/white" />
 
         <ImageView
@@ -192,7 +192,7 @@
             android:layout_marginBottom="@dimen/dp8"
             android:layout_marginTop="@dimen/dp16"
             android:gravity="center_vertical"
-            android:src="@drawable/by_continuing_you_accept_the_terms_of_use_and_privacy_policy"
+            app:srcCompat="@drawable/by_continuing_you_accept_the_terms_of_use_and_privacy_policy"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

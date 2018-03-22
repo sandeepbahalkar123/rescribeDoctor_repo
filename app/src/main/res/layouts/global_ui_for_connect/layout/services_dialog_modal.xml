@@ -33,7 +33,7 @@
         android:layout_gravity="end|top"
         android:padding="@dimen/dp8"
         android:visibility="visible"
-        android:src="@drawable/close_btn"
+        app:srcCompat="@drawable/close_btn"
         android:background="@drawable/blue_dot"/>
 
 </FrameLayout>

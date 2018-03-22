@@ -46,7 +46,7 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/circular_shape_vital_bg"
                 android:padding="@dimen/dp20"
-                android:src="@drawable/waitinglist_icon" />
+                app:srcCompat="@drawable/waitinglist_icon" />
 
         </FrameLayout>
 

@@ -12,6 +12,7 @@ import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.RelativeLayout;
@@ -29,7 +30,7 @@ public class SlideView extends RelativeLayout implements SeekBar.OnSeekBarChange
 //    protected Drawable buttonBackground;
     protected Drawable buttonImage;
     protected Drawable buttonImageDisabled;
-    protected TextView slideTextView;
+    protected AppCompatTextView slideTextView;
 //    protected LayerDrawable buttonLayers;
     protected ColorStateList slideBackgroundColor;
     protected ColorStateList buttonBackgroundColor;
@@ -67,7 +68,7 @@ public class SlideView extends RelativeLayout implements SeekBar.OnSeekBarChange
         } else {
             setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.slide_view_bg));
         }
-        slideTextView = (TextView) findViewById(R.id.slideText);
+        slideTextView = (AppCompatTextView) findViewById(R.id.slideText);
         slider = (Slider) findViewById(R.id.slider);
         slider.setOnSeekBarChangeListener(this);
         slideBackground = getBackground();
@@ -147,7 +148,7 @@ public class SlideView extends RelativeLayout implements SeekBar.OnSeekBarChange
 
     public void setTextSize(int size) { slideTextView.setTextSize(size); }
 
-    public TextView getTextView() { return slideTextView; }
+    public AppCompatTextView getTextView() { return slideTextView; }
 
     public void setButtonImage(Drawable image) {
         buttonImage = image;

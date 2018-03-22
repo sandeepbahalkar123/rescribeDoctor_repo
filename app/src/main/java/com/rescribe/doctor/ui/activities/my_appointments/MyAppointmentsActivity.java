@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.my_appointments.ClinicList;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
@@ -81,8 +83,6 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private ArrayList<AppointmentList> mFilterAppointmentList;
     private String phoneNo;
     private DatePickerDialog datePickerDialog;
-    private String previousDate;
-    private String currentSelectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,25 +151,20 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private void setDateInToolbar() {
         //Set Date in Required Format i.e 13thJuly'18
         dateTextview.setVisibility(View.VISIBLE);
-        String timeToShow = CommonMethods.formatDateTime(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DATE_PATTERN.MMM_YY,
-                RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE).toLowerCase();
-        String[] timeToShowSpilt = timeToShow.split(",");
-        month = timeToShowSpilt[0].substring(0, 1).toUpperCase() + timeToShowSpilt[0].substring(1);
-        mYear = timeToShowSpilt.length == 2 ? timeToShowSpilt[1] : "";
-        Date date = CommonMethods.convertStringToDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        timeToShow = timeToShow.substring(0, 1).toUpperCase() + timeToShow.substring(1);
-        String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + month + "'" + mYear;
-        String dateTodisplay;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            dateTodisplay = Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY).toString();
-            dateTextview.setText(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            dateTodisplay = Html.fromHtml(toDisplay).toString();
-            dateTextview.setText(Html.fromHtml(toDisplay));
-        }
-        previousDate = dateTodisplay;
+
+        month = CommonMethods.getCurrentDate("MM");
+        mYear = CommonMethods.getCurrentDate("yyyy");
+        String day = CommonMethods.getCurrentDate("dd");
+
+        String toDisplay = day + "<sup>" + CommonMethods.getSuffixForNumber(Integer.parseInt(day)) + "</sup> " + CommonMethods.getCurrentDate("MMM'' yyyy");
+
+        Spanned dateTodisplay;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            dateTodisplay = Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY);
+        else
+            dateTodisplay = Html.fromHtml(toDisplay);
+
+        dateTextview.setText(dateTodisplay);
 
     }
 
@@ -421,17 +416,14 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         Date date = CommonMethods.convertStringToDate(dayOfMonth + "-" + monthOfYearToShow + "-" + year, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        timeToShow = timeToShow.substring(0, 1).toUpperCase() + timeToShow.substring(1);
-        String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + month + "'" + year;
-        String dateTodisplay;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            dateTodisplay = Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY).toString();
+
+        String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + month + "' " + year;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             dateTextview.setText(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            dateTodisplay = Html.fromHtml(toDisplay).toString();
+         else
             dateTextview.setText(Html.fromHtml(toDisplay));
-        }
-        currentSelectedDate = dateTodisplay;
+
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetAppointmentData(year + "-" + monthOfYearToShow + "-" + dayOfMonth);
     }
