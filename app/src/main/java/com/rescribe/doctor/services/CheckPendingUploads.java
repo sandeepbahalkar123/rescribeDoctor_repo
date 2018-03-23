@@ -1,9 +1,11 @@
 package com.rescribe.doctor.services;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 
+import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
@@ -20,102 +22,143 @@ import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 
+import static com.rescribe.doctor.services.ChatBackUpService.STATUS;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.UPLOADING;
+import static net.gotev.uploadservice.Placeholders.ELAPSED_TIME;
+import static net.gotev.uploadservice.Placeholders.PROGRESS;
+import static net.gotev.uploadservice.Placeholders.UPLOAD_RATE;
 
 /**
  * Created by ganeshs on 21/03/18.
  */
 
 public class CheckPendingUploads {
+    public static final String DOC_UPLOAD = "com.rescribe.doctor.DOC_UPLOAD";
     private Context context;
     private AppDBHelper appDBHelper;
 
-    public CheckPendingUploads() {
+    CheckPendingUploads() {
     }
 
     void check() {
 
-        UploadNotificationConfig uploadNotificationConfig = new UploadNotificationConfig();
-        uploadNotificationConfig.setTitleForAllStatuses("Document Uploading");
-        uploadNotificationConfig.setIconColorForAllStatuses(Color.parseColor("#04abdf"));
-        uploadNotificationConfig.setClearOnActionForAllStatuses(true);
-
         Cursor cursor = appDBHelper.getRecordUploads();
 
-        String Url = Config.BASE_URL + Config.MY_RECORDS_UPLOAD;
-        String authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, context);
-        Device device = Device.getInstance(context);
+        if (cursor.getCount() > 0) {
 
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
+            String Url = Config.BASE_URL + Config.MY_RECORDS_UPLOAD;
+            String authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, context);
+            Device device = Device.getInstance(context);
 
-                int uploadStatus = cursor.getInt(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.UPLOAD_STATUS));
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
 
-                if (uploadStatus == FAILED) {
+                    int uploadStatus = cursor.getInt(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.UPLOAD_STATUS));
 
-                    String uploadId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.UPLOAD_ID));
+                    if (uploadStatus == FAILED) {
 
-                    appDBHelper.updateRecordUploads(uploadId, UPLOADING);
+                        UploadNotificationConfig uploadConfig = getUploadConfig(context);
 
-                    String mOpdtime = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.OPD_TIME));
-                    String visitDate = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.VISIT_DATE));
-                    String patientId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.PATIENT_ID));
-                    int docId = cursor.getInt(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.DOC_ID));
-                    String opdId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.OPD_ID));
-                    String mHospitalId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.HOSPITAL_ID));
-                    String mHospitalPatId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.HOSPITAL_PAT_ID));
-                    String mLocationId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.LOCATION_ID));
-                    String imagePath = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.IMAGE_PATH));
-                    String caption = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.PARENT_CAPTION));
+                        String uploadId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.UPLOAD_ID));
 
-                    String currentOpdTime;
+                        appDBHelper.updateRecordUploads(uploadId, UPLOADING);
 
-                    if (mOpdtime.equals(""))
-                        currentOpdTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss);
-                    else
-                        currentOpdTime = mOpdtime;
+                        String mOpdtime = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.OPD_TIME));
+                        String visitDate = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.VISIT_DATE));
+                        String patientId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.PATIENT_ID));
+                        int docId = cursor.getInt(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.DOC_ID));
+                        String opdId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.OPD_ID));
+                        String mHospitalId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.HOSPITAL_ID));
+                        String mHospitalPatId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.HOSPITAL_PAT_ID));
+                        String mLocationId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.LOCATION_ID));
+                        String imagePath = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.IMAGE_PATH));
+                        String caption = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.PARENT_CAPTION));
 
-                    String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+                        String currentOpdTime;
 
-                    try {
+                        if (mOpdtime.equals(""))
+                            currentOpdTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss);
+                        else
+                            currentOpdTime = mOpdtime;
 
-                        MultipartUploadRequest uploadRequest = new MultipartUploadRequest(context, uploadId, Url)
-                                .setNotificationConfig(uploadNotificationConfig)
-                                .setMaxRetries(RescribeConstants.MAX_RETRIES)
-                                .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
-                                .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
-                                .addHeader(RescribeConstants.OS, device.getOS())
-                                .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
-                                .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
+                        String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
 
-                                .addHeader("patientid", patientId)
-                                .addHeader("docid", String.valueOf(docId))
-                                .addHeader("opddate", visitDateToPass)
-                                .addHeader("opdtime", currentOpdTime)
-                                .addHeader("opdid", opdId)
-                                .addHeader("hospitalid", mHospitalId)
-                                .addHeader("hospitalpatid", mHospitalPatId)
-                                .addHeader("locationid", mLocationId)
-                                .addFileToUpload(imagePath, "attachment");
+                        try {
 
-                        if (!caption.isEmpty()) {
-                            uploadRequest.addHeader("captionname", caption);
+                            MultipartUploadRequest uploadRequest = new MultipartUploadRequest(context, uploadId, Url)
+                                    .setUtf8Charset()
+
+                                    .setMaxRetries(RescribeConstants.MAX_RETRIES)
+                                    .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
+                                    .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
+                                    .addHeader(RescribeConstants.OS, device.getOS())
+                                    .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
+                                    .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
+
+                                    .addHeader("patientid", patientId)
+                                    .addHeader("docid", String.valueOf(docId))
+                                    .addHeader("opddate", visitDateToPass)
+                                    .addHeader("opdtime", currentOpdTime)
+                                    .addHeader("opdid", opdId)
+                                    .addHeader("hospitalid", mHospitalId)
+                                    .addHeader("hospitalpatid", mHospitalPatId)
+                                    .addHeader("locationid", mLocationId)
+                                    .addFileToUpload(imagePath, "attachment");
+
+                            String docCaption;
+
+                            if (!caption.isEmpty()) {
+                                docCaption = caption;
+                            } else docCaption = CommonMethods.stripExtension(CommonMethods.getFileNameFromPath(imagePath));
+
+                            uploadRequest.addHeader("captionname", docCaption);
+
+                            uploadConfig.getProgress().message = uploadConfig.getProgress().message.replace("record", docCaption);
+                            uploadRequest.setNotificationConfig(uploadConfig);
+
+                            uploadRequest.startUpload();
+
+                        } catch (MalformedURLException | FileNotFoundException fe) {
+                            fe.printStackTrace();
                         }
-
-                        uploadRequest.startUpload();
-
-                    } catch (MalformedURLException | FileNotFoundException fe) {
-                        fe.printStackTrace();
                     }
 
+                    cursor.moveToNext();
                 }
             }
         }
 
         cursor.close();
         appDBHelper.close();
+    }
+
+    public static UploadNotificationConfig getUploadConfig(Context context) {
+        UploadNotificationConfig uploadNotificationConfig = new UploadNotificationConfig();
+        uploadNotificationConfig.setIconColorForAllStatuses(context.getResources().getColor(R.color.tagColor));
+
+        uploadNotificationConfig.setTitleForAllStatuses(context.getString(R.string.app_name))
+                .setRingToneEnabled(true)
+                .setClearOnActionForAllStatuses(false);
+
+        uploadNotificationConfig.getProgress().message = "Uploading record at " + UPLOAD_RATE + " - " + PROGRESS;
+        uploadNotificationConfig.getProgress().iconResourceID = R.drawable.ic_file_upload_white_24dp;
+        uploadNotificationConfig.getProgress().iconColorResourceID = context.getResources().getColor(R.color.tagColor);
+
+        uploadNotificationConfig.getCompleted().message = "Upload completed successfully in " + ELAPSED_TIME;
+        uploadNotificationConfig.getCompleted().iconResourceID = R.drawable.ic_file_upload_white_24dp;
+        uploadNotificationConfig.getCompleted().iconColorResourceID = Color.GREEN;
+
+        uploadNotificationConfig.getError().message = "Error while uploading";
+        uploadNotificationConfig.getError().iconResourceID = R.drawable.ic_file_upload_white_24dp;
+        uploadNotificationConfig.getError().iconColorResourceID = Color.RED;
+
+        uploadNotificationConfig.getCancelled().message = "Upload has been cancelled";
+        uploadNotificationConfig.getCancelled().iconResourceID = R.drawable.ic_file_upload_white_24dp;
+        uploadNotificationConfig.getCancelled().iconColorResourceID = Color.YELLOW;
+
+        return uploadNotificationConfig;
     }
 
     void onCreate(Context mContext) {
@@ -139,12 +182,18 @@ public class CheckPendingUploads {
         public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
             // your implementation
             appDBHelper.updateRecordUploads(uploadInfo.getUploadId(), FAILED);
+            Intent intent = new Intent(DOC_UPLOAD);
+            intent.putExtra(STATUS, FAILED);
+            context.sendBroadcast(intent);
         }
 
         @Override
         public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
             // your implementation
             appDBHelper.updateRecordUploads(uploadInfo.getUploadId(), COMPLETED);
+            Intent intent = new Intent(DOC_UPLOAD);
+            intent.putExtra(STATUS, COMPLETED);
+            context.sendBroadcast(intent);
         }
 
         @Override

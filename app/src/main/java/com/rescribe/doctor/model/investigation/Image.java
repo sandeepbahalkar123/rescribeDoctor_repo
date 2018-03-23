@@ -18,10 +18,7 @@ public class Image implements Parcelable {
             Image instance = new Image();
             instance.imageId = ((String) in.readValue((String.class.getClassLoader())));
             instance.imagePath = ((String) in.readValue((String.class.getClassLoader())));
-            instance.selected = ((boolean) in.readValue((boolean.class.getClassLoader())));
             instance.parentCaption = ((String) in.readValue((String.class.getClassLoader())));
-            instance.childCaption = ((String) in.readValue((String.class.getClassLoader())));
-            instance.uploading = ((int) in.readValue((boolean.class.getClassLoader())));
             instance.type = ((int) in.readValue((boolean.class.getClassLoader())));
 
             return instance;
@@ -38,18 +35,9 @@ public class Image implements Parcelable {
     @SerializedName("image_path")
     @Expose
     private String imagePath;
-    @SerializedName("selected")
-    @Expose
-    private boolean selected = false;
     @SerializedName("parentCaption")
     @Expose
     private String parentCaption = "";
-    @SerializedName("childCaption")
-    @Expose
-    private String childCaption = "";
-    @SerializedName("uploading")
-    @Expose
-    private int uploading = -1;
 
     @SerializedName("type")
     @Expose
@@ -71,14 +59,6 @@ public class Image implements Parcelable {
         this.imagePath = imagePath;
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
     public String getParentCaption() {
         return parentCaption;
     }
@@ -86,23 +66,6 @@ public class Image implements Parcelable {
     public void setParentCaption(String parentCaption) {
         this.parentCaption = parentCaption;
     }
-
-    public String getChildCaption() {
-        return childCaption;
-    }
-
-    public void setChildCaption(String childCaption) {
-        this.childCaption = childCaption;
-    }
-
-    public int isUploading() {
-        return uploading;
-    }
-
-    public void setUploading(int uploading) {
-        this.uploading = uploading;
-    }
-
 
     public int getType() {
         return type;
@@ -115,10 +78,7 @@ public class Image implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(imageId);
         dest.writeValue(imagePath);
-        dest.writeValue(selected);
         dest.writeValue(parentCaption);
-        dest.writeValue(childCaption);
-        dest.writeValue(uploading);
         dest.writeValue(type);
     }
 

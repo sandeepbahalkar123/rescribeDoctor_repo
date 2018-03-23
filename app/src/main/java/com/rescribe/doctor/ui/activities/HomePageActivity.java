@@ -438,16 +438,15 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         appDBHelper.deleteDatabase();
 
         Intent intent = new Intent(mContext, LoginSignUpActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        finish();
+        finishAffinity();
     }
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (mOldDataTag.equals(RescribeConstants.LOGOUT))
             if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, mContext).equalsIgnoreCase(RescribeConstants.YES)) {
-                finish();
+                finishAffinity();
             } else if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, mContext).equalsIgnoreCase(RescribeConstants.NO)) {
                 //if user turns on radio button
             } else {
