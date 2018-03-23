@@ -38,7 +38,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "dataId";
     public static final String COLUMN_DATA = "data";
 
-    static AppDBHelper instance = null;
+    private static AppDBHelper instance = null;
     private Context mContext;
 
     public AppDBHelper(Context context) {
@@ -266,7 +266,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     public Cursor getChatUsers() {
         SQLiteDatabase db = getReadableDatabase();
-        String sql = "SELECT * FROM " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " WHERE " + CHAT_MESSAGES.MSG_TIME + " in (select max(" + CHAT_MESSAGES.MSG_TIME + ") from " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " group by " + CHAT_MESSAGES.USER2ID + ") ORDER BY " + CHAT_MESSAGES.MSG_TIME + " DESC";
+        String sql = "SELECT * FROM " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " GROUP BY " + CHAT_MESSAGES.USER2ID + " ORDER BY " + CHAT_MESSAGES.MSG_TIME + " DESC";
         return db.rawQuery(sql, null);
     }
 

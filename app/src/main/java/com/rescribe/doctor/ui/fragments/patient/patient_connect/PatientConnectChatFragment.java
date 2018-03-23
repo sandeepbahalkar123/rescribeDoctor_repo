@@ -103,12 +103,6 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
         mRecyclerView.setAdapter(mPatientConnectAdapter);
 
-        /*if (mReceivedPatientDataList.isEmpty()) {
-            mPatientConnectHelper.doGetChatPatientList();
-        } else {
-            notifyDataChanged();
-        }*/
-
         searchedMessagesAdapter = new SearchedMessagesAdapter(getContext(), mqttMessages);
         searchRecyclerView.setItemAnimator(new DefaultItemAnimator());
         searchRecyclerView.addItemDecoration(dividerItemDecoration);
@@ -121,7 +115,6 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         mReceivedPatientDataList.clear();
         Cursor cursor = appDBHelper.getChatUsers();
 
-        if (cursor != null) {
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
 
@@ -153,12 +146,10 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                     mReceivedPatientDataList.add(patientData);
                     cursor.moveToNext();
                 }
-
-                cursor.close();
             }
 
+            cursor.close();
             appDBHelper.close();
-        }
 
         if (mReceivedPatientDataList.isEmpty()) {
             mEmptyListView.setVisibility(View.VISIBLE);

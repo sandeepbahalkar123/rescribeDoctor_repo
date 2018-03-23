@@ -28,6 +28,7 @@
 
     <include layout="@layout/content_selected_records" />
 
+
     <io.github.shree.fabmenu.FabSpeedDial
         android:id="@+id/fab"
         android:layout_width="match_parent"

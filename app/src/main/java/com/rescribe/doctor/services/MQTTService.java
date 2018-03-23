@@ -135,15 +135,18 @@ public class MQTTService extends Service {
                             @Override
                             public void call(InternetState internetState) {
                                 // do stuff here for UI
-                                try {
-                                    if (internetState.isEnabled) {
+                                if (internetState.isEnabled) {
+
+                                    try {
                                         if (!mqttClient.isConnected()) {
                                             mqttClient.reconnect();
                                         } else Log.d(TAG, "Connected");
-                                        checkPendingUploads.check();
+                                    } catch (MqttException ignored) {
+                                        ignored.getStackTrace();
                                     }
-                                } catch (MqttException ignored) {
-                                    ignored.getStackTrace();
+
+                                    // checking pending uploads
+                                    checkPendingUploads.check();
                                 }
                             }
                         });
@@ -218,6 +221,7 @@ public class MQTTService extends Service {
                                             statusInfo.setMsgId(messageL.getMsgId());
                                             statusInfo.setDocId(messageL.getDocId());
                                             statusInfo.setPatId(messageL.getPatId());
+                                            statusInfo.setSender(DOCTOR);
 
                                             if (currentChatUser != messageL.getPatId()) {
 

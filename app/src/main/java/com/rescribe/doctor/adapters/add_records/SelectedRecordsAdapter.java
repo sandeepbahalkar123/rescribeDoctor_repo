@@ -75,30 +75,6 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
                 .load(new File(image.getImagePath()))
                 .apply(requestOptions).thumbnail(0.5f)
                 .into(holder.ivPhoto);
-        if (image.isUploading() == RescribeConstants.FILE_STATUS.UPLOADING) {
-            holder.progressBarLay.setVisibility(View.VISIBLE);
-            holder.crossImageView.setVisibility(View.GONE);
-            holder.retryButton.setVisibility(View.GONE);
-        } else if (image.isUploading() == RescribeConstants.FILE_STATUS.FAILED) {
-            holder.progressBarLay.setVisibility(View.GONE);
-            holder.retryButton.setVisibility(View.VISIBLE);
-            holder.crossImageView.setVisibility(View.GONE);
-        } else if (image.isUploading() == RescribeConstants.FILE_STATUS.COMPLETED) {
-            holder.progressBarLay.setVisibility(View.GONE);
-            holder.crossImageView.setVisibility(View.GONE);
-            holder.retryButton.setVisibility(View.GONE);
-        } else {
-            holder.progressBarLay.setVisibility(View.GONE);
-            holder.crossImageView.setVisibility(View.VISIBLE);
-            holder.retryButton.setVisibility(View.GONE);
-        }
-        holder.retryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // add retry code
-            //    mOnClickOfComponentsOnSelectedPhoto.uploadImage(mainPosition + "_" + position, image);
-            }
-        });
 
         holder.addCaptionText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
@@ -133,12 +109,6 @@ public class SelectedRecordsAdapter extends RecyclerView.Adapter<SelectedRecords
     static class FileViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_photo)
         ImageView ivPhoto;
-        @BindView(R.id.retryButton)
-        Button retryButton;
-        @BindView(R.id.progress_bar)
-        ProgressBar progressBar;
-        @BindView(R.id.progress_bar_lay)
-        RelativeLayout progressBarLay;
         @BindView(R.id.addCaptionText)
         EditText addCaptionText;
         @BindView(R.id.crossImageView)
