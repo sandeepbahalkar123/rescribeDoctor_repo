@@ -95,6 +95,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
     public interface EventListener {
         void onDeleteClick(int position, Active viewAll);
+
         void onPhoneClick(String phoneNumber);
 
         void onItemPinned(int position);
@@ -305,11 +306,11 @@ public class DraggableSwipeableActiveWaitingListAdapter
             holder.mContainer.setBackgroundResource(bgResId);
         }
 
-        if(item.getActiveAll().getWaitingStatus().equals("In Queue")||item.getActiveAll().getWaitingStatus().equals("Confirmed")){
+        if (item.getActiveAll().getWaitingStatus().equals("In Queue") || item.getActiveAll().getWaitingStatus().equals("Confirmed")) {
             holder.mDragHandle.setVisibility(View.VISIBLE);
             holder.setMaxLeftSwipeAmount(-0.4f);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
-        }else{
+        } else {
             holder.mDragHandle.setVisibility(View.GONE);
             holder.setMaxLeftSwipeAmount(0);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
@@ -328,8 +329,8 @@ public class DraggableSwipeableActiveWaitingListAdapter
         Log.d(TAG, "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
 
         move(fromPosition, toPosition);
-        if (toPosition < mProvider.getCount()) {
-            Active active = mProvider.getItem(toPosition).getActiveAll();
+        if ((toPosition + 1) < mProvider.getCount()) {
+            Active active = mProvider.getItem(toPosition + 1).getActiveAll();
             if (active.getWaitingStatusId().equals(IN_QUEUE) || active.getWaitingStatusId().equals(CONFIRMED))
                 mEventListener.onItemMoved(fromPosition, toPosition);
             else

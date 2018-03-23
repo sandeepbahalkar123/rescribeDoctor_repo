@@ -235,6 +235,6 @@
     <string name="years">yrs -\u0020</string>
     <string name="skip">Skip</string>
     <string name="do_you_want_to_restore_backup">Do you want to restore backup?</string>
-    <string name="records_will_upload_when_internet_available">Records eill upload when internet available</string>
+    <string name="records_will_upload_when_internet_available">Records will upload when internet is available</string>
     <string name="uploading">Uploading</string>
 </resources>

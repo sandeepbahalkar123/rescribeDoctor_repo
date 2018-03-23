@@ -25,8 +25,8 @@ import butterknife.ButterKnife;
  * Created by root on 22/6/16.
  */
 public class OPDStatusShowAdapter extends RecyclerView.Adapter<OPDStatusShowAdapter.ListViewHolder> {
-    Context mContext;
-    ArrayList<String> mSelectedOption;
+    private Context mContext;
+    private ArrayList<String> mSelectedOption;
 
     public OPDStatusShowAdapter(Context context, ArrayList<String> spinner_data) {
         this.mContext = context;

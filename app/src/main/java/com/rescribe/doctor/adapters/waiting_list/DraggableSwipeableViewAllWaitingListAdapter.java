@@ -332,8 +332,8 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         Log.d(TAG, "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
 
         move(fromPosition, toPosition);
-        if (toPosition < mProvider.getCount()) {
-            ViewAll viewAll = mProvider.getItem(toPosition).getViewAll();
+        if ((toPosition+1) < mProvider.getCount()) {
+            ViewAll viewAll = mProvider.getItem(toPosition+1).getViewAll();
             if (viewAll.getWaitingStatusId().equals(IN_QUEUE) || viewAll.getWaitingStatusId().equals(CONFIRMED))
                 mEventListener.onItemMoved(fromPosition, toPosition);
             else

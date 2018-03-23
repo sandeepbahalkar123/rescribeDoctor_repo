@@ -580,7 +580,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     private void callWaitingListApi() {
         RequestToAddWaitingList requestForWaitingListPatients = new RequestToAddWaitingList();
         requestForWaitingListPatients.setAddToList(addToArrayList);
-        requestForWaitingListPatients.setDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+        requestForWaitingListPatients.setDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
         requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
         mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);
     }

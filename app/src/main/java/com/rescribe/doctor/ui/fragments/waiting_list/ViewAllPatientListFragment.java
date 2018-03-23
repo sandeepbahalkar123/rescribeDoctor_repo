@@ -199,7 +199,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
                 requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
                 requestDeleteBaseModel.setLocationId(mLocationId);
-                requestDeleteBaseModel.setWaitingDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+                requestDeleteBaseModel.setWaitingDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
                 requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
                 requestDeleteBaseModel.setWaitingSequence(viewAll.getWaitingSequence());
                 mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);
@@ -304,7 +304,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
         requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
         requestDeleteBaseModel.setLocationId(mLocationId);
-        requestDeleteBaseModel.setWaitingDate(CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+        requestDeleteBaseModel.setWaitingDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
         requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
         requestDeleteBaseModel.setWaitingSequence(viewAll.getWaitingSequence());
         mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);

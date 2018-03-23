@@ -97,7 +97,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         titleTextView.setText(getString(R.string.appointments));
         setDateInToolbar();
         //Call api for AppointmentData
-        String date = CommonMethods.getFormattedDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD), RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+        String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetAppointmentData(date);
 

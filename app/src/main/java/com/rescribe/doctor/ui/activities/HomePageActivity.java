@@ -45,7 +45,6 @@ import com.rescribe.doctor.model.dashboard.DashboardDetails;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationBaseModel;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.model.login.DocDetail;
-import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.completed_opd.CompletedOpdActivity;
@@ -594,10 +593,10 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.todayCompletedOpd:
-                if(!todayFollowAppointmentCount.getText().toString().equals("0")) {
+                if (!todayFollowAppointmentCount.getText().toString().equals("0")) {
                     Intent intent = new Intent(this, CompletedOpdActivity.class);
                     startActivity(intent);
-                }else{
+                } else {
 
                 }
                 break;
@@ -605,26 +604,26 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 break;
             case R.id.todayAppointmentsOrWaitingList:
                 if (todayWaitingListOrAppointmentTextView.getText().toString().equals(getString(R.string.today_appointment))) {
-                    if(!todayWaitingListOrAppointmentCount.getText().toString().equals("0")){
+                    if (!todayWaitingListOrAppointmentCount.getText().toString().equals("0")) {
                         Intent todayAppointmentsOrWaitingList = new Intent(this, MyAppointmentsActivity.class);
                         startActivity(todayAppointmentsOrWaitingList);
-                    }else{
+                    } else {
 
                     }
                 } else {
-                    if(!todayWaitingListOrAppointmentCount.getText().toString().equals("0")) {
+                    if (!todayWaitingListOrAppointmentCount.getText().toString().equals("0")) {
                         Intent todayAppointmentsOrWaitingList = new Intent(this, WaitingMainListActivity.class);
                         startActivity(todayAppointmentsOrWaitingList);
-                    }else{
+                    } else {
 
                     }
                 }
                 break;
             case R.id.todayNewPatient:
-                if(!todayNewAppointmentCount.getText().toString().equals("0")) {
+                if (!todayNewAppointmentCount.getText().toString().equals("0")) {
                     Intent todayNewPatient = new Intent(this, NewPatientActivity.class);
                     startActivity(todayNewPatient);
-                }else{
+                } else {
 
                 }
                 break;
