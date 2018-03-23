@@ -30,7 +30,8 @@
                 android:background="@color/transparent"
                 android:text="@string/appointment_completed_button"
                 android:textAllCaps="false"
-                android:textColor="@color/tagColor" />
+                android:textColor="@color/tagColor"
+                android:textSize="@dimen/sp14" />
 
             <View
                 android:layout_width="match_parent"
@@ -47,7 +48,8 @@
                 android:background="@color/transparent"
                 android:text="@string/appointment_cancelled_button"
                 android:textAllCaps="false"
-                android:textColor="@color/Red" />
+                android:textColor="@color/Red"
+                android:textSize="@dimen/sp14" />
 
         </LinearLayout>
     </FrameLayout>
@@ -125,8 +127,8 @@
                     android:layout_marginRight="13dp"
                     android:layout_toLeftOf="@+id/appointmentTime"
                     android:layout_toStartOf="@+id/appointmentTime"
-                    app:srcCompat="@drawable/waiting"
                     android:visibility="gone"
+                    app:srcCompat="@drawable/waiting"
                     tools:ignore="ContentDescription"
                     tools:visibility="visible" />
 
@@ -138,8 +140,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginEnd="@dimen/dp16"
                     android:layout_marginRight="@dimen/dp16"
-                    app:srcCompat="@drawable/chat_icon"
                     android:visibility="gone"
+                    app:srcCompat="@drawable/chat_icon"
                     tools:ignore="ContentDescription"
                     tools:visibility="visible" />
 

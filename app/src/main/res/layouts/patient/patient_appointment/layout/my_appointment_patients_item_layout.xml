@@ -152,7 +152,8 @@
                     android:background="@color/transparent"
                     android:text="@string/appointment_completed_button"
                     android:textAllCaps="false"
-                    android:textColor="@color/tagColor" />
+                    android:textColor="@color/tagColor"
+                    android:textSize="@dimen/sp14" />
 
                 <View
                     android:layout_width="match_parent"
@@ -169,7 +170,8 @@
                     android:background="@color/transparent"
                     android:text="@string/appointment_cancelled_button"
                     android:textAllCaps="false"
-                    android:textColor="@color/Red" />
+                    android:textColor="@color/Red"
+                    android:textSize="@dimen/sp14" />
 
             </LinearLayout>
         </FrameLayout>

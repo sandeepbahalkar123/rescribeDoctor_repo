@@ -225,7 +225,7 @@
     <string name="today_new_patient">"Today's\nNew Patients"</string>
     <string name="today_appointment">"Today's\nAppointments"</string>
     <string name="today_waiting_list"> "Today's\nWaiting List"</string>
-    <string name="today_completed_opd"> "Today's\nCompleted Opd"</string>
+    <string name="today_completed_opd"> "Today's\nCompleted OPD"</string>
     <string name="completed_opd">Completed Opd</string>
     <string name="consultation">Consultation</string>
     <string name="follow_up">Follow Up</string>

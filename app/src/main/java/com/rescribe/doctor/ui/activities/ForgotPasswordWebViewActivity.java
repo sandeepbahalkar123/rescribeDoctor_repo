@@ -6,15 +6,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -58,9 +61,15 @@ public class ForgotPasswordWebViewActivity extends AppCompatActivity implements 
             // Let's display the progress in the activity title bar, like the
             // browser app does.
 
-            mWebViewObject.getSettings().setJavaScriptEnabled(true);
-            mWebViewObject.getSettings().setSupportZoom(true);
-            mWebViewObject.getSettings().setBuiltInZoomControls(true);
+            WebSettings webSettings = mWebViewObject.getSettings();
+
+            webSettings.setJavaScriptEnabled(true);
+            webSettings.setDomStorageEnabled(true);
+            webSettings.setLoadWithOverviewMode(true);
+            webSettings.setUseWideViewPort(true);
+            webSettings.setBuiltInZoomControls(true);
+            webSettings.setSupportZoom(true);
+            webSettings.setDefaultTextEncodingName("utf-8");
 
             mWebViewObject.setWebChromeClient(new WebChromeClient() {
                 public void onProgressChanged(WebView view, int progress) {
@@ -102,7 +111,6 @@ public class ForgotPasswordWebViewActivity extends AppCompatActivity implements 
         if (mWebViewObject.canGoBack()) {
             mWebViewObject.goBack();
         } else {
-
             super.onBackPressed();
         }
     }

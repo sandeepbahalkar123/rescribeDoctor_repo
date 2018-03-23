@@ -65,5 +65,6 @@
     <dimen name="dp130">195dp</dimen>
     <dimen name="dp82">123dp</dimen>
     <dimen name="dp500">750dp</dimen>
+    <dimen name="drawer_width">500dp</dimen>
 
 </resources>

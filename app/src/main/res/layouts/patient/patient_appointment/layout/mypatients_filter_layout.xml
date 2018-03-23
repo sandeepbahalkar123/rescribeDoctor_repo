@@ -190,10 +190,10 @@
 
                         <LinearLayout
                             android:id="@+id/genderMaleLayout"
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/dp0"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:layout_weight="1.5"
+                            android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
@@ -215,10 +215,10 @@
 
                         <LinearLayout
                             android:id="@+id/genderFemaleLayout"
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/dp0"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:layout_weight="1.2"
+                            android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
@@ -240,9 +240,9 @@
 
                         <LinearLayout
                             android:id="@+id/transGenderMaleLayout"
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/dp0"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.8"
+                            android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView

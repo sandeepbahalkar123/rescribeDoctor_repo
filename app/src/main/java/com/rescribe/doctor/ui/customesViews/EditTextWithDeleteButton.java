@@ -100,9 +100,10 @@ public class EditTextWithDeleteButton extends LinearLayout {
 
             @Override
             public void onClick(View v) {
-/*
-                mClearButtonClickedInEditTextListener.onClearButtonClicked();
-*/
+
+                if (mClearButtonClickedInEditTextListener != null)
+                    mClearButtonClickedInEditTextListener.onClearButtonClicked();
+
                 editText.setText("");
             }
         });
