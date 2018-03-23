@@ -47,5 +47,6 @@
 
     <dimen name="md_fixed_list_shadow_height">4dp</dimen>
     <dimen name="md_baseline_count">10dp</dimen>
+    <dimen name="dp56">56dp</dimen>
 
 </resources>
