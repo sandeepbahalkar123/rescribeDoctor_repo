@@ -129,7 +129,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
     private String lowToHigh = "(low to high)";
     private String highToLow = "(high to low)";
     private ArrayList<FilterSortByHighLowList> filterSortByHighLowLists = new ArrayList<>();
-    private FilterSortByHighLowList mFilterSortByHighLowList = new FilterSortByHighLowList();
+    private FilterSortByHighLowList mFilterSortByHighLowList;
     private String[] sortOptions = new String[]{"Outstanding Amt" + lowToHigh,
             "Outstanding Amt" + highToLow};
     private int mSortByAmountAdapterPosition;
@@ -311,12 +311,18 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
             case R.id.doneButton:
                 hideMainLayout.setVisibility(View.VISIBLE);
                 showSortLayout.setVisibility(View.GONE);
-                chooseOptionForSort.setText(mSortByPriceFilterAdapter.getAmountSortList().get(mSortByAmountAdapterPosition).getAmountHighOrLow());
+
+                if (mFilterSortByHighLowList != null)
+                    chooseOptionForSort.setText(mFilterSortByHighLowList.getAmountHighOrLow());
+                else
+                    chooseOptionForSort.setText(getString(R.string.choose_one_option));
+                //chooseOptionForSort.setText(mSortByPriceFilterAdapter.getAmountSortList().get(mSortByAmountAdapterPosition).getAmountHighOrLow());
                 break;
             case R.id.resetSortingButton:
                 for (FilterSortByHighLowList filterSortByHighLowListObject : mSortByPriceFilterAdapter.getAmountSortList()) {
                     filterSortByHighLowListObject.setSelected(false);
                 }
+                mFilterSortByHighLowList = null;
                 mSortByPriceFilterAdapter.notifyDataSetChanged();
                 break;
             case R.id.showSortLayout:

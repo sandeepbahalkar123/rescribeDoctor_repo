@@ -266,13 +266,13 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
         // additional decorations
         //noinspection StatementWithEmptyBody
-        if (supportsViewElevation()) {
+       /* if (supportsViewElevation()) {
             // Lollipop or later has native drop shadow feature. ItemShadowDecorator is not required.
         } else {
             recyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z3)));
         }
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.list_divider_h), true));
-
+*/
         // NOTE:
         // The initialization order is very important! This order determines the priority of touch event handling.
         //
@@ -362,7 +362,9 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
     @Override
     public void onPause() {
-        recyclerViewDragDropManager.cancelDrag();
+        if (recyclerViewDragDropManager != null) {
+            recyclerViewDragDropManager.cancelDrag();
+        }
         super.onPause();
     }
 

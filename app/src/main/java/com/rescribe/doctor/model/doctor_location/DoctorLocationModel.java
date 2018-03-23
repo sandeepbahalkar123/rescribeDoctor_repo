@@ -131,4 +131,16 @@ public class DoctorLocationModel implements Parcelable
         return  0;
     }
 
+    @Override
+    public String toString() {
+        return "DoctorLocationModel{" +
+                "clinicName='" + clinicName + '\'' +
+                ", clinicId=" + clinicId +
+                ", locationId=" + locationId +
+                ", area='" + area + '\'' +
+                ", city='" + city + '\'' +
+                ", cityId=" + cityId +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }

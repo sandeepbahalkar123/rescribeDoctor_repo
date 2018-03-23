@@ -27,10 +27,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
+
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -318,7 +318,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                                 dateTime.setTextColor(Color.WHITE);
                             } else {
                                 dateTime.setText(chatList.getOnlineStatus());
-                                setUserStatusColor(chatList.getOnlineStatus());
+                                //setUserStatusColor(chatList.getOnlineStatus());
                             }
                         }
                     } else if (topic.equals(TOPIC[USER_STATUS_TOPIC])) {
@@ -331,7 +331,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
             } else CommonMethods.Log(TAG, "null action");
         }
     };
-
+/*
     private void setUserStatusColor(String onlineStatus) {
         if (onlineStatus.equalsIgnoreCase(ONLINE)) {
             onlineStatusIcon.setVisibility(View.VISIBLE);
@@ -343,7 +343,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
             dateTime.setTextColor(ContextCompat.getColor(ChatActivity.this, R.color.grey_500));
             onlineStatusIcon.setVisibility(View.INVISIBLE);
         }
-    }
+    }*/
 
     void checkDownloaded() {
         DownloadManager.Query query = new DownloadManager.Query();
@@ -506,12 +506,15 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         }
 
         dateTime.setText("" + chatList.getOnlineStatus());
-        setUserStatusColor(chatList.getOnlineStatus());
 
-        if (chatList.getOnlineStatus().equalsIgnoreCase(ONLINE))
+        // this online status feature removed for now. :START ;;;;;
+        //setUserStatusColor(chatList.getOnlineStatus());
+
+        /*   if (chatList.getOnlineStatus().equalsIgnoreCase(ONLINE))
             onlineStatusIcon.setVisibility(View.VISIBLE);
         else
-            onlineStatusIcon.setVisibility(View.GONE);
+            onlineStatusIcon.setVisibility(View.GONE);*/
+        // this online status feature removed for now.END ;;;;;
 
 //        chatHelper = new ChatHelper(this, this);
 
@@ -1303,19 +1306,19 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     };
 
     @Override
-        protected void onStart() {
-            super.onStart();
-            Intent mIntent = new Intent(this, MQTTService.class);
-            bindService(mIntent, mConnection, BIND_AUTO_CREATE);
-        }
+    protected void onStart() {
+        super.onStart();
+        Intent mIntent = new Intent(this, MQTTService.class);
+        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
+    }
 
-        @Override
-        protected void onStop() {
-            super.onStop();
-            if (mBounded) {
-                unbindService(mConnection);
-                mBounded = false;
-            }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mBounded) {
+            unbindService(mConnection);
+            mBounded = false;
+        }
 
         if (mRecorder != null) {
             try {

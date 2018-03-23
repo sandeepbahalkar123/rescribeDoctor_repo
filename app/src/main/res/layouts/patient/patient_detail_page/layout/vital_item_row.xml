@@ -10,7 +10,7 @@
         android:id="@+id/vitalCellLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
+        android:layout_margin="@dimen/dp2"
         android:background="@drawable/border"
         android:orientation="vertical">
 
@@ -23,15 +23,15 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_margin="1dp"
+            android:layout_height="@dimen/dp60"
+            android:layout_margin="@dimen/dp1"
             android:background="#FFFFFF"
             android:gravity="center_vertical"
-            android:padding="5dp">
+            android:padding="@dimen/dp5">
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/vital_name"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp0"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
                 android:textColor="@color/vitals_name"
@@ -40,7 +40,7 @@
 
             <LinearLayout
                 android:id="@+id/unitValuesLayout"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp0"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
                 android:gravity="right"

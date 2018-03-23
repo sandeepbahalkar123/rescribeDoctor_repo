@@ -23,6 +23,7 @@
             android:paddingTop="@dimen/dp6"
             app:srcCompat="@drawable/back_arrow_a_01" />
 
+
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"

@@ -26,11 +26,12 @@
                 android:id="@+id/appointmentComplete"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_weight="1"
                 android:background="@color/transparent"
                 android:text="@string/appointment_completed_button"
-                android:textColor="@color/tagColor"
                 android:textAllCaps="false"
-                android:layout_weight="1"/>
+                android:textColor="@color/tagColor"
+                android:textSize="@dimen/sp14" />
 
             <View
                 android:layout_width="match_parent"
@@ -43,11 +44,12 @@
                 android:id="@+id/appointmentCancelled"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:textColor="@color/Red"
-                android:textAllCaps="false"
+                android:layout_weight="1"
                 android:background="@color/transparent"
                 android:text="@string/appointment_cancelled_button"
-                android:layout_weight="1"/>
+                android:textAllCaps="false"
+                android:textColor="@color/Red"
+                android:textSize="@dimen/sp14" />
 
         </LinearLayout>
     </FrameLayout>
@@ -70,7 +72,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp12">
+                android:layout_marginTop="@dimen/dp8">
 
                 <ImageView
                     android:id="@+id/bluelineImageView"
@@ -125,10 +127,11 @@
                     android:layout_marginRight="13dp"
                     android:layout_toLeftOf="@+id/appointmentTime"
                     android:layout_toStartOf="@+id/appointmentTime"
-                    app:srcCompat="@drawable/waiting"
                     android:visibility="gone"
+                    app:srcCompat="@drawable/waiting"
                     tools:ignore="ContentDescription"
                     tools:visibility="visible" />
+
                 <ImageView
                     android:id="@+id/chatImageView"
                     android:layout_width="wrap_content"
@@ -137,8 +140,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginEnd="@dimen/dp16"
                     android:layout_marginRight="@dimen/dp16"
-                    app:srcCompat="@drawable/chat_icon"
                     android:visibility="gone"
+                    app:srcCompat="@drawable/chat_icon"
                     tools:ignore="ContentDescription"
                     tools:visibility="visible" />
 
@@ -233,8 +236,8 @@
                     android:layout_marginEnd="@dimen/dp16"
                     android:layout_marginRight="@dimen/dp16"
                     android:button="@drawable/checkboxselecter"
-                    android:visibility="gone"
                     android:padding="@dimen/dp4"
+                    android:visibility="gone"
                     tools:visibility="visible" />
 
 
@@ -248,50 +251,48 @@
                 android:layout_marginStart="@dimen/dp2"
                 android:background="@color/tagColor" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/patientInfoDetailLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp3"
-                android:layout_marginBottom="@dimen/dp8">
+                android:layout_marginBottom="@dimen/dp8"
+                android:layout_marginTop="@dimen/dp3">
 
-                <com.rescribe.doctor.ui.customesViews.CustomTextView
-                    android:id="@+id/patientPhoneNumber"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dp28"
-                    android:layout_marginStart="@dimen/dp28"
-                    android:drawableLeft="@drawable/mobile_icon"
-                    android:drawablePadding="@dimen/dp9"
-                    android:drawableStart="@drawable/mobile_icon"
-                    android:textColor="@color/rating_color"
-                    android:textSize="@dimen/sp12"
-                    app:customFont="@string/roboto_medium"
-                    tools:ignore="RtlHardcoded"
-                    tools:text="987678999" />
+                    android:layout_weight=".4"
+                    android:gravity="center_horizontal">
+
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:id="@+id/patientPhoneNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/mobile_icon"
+                        android:drawablePadding="@dimen/dp9"
+                        android:drawableStart="@drawable/mobile_icon"
+                        android:textColor="@color/rating_color"
+                        android:textSize="@dimen/sp12"
+                        app:customFont="@string/roboto_medium"
+                        tools:ignore="RtlHardcoded"
+                        tools:text="987678999" />
+                </LinearLayout>
 
                 <View
                     android:id="@+id/separatorView"
                     android:layout_width="@dimen/dp1"
                     android:layout_height="@dimen/dp20"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dp32"
-                    android:layout_marginStart="@dimen/dp32"
-                    android:layout_toEndOf="@id/patientPhoneNumber"
-                    android:layout_toRightOf="@id/patientPhoneNumber"
                     android:background="@color/tagColor" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginEnd="@dimen/dp10"
                     android:layout_marginLeft="@dimen/dp20"
                     android:layout_marginRight="@dimen/dp10"
                     android:layout_marginStart="@dimen/dp20"
-                    android:layout_toEndOf="@id/separatorView"
-                    android:layout_toRightOf="@id/separatorView"
+                    android:layout_weight=".6"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -315,7 +316,7 @@
                         app:customFont="@string/roboto_bold"
                         tools:text=" Rs.450/-" />
                 </LinearLayout>
-            </RelativeLayout>
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
 

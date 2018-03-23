@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
+
         <include layout="@layout/common_action_bar" />
 
         <View
@@ -20,7 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabGravity="fill"
-            app:tabMode="fixed" />
+            app:tabMaxWidth="@dimen/dp0"
+            app:tabMode="fixed"
+            app:tabTextAppearance="@style/tabTextSize" />
     </android.support.design.widget.AppBarLayout>
 
     <com.rescribe.doctor.ui.customesViews.NonSwipeableViewPager
@@ -38,10 +41,10 @@
         android:layout_gravity="bottom|right"
         android:layout_marginBottom="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginTop="@dimen/dp5"
         app:srcCompat="@drawable/ic_add_action"
         android:visibility="visible"
-        app:backgroundTint="@color/floating_blue_color"
-        android:layout_marginRight="@dimen/fab_margin" />
+        app:backgroundTint="@color/floating_blue_color" />
 
 </android.support.design.widget.CoordinatorLayout>

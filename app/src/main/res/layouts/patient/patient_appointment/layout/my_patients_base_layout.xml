@@ -12,13 +12,13 @@
         android:id="@+id/viewContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginTop="@dimen/dp56"
         android:fitsSystemWindows="true"
         android:orientation="vertical" />
 
     <FrameLayout
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@color/white"

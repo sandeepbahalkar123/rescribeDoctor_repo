@@ -7,13 +7,15 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/vitalsDialogLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp10"
         android:clickable="true"
-        android:id="@+id/vitalsDialogLayout"
-        android:padding="@dimen/dp16"
-        android:focusable="true">
+        android:focusable="true"
+        android:orientation="vertical"
+        android:padding="@dimen/dp16">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -22,22 +24,22 @@
             <LinearLayout
                 android:id="@+id/showVitalUnitNameIconLayout"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginTop="40dp"
+                android:layout_height="@dimen/dp100"
+                android:layout_marginTop="@dimen/dp40"
                 android:background="@drawable/vitals_curve_grey_bg"
                 android:clickable="true"
+                android:focusable="true"
                 android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:focusable="true">
+                android:orientation="vertical">
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/vitalNameDialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:paddingTop="24dp"
+                    android:paddingTop="@dimen/dp24"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/sp14"
                     app:customFont="@string/roboto_bold" />
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -45,7 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/sp14"
                     app:customFont="@string/roboto_medium" />
 
 
@@ -53,14 +55,14 @@
 
             <ImageView
                 android:id="@+id/vitalImageDialog"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="@dimen/dp80"
+                android:layout_height="@dimen/dp80"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/circular_shape_vital_bg"
                 android:clickable="true"
+                android:focusable="true"
                 android:padding="@dimen/dp20"
-                tools:src="@drawable/weight"
-                android:focusable="true" />
+                tools:src="@drawable/weight" />
 
         </RelativeLayout>
 
@@ -88,24 +90,24 @@
                     android:orientation="horizontal">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="@string/normal"
                         android:textColor="@color/range_label_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/normalRange"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingLeft="@dimen/dp8"
                         android:paddingTop="@dimen/dp16"
                         android:textColor="@color/range_green"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
                 </LinearLayout>
 
@@ -117,23 +119,23 @@
                     android:paddingTop="@dimen/dp16">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="@string/moderate"
                         android:textColor="@color/range_label_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/moderateRange"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingLeft="@dimen/dp8"
                         android:textColor="@color/range_yellow"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
                 </LinearLayout>
 
@@ -145,23 +147,23 @@
                     android:paddingTop="@dimen/dp16">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="@string/severe"
                         android:textColor="@color/range_label_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/severeRange"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingLeft="@dimen/dp8"
                         android:textColor="@color/Red"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
                 </LinearLayout>
             </LinearLayout>
@@ -171,14 +173,14 @@
         <LinearLayout
             android:id="@+id/showVitalNameLayout"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="@dimen/dp100"
             android:background="@color/vitals_dialog_grey"
             android:clickable="true"
+            android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:visibility="gone"
-            tools:visibility="visible"
-            android:focusable="true">
+            tools:visibility="visible">
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
                 android:id="@+id/vitalTypeNameDialog"
@@ -186,7 +188,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="14sp"
+                android:textSize="@dimen/sp14"
                 app:customFont="@string/roboto_bold" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -194,7 +196,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="14sp"
+                android:textSize="@dimen/sp14"
                 app:customFont="@string/roboto_medium" />
 
 
@@ -206,9 +208,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/vitals_curve_white_bg"
             android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical"
-            android:focusable="true">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -223,24 +225,24 @@
                     android:orientation="horizontal">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="@string/normal"
                         android:textColor="@color/range_label_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/normalSubTypeRange"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingLeft="@dimen/dp8"
                         android:paddingTop="@dimen/dp16"
                         android:textColor="@color/range_green"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
                 </LinearLayout>
 
@@ -252,23 +254,23 @@
                     android:paddingTop="@dimen/dp16">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="@string/moderate"
                         android:textColor="@color/range_label_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/moderateSubTypeRange"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingLeft="@dimen/dp8"
                         android:textColor="@color/range_yellow"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
                 </LinearLayout>
 
@@ -280,23 +282,23 @@
                     android:paddingTop="@dimen/dp16">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:text="@string/severe"
                         android:textColor="@color/range_label_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/severeSubTypeRange"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingLeft="@dimen/dp8"
                         android:textColor="@color/Red"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp14"
                         app:customFont="@string/roboto_medium" />
                 </LinearLayout>
             </LinearLayout>

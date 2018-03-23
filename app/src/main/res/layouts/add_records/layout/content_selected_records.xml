@@ -12,22 +12,24 @@
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/dp10"
-        android:paddingStart="@dimen/dp10"
+        android:layout_above="@+id/uploadButton"
         android:paddingEnd="@dimen/dp10"
-        android:layout_above="@+id/uploadButton"/>
+        android:paddingStart="@dimen/dp10"
+        android:paddingTop="@dimen/dp10" />
 
     <Button
         android:id="@+id/uploadButton"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp44"
+        android:layout_height="@dimen/dp40"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/button_selector"
         android:layout_margin="@dimen/dp16"
+        android:background="@drawable/button_selector"
         android:paddingEnd="@dimen/dp50"
         android:paddingStart="@dimen/dp50"
         android:text="@string/upload"
-        android:textColor="@color/white" />
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp16" />
 
 </RelativeLayout>

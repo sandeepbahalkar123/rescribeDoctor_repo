@@ -60,6 +60,12 @@
     <dimen name="dp24">24dp</dimen>
     <dimen name="dp26">26dp</dimen>
     <dimen name="dp86">86dp</dimen>
+    <dimen name="dp82">82dp</dimen>
+
+    <dimen name="dp222">222dp</dimen>
     <dimen name="dashboard_back">250dp</dimen>
+
     <dimen name="dp130">130dp</dimen>
+    <dimen name="dp500">500dp</dimen>
+    <dimen name="drawer_width">280dp</dimen>
 </resources>

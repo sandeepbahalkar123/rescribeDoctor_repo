@@ -38,11 +38,11 @@
         <android.support.v7.widget.Toolbar
             android:id="@id/mdToolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="@dimen/dp56"
             android:background="@android:color/transparent"
             android:elevation="@dimen/md_app_bar_elevation"
             android:visibility="gone"
-            android:minHeight="?attr/actionBarSize"
+            android:minHeight="@dimen/dp56"
             app:contentInsetStart="72dp"
             app:theme="?attr/actionBarStyle"
             tools:ignore="UnusedAttribute" />

@@ -14,13 +14,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.text.Editable;
 import android.util.Log;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
 import android.view.Window;
 import android.widget.Button;
+
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,7 +64,7 @@ import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
  * Created by jeetal on 5/9/17.
  */
 
-public class PatientConnectActivity extends AppCompatActivity implements HelperResponse, SearchView.OnQueryTextListener {
+public class PatientConnectActivity extends AppCompatActivity implements HelperResponse {
 
     private final static String TAG = "DoctorConnect";
     public static final int PATIENT_CONNECT_REQUEST = 1111;
@@ -103,10 +107,12 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
 
     @BindView(R.id.backButton)
     ImageView mBackButton;
+    @BindView(R.id.searchImageView)
+    ImageView searchImageView;
     @BindView(R.id.title)
     CustomTextView title;
-    @BindView(R.id.searchView)
-    EditTextWithDeleteButton mSearchView;
+    @BindView(R.id.searchEditText)
+    EditTextWithDeleteButton mSearchEditText;
     @BindView(R.id.whiteUnderLine)
     TextView whiteUnderLine;
     @BindView(R.id.toolbar)
@@ -130,7 +136,8 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,6 +199,33 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
                 addFragment();
             }
         }
+        //-----------
+        mSearchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mPatientConnectChatFragment.setOnClickOfSearchBar(s.toString());
+            }
+        });
+
+        mSearchEditText.addClearTextButtonListener(new EditTextWithDeleteButton.OnClearButtonClickedInEditTextListener() {
+            @Override
+            public void onClearButtonClicked() {
+                title.setVisibility(View.VISIBLE);
+                mSearchEditText.setVisibility(View.GONE);
+                searchImageView.setVisibility(View.VISIBLE);
+                mSearchEditText.setText("");
+            }
+        });
+        //-----------
     }
 
     private void addFragment() {
@@ -203,23 +237,6 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     }
 
 
-    @OnClick(R.id.backButton)
-    public void onViewClicked() {
-        mSearchView.setText("");
-        onBackPressed();
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        mPatientConnectChatFragment.setOnClickOfSearchBar(newText);
-        return true;
-    }
-
     public ArrayList<PatientData> getReceivedConnectedPatientDataList() {
         return mReceivedConnectedPatientDataList;
     }
@@ -228,23 +245,6 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         this.mReceivedConnectedPatientDataList = mReceivedConnectedPatientDataList;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main, menu);
-
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
-        searchView.setOnQueryTextListener(this);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return id == R.id.action_search || super.onOptionsItemSelected(item);
-    }
 
     // Recent
 
@@ -273,12 +273,25 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         }
     }
 
-    @OnClick({R.id.radioButton, R.id.searchView})
+    @OnClick({R.id.radioButton, R.id.backButton, R.id.searchImageView})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.radioButton:
                 break;
-            case R.id.searchView:
+            case R.id.backButton:
+                if (mSearchEditText.getVisibility() == View.VISIBLE) {
+                    title.setVisibility(View.VISIBLE);
+                    mSearchEditText.setVisibility(View.GONE);
+                    searchImageView.setVisibility(View.VISIBLE);
+                    mSearchEditText.setText("");
+                } else {
+                    onBackPressed();
+                }
+                break;
+            case R.id.searchImageView:
+                title.setVisibility(View.GONE);
+                mSearchEditText.setVisibility(View.VISIBLE);
+                searchImageView.setVisibility(View.GONE);
                 break;
         }
     }

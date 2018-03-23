@@ -2,10 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent"
-    android:gravity="center"
+    android:layout_centerInParent="true"
     android:layout_gravity="center"
-    android:layout_centerInParent="true">
+    android:background="@color/transparent"
+    android:gravity="center">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,8 +22,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginTop="40dp"
+                android:layout_height="@dimen/dp100"
+                android:layout_marginTop="@dimen/dp40"
                 android:background="@drawable/vitals_curve_grey_bg"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:paddingTop="30dp"
+                    android:paddingTop="@dimen/dp30"
                     android:text="@string/select_clinic_location"
                     android:textSize="@dimen/sp17"
                     app:customFont="@string/roboto_bold" />
@@ -42,8 +42,8 @@
 
             <ImageView
                 android:id="@+id/icon"
-                android:layout_width="82dp"
-                android:layout_height="82dp"
+                android:layout_width="@dimen/dp82"
+                android:layout_height="@dimen/dp82"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/circular_shape_vital_bg"
                 android:padding="@dimen/dp20"
@@ -70,7 +70,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/dp1"
                 android:layout_marginBottom="@dimen/dp12"
                 android:layout_marginTop="@dimen/dp12"
                 android:background="@color/divider" />
@@ -84,10 +84,12 @@
                 android:layout_marginStart="@dimen/dp10"
                 android:background="@drawable/curve_edges_button"
                 android:gravity="center"
+                android:paddingLeft="@dimen/dp10"
+                android:paddingRight="@dimen/dp10"
                 android:text="@string/ok"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/sp14"
                 app:customFont="@string/roboto_medium" />
 
         </LinearLayout>

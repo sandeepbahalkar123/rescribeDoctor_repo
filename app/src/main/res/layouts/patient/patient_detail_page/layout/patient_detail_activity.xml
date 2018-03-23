@@ -39,8 +39,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="@drawable/button_selector"
+            android:fontFamily="@font/roboto_bold"
             android:text="@string/add_record"
             android:textColor="@color/white"
+            android:textSize="@dimen/sp16"
             android:visibility="gone"
             tools:visibility="visible" />
     </LinearLayout>

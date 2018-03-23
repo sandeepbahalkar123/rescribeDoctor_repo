@@ -48,6 +48,7 @@
         <attr name="rightLabel" format="string" />
         <attr name="deleteButtonRes" format="reference" />
         <attr name="rightLabelStyle" format="reference" />
+        <attr name="textSize" format="dimension" />
     </declare-styleable>
     <declare-styleable name="SwipeRevealLayout">
         <attr name="dragEdge">
