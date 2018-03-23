@@ -51,6 +51,7 @@ import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.Re
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
+import com.rescribe.doctor.ui.activities.my_patients.AddNewPatientWebViewActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
@@ -105,18 +106,21 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private String searchText = "";
     private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
     private ArrayList<PatientList> mPatientListsOriginal;
-    private int mLocationId;
     private ArrayList<PatientAddToWaitingList> patientsListAddToWaitingLists;
     private ArrayList<PatientInfoList> patientInfoLists;
-    private int mClinicId;
+
     private String mClinicName = "";
     private boolean isFiltered = false;
     private boolean isFromDrawer;
     private RequestSearchPatients mRequestSearchPatientsForDrawer = new RequestSearchPatients();
     private ArrayList<PatientList> patientLists;
     private ArrayList<AddToList> addToWaitingArrayList;
+    //-------
     private String mClinicCity;
     private String mClinicArea;
+    private int mCityId;
+    private int mClinicId;
+    private int mLocationId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -186,6 +190,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
             recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);
         }
+
+        //--- Add new patient
+        leftFab.setVisibility(View.VISIBLE);
     }
 
     private void initAdapter() {
@@ -289,7 +296,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
             if (!patientsListAddToWaitingLists.isEmpty()) {
 
-                showDialogToSelectLocation(mDoctorLocationModel);
+                showDialogToSelectLocation(mDoctorLocationModel, null);
 
             } else {
                 //   CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
@@ -387,7 +394,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             }
 
             if (!patientsListAddToWaitingLists.isEmpty()) {
-                showDialogToSelectLocation(mDoctorLocationModel);
+                showDialogToSelectLocation(mDoctorLocationModel, null);
 
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                     if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
@@ -447,7 +454,10 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
                 if (mLocationId != 0) {
                     RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, String.valueOf(mLocationId), getActivity());
+
                     mAppointmentHelper.doGetDoctorTemplate();
+
+
                     dialog.cancel();
                 } else {
                     Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
@@ -472,7 +482,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     }
 
-    private void showDialogToSelectLocation(ArrayList<DoctorLocationModel> mPatientListsOriginal) {
+    private void showDialogToSelectLocation(ArrayList<DoctorLocationModel> mPatientListsOriginal, final String calledFrom) {
+
         final Dialog dialog = new Dialog(getActivity());
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -501,6 +512,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     mClinicName = clinicList.getClinicName();
                     mClinicCity = clinicList.getCity();
                     mClinicArea = clinicList.getArea();
+                    mCityId = clinicList.getCityId();
+                    CommonMethods.Log("clinicList", "" + clinicList.toString());
+
                 }
             });
             radioGroup.addView(radioButton);
@@ -512,7 +526,21 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             public void onClick(View v) {
 
                 if (mLocationId != 0) {
-                    callWaitingListApi();
+                    if (getString(R.string.new_patients).equalsIgnoreCase(calledFrom)) {
+
+                        Bundle b = new Bundle();
+                        b.putString(RescribeConstants.LOCATION_ID, "" + mLocationId);
+                        b.putString(RescribeConstants.CLINIC_ID, "" + mClinicId);
+                        b.putString(RescribeConstants.CITY_ID, "" + mCityId);
+
+                        Intent i = new Intent(getActivity(), AddNewPatientWebViewActivity.class);
+                        i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
+                        startActivity(i);
+
+                        CommonMethods.Log("DOC_ID", "" + Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                    } else {
+                        callWaitingListApi();
+                    }
                     dialog.cancel();
                 } else
                     Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
@@ -586,6 +614,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 activity.getActivityDrawerLayout().openDrawer(GravityCompat.END);
                 break;
             case R.id.leftFab:
+                showDialogToSelectLocation(mDoctorLocationModel, getString(R.string.new_patients));
 
                 break;
         }

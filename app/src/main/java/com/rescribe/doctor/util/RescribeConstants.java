@@ -161,6 +161,7 @@ public class RescribeConstants {
     public static final String PATIENT_OPDID = "patient_opdid";
     public static final String PATIENT_LIST = "patient_list";
     public static final String LOCATION_ID = "location_id";
+    public static final String CITY_ID = "city_id";
     public static final String TEMPLATE_OBJECT = "template_object";
     public static final String CLINIC_ID = "clinic_id";
     public static final String CLINIC_NAME = "clinic_name";
