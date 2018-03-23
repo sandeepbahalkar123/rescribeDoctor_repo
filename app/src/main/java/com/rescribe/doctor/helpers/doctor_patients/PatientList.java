@@ -53,7 +53,11 @@ public class PatientList implements Parcelable , Comparable<PatientList>
     private Integer hospitalPatId;
     @SerializedName("patientCity")
     @Expose
-    private String patientCity;
+    private String patientCity = "";
+
+    @SerializedName("patientArea")
+    @Expose
+    private String patientArea = "";
 
     private String spannableString;
     private boolean selected;
@@ -71,8 +75,7 @@ public class PatientList implements Parcelable , Comparable<PatientList>
             return (new PatientList[size]);
         }
 
-    }
-    ;
+    };
 
     protected PatientList(Parcel in) {
         this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -236,5 +239,9 @@ public class PatientList implements Parcelable , Comparable<PatientList>
     @Override
     public int compareTo(@NonNull PatientList o) {
         return 0;
+    }
+
+    public String getPatientArea() {
+        return patientArea;
     }
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.PATIENT;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.READ;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
@@ -267,6 +268,59 @@ public class AppDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " WHERE " + CHAT_MESSAGES.MSG_TIME + " in (select max(" + CHAT_MESSAGES.MSG_TIME + ") from " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " group by " + CHAT_MESSAGES.USER2ID + ") ORDER BY " + CHAT_MESSAGES.MSG_TIME + " DESC";
         return db.rawQuery(sql, null);
+    }
+
+    public Cursor getRecordUploads() {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "SELECT * FROM " + MY_RECORDS.MY_RECORDS_TABLE + " WHERE " + MY_RECORDS.UPLOAD_STATUS + " = " + FAILED;
+        return db.rawQuery(sql, null);
+    }
+
+    public long insertRecordUploads(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(MY_RECORDS.UPLOAD_ID, uploadId);
+        contentValues.put(MY_RECORDS.PATIENT_ID, patientId);
+        contentValues.put(MY_RECORDS.DOC_ID, docId);
+        contentValues.put(MY_RECORDS.VISIT_DATE, visitDate);
+        contentValues.put(MY_RECORDS.OPD_TIME, mOpdtime);
+        contentValues.put(MY_RECORDS.OPD_ID, opdId);
+        contentValues.put(MY_RECORDS.HOSPITAL_ID, mHospitalId);
+        contentValues.put(MY_RECORDS.HOSPITAL_PAT_ID, mHospitalPatId);
+        contentValues.put(MY_RECORDS.LOCATION_ID, mLocationId);
+        contentValues.put(MY_RECORDS.PARENT_CAPTION, parentCaption);
+        contentValues.put(MY_RECORDS.IMAGE_PATH, imagePath);
+        contentValues.put(MY_RECORDS.UPLOAD_STATUS, FAILED);
+
+        return db.insert(MY_RECORDS.MY_RECORDS_TABLE, null, contentValues);
+    }
+
+    public long updateRecordUploads(String uploadId, int uploadStatus) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MY_RECORDS.UPLOAD_STATUS, uploadStatus);
+
+        return db.update(MY_RECORDS.MY_RECORDS_TABLE, contentValues, MY_RECORDS.UPLOAD_ID + " = ?", new String[]{uploadId});
+    }
+
+    public interface MY_RECORDS {
+        String MY_RECORDS_TABLE = "my_records";
+        String ID = "id";
+        String UPLOAD_ID = "uploadId";
+        String PATIENT_ID = "patientId";
+        String DOC_ID = "docId";
+        String VISIT_DATE = "visitDate";
+        String OPD_TIME = "opdTime";
+        String OPD_ID = "opdId";
+        String HOSPITAL_PAT_ID = "hospitalPatId";
+        String HOSPITAL_ID = "hospitalId";
+        String LOCATION_ID = "locationId";
+        String PARENT_CAPTION = "parentCaption";
+        String IMAGE_PATH = "imagePath";
+        String UPLOAD_STATUS = "uploadStatus";
     }
 
     // All About Chat

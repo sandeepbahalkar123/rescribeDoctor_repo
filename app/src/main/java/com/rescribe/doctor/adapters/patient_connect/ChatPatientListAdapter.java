@@ -1,5 +1,6 @@
 package com.rescribe.doctor.adapters.patient_connect;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -65,6 +66,7 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         return new ListViewHolder(itemView);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
         final PatientList patientObject = mDataList.get(position);
@@ -75,7 +77,10 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         holder.blueLineDivider.setVisibility(View.GONE);
         holder.patientInfoDetailLayout.setVisibility(View.GONE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
-        holder.patientClinicAddress.setText(patientObject.getPatientCity());
+
+        String area = patientObject.getPatientArea().isEmpty() ? "" : (patientObject.getPatientCity().isEmpty() ? patientObject.getPatientArea() : patientObject.getPatientArea() + ", ");
+        holder.patientClinicAddress.setText(CommonMethods.toCamelCase(area + patientObject.getPatientCity()));
+
         String patientName = "";
 
         if (patientObject.getSalutation() != 0)
