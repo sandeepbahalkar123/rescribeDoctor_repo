@@ -39,7 +39,7 @@ import butterknife.Unbinder;
  * Created by jeetal on 12/2/18.
  */
 
-public class DrawerForMyAppointment extends Fragment implements HelperResponse, SortByPriceFilterAdapter.onSortByAmountMenuClicked , DrawerAppointmentSelectStatusAdapter.OnClickOfFilterComponents,DrawerAppointmetClinicNameAdapter.OnClickOfFilterClinic {
+public class DrawerForMyAppointment extends Fragment implements HelperResponse, SortByPriceFilterAdapter.onSortByAmountMenuClicked, DrawerAppointmentSelectStatusAdapter.OnClickOfFilterComponents, DrawerAppointmetClinicNameAdapter.OnClickOfFilterClinic {
 
     private static Bundle bundle;
     @BindView(R.id.applyButton)
@@ -98,10 +98,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     private ArrayList<FilterSortByHighLowList> filterSortByHighLowLists = new ArrayList<>();
     private String[] sortOptions = new String[]{"Outstanding Amt" + lowToHigh,
             "Outstanding Amt" + highToLow};
-    private int mSortByAmountAdapterPosition;
     private MyAppointmentsDataModel mMyAppointmentsDataModel;
-    private ArrayList<StatusList> statusLists = new ArrayList<>();
-    private ArrayList<ClinicList> mClinciListToFilter = new ArrayList<>();
     private ArrayList<StatusList> mStatuslistOfFilter = new ArrayList<>();
     private ArrayList<ClinicList> mCliniclistOfFilter = new ArrayList<>();
 
@@ -125,6 +122,13 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
         configureDrawerFieldsData();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null)
+            unbinder.unbind();
+    }
+
     private void configureDrawerFieldsData() {
         mMyAppointmentsDataModel = bundle.getParcelable(RescribeConstants.APPOINTMENT_DATA);
         chooseOptionForSort.setText(getString(R.string.choose_one_option));
@@ -135,7 +139,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
         selectClinicString.setSpan(new UnderlineSpan(), 0, selectClinicString.length(), 0);
         selectClinic.setText(selectClinicString);
         //select status recyelerview
-        mDrawerAppointmentSelectStatusAdapter = new DrawerAppointmentSelectStatusAdapter(getActivity(),mMyAppointmentsDataModel,this);
+        mDrawerAppointmentSelectStatusAdapter = new DrawerAppointmentSelectStatusAdapter(getActivity(), mMyAppointmentsDataModel, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         statusNameRecyclerView.setLayoutManager(layoutManager);
         statusNameRecyclerView.setHasFixedSize(true);
@@ -143,7 +147,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
         statusNameRecyclerView.setAdapter(mDrawerAppointmentSelectStatusAdapter);
 
         // clinic names recyclerview
-        mDrawerAppointmetClinicNameAdapter = new DrawerAppointmetClinicNameAdapter(getActivity(),mMyAppointmentsDataModel.getClinicList(),this);
+        mDrawerAppointmetClinicNameAdapter = new DrawerAppointmetClinicNameAdapter(getActivity(), mMyAppointmentsDataModel.getClinicList(), this);
         LinearLayoutManager layoutManagerClinicList = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         clinicNameRecyclerView.setLayoutManager(layoutManagerClinicList);
         clinicNameRecyclerView.setHasFixedSize(true);
@@ -186,18 +190,19 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
         switch (view.getId()) {
             case R.id.applyButton:
                 Bundle b = new Bundle();
-                for(StatusList statusList:mDrawerAppointmentSelectStatusAdapter.getAdapterStatusList()){
-                    if(statusList.isSelected()){
+                mStatuslistOfFilter.clear();
+                for (StatusList statusList : mDrawerAppointmentSelectStatusAdapter.getAdapterStatusList()) {
+                    if (statusList.isSelected()) {
                         mStatuslistOfFilter.add(statusList);
                     }
                 }
 
-                for(ClinicList clinicObj:mDrawerAppointmetClinicNameAdapter.getAdapterClinicList()){
-                    if(clinicObj.isSelected()){
+                for (ClinicList clinicObj : mDrawerAppointmetClinicNameAdapter.getAdapterClinicList()) {
+                    if (clinicObj.isSelected()) {
                         mCliniclistOfFilter.add(clinicObj);
                     }
                 }
-                b.putParcelable(RescribeConstants.APPOINTMENT_DATA,mMyAppointmentsDataModel);
+                b.putParcelable(RescribeConstants.APPOINTMENT_DATA, mMyAppointmentsDataModel);
                 b.putParcelableArrayList(RescribeConstants.FILTER_STATUS_LIST, mStatuslistOfFilter);
                 b.putParcelableArrayList(RescribeConstants.FILTER_CLINIC_LIST, mCliniclistOfFilter);
                 mListener.onApply(b, true);
@@ -208,11 +213,11 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
                 break;
             case R.id.resetButton:
                 configureDrawerFieldsData();
-                for(int i = 0;i<mDrawerAppointmetClinicNameAdapter.getAdapterClinicList().size();i++){
+                for (int i = 0; i < mDrawerAppointmetClinicNameAdapter.getAdapterClinicList().size(); i++) {
                     mDrawerAppointmetClinicNameAdapter.getAdapterClinicList().get(i).setSelected(false);
                 }
                 mDrawerAppointmetClinicNameAdapter.notifyDataSetChanged();
-                for(int i = 0;i<mDrawerAppointmentSelectStatusAdapter.getAdapterStatusList().size();i++){
+                for (int i = 0; i < mDrawerAppointmentSelectStatusAdapter.getAdapterStatusList().size(); i++) {
                     mDrawerAppointmentSelectStatusAdapter.getAdapterStatusList().get(i).setSelected(false);
                 }
                 mDrawerAppointmentSelectStatusAdapter.notifyDataSetChanged();
@@ -260,18 +265,15 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
 
     @Override
     public void onClickOfSortMenu(FilterSortByHighLowList filterSortByHighLowObject, int groupPosition) {
-        mSortByAmountAdapterPosition = groupPosition;
     }
 
     @Override
     public void onClickofSelectStatus(ArrayList<StatusList> mStatusLists) {
-        statusLists = mStatusLists;
 
     }
 
     @Override
     public void onClickofClinic(ArrayList<ClinicList> mClinicList) {
-        mClinciListToFilter = mClinicList;
 
     }
 

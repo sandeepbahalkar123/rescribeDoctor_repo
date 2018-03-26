@@ -22,7 +22,7 @@ import java.util.Map;
 public class ConnectionFactory extends ConnectRequest {
 
     private final String TAG = this.getClass().getName();
-    Connector connector = null;
+    private Connector connector = null;
     private Device device;
 
     public ConnectionFactory(Context context, ConnectionListener connectionListener, View viewById, boolean isProgressBarShown, String mOldDataTag, int reqPostOrGet, boolean isOffline) {

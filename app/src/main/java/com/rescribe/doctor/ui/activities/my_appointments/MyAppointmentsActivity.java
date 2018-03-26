@@ -299,14 +299,13 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             mFilterAppointmentList = new ArrayList<>();
             for (ClinicList clinicList : mClinicListsFilter) {
                 for (AppointmentList appointmentObject : appointmentLists) {
-                    AppointmentList tempAppointmentListObject = null;
                     try {
-                        tempAppointmentListObject = (AppointmentList) appointmentObject.clone();
+                        AppointmentList tempAppointmentListObject = (AppointmentList) appointmentObject.clone();
+                        if (clinicList.getLocationId().equals(tempAppointmentListObject.getLocationId()))
+                            mFilterAppointmentList.add(tempAppointmentListObject);
+
                     } catch (CloneNotSupportedException e) {
                         e.printStackTrace();
-                    }
-                    if (clinicList.getLocationId() == tempAppointmentListObject.getLocationId()) {
-                        mFilterAppointmentList.add(tempAppointmentListObject);
                     }
                 }
             }
@@ -331,7 +330,9 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                     for (PatientList patientList : appointmentObject.getPatientList()) {
                         if (statusName.getStatusName().equalsIgnoreCase(patientList.getAppointmentStatus())) {
                             mPatientListArrayList.add(patientList);
-                            tempAppointmentListObject.setPatientList(mPatientListArrayList);
+                            if (tempAppointmentListObject != null) {
+                                tempAppointmentListObject.setPatientList(mPatientListArrayList);
+                            }
                         }
                     }
                     if (!mPatientListArrayList.isEmpty()) {
@@ -343,14 +344,12 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             mFilterAppointmentList = new ArrayList<>();
             for (ClinicList clinicList : mClinicListsFilter) {
                 for (AppointmentList appointmentObject : mAppointmentLists) {
-                    AppointmentList tempAppointmentListObject = null;
                     try {
-                        tempAppointmentListObject = (AppointmentList) appointmentObject.clone();
+                        AppointmentList tempAppointmentListObject = (AppointmentList) appointmentObject.clone();
+                        if (clinicList.getLocationId().equals(appointmentObject.getLocationId()))
+                            mFilterAppointmentList.add(tempAppointmentListObject);
                     } catch (CloneNotSupportedException e) {
                         e.printStackTrace();
-                    }
-                    if (clinicList.getLocationId() == appointmentObject.getLocationId()) {
-                        mFilterAppointmentList.add(tempAppointmentListObject);
                     }
                 }
             }
@@ -421,7 +420,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             dateTextview.setText(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
-         else
+        else
             dateTextview.setText(Html.fromHtml(toDisplay));
 
         mAppointmentHelper = new AppointmentHelper(this, this);

@@ -45,6 +45,7 @@ import com.rescribe.doctor.model.login.ActiveStatusModel;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
+import com.rescribe.doctor.model.my_patient_filter.LocationsModel;
 import com.rescribe.doctor.model.new_patient.NewPatientBaseModel;
 import com.rescribe.doctor.model.patient.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient.patient_connect.PatientConnectBaseModel;
@@ -569,6 +570,11 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_GET_NEW_PATIENT_LIST: //This is for get archived list
                         NewPatientBaseModel mNewPatientBaseModel = new Gson().fromJson(data, NewPatientBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mNewPatientBaseModel, mOldDataTag);
+                        break;
+
+                    case RescribeConstants.TASK_GET_DOCTOR_PATIENT_CITY: //This is for get archived list
+                        LocationsModel locationsModel = new Gson().fromJson(data, LocationsModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, locationsModel, mOldDataTag);
                         break;
 
                     default:

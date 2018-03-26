@@ -139,7 +139,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 setAdapter();
             }
         }
-        clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mLocationId = waitingclinicLists.get(i).getLocationId();
@@ -226,13 +226,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
                 for (int i = 0; i < myItemAdapter.getAllItems().size(); i++) {
                     WaitingListSequence waitingListSequence = new WaitingListSequence();
-                    if (fromPosition == i) {
-                        waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(toPosition).getWaitingSequence());
-                    } else if (toPosition == i) {
-                        waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(fromPosition).getWaitingSequence());
-                    } else {
-                        waitingListSequence.setWaitingSequence(myItemAdapter.getAllItems().get(i).getWaitingSequence());
-                    }
+                    waitingListSequence.setWaitingSequence(i + 1);
                     waitingListSequence.setWaitingId(String.valueOf(myItemAdapter.getAllItems().get(i).getWaitingId()));
 
                     waitingListSequences.add(waitingListSequence);

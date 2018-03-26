@@ -3,12 +3,14 @@ package com.rescribe.doctor.helpers.myappointments;
 import android.content.Context;
 
 import com.android.volley.Request;
+import com.google.android.gms.location.LocationRequest;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.my_appointments.RequestAppointmentData;
 import com.rescribe.doctor.model.my_appointments.request_cancel_or_complete_appointment.RequestAppointmentCancelModel;
+import com.rescribe.doctor.model.my_patient_filter.LocationsRequest;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.RequestSendSmsModel;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
@@ -30,9 +32,9 @@ import java.util.ArrayList;
 
 public class AppointmentHelper implements ConnectionListener {
 
-    String TAG = this.getClass().getName();
-    Context mContext;
-    HelperResponse mHelperResponseManager;
+    private String TAG = this.getClass().getName();
+    private Context mContext;
+    private HelperResponse mHelperResponseManager;
 
     public AppointmentHelper(Context context, HelperResponse loginActivity) {
         this.mContext = context;
@@ -45,31 +47,7 @@ public class AppointmentHelper implements ConnectionListener {
         //CommonMethods.Log(TAG, customResponse.toString());
         switch (responseResult) {
             case ConnectionListener.RESPONSE_OK:
-                if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_APPOINTMENT_DATA)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_PATIENT_DATA)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_REQUEST_SEND_SMS)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_WAITING_LIST)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_ADD_TO_WAITING_LIST)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                }else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DELETE_WAITING_LIST)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                }else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                }else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DARG_DROP)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_COMPLETED_OPD)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                }else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_NEW_PATIENT_LIST)) {
-                    mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                }
+                mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                 break;
             case ConnectionListener.PARSE_ERR0R:
                 CommonMethods.Log(TAG, mContext.getString(R.string.parse_error));
@@ -196,6 +174,7 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setUrl(Config.ADD_TO_WAITING_LIST);
         mConnectionFactory.createConnection(RescribeConstants.TASK_ADD_TO_WAITING_LIST);
     }
+
     public void doDeleteWaitingList(RequestDeleteBaseModel mRequestDeleteBaseModel) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_WAITING_LIST, Request.Method.POST, true);
         mConnectionFactory.setPostParams(mRequestDeleteBaseModel);
@@ -211,15 +190,16 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setUrl(Config.CANCEL_OR_COMPLETE_APPOINTMENT);
         mConnectionFactory.createConnection(RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE);
     }
-   public void doDargAndDropApi(RequestForDragAndDropBaseModel requestForDragAndDropBaseModel){
-       ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DARG_DROP, Request.Method.POST, true);
-       mConnectionFactory.setPostParams(requestForDragAndDropBaseModel);
-       mConnectionFactory.setHeaderParams();
-       mConnectionFactory.setUrl(Config.DRAG_AND_DROP_API);
-       mConnectionFactory.createConnection(RescribeConstants.TASK_DARG_DROP);
-   }
 
-    public void doGetCompletedOpdList(){
+    public void doDargAndDropApi(RequestForDragAndDropBaseModel requestForDragAndDropBaseModel) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DARG_DROP, Request.Method.POST, true);
+        mConnectionFactory.setPostParams(requestForDragAndDropBaseModel);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.DRAG_AND_DROP_API);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_DARG_DROP);
+    }
+
+    public void doGetCompletedOpdList() {
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_COMPLETED_OPD, Request.Method.POST, true);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
@@ -231,7 +211,7 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_COMPLETED_OPD);
     }
 
-    public void doGetNewPatientList(){
+    public void doGetNewPatientList() {
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_NEW_PATIENT_LIST, Request.Method.POST, true);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
@@ -241,6 +221,16 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_NEW_PATIENTS_URL);
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_NEW_PATIENT_LIST);
+    }
+
+    public void getFilterLocationList() {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_DOCTOR_PATIENT_CITY, Request.Method.POST, true);
+        LocationsRequest locationsRequest = new LocationsRequest();
+        locationsRequest.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+        mConnectionFactory.setPostParams(locationsRequest);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.GET_DOCTOR_PATIENT_CITY);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_DOCTOR_PATIENT_CITY);
     }
 
 }
