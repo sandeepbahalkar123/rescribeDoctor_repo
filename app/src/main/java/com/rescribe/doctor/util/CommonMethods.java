@@ -233,6 +233,10 @@ public class CommonMethods {
             abbreviation = R.drawable.allergy;
         else if (caseStudyName.contains("attachment"))
             abbreviation = R.drawable.attachment;
+        else if (caseStudyName.contains("systemic examination") || caseStudyName.contains("examination"))
+            abbreviation = R.drawable.examination;
+        else if (caseStudyName.contains("operative procedure")  || caseStudyName.contains("procedure"))
+            abbreviation = R.drawable.procedure;
 
         return abbreviation;
     }
