@@ -56,6 +56,8 @@ public class Config {
     public static final String  ADD_NEW_PATIENT_WEB_URL = "https://drrescribe.com/app.html#/addpatientmobile/";
     public static final String  ADD_NEW_PATIENT_WEB_URL_SUCCESS = "addpatientmobilesuccess";
 
+    public static final String  GET_DOCTOR_PATIENT_CITY = "doctor/api/patient/getDoctorPatientCity";
+
  }
 
 

@@ -108,7 +108,9 @@ public class RescribeConstants {
     public static final String TASK_APPOINTMENT_CANCEL_OR_COMPLETE = RescribeConstants.BLANK + 30;
     public static final String TASK_DARG_DROP = RescribeConstants.BLANK + 31;
     public static final String TASK_GET_COMPLETED_OPD = RescribeConstants.BLANK + 32;
-    public static final String TASK_GET_NEW_PATIENT_LIST = RescribeConstants.BLANK + 33 ;
+    public static final String TASK_GET_NEW_PATIENT_LIST = RescribeConstants.BLANK + 33;
+    public static final String TASK_GET_DOCTOR_PATIENT_CITY = RescribeConstants.BLANK + 34;
+
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
 

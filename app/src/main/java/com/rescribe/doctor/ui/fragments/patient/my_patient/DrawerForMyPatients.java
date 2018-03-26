@@ -24,9 +24,12 @@ import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.drawer_adapters.DrawerPatientsCityNameAdapter;
 import com.rescribe.doctor.adapters.drawer_adapters.SortByPriceFilterAdapter;
+import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.my_appointments.FilterSortByHighLowList;
+import com.rescribe.doctor.model.my_patient_filter.CityList;
+import com.rescribe.doctor.model.my_patient_filter.LocationsModel;
 import com.rescribe.doctor.model.request_patients.FilterParams;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -38,11 +41,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
+import static com.rescribe.doctor.util.RescribeConstants.TASK_GET_DOCTOR_PATIENT_CITY;
+
 /**
  * Created by jeetal on 12/2/18.
  */
 
-public class DrawerForMyPatients extends Fragment implements HelperResponse, SortByPriceFilterAdapter.onSortByAmountMenuClicked {
+public class DrawerForMyPatients extends Fragment implements HelperResponse, SortByPriceFilterAdapter.onSortByAmountMenuClicked, DrawerPatientsCityNameAdapter.CitySelectListener {
 
     @BindView(R.id.applyButton)
     Button applyButton;
@@ -122,7 +128,6 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
     @BindView(R.id.transGenderMaleLayout)
     LinearLayout transGenderMaleLayout;
     private Unbinder unbinder;
-    private DrawerPatientsCityNameAdapter mDrawerPatientsCityNameAdapter;
     private SortByPriceFilterAdapter mSortByPriceFilterAdapter;
     private String mSelectedGender;
     private OnDrawerInteractionListener mListener;
@@ -134,6 +139,8 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
             "Outstanding Amt" + highToLow};
     private int mSortByAmountAdapterPosition;
     private String sortOrder = "";
+    private ArrayList<String> cityList = new ArrayList<>();
+    private DrawerPatientsCityNameAdapter mDrawerPatientsCityNameAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -153,6 +160,9 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
             filterSortByHighLowLists.add(filterSortByHighLowListObject);
         }
         configureDrawerFieldsData();
+
+        AppointmentHelper appointmentHelper = new AppointmentHelper(getContext(), this);
+        appointmentHelper.getFilterLocationList();
     }
 
     private void configureDrawerFieldsData() {
@@ -176,13 +186,6 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
         SpannableString ageRangeString = new SpannableString("Age Range");
         ageRangeString.setSpan(new UnderlineSpan(), 0, ageRangeString.length(), 0);
         ageRange.setText(ageRangeString);
-
-        mDrawerPatientsCityNameAdapter = new DrawerPatientsCityNameAdapter(getActivity());
-        LinearLayoutManager layoutManagerClinicList = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        locationContentRecycleView.setLayoutManager(layoutManagerClinicList);
-        locationContentRecycleView.setHasFixedSize(true);
-        locationContentRecycleView.setNestedScrollingEnabled(false);
-        locationContentRecycleView.setAdapter(mDrawerPatientsCityNameAdapter);
 
         clinicFeesSeekBar
                 .setCornerRadius(10f)
@@ -243,7 +246,18 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-
+        if (mOldDataTag.equals(TASK_GET_DOCTOR_PATIENT_CITY)) {
+            LocationsModel locationsModel = (LocationsModel) customResponse;
+            if (locationsModel.getCommon().getStatusCode().equals(SUCCESS)) {
+                ArrayList<CityList> cityList = locationsModel.getData().getCityList();
+                mDrawerPatientsCityNameAdapter = new DrawerPatientsCityNameAdapter(DrawerForMyPatients.this, cityList);
+                LinearLayoutManager layoutManagerClinicList = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                locationContentRecycleView.setLayoutManager(layoutManagerClinicList);
+                locationContentRecycleView.setHasFixedSize(true);
+                locationContentRecycleView.setNestedScrollingEnabled(false);
+                locationContentRecycleView.setAdapter(mDrawerPatientsCityNameAdapter);
+            }
+        }
     }
 
     @Override
@@ -268,6 +282,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
             case R.id.applyButton:
                 RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
                 FilterParams filterParams = new FilterParams();
+                filterParams.setCity(cityList);
                 filterParams.setGender(mSelectedGender);
                 if (clinicFeesSeekBar.getSelectedMaxValue().toString().equals("0") && clinicFeesSeekBar.getSelectedMinValue().toString().equals("0")) {
                     filterParams.setAge("");
@@ -276,6 +291,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                 } else if (!clinicFeesSeekBar.getSelectedMinValue().toString().equals("0") && !clinicFeesSeekBar.getSelectedMaxValue().toString().equals("0")) {
                     filterParams.setAge(String.valueOf(clinicFeesSeekBar.getSelectedMinValue()) + "-" + clinicFeesSeekBar.getSelectedMaxValue());
                 }
+
                 mRequestSearchPatients.setFilterParams(filterParams);
                 mRequestSearchPatients.setSortField("Outstanding");
                 if (chooseOptionForSort.getText().toString().toLowerCase().contains("low to high")) {
@@ -301,6 +317,10 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                     filterSortByHighLowListObject.setSelected(false);
                 }
                 mSortByPriceFilterAdapter.notifyDataSetChanged();
+
+                if (mDrawerPatientsCityNameAdapter != null)
+                    mDrawerPatientsCityNameAdapter.reset();
+
                 // setDataInDrawerFields();
                 //mListener.onReset(true);
                 break;
@@ -371,9 +391,17 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
         mSortByAmountAdapterPosition = groupPosition;
     }
 
+    @Override
+    public void onChecked(ArrayList<CityList> cityList) {
+        this.cityList.clear();
+        for (CityList city : cityList) {
+            if (city.isChecked())
+                this.cityList.add(city.getCityId());
+        }
+    }
+
     public interface OnDrawerInteractionListener {
         void onApply(RequestSearchPatients mRequestSearchPatients, boolean drawerRequired);
-
         void onReset(boolean drawerRequired);
     }
 

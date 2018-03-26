@@ -1,6 +1,5 @@
 package com.rescribe.doctor.adapters.drawer_adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +7,10 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.my_patient_filter.CityList;
+import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,11 +21,18 @@ import butterknife.ButterKnife;
 
 public class DrawerPatientsCityNameAdapter extends RecyclerView.Adapter<DrawerPatientsCityNameAdapter.ListViewHolder> {
 
-    private Context mContext;
-    private String[] mClinicList = {"Mumbai", "Pune", "Banglore", "Chennai"};
+    private ArrayList<CityList> cityList;
+    private CitySelectListener cityCheckedListener;
 
-    public DrawerPatientsCityNameAdapter(Context mContext) {
-        this.mContext = mContext;
+    public DrawerPatientsCityNameAdapter(DrawerForMyPatients drawerForMyPatients, ArrayList<CityList> cityList) {
+        this.cityCheckedListener = drawerForMyPatients;
+        this.cityList = cityList;
+
+        try {
+            cityCheckedListener = (CitySelectListener) drawerForMyPatients;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Activity must implement CitySelectListener");
+        }
     }
 
     @Override
@@ -35,14 +45,31 @@ public class DrawerPatientsCityNameAdapter extends RecyclerView.Adapter<DrawerPa
 
     @Override
     public void onBindViewHolder(final DrawerPatientsCityNameAdapter.ListViewHolder holder, int position) {
+        holder.menuName.setText(cityList.get(holder.getAdapterPosition()).getCityName());
+        holder.menuName.setChecked(cityList.get(holder.getAdapterPosition()).isChecked());
 
-        holder.menuName.setText(mClinicList[position]);
+        holder.menuName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cityList.get(holder.getAdapterPosition()).setChecked(holder.menuName.isChecked());
+                cityCheckedListener.onChecked(cityList);
+            }
+        });
 
     }
 
     @Override
     public int getItemCount() {
-        return mClinicList.length;
+        return cityList.size();
+    }
+
+    public void reset() {
+
+        for (CityList city : cityList)
+            city.setChecked(false);
+
+        notifyDataSetChanged();
+        cityCheckedListener.onChecked(cityList);
     }
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
@@ -56,5 +83,9 @@ public class DrawerPatientsCityNameAdapter extends RecyclerView.Adapter<DrawerPa
             ButterKnife.bind(this, view);
             this.view = view;
         }
+    }
+
+    public interface CitySelectListener {
+        void onChecked(ArrayList<CityList> cityList);
     }
 }

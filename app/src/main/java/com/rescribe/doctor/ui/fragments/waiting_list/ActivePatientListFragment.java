@@ -279,7 +279,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 for (int i = 0; i < mDraggableSwipeableActiveWaitingListAdapter.getAllItems().size(); i++) {
                     WaitingListSequence waitingListSequence = new WaitingListSequence();
                     waitingListSequence.setWaitingId(String.valueOf(mDraggableSwipeableActiveWaitingListAdapter.getAllItems().get(i).getWaitingId()));
-                    waitingListSequence.setWaitingSequence(mDraggableSwipeableActiveWaitingListAdapter.getAllItems().get(i).getWaitingSequence());
+                    waitingListSequence.setWaitingSequence(i + 1);
                     waitingListSequences.add(waitingListSequence);
                 }
                 requestForDragAndDropBaseModel.setWaitingListSequence(waitingListSequences);

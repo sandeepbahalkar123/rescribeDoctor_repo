@@ -3,12 +3,13 @@ package com.rescribe.doctor.model.request_patients;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class FilterParams implements Parcelable
-{
+import java.util.ArrayList;
+
+public class FilterParams implements Parcelable {
 
     @SerializedName("gender")
     @Expose
@@ -16,11 +17,14 @@ public class FilterParams implements Parcelable
     @SerializedName("age")
     @Expose
     private String age;
-    public final static Creator<FilterParams> CREATOR = new Creator<FilterParams>() {
+    @SerializedName("city")
+    @Expose
+    private ArrayList<String> city = null;
+    public final static Parcelable.Creator<FilterParams> CREATOR = new Creator<FilterParams>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public FilterParams createFromParcel(Parcel in) {
             return new FilterParams(in);
@@ -30,12 +34,12 @@ public class FilterParams implements Parcelable
             return (new FilterParams[size]);
         }
 
-    }
-    ;
+    };
 
     protected FilterParams(Parcel in) {
         this.gender = ((String) in.readValue((String.class.getClassLoader())));
         this.age = ((String) in.readValue((String.class.getClassLoader())));
+        in.readList(this.city, (java.lang.String.class.getClassLoader()));
     }
 
     public FilterParams() {
@@ -57,13 +61,22 @@ public class FilterParams implements Parcelable
         this.age = age;
     }
 
+    public ArrayList<String> getCity() {
+        return city;
+    }
+
+    public void setCity(ArrayList<String> city) {
+        this.city = city;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(gender);
         dest.writeValue(age);
+        dest.writeList(city);
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }
