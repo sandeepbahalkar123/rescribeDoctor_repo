@@ -308,10 +308,7 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/dp10"
-                            android:layout_marginStart="@dimen/dp10"
-                            android:orientation="horizontal">
+                            android:layout_height="wrap_content">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                                 android:id="@+id/clinicFeesSeekBarMinValue"
