@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -126,14 +125,14 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
             @Override
             public void run() {
 
-               // float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
-               // FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) drawerLayout.getLayoutParams();
-               // params.width = (int) (width) / 2;
+                // float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
+                // FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) drawerLayout.getLayoutParams();
+                // params.width = (int) (width) / 2;
 
                 mDrawerForMyPatients = DrawerForMyPatients.newInstance();
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_view, mDrawerForMyPatients).commit();
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-               // drawerLayout.setLayoutParams(params);
+                // drawerLayout.setLayoutParams(params);
             }
         }, 100);
 

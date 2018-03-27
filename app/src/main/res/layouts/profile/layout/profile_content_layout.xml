@@ -46,9 +46,12 @@
                     <ListView
                         android:id="@+id/servicesListView"
                         android:layout_width="match_parent"
-                        android:layout_height="70dp"
+                        android:layout_height="@dimen/dp67"
                         android:divider="@null"
                         android:dividerHeight="0dp"
+                        android:clipToPadding="false"
+                        android:paddingStart="@dimen/dp7"
+                        android:paddingEnd="@dimen/dp7"
                         android:listSelector="@android:color/transparent"
                         android:visibility="visible" />
 

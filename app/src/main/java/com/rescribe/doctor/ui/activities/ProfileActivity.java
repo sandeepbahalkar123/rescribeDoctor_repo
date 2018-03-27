@@ -146,7 +146,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     private ColorGenerator mColorGenerator;
     private String mDoctorName;
     private DoctorLocationModel doctorLocationModel;
-    private ArrayList<String> mServices;
+    private ArrayList<String> mServices = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -419,6 +419,10 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
             CustomTextView dataView = (CustomTextView) view.findViewById(R.id.text);
             dataView.setText(data);
+
+            Drawable leftDrawable = AppCompatResources.getDrawable(mContext, R.drawable.bullet_dot);
+            dataView.setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null);
+
             return view;
         }
     }

@@ -263,6 +263,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                     .enableVideoPicker(false)
                     .enableCameraSupport(true)
                     .enableCameraMultiplePhotos(true)
+                    .openCameraDirect(true)
                     .showGifs(false)
                     .showFolderView(true)
                     .enableOrientation(true)

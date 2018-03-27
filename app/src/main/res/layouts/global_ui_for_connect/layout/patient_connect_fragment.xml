@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/white">
 
     <android.support.v4.widget.NestedScrollView
@@ -28,6 +28,18 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/leftFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/dp16"
+        app:backgroundTint="@color/floating_blue_color"
+        app:srcCompat="@drawable/search_patient"
+        android:layout_alignParentRight="true" />
+
     <RelativeLayout
         android:id="@+id/emptyListView"
         android:layout_width="match_parent"
@@ -44,25 +56,4 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/leftFab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginRight="12dp"
-            android:src="@drawable/search_patient"
-            android:visibility="visible"
-            app:backgroundTint="@color/floating_blue_color" />
-
-    </RelativeLayout>
 </RelativeLayout>

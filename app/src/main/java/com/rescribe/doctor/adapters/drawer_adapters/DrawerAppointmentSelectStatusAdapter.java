@@ -51,13 +51,11 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
         holder.menuName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mStatusLists.get(position).isSelected()){
-
+                if(mStatusLists.get(position).isSelected())
                     mStatusLists.get(position).setSelected(false);
-                }else{
+                else
                     mStatusLists.get(position).setSelected(true);
-                }
-                notifyDataSetChanged();
+
                 mOnClickOfFilterComponents.onClickofSelectStatus(mStatusLists);
             }
         });
