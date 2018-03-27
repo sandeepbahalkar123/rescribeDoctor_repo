@@ -30,7 +30,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
-
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -124,8 +123,6 @@ import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.IDLE;
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.ONLINE;
 import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.TYPING;
 
@@ -220,6 +217,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     private int scrollPosition = -1;
     private String patientName = "";
     private int mHospitalPatId;
+    private int preSize;
 
     private void typingStatus() {
         StatusInfo statusInfo = new StatusInfo();
@@ -402,10 +400,12 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 if (mqttMessages.isEmpty())
                     setResult(Activity.RESULT_CANCELED);
                 else {
-                    Intent in = new Intent();
-                    chatList.setLastChatTime(mqttMessages.get(mqttMessages.size() - 1).getMsgTime());
-                    in.putExtra(RescribeConstants.CHAT_USERS, chatList);
-                    setResult(Activity.RESULT_OK, in);
+                    if (preSize != mqttMessages.size()) {
+                        Intent in = new Intent();
+                        chatList.setLastChatTime(mqttMessages.get(mqttMessages.size() - 1).getMsgTime());
+                        in.putExtra(RescribeConstants.CHAT_USERS, chatList);
+                        setResult(Activity.RESULT_OK, in);
+                    } else setResult(Activity.RESULT_CANCELED);
                 }
             } else setResult(Activity.RESULT_CANCELED);
             super.onBackPressed();
@@ -451,7 +451,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
         } else
             chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
-        isCallFromPatientList = getIntent().getBooleanExtra(RescribeConstants.IS_CALL_FROM_MY_PATEINTS, false);
+        isCallFromPatientList = getIntent().getBooleanExtra(RescribeConstants.IS_CALL_FROM_MY_PATIENTS, false);
 
         String salutation;
         if (chatList.getSalutation() != 0)
@@ -519,6 +519,8 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 //        chatHelper = new ChatHelper(this, this);
 
         loadMessageFromDatabase();
+
+        preSize = mqttMessages.size();
 
         final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         chatRecyclerView.setLayoutManager(mLayoutManager);

@@ -149,7 +149,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         mYear = CommonMethods.getCurrentDate("yyyy");
         String day = CommonMethods.getCurrentDate("dd");
 
-        String toDisplay = day + "<sup>" + CommonMethods.getSuffixForNumber(Integer.parseInt(day)) + "</sup> " + CommonMethods.getCurrentDate("MMM'' yyyy");
+        String toDisplay = day + "<sup>" + CommonMethods.getSuffixForNumber(Integer.parseInt(day)) + "</sup> " + CommonMethods.getCurrentDate("MMM'' yy");
 
         Spanned dateTodisplay;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
@@ -406,7 +406,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
 
-        String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + month + "' " + year;
+        String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + CommonMethods.getFormattedDate(monthOfYearToShow + " " + year, "MM yyyy", "MMM'' yy");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             dateTextview.setText(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));

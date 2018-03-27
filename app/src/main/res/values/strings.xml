@@ -216,10 +216,10 @@
     <string name="today_appointment">"Today's\nAppointments"</string>
     <string name="today_waiting_list"> "Today's\nWaiting List"</string>
     <string name="today_completed_opd"> "Today's\nCompleted OPD"</string>
-    <string name="completed_opd">Completed Opd</string>
+    <string name="completed_opd">Completed OPD</string>
     <string name="consultation">Consultation</string>
     <string name="follow_up">Follow Up</string>
-    <string name="new_patients">New Patients</string>
+    <string name="new_patients">Add New Patient</string>
     <string name="appointment_completed_button">Appointment\nCompleted</string>
     <string name="appointment_cancelled_button">Appointment\nCancelled</string>
     <string name="years">yrs -\u0020</string>

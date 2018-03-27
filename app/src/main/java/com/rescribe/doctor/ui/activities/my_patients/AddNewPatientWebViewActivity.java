@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -62,6 +63,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
     }
 
     private void loadWebViewData(String url) {
+
+        final CustomProgressDialog customProgressDialog = new CustomProgressDialog(this);
+        customProgressDialog.show();
+
         if (url != null) {
             mWebViewObject.setVisibility(View.VISIBLE);
 
@@ -80,6 +85,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
                     // Activities and WebViews measure progress with different scales.
                     // The progress meter will automatically disappear when we reach 100%
                     setProgress(progress);
+                    if (progress > 90)
+                        customProgressDialog.dismiss();
                 }
             });
 

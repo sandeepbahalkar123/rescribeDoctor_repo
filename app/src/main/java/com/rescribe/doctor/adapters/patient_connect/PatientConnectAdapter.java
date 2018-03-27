@@ -32,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.rescribe.doctor.ui.activities.PatientConnectActivity.PATIENT_CONNECT_REQUEST;
-import static com.rescribe.doctor.util.RescribeConstants.IS_CALL_FROM_MY_PATEINTS;
+import static com.rescribe.doctor.util.RescribeConstants.IS_CALL_FROM_MY_PATIENTS;
 import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
 
@@ -161,7 +161,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ChatActivity.class);
                 intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
-                intent.putExtra(IS_CALL_FROM_MY_PATEINTS, true);
+                intent.putExtra(IS_CALL_FROM_MY_PATIENTS, true);
                 ((Activity) mContext).startActivityForResult(intent, PATIENT_CONNECT_REQUEST);
             }
         });

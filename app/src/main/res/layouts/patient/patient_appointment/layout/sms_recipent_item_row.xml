@@ -11,8 +11,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/curve_edges_button"
         android:drawablePadding="@dimen/dp8"
-        android:drawableEnd="@drawable/ic_highlight_off"
-        android:drawableRight="@drawable/ic_highlight_off"
         android:gravity="center"
         android:textColor="@color/white"
         android:paddingTop="@dimen/dp5"

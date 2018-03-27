@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -40,21 +41,15 @@ public class ForgotPasswordWebViewActivity extends AppCompatActivity implements 
         setContentView(R.layout.activity_web_view_forgot_password);
         ButterKnife.bind(this);
         titleTextView.setText(getString(R.string.forgot_password_header));
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-
-
-        }
-
-
-        // Hardcoded
-//        String url = "http://che.org.il/wp-content/uploads/2016/12/pdf-sample.pdf";
-
         loadWebViewData(RescribeConstants.FORGOT_PASSWORD_URL);
     }
 
 
     private void loadWebViewData(String url) {
+
+        final CustomProgressDialog customProgressDialog = new CustomProgressDialog(this);
+        customProgressDialog.show();
+
         if (url != null) {
             mWebViewObject.setVisibility(View.VISIBLE);
 
@@ -74,6 +69,8 @@ public class ForgotPasswordWebViewActivity extends AppCompatActivity implements 
             mWebViewObject.setWebChromeClient(new WebChromeClient() {
                 public void onProgressChanged(WebView view, int progress) {
                     progressBar.setProgress(progress);
+                    if (progress > 90)
+                        customProgressDialog.dismiss();
                 }
             });
 
@@ -102,6 +99,7 @@ public class ForgotPasswordWebViewActivity extends AppCompatActivity implements 
 
                 }
             });
+
             mWebViewObject.loadUrl(url);
         }
     }

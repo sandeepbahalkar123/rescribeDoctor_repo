@@ -33,7 +33,7 @@ import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.PATIENT;
 import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
 import static com.rescribe.doctor.ui.activities.ChatActivity.SEARCHED_TEXT;
-import static com.rescribe.doctor.util.RescribeConstants.IS_CALL_FROM_MY_PATEINTS;
+import static com.rescribe.doctor.util.RescribeConstants.IS_CALL_FROM_MY_PATIENTS;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.PENDING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
@@ -172,7 +172,7 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
                 intent.setAction(REPLY_ACTION);
                 intent.putExtra(MESSAGE_LIST, mqttMessage);
                 intent.putExtra(SEARCHED_TEXT, searchString);
-                intent.putExtra(IS_CALL_FROM_MY_PATEINTS, true);
+                intent.putExtra(IS_CALL_FROM_MY_PATIENTS, true);
                 ((Activity) mContext).startActivityForResult(intent, Activity.RESULT_OK);
             }
         });

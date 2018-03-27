@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
@@ -20,10 +22,12 @@ import com.rescribe.doctor.adapters.patient_connect.SearchedMessagesAdapter;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.patient.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.my_patients.ShowMyPatientsListActivity;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -52,11 +56,16 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     Unbinder unbinder;
     @BindView(R.id.leftFab)
     FloatingActionButton leftFab;
+    @BindView(R.id.nestedScrollView)
+    NestedScrollView nestedScrollView;
+
     private ArrayList<PatientData> mReceivedPatientDataList = new ArrayList<>();
     private PatientConnectAdapter mPatientConnectAdapter;
     private SearchedMessagesAdapter searchedMessagesAdapter;
     private ArrayList<MQTTMessage> mqttMessages = new ArrayList<>();
     private AppDBHelper appDBHelper;
+    private String searchText = "";
+    private String preSearchText = "pre";
 
     public static PatientConnectChatFragment newInstance() {
         PatientConnectChatFragment fragment = new PatientConnectChatFragment();
@@ -109,33 +118,43 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         LinearLayoutManager mLayoutM = new LinearLayoutManager(getActivity());
         searchRecyclerView.setLayoutManager(mLayoutM);
         searchRecyclerView.setAdapter(searchedMessagesAdapter);
+
+        nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                if (searchText.equals(preSearchText)){
+                    CommonMethods.hideKeyboard(getActivity());
+                }
+                preSearchText = searchText;
+            }
+        });
     }
 
     private void getPatientList() {
         mReceivedPatientDataList.clear();
         Cursor cursor = appDBHelper.getChatUsers();
 
-            if (cursor.moveToFirst()) {
-                while (!cursor.isAfterLast()) {
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
 
-                    PatientData patientData = new PatientData();
-                    patientData.setOnlineStatus(OFFLINE); // hardcoded
-                    patientData.setLastChatTime(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_TIME)));
-                    patientData.setLastChat(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG)));
+                PatientData patientData = new PatientData();
+                patientData.setOnlineStatus(OFFLINE); // hardcoded
+                patientData.setLastChatTime(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_TIME)));
+                patientData.setLastChat(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG)));
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_ID)
-                    patientData.setId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER2ID)));
+                patientData.setId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER2ID)));
 //                    cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER1ID));
 
-                    String patientName = cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER)).equals(PATIENT) ? cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER_NAME)) : cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.RECEIVER_NAME));
-                    patientData.setPatientName(patientName);
+                String patientName = cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER)).equals(PATIENT) ? cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER_NAME)) : cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.RECEIVER_NAME));
+                patientData.setPatientName(patientName);
 
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SPECIALITY));
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_STATUS));
-                    patientData.setImageUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER_IMG_URL)));
+                patientData.setImageUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER_IMG_URL)));
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILE_URL));
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILE_TYPE));
 
-                    patientData.setSalutation(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SALUTATION)));
+                patientData.setSalutation(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SALUTATION)));
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.RECEIVER_NAME));
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.RECEIVER_IMG_URL));
 
@@ -143,13 +162,13 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 //                    cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.DOWNLOAD_STATUS));
 //                    cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.READ_STATUS));
 
-                    mReceivedPatientDataList.add(patientData);
-                    cursor.moveToNext();
-                }
+                mReceivedPatientDataList.add(patientData);
+                cursor.moveToNext();
             }
+        }
 
-            cursor.close();
-            appDBHelper.close();
+        cursor.close();
+        appDBHelper.close();
 
         if (mReceivedPatientDataList.isEmpty()) {
             mEmptyListView.setVisibility(View.VISIBLE);
@@ -306,6 +325,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     @Override
     public void result(String searchText, ArrayList<PatientData> dataList) {
         searchRecyclerView.setVisibility(View.VISIBLE);
+        this.searchText = searchText;
 
         mqttMessages.clear();
         Cursor cursor = appDBHelper.searchChatMessagesByChars(searchText);
