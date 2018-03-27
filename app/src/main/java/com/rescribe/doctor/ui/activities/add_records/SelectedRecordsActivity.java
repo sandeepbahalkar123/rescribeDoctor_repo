@@ -108,6 +108,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     private String mHospitalId;
     private String mOpdtime;
     private String currentOpdTime;
+    private boolean openCameraDirect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,10 +132,20 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         dialog.setContentView(R.layout.select_file_dialog);
         dialog.setCanceledOnTouchOutside(false);
 
+        dialog.findViewById(R.id.camera).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                openCameraDirect = true;
+                SelectedRecordsActivityPermissionsDispatcher.onPickPhotoWithCheck(SelectedRecordsActivity.this);
+            }
+        });
+
         dialog.findViewById(R.id.gallery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                openCameraDirect = false;
                 SelectedRecordsActivityPermissionsDispatcher.onPickPhotoWithCheck(SelectedRecordsActivity.this);
             }
         });
@@ -261,9 +272,9 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                     .setSelectedFiles(photos)
                     .setActivityTheme(R.style.AppTheme)
                     .enableVideoPicker(false)
-                    .enableCameraSupport(true)
-                    .enableCameraMultiplePhotos(true)
-                    .openCameraDirect(true)
+                    .enableCameraSupport(openCameraDirect)
+                    .enableCameraMultiplePhotos(openCameraDirect)
+                    .openCameraDirect(openCameraDirect)
                     .showGifs(false)
                     .showFolderView(true)
                     .enableOrientation(true)

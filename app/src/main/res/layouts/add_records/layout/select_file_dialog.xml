@@ -8,6 +8,36 @@
     android:padding="@dimen/dp6">
 
     <RelativeLayout
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp4"
+        android:paddingEnd="@dimen/dp8"
+        android:paddingStart="@dimen/dp8"
+        android:paddingTop="@dimen/dp8">
+
+        <ImageView
+            android:id="@+id/cameraIcon"
+            android:layout_width="@dimen/dp50"
+            android:layout_height="@dimen/dp50"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/dp2"
+            app:srcCompat="@drawable/camera" />
+
+        <com.rescribe.doctor.ui.customesViews.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/cameraIcon"
+            android:layout_toRightOf="@+id/cameraIcon"
+            android:padding="@dimen/dp10"
+            android:text="@string/camera"
+            android:textSize="@dimen/sp16"
+            app:customFont="@string/roboto_bold" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/gallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
