@@ -42,7 +42,6 @@
             tools:ignore="RtlSymmetry"
             tools:text="Today's Appointments" />
         <com.rescribe.doctor.ui.customesViews.CustomTextView
-            android:id="@+id/menuNameTextView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

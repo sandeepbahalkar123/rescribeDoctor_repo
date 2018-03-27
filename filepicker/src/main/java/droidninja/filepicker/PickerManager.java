@@ -42,6 +42,8 @@ public class PickerManager {
 
     private String providerAuthorities;
 
+    private boolean openCameraDirect = false;
+
     private PickerManager() {
         mediaFiles = new ArrayList<>();
         docFiles = new ArrayList<>();
@@ -218,5 +220,13 @@ public class PickerManager {
 
     public boolean isEnableMultiplePhotos() {
         return enableMultiplePhotos;
+    }
+
+    public void openCameraDirect(boolean openCameraDirect) {
+        this.openCameraDirect = openCameraDirect;
+    }
+
+    public boolean isOpenCameraDirect() {
+        return openCameraDirect;
     }
 }

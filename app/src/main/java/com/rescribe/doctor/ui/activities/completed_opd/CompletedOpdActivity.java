@@ -55,8 +55,6 @@ public class CompletedOpdActivity extends AppCompatActivity implements HelperRes
     private CompletedOpdFragment mCompletedOpdfragment;
     private boolean isLongPressed;
     Intent mIntent;
-    private String mActivityCalledFrom = "";
-    private boolean isFromDrawer;
     public HashSet<Integer> selectedDoctorId = new HashSet<>();
     private String phoneNo;
 
@@ -71,7 +69,6 @@ public class CompletedOpdActivity extends AppCompatActivity implements HelperRes
     private void initialize() {
         mIntent = getIntent();
         if (mIntent.getExtras() != null) {
-            mActivityCalledFrom = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
         }
         mContext = CompletedOpdActivity.this;
         titleTextView.setText(getString(R.string.completed_opd));

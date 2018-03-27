@@ -95,6 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
             android:layout_marginRight="@dimen/fab_margin"
             android:layout_marginTop="@dimen/dp5"
             android:visibility="visible"
@@ -105,8 +106,6 @@
             android:id="@+id/leftFab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
             android:layout_gravity="bottom|left"
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginLeft="@dimen/fab_margin"
@@ -114,7 +113,8 @@
             android:layout_marginTop="@dimen/dp5"
             android:visibility="gone"
             app:backgroundTint="@color/floating_blue_color"
-            app:srcCompat="@drawable/ic_add_action" />
+            app:srcCompat="@drawable/add_patient"
+            tools:visibility="visible" />
 
     </FrameLayout>
 

@@ -143,19 +143,19 @@ public class CheckPendingUploads {
                 .setClearOnActionForAllStatuses(false);
 
         uploadNotificationConfig.getProgress().message = "Uploading record at " + UPLOAD_RATE + " - " + PROGRESS;
-        uploadNotificationConfig.getProgress().iconResourceID = R.drawable.ic_file_upload_white_24dp;
+//        uploadNotificationConfig.getProgress().iconResourceID = R.drawable.ic_file_upload_white_24dp;
         uploadNotificationConfig.getProgress().iconColorResourceID = context.getResources().getColor(R.color.tagColor);
 
         uploadNotificationConfig.getCompleted().message = "Upload completed successfully in " + ELAPSED_TIME;
-        uploadNotificationConfig.getCompleted().iconResourceID = R.drawable.ic_file_upload_white_24dp;
+//        uploadNotificationConfig.getCompleted().iconResourceID = R.drawable.ic_file_upload_white_24dp;
         uploadNotificationConfig.getCompleted().iconColorResourceID = Color.GREEN;
 
         uploadNotificationConfig.getError().message = "Error while uploading";
-        uploadNotificationConfig.getError().iconResourceID = R.drawable.ic_file_upload_white_24dp;
+//        uploadNotificationConfig.getError().iconResourceID = R.drawable.ic_file_upload_white_24dp;
         uploadNotificationConfig.getError().iconColorResourceID = Color.RED;
 
         uploadNotificationConfig.getCancelled().message = "Upload has been cancelled";
-        uploadNotificationConfig.getCancelled().iconResourceID = R.drawable.ic_file_upload_white_24dp;
+//        uploadNotificationConfig.getCancelled().iconResourceID = R.drawable.ic_file_upload_white_24dp;
         uploadNotificationConfig.getCancelled().iconColorResourceID = Color.YELLOW;
 
         return uploadNotificationConfig;

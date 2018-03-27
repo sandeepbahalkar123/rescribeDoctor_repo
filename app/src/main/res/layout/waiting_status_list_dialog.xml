@@ -28,7 +28,6 @@
                 android:orientation="vertical">
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
-                    android:id="@+id/textheading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"

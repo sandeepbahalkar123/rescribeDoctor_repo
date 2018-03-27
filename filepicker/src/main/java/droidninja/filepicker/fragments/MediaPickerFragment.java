@@ -53,8 +53,7 @@ public class MediaPickerFragment extends BaseFragment{
     }
 
     public static MediaPickerFragment newInstance() {
-        MediaPickerFragment photoPickerFragment = new MediaPickerFragment();
-        return  photoPickerFragment;
+        return new MediaPickerFragment();
     }
 
     public interface MediaPickerFragmentListener {

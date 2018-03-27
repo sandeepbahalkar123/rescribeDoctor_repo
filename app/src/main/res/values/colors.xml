@@ -1,31 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="bg_item_normal_state">#00000000</color>
     <color name="bg_item_dragging_state">#00000000</color>
     <color name="bg_item_dragging_active_state">#00000000</color>
     <color name="bg_item_swiping_state">#00000000</color>
     <color name="bg_item_swiping_active_state">#00000000</color>
-
-    <color name="bg_group_item_normal_state">#00000000</color>
-    <color name="bg_group_item_normal_pressed_state">#00000000</color>
-    <color name="bg_group_item_expanded_state">#00000000</color>
-    <color name="bg_group_item_expanded_pressed_state">#00000000</color>
-    <color name="bg_group_item_dragging_state">#00000000</color>
-    <color name="bg_group_item_dragging_active_state">#00000000</color>
-    <color name="bg_group_item_swiping_state">#00000000</color>
-    <color name="bg_group_item_swiping_active_state">#00000000</color>
-
-    <color name="bg_swipe_item_neutral">@android:color/transparent</color>
-    <color name="bg_swipe_item_pinned">#fff9930d</color>
-    <color name="bg_swipe_item_dismiss">#ff2f8b2a</color>
-    <color name="bg_swipe_item_gray">#999999</color>
-    <color name="bg_swipe_group_item_pinned">#fff45f30</color>
-    <color name="bg_swipe_group_item_dismiss">#ff295db3</color>
-
-    <color name="snackbar_action_color_done">#ffccccff</color>
-
-    <color name="expandable_item_indicator_color">#42000000</color>
 
     <color name="grey_500">#9E9E9E</color>
     <color name="transparent">#00000000</color>
@@ -54,7 +33,6 @@
     <color name="gender_drawer">#cacaca</color>
     <color name="genderSelectionColor">#00aee4</color>
     <color name="choose_option_color">#6e6e6e</color>
-    <color name="dashboard_divider_color">#98abb3</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>

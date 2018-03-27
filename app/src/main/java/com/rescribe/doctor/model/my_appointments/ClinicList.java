@@ -44,8 +44,7 @@ public class ClinicList implements Parcelable
             return (new ClinicList[size]);
         }
 
-    }
-            ;
+    };
 
 
     protected ClinicList(Parcel in) {

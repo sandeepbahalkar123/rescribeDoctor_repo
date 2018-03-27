@@ -78,22 +78,7 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void doGetAppointmentData(String userSelectedDate) {
-    /*  try {
-            InputStream is = mContext.getAssets().open("my_appointments.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
-            Log.e(TAG, "my_appointments" + json);
 
-            Gson gson = new Gson();
-            MyAppointmentsBaseModel mMyAppointmentsBaseModel = gson.fromJson(json, MyAppointmentsBaseModel.class);
-            onResponse(ConnectionListener.RESPONSE_OK, mMyAppointmentsBaseModel, RescribeConstants.TASK_GET_APPOINTMENT_DATA);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_APPOINTMENT_DATA, Request.Method.POST, true);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
@@ -105,22 +90,6 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void doGetMyPatients(RequestSearchPatients mRequestSearchPatients) {
-       /* try {
-            InputStream is = mContext.getAssets().open("patients.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
-            Log.e(TAG, "patients" + json);
-
-            Gson gson = new Gson();
-            MyPatientBaseModel mMyPatientBaseModel = gson.fromJson(json, MyPatientBaseModel.class);
-            onResponse(ConnectionListener.RESPONSE_OK, mMyPatientBaseModel, RescribeConstants.TASK_GET_PATIENT_DATA);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_PATIENT_DATA, Request.Method.POST, true);
         mConnectionFactory.setPostParams(mRequestSearchPatients);
         mConnectionFactory.setHeaderParams();

@@ -1,40 +1,27 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_connect;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
 import com.rescribe.doctor.adapters.patient_connect.ChatPatientListAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
@@ -42,24 +29,16 @@ import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.doctor_connect_chat.DoctorConnectChatBaseModel;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
-import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
-import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.PatientAddToWaitingList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.ChatActivity;
-import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.ShowMyPatientsListActivity;
-import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
-import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
-import com.rescribe.doctor.ui.fragments.patient.my_patient.TemplateListForMyPatients;
-import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -68,8 +47,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-
-import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 
 /**
  * Created by jeetal on 5/3/18.
@@ -216,7 +193,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         intent.putExtra(RescribeConstants.PATIENT_DETAILS,text);
         intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
         intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID,patientListObject.getHospitalPatId());
-        intent.putExtra(RescribeConstants.IS_CALL_FROM_MY_PATEINTS, true);
+        intent.putExtra(RescribeConstants.IS_CALL_FROM_MY_PATIENTS, true);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         getActivity().startActivityForResult(intent, Activity.RESULT_OK);
         getActivity().finish();

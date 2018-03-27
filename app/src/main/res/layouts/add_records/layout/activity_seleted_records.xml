@@ -30,7 +30,6 @@
 
 
     <io.github.shree.fabmenu.FabSpeedDial
-        android:id="@+id/fab"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/dp16"

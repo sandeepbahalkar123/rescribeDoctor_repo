@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:focusable="false"
     android:orientation="vertical">
 
-    <CheckBox
+    <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/menuName"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp50"
-        android:layout_marginEnd="@dimen/dp14"
-        android:layout_marginLeft="@dimen/dp16"
-        android:layout_marginRight="@dimen/dp14"
-        android:layout_marginStart="@dimen/dp16"
+        android:layout_height="wrap_content"
         android:button="@drawable/checkboxselecter"
-        android:drawableTint="@color/tagColor"
         android:focusable="false"
         android:layoutDirection="rtl"
-        android:padding="@dimen/dp5"
-        android:text="Nagpur"
+        android:layout_marginStart="@dimen/dp14"
+        android:layout_marginEnd="@dimen/dp14"
+        android:paddingTop="@dimen/dp8"
+        android:paddingBottom="@dimen/dp8"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp16" />
+        android:textSize="@dimen/sp16"
+        tools:text="Nagpur" />
 </LinearLayout>

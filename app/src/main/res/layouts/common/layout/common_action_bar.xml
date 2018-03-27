@@ -36,6 +36,7 @@
             android:layout_toStartOf="@+id/dateTextview"
             android:paddingStart="@dimen/dp16"
             android:paddingEnd="@dimen/dp16"
+            android:ellipsize="end"
             tools:text="@string/appointment_completed"
             android:textColor="@color/white"
             android:textSize="@dimen/sp17"

@@ -147,6 +147,9 @@ public class MediaDetailPickerFragment extends BaseFragment implements FileAdapt
         });
 
         getDataFromMedia();
+
+        if (PickerManager.getInstance().isOpenCameraDirect())
+            takePhoto();
     }
 
     private void getDataFromMedia() {

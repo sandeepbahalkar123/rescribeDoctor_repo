@@ -71,6 +71,11 @@ public class FilePickerBuilder {
         return this;
     }
 
+    public FilePickerBuilder openCameraDirect(boolean b) {
+        PickerManager.getInstance().openCameraDirect(b);
+        return this;
+    }
+
     public FilePickerBuilder enableOrientation(boolean status) {
         PickerManager.getInstance().setEnableOrientation(status);
         return this;

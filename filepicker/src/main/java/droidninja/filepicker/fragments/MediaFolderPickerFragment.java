@@ -139,6 +139,9 @@ public class MediaFolderPickerFragment extends BaseFragment implements FolderGri
         });
 
         getDataFromMedia();
+
+        if (PickerManager.getInstance().isOpenCameraDirect())
+            takePhoto();
     }
 
     private void getDataFromMedia() {
