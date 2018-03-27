@@ -64,32 +64,6 @@ public class DoctorConnectSearchHelper implements ConnectionListener {
 
     }
 
-
-    public void getDoctorSpecialityList() {
-
-      /*  ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DOCTOR__FILTER_DOCTOR_SPECIALITY_LIST, Request.Method.GET, true);
-        mConnectionFactory.setHeaderParams();
-        mConnectionFactory.setUrl(Config.FILTER_DOCTOR_SPECIALIST_LIST);
-        mConnectionFactory.createConnection(RescribeConstants.TASK_DOCTOR__FILTER_DOCTOR_SPECIALITY_LIST);*/
-
-        try {
-            InputStream is = mContext.getAssets().open("doctor_connect_search.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
-            Log.e(TAG, "doDoctorSearchList" + json);
-
-            DoctorConnectSearchBaseModel doctorConnectBaseModel = new Gson().fromJson(json, DoctorConnectSearchBaseModel.class);
-            onResponse(ConnectionListener.RESPONSE_OK, doctorConnectBaseModel, RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-    }
-
 }
 
 

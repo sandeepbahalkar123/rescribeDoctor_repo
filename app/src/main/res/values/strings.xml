@@ -28,7 +28,6 @@
     <string name="bill_invoices">Bill Invoices</string>
     <string name="case_encounter">Case Encounter</string>
     <string name="gallery">Gallery</string>
-    <string name="title_activity_report_selection">Report Selection</string>
     <string name="files">Files</string>
     <string name="adddocs">Add Documents</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -89,7 +88,6 @@
     <string name="dummy_full">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
     <string name="dummy_normal">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
     <string name="patient_connect">Patient Connect</string>
-    <string name="chats">Chats</string>
     <string name="search">Search</string>
     <string name="pick_speciality">Pick Speciality</string>
     <string name="details_note"><![CDATA[Your details will remain 100% private & secure. If you think you have medical emergency, contact your doctor immediately.]]></string>
@@ -116,9 +114,6 @@
     <string name="endocrinologist">endocrinologist</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="type_a_message">Type a message</string>
-    <string name="online">Online</string>
-    <string name="offline">Offline</string>
-    <string name="idle">Idle</string>
     <string name="doc_viewer_not_found">Document viewer not found.</string>
     <string name="timing"><![CDATA[< slide to cancel]]></string>
     <string name="cancel">Cancel</string>
@@ -165,7 +160,6 @@
     <string name="capitalcompleted">Completed</string>
     <string name="file_extension">file_extension</string>
     <string name="title_activity_selected_docs">Selected Documents</string>
-    <string name="follow">follow</string>
     <string name="appointments">Appointments</string>
     <string name="normalRange">normal</string>
     <string name="moderateRange">Moderate</string>
@@ -194,7 +188,6 @@
     <string name="enter_address">Enter Address</string>
     <string name="next">Next</string>
     <string name="addrecords">Add Records</string>
-    <string name="retry">Retry</string>
     <string name="upload">Upload</string>
     <string name="select_report">Select Report</string>
     <string name="just_now">Just Now</string>
@@ -205,7 +198,6 @@
     <string name="view_all">VIEW ALL</string>
     <string name="in_time">In Time</string>
     <string name="select_clinic_location">Select Clinic Location</string>
-    <string name="all_patients_exists">All patients exists in waiting list!</string>
     <string name="patients_added_to_waiting_list">Patients added successfully!</string>
     <string name="patient_limit_exceeded">Patient limit exceeded!</string>
     <string name="already_exists_in_waiting_list">All patients already exists in waiting list!</string>
@@ -218,10 +210,8 @@
     <string name="no_show">no show</string>
     <string name="other">other</string>
     <string name="enter_sms_text_here">Enter sms text here</string>
-    <string name="address">Address</string>
     <string name="location">Location</string>
     <string name="complete_and_cancelled_status">Complete and cancel status patients cannot be added to waiting list</string>
-    <string name="today_follow_up">"Today's\nFollow Ups"</string>
     <string name="today_new_patient">"Today's\nNew Patients"</string>
     <string name="today_appointment">"Today's\nAppointments"</string>
     <string name="today_waiting_list"> "Today's\nWaiting List"</string>
