@@ -235,7 +235,6 @@ public class MediaDetailPickerFragment extends BaseFragment implements FileAdapt
                         @Override
                         public void run() {
                             getDataFromMedia();
-
                         }
                     }, 1000);
 

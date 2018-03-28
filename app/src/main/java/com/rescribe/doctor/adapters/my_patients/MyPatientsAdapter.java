@@ -1,5 +1,6 @@
 package com.rescribe.doctor.adapters.my_patients;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -72,6 +73,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         return new ListViewHolder(itemView);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
         final PatientList patientObject = mDataList.get(position);

@@ -83,7 +83,7 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
             mActivityCalledFrom = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
         }
         mContext = MyPatientsActivity.this;
-        titleTextView.setText(getString(R.string.my_patients));
+        titleTextView.setText(getString(R.string.today_new_patients));
         mAppointmentHelper = new AppointmentHelper(this, this);
         RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
         // mRequestSearchPatients.setDocId(2462);

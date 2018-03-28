@@ -44,7 +44,6 @@ public class MediaFolderPickerFragment extends BaseFragment implements FolderGri
 
     TextView emptyView;
 
-    private PhotoPickerFragmentListener mListener;
     private FolderGridAdapter photoGridAdapter;
     private ImageCaptureManager imageCaptureManager;
     private RequestManager mGlideRequestManager;
@@ -63,20 +62,8 @@ public class MediaFolderPickerFragment extends BaseFragment implements FolderGri
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof PhotoPickerFragmentListener) {
-            mListener = (PhotoPickerFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement PhotoPickerFragmentListener");
-        }
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     public static MediaFolderPickerFragment newInstance(int fileType) {
@@ -86,10 +73,6 @@ public class MediaFolderPickerFragment extends BaseFragment implements FolderGri
         photoPickerFragment.setArguments(bun);
         return photoPickerFragment;
     }
-
-    public interface PhotoPickerFragmentListener {
-    }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

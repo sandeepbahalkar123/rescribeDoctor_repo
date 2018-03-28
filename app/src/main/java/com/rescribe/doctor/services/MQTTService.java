@@ -221,7 +221,7 @@ public class MQTTService extends Service {
                                             statusInfo.setMsgId(messageL.getMsgId());
                                             statusInfo.setDocId(messageL.getDocId());
                                             statusInfo.setPatId(messageL.getPatId());
-                                            statusInfo.setSender(DOCTOR);
+                                            statusInfo.setSender(messageL.getSender());
 
                                             if (currentChatUser != messageL.getPatId()) {
 
@@ -321,7 +321,7 @@ public class MQTTService extends Service {
     // change
     private void broadcastStatus(String payloadString, String topic) {
         StatusInfo statusInfo = gson.fromJson(payloadString, StatusInfo.class);
-        if (statusInfo.getSender().equals(MQTTService.PATIENT)) {
+        if (statusInfo.getSender().equals(MQTTService.DOCTOR)) {
 
             if (TOPIC[MESSAGE_STATUS_TOPIC].equals(topic))
                 appDBHelper.updateChatMessageStatus(statusInfo);

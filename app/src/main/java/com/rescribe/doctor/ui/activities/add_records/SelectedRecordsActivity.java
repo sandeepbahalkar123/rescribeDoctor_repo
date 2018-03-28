@@ -118,12 +118,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
 
         init();
 
-
-       /* String coachMarkStatus = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK, mContext);
-        if (coachMarkStatus.equals(RescribeConstants.YES))
-            coachmark.setVisibility(View.GONE);
-*/
-
         // Show two options for user
 
         dialog = new Dialog(mContext);
@@ -284,7 +278,8 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onPickDoc() {
-        String[] documents = {".doc", ".docx", ".odt", ".pdf", ".xls", ".xlsx", ".ods", ".ppt", ".pptx"};
+//        String[] documents = {".doc", ".docx", ".odt", ".pdf", ".xls", ".xlsx", ".ods", ".ppt", ".pptx"};
+        String[] documents = {".pdf", ".png", ".jpeg", ".jpg"};
         if (imagePaths.size() == MAX_ATTACHMENT_COUNT)
             Toast.makeText(this, "Cannot select more than " + MAX_ATTACHMENT_COUNT + " documents", Toast.LENGTH_SHORT).show();
         else {
@@ -439,11 +434,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         }
 
         //  appDBHelper.insertMyRecordsData(uploadId, RescribeConstants.UPLOADING, new Gson().toJson(image), docId, opdId, visitDate);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     @Override
