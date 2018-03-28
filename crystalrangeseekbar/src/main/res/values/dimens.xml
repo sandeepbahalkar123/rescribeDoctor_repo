@@ -1,5 +1,5 @@
 <resources>
-    <dimen name="thumb_width">30dp</dimen>
+    <dimen name="thumb_width">32dp</dimen>
     <dimen name="thumb_height">30dp</dimen>
     <dimen name="bar_height">10dp</dimen>
 

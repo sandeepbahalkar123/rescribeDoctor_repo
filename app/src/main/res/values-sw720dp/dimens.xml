@@ -55,10 +55,13 @@
     <dimen name="dp24">36dp</dimen>
     <dimen name="dp86">129dp</dimen>
     <dimen name="dp222">333dp</dimen>
-    <dimen name="dashboard_back">400dp</dimen>
+    <dimen name="dashboard_back">420dp</dimen>
     <dimen name="dp130">195dp</dimen>
     <dimen name="dp82">123dp</dimen>
     <dimen name="dp500">750dp</dimen>
     <dimen name="drawer_width">500dp</dimen>
+    <dimen name="dialog_waitinglist_bullet_width_height">16dp</dimen>
+    <dimen name="dialog_waitinglist_textsize">18sp</dimen>
+    <dimen name="dialog_waitinglist_okbtn_width">110dp</dimen>
 
 </resources>

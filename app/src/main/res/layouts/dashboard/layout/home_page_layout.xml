@@ -10,9 +10,13 @@
     <RelativeLayout
         android:id="@+id/dashBoradBgframeLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dashboard_back"
-        android:background="@drawable/dashboard_image">
+        android:layout_height="@dimen/dashboard_back">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/dashboard_image"
+            android:scaleType="centerCrop"/>
         <LinearLayout
             android:id="@+id/viewPagerDoctorItem"
             android:layout_width="match_parent"

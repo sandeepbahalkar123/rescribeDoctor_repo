@@ -31,7 +31,7 @@ public class CrystalRangeSeekbar extends View {
 
     private static final int INVALID_POINTER_ID = 255;
     //private static final int DEFAULT_THUMB_WIDTH = 80;
-    //private static final int DEFAULT_THUMB_HEIGHT = 80;
+    //private static final int DEFAULT_THUMB_HEIGHT = 80;e
 
     private final float NO_STEP = -1f;
     private final float NO_FIXED_GAP = -1f;
@@ -55,6 +55,7 @@ public class CrystalRangeSeekbar extends View {
 
     private OnRangeSeekbarChangeListener onRangeSeekbarChangeListener;
     private OnRangeSeekbarFinalValueListener onRangeSeekbarFinalValueListener;
+
 
     private float absoluteMinValue;
     private float absoluteMaxValue;
@@ -106,6 +107,9 @@ public class CrystalRangeSeekbar extends View {
     private RectF rectLeftThumb, rectRightThumb;
 
     private boolean mIsDragging;
+    public static final String TABLET = "Tablet";
+    public static final String PHONE = "Phone";
+    private String mDeviceType="";
 
     //////////////////////////////////////////
     // ENUMERATION
@@ -118,6 +122,7 @@ public class CrystalRangeSeekbar extends View {
     //////////////////////////////////////////
 
     public CrystalRangeSeekbar(Context context) {
+
         this(context, null);
     }
 
@@ -133,6 +138,11 @@ public class CrystalRangeSeekbar extends View {
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CrystalRangeSeekbar);
         try {
+
+            String deviceType=getDeviceType(context);
+            if(deviceType.contains(TABLET)){
+                mDeviceType=TABLET;
+            }
             cornerRadius = getCornerRadius(array);
             minValue = getMinValue(array);
             maxValue = getMaxValue(array);
@@ -431,7 +441,10 @@ public class CrystalRangeSeekbar extends View {
         //thumbHalfHeight = thumbHeight / 2;
 
         barHeight = getBarHeight();
-        barPadding = thumbWidth * 0.6f;
+        if(mDeviceType.equals(TABLET))
+            barPadding = thumbWidth * 0.65f;
+        else
+            barPadding = thumbWidth * 0.6f;
 
         // set min start value
         if (minStartValue <= absoluteMinValue) {
@@ -495,7 +508,10 @@ public class CrystalRangeSeekbar extends View {
     //----
 
     protected float getBarPadding() {
-        return thumbWidth * 1f;
+        if(mDeviceType.equals(TABLET))
+            return thumbWidth * 1.4f;
+        else
+            return thumbWidth * 1f;
     }
 
     protected Bitmap getBitmap(Drawable drawable) {
@@ -1011,6 +1027,17 @@ public class CrystalRangeSeekbar extends View {
 
         return true;
 
+    }
+
+    public String getDeviceType(Context context) {
+        String what = "";
+        boolean tabletSize = context.getResources().getBoolean(R.bool.isTablet);
+        if (tabletSize) {
+            what = TABLET;
+        } else {
+            what = PHONE;
+        }
+        return what;
     }
 }
 

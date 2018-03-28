@@ -62,4 +62,7 @@
     <dimen name="dp130">130dp</dimen>
     <dimen name="dp500">500dp</dimen>
     <dimen name="drawer_width">280dp</dimen>
+    <dimen name="dialog_waitinglist_bullet_width_height">8dp</dimen>
+    <dimen name="dialog_waitinglist_textsize">14sp</dimen>
+    <dimen name="dialog_waitinglist_okbtn_width">92dp</dimen>
 </resources>
