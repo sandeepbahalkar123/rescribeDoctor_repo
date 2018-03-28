@@ -1,6 +1,6 @@
 <resources>
     <dimen name="thumb_width">32dp</dimen>
-    <dimen name="thumb_height">30dp</dimen>
+    <dimen name="thumb_height">38dp</dimen>
     <dimen name="bar_height">10dp</dimen>
 
     <dimen name="bubble_thumb_width">70dp</dimen>

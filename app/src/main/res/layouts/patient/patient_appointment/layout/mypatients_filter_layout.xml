@@ -182,7 +182,7 @@
                         android:id="@+id/genderContentView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp0"
+                        android:layout_marginBottom="@dimen/dp8"
                         android:background="@color/otp_background_layout"
                         android:gravity="center"
                         android:orientation="horizontal"
@@ -390,6 +390,7 @@
                         android:text="@string/select_city"
                         app:customFont="@string/roboto_regular" />
 
+
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/locationContentRecycleView"
                         android:layout_width="match_parent"
@@ -399,6 +400,7 @@
                         android:paddingBottom="@dimen/dp20"
                         android:paddingTop="@dimen/dp10"
                         android:visibility="visible" />
+
 
                 </LinearLayout>
             </LinearLayout>
