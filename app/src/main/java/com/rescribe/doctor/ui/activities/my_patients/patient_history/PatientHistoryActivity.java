@@ -38,4 +38,6 @@ public class PatientHistoryActivity extends AppCompatActivity {
                 fragment.initialize();
         }
     }
+
+
 }

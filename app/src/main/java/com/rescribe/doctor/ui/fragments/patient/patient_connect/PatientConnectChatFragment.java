@@ -122,7 +122,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                if (searchText.equals(preSearchText)){
+                if (searchText.equals(preSearchText)) {
                     CommonMethods.hideKeyboard(getActivity());
                 }
                 preSearchText = searchText;
@@ -338,23 +338,23 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                     mqttMessage.setMsgId(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_ID)));
                     mqttMessage.setMsg(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG)));
                     mqttMessage.setMsgTime(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_TIME)));
-                    mqttMessage.setSender(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER)));
                     mqttMessage.setPatId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER2ID)));
-                    mqttMessage.setDocId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER1ID)));
                     mqttMessage.setSenderName(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER_NAME)));
-                    mqttMessage.setSpecialization(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SPECIALITY)));
                     mqttMessage.setMsgStatus(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_STATUS)));
                     mqttMessage.setSenderImgUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER_IMG_URL)));
-                    mqttMessage.setFileUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILE_URL)));
-                    mqttMessage.setFileType(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILE_TYPE)));
 
                     mqttMessage.setSalutation(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SALUTATION)));
                     mqttMessage.setReceiverName(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.RECEIVER_NAME)));
                     mqttMessage.setReceiverImgUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.RECEIVER_IMG_URL)));
+                    mqttMessage.setSender(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER)));
 
-                    mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.UPLOAD_STATUS)));
-                    mqttMessage.setDownloadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.DOWNLOAD_STATUS)));
-                    mqttMessage.setReadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.READ_STATUS)));
+//                    mqttMessage.setDocId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER1ID)));
+                    mqttMessage.setSpecialization(null);
+                    mqttMessage.setFileUrl(null);
+                    mqttMessage.setFileType(null);
+//                    mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.UPLOAD_STATUS)));
+//                    mqttMessage.setDownloadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.DOWNLOAD_STATUS)));
+//                    mqttMessage.setReadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.READ_STATUS)));
 
                     mqttMessages.add(mqttMessage);
                     cursor.moveToNext();
@@ -392,4 +392,3 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
         }
     }
 }
-

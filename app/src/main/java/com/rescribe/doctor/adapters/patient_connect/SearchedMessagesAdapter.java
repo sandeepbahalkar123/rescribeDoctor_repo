@@ -185,4 +185,3 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
     }
 
 }
-

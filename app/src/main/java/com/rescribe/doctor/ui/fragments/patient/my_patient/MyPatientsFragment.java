@@ -173,9 +173,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             public void afterTextChanged(Editable s) {
                 searchText = s.toString();
                 if (searchText.length() >= 3) {
-                    serachPatientsUsingSearchBar(getContext(), searchText);
+                    searchPatientsUsingSearchBar(getContext(), searchText);
                     isFiltered = true;
-                } else if (searchText.length() < 3 && isFiltered) {
+                } else if (isFiltered) {
                     isFiltered = false;
                     initAdapter();
                 }
@@ -590,11 +590,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
 
     public boolean callOnBackPressed() {
-        if (mMyPatientsAdapter != null) {
-            return mMyPatientsAdapter.isLongPressed;
-        } else {
-            return false;
-        }
+        return mMyPatientsAdapter != null && mMyPatientsAdapter.isLongPressed;
     }
 
     public void removeCheckBox() {
@@ -742,13 +738,12 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     }
 
-    public void serachPatientsUsingSearchBar(Context mContext, String searchText) {
+    public void searchPatientsUsingSearchBar(Context mContext, String searchText) {
         mAppointmentHelper = new AppointmentHelper(mContext, this);
         RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mRequestSearchPatients.setSearchText(searchText);
         mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
-
     }
 
 }

@@ -472,7 +472,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                         .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
                         .endConfig()
                         .buildRound(("" + patientName.charAt(0)).toUpperCase(), color2);
-                profilePhoto.setImageDrawable(mReceiverDrawable);
             }
         }
 
@@ -489,8 +488,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                     .load(chatList.getImageUrl())
                     .apply(requestOptions).thumbnail(0.5f)
                     .into(profilePhoto);
-
-        }
+        } else profilePhoto.setImageDrawable(mReceiverDrawable);
 
 
         String doctorName = docName;
@@ -1091,6 +1089,8 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 .setActivityTheme(R.style.AppTheme)
                 .enableVideoPicker(false)
                 .enableCameraSupport(true)
+                .openCameraDirect(false)
+                .enableCameraMultiplePhotos(false)
                 .showGifs(false)
                 .showFolderView(true)
                 .enableOrientation(true)
