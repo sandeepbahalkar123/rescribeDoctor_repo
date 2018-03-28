@@ -8,21 +8,26 @@
     android:paddingStart="@dimen/dp4"
     android:orientation="horizontal"
     android:paddingEnd="@dimen/dp4"
-    android:paddingLeft="@dimen/dp4">
+    android:paddingLeft="@dimen/dp4"
+    >
 
     <ImageView
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
         android:id="@+id/bulletImageView"
-        android:layout_width="@dimen/dp8"
-        android:layout_height="@dimen/dp8"
-        app:srcCompat="@drawable/circular_bullet"/>
+        android:layout_width="@dimen/dialog_waitinglist_bullet_width_height"
+        android:layout_height="@dimen/dialog_waitinglist_bullet_width_height"
+        app:srcCompat="@drawable/circular_bullet"
+        android:layout_marginLeft="@dimen/dp6"
+        />
     <com.rescribe.doctor.ui.customesViews.CustomTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/waitingStatusText"
         app:customFont="@string/roboto_medium"
         android:textColor="@color/black"
-        android:paddingStart="@dimen/dp8"
-        android:paddingLeft="@dimen/dp8"
+        android:paddingStart="@dimen/dp6"
+        android:paddingEnd="@dimen/dp6"
+        android:padding="@dimen/dp6"
+        android:textSize="@dimen/dialog_waitinglist_textsize"
         tools:text="sdsddfdsdfs"/>
 </LinearLayout>
