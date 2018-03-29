@@ -511,7 +511,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
                         Intent i = new Intent(getActivity(), AddNewPatientWebViewActivity.class);
                         i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
-                        startActivity(i);
+                        getActivity().startActivityForResult(i, 121);
 
                         CommonMethods.Log("DOC_ID", "" + Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
                     } else {

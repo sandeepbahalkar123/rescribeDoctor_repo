@@ -1,6 +1,7 @@
 package com.rescribe.doctor.ui.activities.my_patients;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -100,6 +101,13 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
                 onBackPressed();
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK)
+            mMyPatientsFragment.apply(new RequestSearchPatients(), false);
     }
 
     @Override

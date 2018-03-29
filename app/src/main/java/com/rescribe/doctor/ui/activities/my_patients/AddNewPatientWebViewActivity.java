@@ -1,9 +1,11 @@
 package com.rescribe.doctor.ui.activities.my_patients;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebChromeClient;
@@ -25,6 +27,7 @@ import butterknife.OnClick;
 
 public class AddNewPatientWebViewActivity extends AppCompatActivity {
 
+    private static final String TAG = "AddPatient";
     @BindView(R.id.webViewLayout)
     WebView mWebViewObject;
     @BindView(R.id.backButton)
@@ -102,12 +105,20 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 // Do something on page loading started
+                Log.d(TAG + "Start", url);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 // Do something when page loading finished
+                Log.d(TAG + "Finish", url);
 
+                // https://drrescribe.com/app.html#/addpatientmobilesuccess/541170
+
+                if (url.toLowerCase().contains(Config.ADD_NEW_PATIENT_WEB_URL_SUCCESS)) {
+                    setResult(Activity.RESULT_OK, null);
+                    finish();
+                }
             }
 
             @Override
@@ -119,7 +130,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
+                Log.d(TAG, "ShouldOverride " + url);
+
                 if (url.toLowerCase().contains(Config.ADD_NEW_PATIENT_WEB_URL_SUCCESS)) {
+                    setResult(Activity.RESULT_OK, null);
                     finish();
                 }
                 return super.shouldOverrideUrlLoading(view, url);

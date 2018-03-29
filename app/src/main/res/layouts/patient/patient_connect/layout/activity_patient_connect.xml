@@ -21,6 +21,8 @@
                 android:layout_height="@dimen/dp34"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/dp6"
+                android:layout_marginStart="@dimen/dp3"
+                android:layout_marginEnd="@dimen/dp3"
                 android:visibility="visible"
                 app:srcCompat="@drawable/ic_arrow_back_white_24dp"
                 tools:ignore="VectorDrawableCompat" />

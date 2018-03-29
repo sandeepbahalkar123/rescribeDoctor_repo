@@ -74,7 +74,7 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
             mActivityCalledFrom = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
         }
         mContext = NewPatientActivity.this;
-        titleTextView.setText(getString(R.string.new_patients));
+        titleTextView.setText(getString(R.string.today_new_patients));
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetNewPatientList();
         //  setUpNavigationDrawer();

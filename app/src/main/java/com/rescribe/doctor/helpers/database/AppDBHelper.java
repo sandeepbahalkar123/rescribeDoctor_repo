@@ -463,7 +463,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public Cursor searchChatMessagesByChars(String chars) {
         SQLiteDatabase db = getReadableDatabase();
         if (chars != null && !chars.isEmpty()) {
-            String sql = "SELECT * FROM " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " WHERE " + CHAT_MESSAGES.MSG + " LIKE '%" + chars + "%' ORDER BY " + CHAT_MESSAGES.MSG_TIME + " DESC LIMIT 60";
+            String sql = "SELECT * FROM " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " WHERE " + CHAT_MESSAGES.MSG + " LIKE '%" + chars + "%' ORDER BY " + CHAT_MESSAGES.MSG_TIME + " DESC LIMIT 50";
             return db.rawQuery(sql, null);
         } else return null;
     }
