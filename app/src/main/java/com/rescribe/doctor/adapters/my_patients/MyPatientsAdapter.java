@@ -48,18 +48,16 @@ import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
  * Created by jeetal on 31/1/18.
  */
 
-public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.ListViewHolder> implements Filterable {
+public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.ListViewHolder> {
 
     private Context mContext;
     private ArrayList<PatientList> mDataList;
-    private ArrayList<PatientList> mOriginalPatientList;
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
     private boolean isClickOnPatientDetailsRequired;
 
     public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
         this.mDataList = new ArrayList<>(dataList);
-        this.mOriginalPatientList = new ArrayList<>(dataList);
         this.mContext = mContext;
         this.mOnDownArrowClicked = mOnDownArrowClicked;
         this.isClickOnPatientDetailsRequired = isClickOnPatientDetailsRequired;
@@ -298,69 +296,15 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         isLongPressed = longPressed;
     }
 
-    @Override
-    public Filter getFilter() {
-
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                String charString = charSequence.toString();
-
-                ArrayList<PatientList> mListToShowAfterFilter;
-                ArrayList<PatientList> mTempPatientListToIterate = new ArrayList<>(mOriginalPatientList);
-
-                if (charString.isEmpty()) {
-                    mListToShowAfterFilter = new ArrayList<>();
-                    for (PatientList patientListObject : mTempPatientListToIterate) {
-                        //--------
-                        patientListObject.setSpannableString(null);
-                        mListToShowAfterFilter.add(patientListObject);
-
-                    }
-                } else {
-                    mListToShowAfterFilter = new ArrayList<>();
-                    for (PatientList patientListObject : mTempPatientListToIterate) {
-
-                        if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
-                                || patientListObject.getPatientPhone().contains(charString)
-                                || String.valueOf(patientListObject.getPatientId()).contains(charString)) {
-                            //--------
-                            patientListObject.setSpannableString(charString);
-                            mListToShowAfterFilter.add(patientListObject);
-                        }
-                    }
-                }
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = mListToShowAfterFilter;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                mDataList.clear();
-                mDataList.addAll((ArrayList<PatientList>) filterResults.values);
-
-                if (mDataList.isEmpty()) {
-                    mOnDownArrowClicked.onRecordFound(true);
-                } else mOnDownArrowClicked.onRecordFound(false);
-                notifyDataSetChanged();
-            }
-        };
-    }
-
     public interface OnDownArrowClicked {
 
         void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
-
-        void onRecordFound(boolean isListEmpty);
 
         void onCheckUncheckRemoveSelectAllSelection(boolean ischecked, PatientList patientObject);
 
         void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired);
 
         void onPhoneNoClick(String patientPhone);
-
     }
 
 
@@ -369,22 +313,18 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         notifyItemInserted(mDataList.size() - 1);
     }
 
-    public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId) {
+    public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
 
         for (PatientList mc : mcList) {
+            mc.setSpannableString(searchText);
             mc.setSelected(selectedDoctorId.contains(mc.getHospitalPatId()));
             add(mc);
         }
+
+        notifyDataSetChanged();
     }
 
     public void clear() {
-        final int size = mDataList.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                mDataList.remove(0);
-            }
-
-            notifyItemRangeRemoved(0, size);
-        }
+        mDataList.clear();
     }
 }

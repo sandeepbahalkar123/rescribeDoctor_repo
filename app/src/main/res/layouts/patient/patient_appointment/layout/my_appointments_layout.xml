@@ -49,7 +49,7 @@
                     android:layout_marginTop="@dimen/dp10"
                     android:visibility="visible"
                     app:hintText="@string/search_hint"
-                    app:textSize="@dimen/sp18" />
+                    app:textSize="@dimen/sp17" />
 
 
                 <ImageView

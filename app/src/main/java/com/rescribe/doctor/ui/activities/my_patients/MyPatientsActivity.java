@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,16 +15,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
-import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
-import com.rescribe.doctor.interfaces.CustomResponse;
-import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
-import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.HashSet;
@@ -40,7 +34,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by jeetal on 31/1/18.
  */
 @RuntimePermissions
-public class MyPatientsActivity extends AppCompatActivity implements HelperResponse, DrawerForMyPatients.OnDrawerInteractionListener {
+public class MyPatientsActivity extends AppCompatActivity implements DrawerForMyPatients.OnDrawerInteractionListener {
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -58,14 +52,8 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     @BindView(R.id.emptyListView)
     RelativeLayout emptyListView;
     private Context mContext;
-    private AppointmentHelper mAppointmentHelper;
     private MyPatientsFragment mMyPatientsFragment;
     private boolean isLongPressed;
-    private DrawerForMyPatients mDrawerForMyPatients;
-    Intent mIntent;
-    private String mActivityCalledFrom = "";
-    private boolean isFromDrawer;
-    private RequestSearchPatients mRequestSearchPatientsFromDrawer = new RequestSearchPatients();
     public HashSet<Integer> selectedDoctorId = new HashSet<>();
     private String phoneNo;
 
@@ -78,122 +66,38 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     }
 
     private void initialize() {
-        mIntent = getIntent();
-        if (mIntent.getExtras() != null) {
-            mActivityCalledFrom = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
-        }
+
         mContext = MyPatientsActivity.this;
-        titleTextView.setText(getString(R.string.today_new_patients));
-        mAppointmentHelper = new AppointmentHelper(this, this);
-        RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-        // mRequestSearchPatients.setDocId(2462);
-        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
-        mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
-        setUpNavigationDrawer();
-    }
+        titleTextView.setText(getString(R.string.my_patients));
 
-    private void setUpNavigationDrawer() {
-        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+        // Load Drawer Fragment
+        DrawerForMyPatients mDrawerForMyPatients = DrawerForMyPatients.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.nav_view, mDrawerForMyPatients).commit();
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
 
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                //Called when a drawer's position changes.
-            }
+        // Load Appointment Fragment
 
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                //Called when a drawer has settled in a completely open state.
-                //The drawer is interactive at this point.
-                // If you have 2 drawers (left and right) you can distinguish
-                // them by using id of the drawerView. int id = drawerView.getId();
-                // id will be your layout's id: for example R.id.left_drawer
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                // Called when a drawer has settled in a completely closed state.
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-                // Called when the drawer motion state changes. The new state will be one of STATE_IDLE, STATE_DRAGGING or STATE_SETTLING.
-            }
-        });
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                // float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
-                // FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) drawerLayout.getLayoutParams();
-                // params.width = (int) (width) / 2;
-
-                mDrawerForMyPatients = DrawerForMyPatients.newInstance();
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_view, mDrawerForMyPatients).commit();
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                // drawerLayout.setLayoutParams(params);
-            }
-        }, 100);
-
-    }
-
-    public DrawerLayout getActivityDrawerLayout() {
-        return drawerLayout;
-    }
-
-    @Override
-    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_PATIENT_DATA)) {
-
-            if (customResponse != null) {
-                MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
-                Bundle bundle = new Bundle();
-                bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM, mActivityCalledFrom);
-                bundle.putParcelable(RescribeConstants.MYPATIENTS_DATA, myAppointmentsBaseModel);
-                bundle.putBoolean(RescribeConstants.IS_FROM_DRAWER, isFromDrawer);
-                bundle.putParcelable(RescribeConstants.DRAWER_REQUEST, mRequestSearchPatientsFromDrawer);
-                mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
-            }
-
+        Intent mIntent = getIntent();
+        Bundle bundle = new Bundle();
+        if (mIntent.getExtras() != null) {
+            String mActivityCalledFrom = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
+            bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM, mActivityCalledFrom);
         }
-    }
-
-    @Override
-    public void onParseError(String mOldDataTag, String errorMessage) {
-        CommonMethods.showToast(mContext, errorMessage);
-        emptyListView.setVisibility(View.VISIBLE);
+        mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
 
     }
 
-    @Override
-    public void onServerError(String mOldDataTag, String serverErrorMessage) {
-        CommonMethods.showToast(mContext, serverErrorMessage);
-        emptyListView.setVisibility(View.VISIBLE);
+    public void openDrawer() {
+        if (drawerLayout != null)
+            drawerLayout.openDrawer(GravityCompat.END);
     }
 
-    @Override
-    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-        CommonMethods.showToast(mContext, serverErrorMessage);
-
-    }
-
-    @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
+    @OnClick({R.id.backImageView})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
                 onBackPressed();
-                break;
-            case R.id.userInfoTextView:
-                break;
-            case R.id.dateTextview:
-                break;
-            case R.id.viewContainer:
-                break;
-            case R.id.nav_view:
-                break;
-            case R.id.drawer_layout:
                 break;
         }
     }
@@ -215,19 +119,12 @@ public class MyPatientsActivity extends AppCompatActivity implements HelperRespo
     }
 
     @Override
-    public void onApply(RequestSearchPatients mRequestSearchPatients, boolean drawerRequired) {
-        drawerLayout.closeDrawers();
+    public void onApply(RequestSearchPatients mRequestSearchPatients, boolean isReset) {
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
-        mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
-        isFromDrawer = true;
-        mRequestSearchPatientsFromDrawer = mRequestSearchPatients;
+        mMyPatientsFragment.apply(mRequestSearchPatients, isReset);
+        if (!isReset)
+            drawerLayout.closeDrawers();
     }
-
-    @Override
-    public void onReset(boolean drawerRequired) {
-
-    }
-
 
     public void callPatient(String patientPhone) {
         phoneNo = patientPhone;

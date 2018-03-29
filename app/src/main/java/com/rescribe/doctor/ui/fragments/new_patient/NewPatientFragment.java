@@ -32,7 +32,6 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuForCompleteAppointmentAdapter;
 import com.rescribe.doctor.adapters.new_patient.NewPatientAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -42,8 +41,6 @@ import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateList;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
-import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.AddToList;
-import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.PatientAddToWaitingList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
@@ -120,7 +117,7 @@ public class NewPatientFragment extends Fragment implements NewPatientAdapter.On
             bottomMenu.setMenuName(mMenuName);
             mBottomMenuList.add(bottomMenu);
         }
-        NewPatientBaseModel mNewPatientBaseModel = args.getParcelable(RescribeConstants.MYPATIENTS_DATA);
+        NewPatientBaseModel mNewPatientBaseModel = args.getParcelable(RescribeConstants.MY_PATIENTS_DATA);
         mNewPatientsDetail = mNewPatientBaseModel.getNewPatientDataModel().getNewPatientsDetails();
 
         recyclerView.setClipToPadding(false);

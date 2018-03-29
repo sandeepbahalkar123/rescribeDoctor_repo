@@ -113,7 +113,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
             bottomMenu.setMenuName(mMenuName);
             mBottomMenuList.add(bottomMenu);
         }
-        myPatientBaseModel = args.getParcelable(RescribeConstants.MYPATIENTS_DATA);
+        myPatientBaseModel = args.getParcelable(RescribeConstants.MY_PATIENTS_DATA);
 
         if (myPatientBaseModel.getPatientDataModel().getPatientList().size() > 0) {
             recyclerView.setVisibility(View.VISIBLE);
@@ -156,7 +156,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
             public void afterTextChanged(Editable s) {
                 searchText = s.toString();
                 if (searchText.length() >= 3) {
-                    serachPatientsUsingSearchBar(getContext(), searchText);
+                    searchPatientsUsingSearchBar(getContext(), searchText);
                     isFiltered = true;
                 } else if (searchText.length() < 3 && isFiltered) {
                     isFiltered = false;
@@ -294,7 +294,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
 
     }
 
-    public void serachPatientsUsingSearchBar(Context mContext, String searchText) {
+    public void searchPatientsUsingSearchBar(Context mContext, String searchText) {
         mAppointmentHelper = new AppointmentHelper(mContext, this);
         RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));

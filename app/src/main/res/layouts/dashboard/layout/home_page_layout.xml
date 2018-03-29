@@ -17,12 +17,12 @@
             android:layout_height="match_parent"
             app:srcCompat="@drawable/dashboard_image"
             android:scaleType="centerCrop"/>
+
         <LinearLayout
             android:id="@+id/viewPagerDoctorItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="@dimen/dp2"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="@dimen/dp8"
             android:layout_marginEnd="@dimen/dp8"

@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -78,7 +77,6 @@ import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
  */
 
 public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.OnDownArrowClicked, BottomMenuAppointmentAdapter.OnMenuBottomItemClickListener, HelperResponse {
-    private static Bundle args;
     private AppointmentHelper mAppointmentHelper;
     @BindView(R.id.whiteUnderLine)
     ImageView whiteUnderLine;
@@ -105,22 +103,26 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     public static final int PAGE_START = 0;
     private String searchText = "";
     private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
-    private ArrayList<PatientList> mPatientListsOriginal;
     private ArrayList<PatientAddToWaitingList> patientsListAddToWaitingLists;
     private ArrayList<PatientInfoList> patientInfoLists;
 
     private String mClinicName = "";
-    private boolean isFiltered = false;
-    private boolean isFromDrawer;
-    private RequestSearchPatients mRequestSearchPatientsForDrawer = new RequestSearchPatients();
-    private ArrayList<PatientList> patientLists;
-    private ArrayList<AddToList> addToWaitingArrayList;
     //-------
     private String mClinicCity;
     private String mClinicArea;
     private int mCityId;
     private int mClinicId;
     private int mLocationId;
+    private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
+    private String from = "";
+    private boolean isFiltered = false;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null)
+            unbinder.unbind();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -134,11 +136,11 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     }
 
     private void init() {
+
+        if (getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM) != null)
+            from = getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
+
         ArrayList<BottomMenu> mBottomMenuList = new ArrayList<>();
-        isFromDrawer = args.getBoolean(RescribeConstants.IS_FROM_DRAWER);
-        if (isFromDrawer) {
-            mRequestSearchPatientsForDrawer = args.getParcelable(RescribeConstants.DRAWER_REQUEST);
-        }
         mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         for (String mMenuName : mMenuNames) {
@@ -146,8 +148,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             bottomMenu.setMenuName(mMenuName);
             mBottomMenuList.add(bottomMenu);
         }
-        MyPatientBaseModel patientBaseModel = args.getParcelable(RescribeConstants.MYPATIENTS_DATA);
-        patientLists = patientBaseModel.getPatientDataModel().getPatientList();
 
         recyclerView.setClipToPadding(false);
         // off recyclerView Animation
@@ -157,7 +157,21 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         if (animator instanceof SimpleItemAnimator)
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
-        initAdapter();
+        ArrayList<PatientList> patientLists = new ArrayList<>();
+        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearlayoutManager);
+        mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, from.equals(RescribeConstants.HOME_PAGE));
+        recyclerView.setAdapter(mMyPatientsAdapter);
+
+        nextPage(0);
+
+        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                nextPage(page);
+            }
+        });
+
 
         searchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
@@ -172,16 +186,18 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             @Override
             public void afterTextChanged(Editable s) {
                 searchText = s.toString();
+
                 if (searchText.length() >= 3) {
-                    searchPatientsUsingSearchBar(getContext(), searchText);
+                    searchPatients();
                     isFiltered = true;
                 } else if (isFiltered) {
                     isFiltered = false;
-                    initAdapter();
+                    searchText = "";
+                    searchPatients();
                 }
             }
         });
-        if (args.getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM).equals(RescribeConstants.HOME_PAGE)) {
+        if (from.equals(RescribeConstants.HOME_PAGE)) {
             mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList, true, RescribeConstants.NOT_FROM_COMPLETE_OPD);
             recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
             recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);
@@ -193,37 +209,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
         //--- Add new patient
         leftFab.setVisibility(View.VISIBLE);
-    }
-
-    private void initAdapter() {
-        if (patientLists.size() > 0) {
-            recyclerView.setVisibility(View.VISIBLE);
-            emptyListView.setVisibility(View.GONE);
-
-            for (PatientList patientList : patientLists) {
-                patientList.setSelected(((MyPatientsActivity) getActivity()).selectedDoctorId.contains(patientList.getHospitalPatId()));
-            }
-
-            boolean isLongPress = mMyPatientsAdapter != null && mMyPatientsAdapter.isLongPressed;
-
-            LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(linearlayoutManager);
-            mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, args.getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM).equals(RescribeConstants.HOME_PAGE));
-            recyclerView.setAdapter(mMyPatientsAdapter);
-
-            recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
-                @Override
-                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                    loadNextPage(page);
-                }
-            });
-
-            mMyPatientsAdapter.isLongPressed = isLongPress;
-
-        } else {
-            recyclerView.setVisibility(View.GONE);
-            emptyListView.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -241,11 +226,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             mBottomMenuAppointmentAdapter.notifyDataSetChanged();
             recyclerViewBottom.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onRecordFound(boolean isListEmpty) {
-        emptyListView.setVisibility(isListEmpty ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -313,14 +293,10 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     }
 
 
-    public static MyPatientsFragment newInstance(Bundle b) {
-        MyPatientsFragment fragment = new MyPatientsFragment();
-        args = b;
-        if (args == null) {
-            args = new Bundle();
-        }
-        fragment.setArguments(args);
-        return fragment;
+    public static MyPatientsFragment newInstance(Bundle bundle) {
+        MyPatientsFragment myPatientsFragment = new MyPatientsFragment();
+        myPatientsFragment.setArguments(bundle);
+        return myPatientsFragment;
     }
 
     @Override
@@ -575,7 +551,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 mClinicArea = mDoctorLocationModel.get(i).getArea();
             }
         }
-        addToWaitingArrayList = new ArrayList<>();
+        ArrayList<AddToList> addToWaitingArrayList = new ArrayList<>();
         AddToList addToList = new AddToList();
         addToList.setPatientAddToWaitingList(patientsListAddToWaitingLists);
         addToList.setLocationId(mLocationId);
@@ -607,66 +583,25 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         switch (view.getId()) {
             case R.id.rightFab:
                 MyPatientsActivity activity = (MyPatientsActivity) getActivity();
-                activity.getActivityDrawerLayout().openDrawer(GravityCompat.END);
+                activity.openDrawer();
                 break;
             case R.id.leftFab:
                 showDialogToSelectLocation(mDoctorLocationModel, getString(R.string.new_patients));
-
                 break;
-        }
-    }
-
-    public void loadNextPage(int currentPage) {
-        if (!isFromDrawer) {
-            if (searchText.length() == 0) {
-                RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-                mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-                mRequestSearchPatients.setPageNo(currentPage);
-                mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
-            } else {
-                RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-                mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-                mRequestSearchPatients.setPageNo(currentPage);
-                mRequestSearchPatients.setSearchText(searchText);
-                mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
-            }
-        } else {
-            if (searchText.length() == 0) {
-                mRequestSearchPatientsForDrawer.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-                mRequestSearchPatientsForDrawer.setPageNo(currentPage);
-                mAppointmentHelper.doGetMyPatients(mRequestSearchPatientsForDrawer);
-            } else {
-                mRequestSearchPatientsForDrawer.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-                mRequestSearchPatientsForDrawer.setPageNo(currentPage);
-                mRequestSearchPatientsForDrawer.setSearchText(searchText);
-                mAppointmentHelper.doGetMyPatients(mRequestSearchPatientsForDrawer);
-            }
-
         }
     }
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_PATIENT_DATA)) {
-            if (customResponse != null) {
-                //Paginated items added here
-                MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
-                ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
-                mMyPatientsAdapter.addAll(mLoadedPatientList, ((MyPatientsActivity) getActivity()).selectedDoctorId);
-
-            }
-        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT)) {
+        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT)) {
 
             MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
             ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
-            if (mLoadedPatientList.size() > 0) {
+            mMyPatientsAdapter.addAll(mLoadedPatientList, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchText);
+
+            if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
                 emptyListView.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
-                mMyPatientsAdapter.clear();
-                for (PatientList patientList : mLoadedPatientList) {
-                    patientList.setSpannableString(searchText);
-                }
-                mMyPatientsAdapter.addAll(mLoadedPatientList, ((MyPatientsActivity) getActivity()).selectedDoctorId);
             } else {
                 recyclerView.setVisibility(View.GONE);
                 emptyListView.setVisibility(View.VISIBLE);
@@ -738,12 +673,29 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     }
 
-    public void searchPatientsUsingSearchBar(Context mContext, String searchText) {
-        mAppointmentHelper = new AppointmentHelper(mContext, this);
-        RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+    public void nextPage(int pageNo) {
+        mAppointmentHelper = new AppointmentHelper(getContext(), this);
+        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
+        mRequestSearchPatients.setSearchText(searchText);
+        mRequestSearchPatients.setPageNo(pageNo);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+    }
+
+    public void searchPatients() {
+        mMyPatientsAdapter.clear();
+        mRequestSearchPatients.setPageNo(0);
+        mAppointmentHelper = new AppointmentHelper(getContext(), this);
+        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
         mRequestSearchPatients.setSearchText(searchText);
         mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
     }
 
+    public void apply(RequestSearchPatients mRequestSearchPatients, boolean isReset) {
+        this.mRequestSearchPatients.setFilterParams(mRequestSearchPatients.getFilterParams());
+        this.mRequestSearchPatients.setSortField(mRequestSearchPatients.getSortField());
+        this.mRequestSearchPatients.setSortOrder(mRequestSearchPatients.getSortOrder());
+
+        if (!isReset)
+            searchPatients();
+    }
 }

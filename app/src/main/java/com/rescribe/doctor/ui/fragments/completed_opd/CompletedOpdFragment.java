@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.completed_opd.CompletedOpdAdapter;
-import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuForCompleteAppointmentAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
@@ -46,7 +45,6 @@ import com.rescribe.doctor.model.patient.template_sms.TemplateList;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.AddToList;
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.PatientAddToWaitingList;
-import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.completed_opd.CompletedOpdActivity;
@@ -132,7 +130,7 @@ public class CompletedOpdFragment extends Fragment implements CompletedOpdAdapte
             bottomMenu.setMenuName(mMenuName);
             mBottomMenuList.add(bottomMenu);
         }
-        CompletedOpdBaseModel mmCompletedOpdBaseModel = args.getParcelable(RescribeConstants.MYPATIENTS_DATA);
+        CompletedOpdBaseModel mmCompletedOpdBaseModel = args.getParcelable(RescribeConstants.MY_PATIENTS_DATA);
         mCompletedOpdArrayList = mmCompletedOpdBaseModel.getCompletedOpdModel().getCompletedOpd();
 
         recyclerView.setClipToPadding(false);

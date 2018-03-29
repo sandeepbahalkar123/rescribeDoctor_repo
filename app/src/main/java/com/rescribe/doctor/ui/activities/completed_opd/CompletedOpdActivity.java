@@ -86,7 +86,7 @@ public class CompletedOpdActivity extends AppCompatActivity implements HelperRes
             if (customResponse != null) {
                 CompletedOpdBaseModel mCompletedOpdBaseModel = (CompletedOpdBaseModel) customResponse;
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(RescribeConstants.MYPATIENTS_DATA, mCompletedOpdBaseModel);
+                bundle.putParcelable(RescribeConstants.MY_PATIENTS_DATA, mCompletedOpdBaseModel);
                 mCompletedOpdfragment = CompletedOpdFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mCompletedOpdfragment).commit();
             }

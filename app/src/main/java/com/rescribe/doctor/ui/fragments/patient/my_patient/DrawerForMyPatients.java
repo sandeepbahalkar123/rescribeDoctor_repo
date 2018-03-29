@@ -137,10 +137,16 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
     private FilterSortByHighLowList mFilterSortByHighLowList;
     private String[] sortOptions = new String[]{"Outstanding Amt" + lowToHigh,
             "Outstanding Amt" + highToLow};
-    private int mSortByAmountAdapterPosition;
     private String sortOrder = "";
     private ArrayList<String> cityList = new ArrayList<>();
     private DrawerPatientsCityNameAdapter mDrawerPatientsCityNameAdapter;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null)
+            unbinder.unbind();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -302,7 +308,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                     sortOrder = "";
                 }
                 mRequestSearchPatients.setSortOrder(sortOrder);
-                mListener.onApply(mRequestSearchPatients, true);
+                mListener.onApply(mRequestSearchPatients, false);
 
                 break;
             case R.id.resetButton:
@@ -321,8 +327,10 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                 if (mDrawerPatientsCityNameAdapter != null)
                     mDrawerPatientsCityNameAdapter.reset();
 
-                // setDataInDrawerFields();
-                //mListener.onReset(true);
+                RequestSearchPatients mRequestSearchP = new RequestSearchPatients();
+                mRequestSearchP.setSortField("Outstanding");
+                mListener.onApply(mRequestSearchP, true);
+
                 break;
             case R.id.sortingHeaderView:
                 break;
@@ -388,7 +396,6 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
     @Override
     public void onClickOfSortMenu(FilterSortByHighLowList filterSortByHighLowObject, int groupPosition) {
         mFilterSortByHighLowList = filterSortByHighLowObject;
-        mSortByAmountAdapterPosition = groupPosition;
     }
 
     @Override
@@ -401,8 +408,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
     }
 
     public interface OnDrawerInteractionListener {
-        void onApply(RequestSearchPatients mRequestSearchPatients, boolean drawerRequired);
-        void onReset(boolean drawerRequired);
+        void onApply(RequestSearchPatients mRequestSearchPatients, boolean isReset);
     }
 
     @Override

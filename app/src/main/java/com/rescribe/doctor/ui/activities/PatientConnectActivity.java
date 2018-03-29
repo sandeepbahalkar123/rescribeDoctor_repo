@@ -27,6 +27,7 @@ import android.widget.Button;
 
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.rescribe.doctor.R;
@@ -113,10 +114,9 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
     CustomTextView title;
     @BindView(R.id.searchEditText)
     EditTextWithDeleteButton mSearchEditText;
-    @BindView(R.id.whiteUnderLine)
-    TextView whiteUnderLine;
+
     @BindView(R.id.toolbar)
-    android.support.v7.widget.Toolbar toolbar;
+    RelativeLayout toolbar;
 
     @BindView(R.id.container)
     FrameLayout container;
@@ -134,16 +134,7 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_connect);
         ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         title.setText("" + getString(R.string.patient_connect));
         customProgressDialog = new CustomProgressDialog(this);
         customProgressDialog.setCancelable(true);
@@ -273,11 +264,9 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
         }
     }
 
-    @OnClick({R.id.radioButton, R.id.backButton, R.id.searchImageView})
+    @OnClick({R.id.backButton, R.id.searchImageView})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.radioButton:
-                break;
             case R.id.backButton:
                 if (mSearchEditText.getVisibility() == View.VISIBLE) {
                     title.setVisibility(View.VISIBLE);

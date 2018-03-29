@@ -17,7 +17,6 @@ import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -51,8 +50,6 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Hel
     DrawerLayout drawerLayout;
     private Context mContext;
     private AppointmentHelper mAppointmentHelper;
-    private ChatPatientListFragment mMyPatientsFragment;
-    private boolean isLongPressed;
     private DrawerForMyPatients mDrawerForMyPatients;
     Intent mIntent;
     private String mActivityCalledFrom = "";
@@ -132,8 +129,8 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Hel
                 MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
                 Bundle bundle = new Bundle();
                 bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM, mActivityCalledFrom);
-                bundle.putParcelable(RescribeConstants.MYPATIENTS_DATA, myAppointmentsBaseModel);
-                mMyPatientsFragment = ChatPatientListFragment.newInstance(bundle);
+                bundle.putParcelable(RescribeConstants.MY_PATIENTS_DATA, myAppointmentsBaseModel);
+                ChatPatientListFragment mMyPatientsFragment = ChatPatientListFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
             }
 
@@ -185,17 +182,10 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Hel
     }
 
     @Override
-    public void onApply(RequestSearchPatients mRequestSearchPatients, boolean drawerRequired) {
+    public void onApply(RequestSearchPatients mRequestSearchPatients, boolean isReset) {
         drawerLayout.closeDrawers();
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
-
-
-    }
-
-    @Override
-    public void onReset(boolean drawerRequired) {
-
     }
 
     @Override

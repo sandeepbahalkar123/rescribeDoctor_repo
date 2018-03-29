@@ -75,8 +75,6 @@ import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
 @RuntimePermissions
 public class HomePageActivity extends BottomMenuActivity implements HelperResponse {
 
-    private static final long MANAGE_ACCOUNT = 121;
-    private static final long ADD_ACCOUNT = 122;
     private static final String TAG = "Home";
 
     @BindView(R.id.todayWaitingListOrAppointmentCount)

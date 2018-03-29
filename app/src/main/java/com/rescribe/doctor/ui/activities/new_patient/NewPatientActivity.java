@@ -89,7 +89,7 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
             if (customResponse != null) {
                 NewPatientBaseModel mNewPatientBaseModel = (NewPatientBaseModel) customResponse;
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(RescribeConstants.MYPATIENTS_DATA, mNewPatientBaseModel);
+                bundle.putParcelable(RescribeConstants.MY_PATIENTS_DATA, mNewPatientBaseModel);
                 mNewPatientFragment = NewPatientFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mNewPatientFragment).commit();
             }

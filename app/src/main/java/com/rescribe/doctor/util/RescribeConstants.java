@@ -139,7 +139,6 @@ public class RescribeConstants {
     public static final String PATIENT_INFO = "patient_info";
     public static final int PLACE_PICKER_REQUEST = 99;
     public static final String APPOINTMENT_DATA = "appointment_data";
-    public static final String MYPATIENTS_DATA = "mypatients_data";
     public static final String DOCTOR_IMAGE_URL = "doctor_iamge_url";
     public static final String PATIENT_VISIT_DATE = "patient_visit_date";
     public static final String PATIENT_ID = "patient_id";
@@ -171,8 +170,6 @@ public class RescribeConstants {
     public static final String WAITING_LIST = "waiting_list";
     public static final String HOME_PAGE = "home_page";
     public static final String OPD_TIME = "opd_time";
-    public static final String IS_FROM_DRAWER = "is_from_drawer";
-    public static final String DRAWER_REQUEST = "drawer_request";
     public static final String IS_CALL_FROM_MY_PATIENTS = "call_from_my_patients_chat";
     public static final String TEMPLATE_LIST = "template_list";
     public static final String IS_BOOK_AND_CONFIRM_REQUIRED = "is_book_confirm_required";
@@ -184,6 +181,7 @@ public class RescribeConstants {
 
     public static final String STARTFOREGROUND_ACTION = "com.rescribe.download";
     public static final int FOREGROUND_SERVICE = 21;
+    public static final String MY_PATIENTS_DATA = "my_patient_data";
 
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
