@@ -1,5 +1,6 @@
 package com.rescribe.doctor.adapters.waiting_list;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -148,6 +149,7 @@ public class ViewAllWaitingListAdapter extends RecyclerView.Adapter {
             this.view = view;
         }
 
+        @SuppressLint("CheckResult")
         public void bind(final ViewAll viewAll) {
             deleteLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

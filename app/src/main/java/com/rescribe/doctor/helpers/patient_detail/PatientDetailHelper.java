@@ -116,27 +116,15 @@ public class PatientDetailHelper implements ConnectionListener {
         }*/
     }
 
-    public void doGetPatientHistory(String patientID , String year) {
-      /*  try {
-            InputStream is = mContext.getAssets().open("patient_history.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
+    public void doGetPatientHistory(String patientID, String year, boolean getPatientInfo) {
 
-            PatientHistoryBaseModel data = new Gson().fromJson(json, PatientHistoryBaseModel.class);
-            onResponse(ConnectionListener.RESPONSE_OK,data,RescribeConstants.TASK_PATIENT_HISTORY);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_PATIENT_HISTORY, Request.Method.POST, true);
         RequestForPatientHistory mRequestForPatientHistory = new RequestForPatientHistory();
         mRequestForPatientHistory.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         mRequestForPatientHistory.setPatientId(Integer.valueOf(patientID));
         mRequestForPatientHistory.setYear(year);
+        mRequestForPatientHistory.setGetPatientInfo(getPatientInfo);
         mConnectionFactory.setPostParams(mRequestForPatientHistory);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_PATIENT_HISTORY);

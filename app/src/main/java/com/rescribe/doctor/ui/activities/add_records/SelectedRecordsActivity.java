@@ -450,11 +450,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         unregisterReceiver(receiver);
     }
 
-    private void allDone() {
-        setResult(RESULT_OK);
-        finish();
-    }
-
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

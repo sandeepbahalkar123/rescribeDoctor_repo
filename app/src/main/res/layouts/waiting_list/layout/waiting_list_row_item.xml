@@ -27,7 +27,6 @@
                 android:background="@drawable/result_white_box_copy"
                 android:orientation="vertical">
 
-
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -2,12 +2,12 @@
 package com.rescribe.doctor.model.patient.patient_history;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.model.login.Year;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class PatientHistoryDataModel {
     @SerializedName("yearsMonthsData")
@@ -16,6 +16,10 @@ public class PatientHistoryDataModel {
     @SerializedName("opdList")
     @Expose
     private PatientHistoryInfoMonthContainer patientHistoryInfoMonthContainer;
+
+    @SerializedName("patientDetails")
+    @Expose
+    private PatientDetails patientDetails;
 
     public ArrayList<YearsMonthsData> getYearsMonthsData() {
         return yearsMonthsData;
@@ -59,5 +63,13 @@ public class PatientHistoryDataModel {
             strings.add(String.valueOf(yearObject.getYear()));
         }
         return new ArrayList(strings);
+    }
+
+    public PatientDetails getPatientDetails() {
+        return patientDetails;
+    }
+
+    public void setPatientDetails(PatientDetails patientDetails) {
+        this.patientDetails = patientDetails;
     }
 }

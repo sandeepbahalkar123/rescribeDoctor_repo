@@ -150,7 +150,9 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SPECIALITY));
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.MSG_STATUS));
-                patientData.setImageUrl(cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER_IMG_URL)));
+
+                String imageUrl = cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER)).equals(PATIENT) ? cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.SENDER_IMG_URL)) : cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.RECEIVER_IMG_URL));
+                patientData.setImageUrl(imageUrl);
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILE_URL));
 //                    cursor.getString(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.FILE_TYPE));
 
@@ -254,7 +256,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                 PatientData patientData = new PatientData();
                 patientData.setId(message.getPatId()); // Change
                 patientData.setPatientName(message.getSenderName());
-//                patientData.setSenderImgUrl(message.getSenderImgUrl());
+                patientData.setImageUrl(message.getSenderImgUrl());
                 patientData.setUnreadMessages(1);
                 patientData.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
                 mReceivedPatientDataList.add(0, patientData);
@@ -350,8 +352,8 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 
 //                    mqttMessage.setDocId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.USER1ID)));
                     mqttMessage.setSpecialization(null);
-                    mqttMessage.setFileUrl(null);
-                    mqttMessage.setFileType(null);
+                    mqttMessage.setFileUrl("");
+                    mqttMessage.setFileType("");
 //                    mqttMessage.setUploadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.UPLOAD_STATUS)));
 //                    mqttMessage.setDownloadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.DOWNLOAD_STATUS)));
 //                    mqttMessage.setReadStatus(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.READ_STATUS)));

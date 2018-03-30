@@ -66,6 +66,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.rescribe.doctor.singleton.RescribeApplication.getDoctorLocationModels;
+import static com.rescribe.doctor.ui.activities.my_patients.AddNewPatientWebViewActivity.ADD_PATIENT_REQUEST;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.ui.fragments.patient.my_patient.SendSmsPatientActivity.RESULT_SEND_SMS;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
@@ -141,7 +143,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             from = getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
 
         ArrayList<BottomMenu> mBottomMenuList = new ArrayList<>();
-        mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
+        mDoctorLocationModel = getDoctorLocationModels();
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         for (String mMenuName : mMenuNames) {
             BottomMenu bottomMenu = new BottomMenu();
@@ -400,6 +402,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
             mLocationId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()));
+
         RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
         for (int index = 0; index < mDoctorLocationModel.size(); index++) {
             final DoctorLocationModel clinicList = mDoctorLocationModel.get(index);
@@ -430,10 +433,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
                 if (mLocationId != 0) {
                     RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, String.valueOf(mLocationId), getActivity());
-
                     mAppointmentHelper.doGetDoctorTemplate();
-
-
                     dialog.cancel();
                 } else {
                     Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
@@ -461,13 +461,24 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private void showDialogToSelectLocation(ArrayList<DoctorLocationModel> mPatientListsOriginal, final String calledFrom) {
 
         final Dialog dialog = new Dialog(getActivity());
+        final Bundle b = new Bundle();
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
+        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals("")) {
             mLocationId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()));
+
+            for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
+                if (doctorLocationModel.getLocationId().equals(mLocationId)) {
+                    b.putString(RescribeConstants.CLINIC_ID, String.valueOf(doctorLocationModel.getClinicId()));
+                    b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
+                    b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
+                    break;
+                }
+            }
+        }
         RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
         for (int index = 0; index < mPatientListsOriginal.size(); index++) {
             final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
@@ -504,14 +515,18 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 if (mLocationId != 0) {
                     if (getString(R.string.new_patients).equalsIgnoreCase(calledFrom)) {
 
-                        Bundle b = new Bundle();
-                        b.putString(RescribeConstants.LOCATION_ID, "" + mLocationId);
-                        b.putString(RescribeConstants.CLINIC_ID, "" + mClinicId);
-                        b.putString(RescribeConstants.CITY_ID, "" + mCityId);
+                        for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
+                            if (doctorLocationModel.getLocationId().equals(mLocationId)) {
+                                b.putString(RescribeConstants.CLINIC_ID, String.valueOf(doctorLocationModel.getClinicId()));
+                                b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
+                                b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
+                                break;
+                            }
+                        }
 
                         Intent i = new Intent(getActivity(), AddNewPatientWebViewActivity.class);
                         i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
-                        getActivity().startActivityForResult(i, 121);
+                        getActivity().startActivityForResult(i, ADD_PATIENT_REQUEST);
 
                         CommonMethods.Log("DOC_ID", "" + Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
                     } else {

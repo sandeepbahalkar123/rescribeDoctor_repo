@@ -31,6 +31,8 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.ui.activities.my_patients.AddNewPatientWebViewActivity.ADD_PATIENT_REQUEST;
+
 /**
  * Created by jeetal on 31/1/18.
  */
@@ -105,8 +107,7 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK)
+        if (requestCode == ADD_PATIENT_REQUEST)
             mMyPatientsFragment.apply(new RequestSearchPatients(), false);
     }
 

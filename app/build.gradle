@@ -20,10 +20,10 @@ android {
         targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
         versionName project.VERSION_NAME
         versionCode Integer.parseInt(project.VERSION_CODE)
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -53,9 +53,9 @@ android {
                             'src/main/res/layouts/bottom_menu',
                             'src/main/res/layouts/add_records',
                             'src/main/res/layouts/profile',
-                            'src/main/res/layouts/waiting_list'
-
-                            , 'src/main/res/layout-sw720dp', 'src/main/res/layout-sw600dp']
+                            'src/main/res/layouts/waiting_list',
+                            'src/main/res/layout-sw720dp',
+                            'src/main/res/layout-sw600dp']
         }
     }
 

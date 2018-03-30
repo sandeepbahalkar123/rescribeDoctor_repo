@@ -22,7 +22,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -39,7 +38,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.login.Year;
-import com.rescribe.doctor.model.patient.patient_history.DatesData;
+import com.rescribe.doctor.model.patient.patient_history.PatientDetails;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryDataModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
@@ -50,6 +49,8 @@ import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHist
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+
+import org.joda.time.DateTime;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,7 +65,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.app.Activity.RESULT_OK;
+import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 
 public class PatientHistoryListFragmentContainer extends Fragment implements HelperResponse, DatePickerDialog.OnDateSetListener {
@@ -123,9 +125,16 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     public void initialize() {
         args = getArguments();
-        titleTextView.setText(args.getString(RescribeConstants.PATIENT_NAME));
-        userInfoTextView.setVisibility(View.VISIBLE);
-        userInfoTextView.setText(args.getString(RescribeConstants.PATIENT_INFO));
+        mPatientId = args.getString(RescribeConstants.PATIENT_ID);
+
+        if (args.getString(RescribeConstants.PATIENT_NAME) != null) {
+            titleTextView.setText(args.getString(RescribeConstants.PATIENT_NAME));
+            userInfoTextView.setVisibility(View.VISIBLE);
+            userInfoTextView.setText(args.getString(RescribeConstants.PATIENT_INFO));
+            mHospitalId = args.getString(RescribeConstants.CLINIC_ID);
+            mHospitalPatId = args.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
+        }
+
         YearSpinnerInteractionListener listener = new YearSpinnerInteractionListener();
         mYearSpinnerView.setOnTouchListener(listener);
         mYearSpinnerView.setOnItemSelectedListener(listener);
@@ -137,14 +146,12 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mCurrentSelectedTimePeriodTab = new Year();
         mCurrentSelectedTimePeriodTab.setMonthName(new SimpleDateFormat("MMM", Locale.US).format(new Date()));
         mCurrentSelectedTimePeriodTab.setYear(new SimpleDateFormat("yyyy", Locale.US).format(new Date()));
-        mPatientId = args.getString(RescribeConstants.PATIENT_ID);
-        mHospitalPatId = args.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
 
         mGeneratedRequestForYearList = new HashSet<>();
 
         Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedMyRecordInfoAndReports = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
         if (yearWiseSortedMyRecordInfoAndReports.get(mCurrentSelectedTimePeriodTab.getYear()) == null) {
-            mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear());
+            mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), args.getString(RescribeConstants.PATIENT_NAME) == null);
             mGeneratedRequestForYearList.add(mCurrentSelectedTimePeriodTab.getYear());
         }
 
@@ -154,7 +161,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
-                mParentActivity.finish();
+                mParentActivity.onBackPressed();
                 break;
             case R.id.addRecordButton:
                 Calendar now = Calendar.getInstance();
@@ -225,7 +232,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                     Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedPatientHistoryInfo = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
                     if (yearWiseSortedPatientHistoryInfo.get(year) == null) {
                         mGeneratedRequestForYearList.add(year);
-                        mPatientDetailHelper.doGetPatientHistory(args.getString(RescribeConstants.PATIENT_ID), year);
+                        mPatientDetailHelper.doGetPatientHistory(mPatientId, year, args.getString(RescribeConstants.PATIENT_NAME) == null);
                     }
                 }
                 //---------
@@ -273,7 +280,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         dialog.setCancelable(true);
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        if(!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
+        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
             mLocationId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity());
         RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
         for (int index = 0; index < mPatientListsOriginal.size(); index++) {
@@ -424,46 +431,78 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         PatientHistoryBaseModel newBaseModel = (PatientHistoryBaseModel) customResponse;
-        PatientHistoryDataModel dataModel = newBaseModel.getPatientHistoryDataModel();
 
-        mTimePeriodList = dataModel.getFormattedYearList();
-        if (mViewPagerAdapter == null) {
-            mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
-            mTabLayout.setupWithViewPager(mViewpager);
-            mYearList = dataModel.getUniqueYears();
-            YearSpinnerAdapter mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
-            mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
-        }
+        if (newBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {
 
-        if (dataModel.getYearsMonthsData().isEmpty()) {
-            noRecords.setVisibility(View.VISIBLE);
-            mYearSpinnerView.setVisibility(View.GONE);
-            mTabLayout.setVisibility(View.GONE);
-        } else {
-            mYearList = dataModel.getUniqueYears();
-            noRecords.setVisibility(View.GONE);
-            mTabLayout.setVisibility(View.VISIBLE);
-            if(mYearList.size()>0) {
-                if (mYearList.size() == 1) {
-                    mYearSpinnerView.setVisibility(View.GONE);
-                    mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
-                    mYearSpinnerSingleItem.setText(mYearList.get(0));
+            PatientHistoryDataModel dataModel = newBaseModel.getPatientHistoryDataModel();
+
+            if (dataModel.getPatientDetails() != null) {
+                PatientDetails patientDetails = dataModel.getPatientDetails();
+
+                String salutation = "";
+                if (patientDetails.getSalutation() != 0)
+                    salutation = SALUTATION[patientDetails.getSalutation() - 1];
+                args.putString(RescribeConstants.PATIENT_NAME, salutation + patientDetails.getPatientName());
+
+                if (!patientDetails.getAge().equals("")) {
+                    args.putString(RescribeConstants.PATIENT_INFO, patientDetails.getAge() + " " + mContext.getString(R.string.years) + patientDetails.getGender());
                 } else {
-                    mYearSpinnerView.setVisibility(View.VISIBLE);
-                    mYearSpinnerSingleItem.setVisibility(View.GONE);
+                    String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+                    String getBirthdayDate = patientDetails.getPatientDob();
+                    if (!getBirthdayDate.equals("")) {
+                        DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+                        DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+                        args.putString(RescribeConstants.PATIENT_INFO, CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years) + patientDetails.getGender());
+                    }
                 }
+
+                titleTextView.setText(args.getString(RescribeConstants.PATIENT_NAME));
+                userInfoTextView.setVisibility(View.VISIBLE);
+                userInfoTextView.setText(args.getString(RescribeConstants.PATIENT_INFO));
+                mHospitalId = args.getString(RescribeConstants.CLINIC_ID);
+                mHospitalPatId = args.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
             }
 
-            if (mTabLayout != null) {
-                if (mTabLayout.getTabCount() > 5) {
-                    mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-                } else {
-                    mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-                    mTabLayout.setTabMode(TabLayout.MODE_FIXED);
-                }
+
+            mTimePeriodList = dataModel.getFormattedYearList();
+            if (mViewPagerAdapter == null) {
+                mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
+                mTabLayout.setupWithViewPager(mViewpager);
+                mYearList = dataModel.getUniqueYears();
+                YearSpinnerAdapter mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
+                mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
             }
 
-            setupViewPager();
+            if (dataModel.getYearsMonthsData().isEmpty()) {
+                noRecords.setVisibility(View.VISIBLE);
+                mYearSpinnerView.setVisibility(View.GONE);
+                mTabLayout.setVisibility(View.GONE);
+            } else {
+                mYearList = dataModel.getUniqueYears();
+                noRecords.setVisibility(View.GONE);
+                mTabLayout.setVisibility(View.VISIBLE);
+                if (mYearList.size() > 0) {
+                    if (mYearList.size() == 1) {
+                        mYearSpinnerView.setVisibility(View.GONE);
+                        mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
+                        mYearSpinnerSingleItem.setText(mYearList.get(0));
+                    } else {
+                        mYearSpinnerView.setVisibility(View.VISIBLE);
+                        mYearSpinnerSingleItem.setVisibility(View.GONE);
+                    }
+                }
+
+                if (mTabLayout != null) {
+                    if (mTabLayout.getTabCount() > 5) {
+                        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+                    } else {
+                        mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+                        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
+                    }
+                }
+
+                setupViewPager();
+            }
         }
     }
 

@@ -36,6 +36,7 @@ import static net.gotev.uploadservice.Placeholders.UPLOAD_RATE;
 
 public class CheckPendingUploads {
     public static final String DOC_UPLOAD = "com.rescribe.doctor.DOC_UPLOAD";
+    public static final String UPLOAD_INFO = "upload_info";
     private Context context;
     private AppDBHelper appDBHelper;
 
@@ -183,6 +184,7 @@ public class CheckPendingUploads {
             // your implementation
             appDBHelper.updateRecordUploads(uploadInfo.getUploadId(), FAILED);
             Intent intent = new Intent(DOC_UPLOAD);
+            intent.putExtra(UPLOAD_INFO, uploadInfo);
             intent.putExtra(STATUS, FAILED);
             context.sendBroadcast(intent);
         }
@@ -192,6 +194,7 @@ public class CheckPendingUploads {
             // your implementation
             appDBHelper.updateRecordUploads(uploadInfo.getUploadId(), COMPLETED);
             Intent intent = new Intent(DOC_UPLOAD);
+            intent.putExtra(UPLOAD_INFO, uploadInfo);
             intent.putExtra(STATUS, COMPLETED);
             context.sendBroadcast(intent);
         }

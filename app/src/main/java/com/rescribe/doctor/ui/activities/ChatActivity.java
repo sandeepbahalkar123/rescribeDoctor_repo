@@ -106,6 +106,7 @@ import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.MESSAGE_STATUS_TOPIC;
 import static com.rescribe.doctor.services.MQTTService.MESSAGE_TOPIC;
 import static com.rescribe.doctor.services.MQTTService.NOTIFY;
+import static com.rescribe.doctor.services.MQTTService.PATIENT;
 import static com.rescribe.doctor.services.MQTTService.REPLY_ACTION;
 import static com.rescribe.doctor.services.MQTTService.TOPIC;
 import static com.rescribe.doctor.services.MQTTService.USER_STATUS_TOPIC;
@@ -225,6 +226,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         statusInfo.setMsgId(generatedId);
         statusInfo.setDocId(Integer.parseInt(docId));
         statusInfo.setPatId(chatList.getId());
+        statusInfo.setSender(PATIENT);
         statusInfo.setTypeStatus(isTyping);
         if (mqttService != null)
             mqttService.typingStatus(statusInfo);
@@ -446,6 +448,8 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 chatList.setOnlineStatus(ONLINE); // hardcoded
                 chatList.setUnreadMessages(0);
                 chatList.setSalutation(mqttMessage.getSalutation());
+                chatList.setImageUrl(mqttMessage.getSenderImgUrl());
+
                 searchedMessageString = gotIntent.getStringExtra(SEARCHED_TEXT);
             } else
                 chatList = gotIntent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
@@ -1304,6 +1308,15 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
             // set Current Chat User
             mqttService.setCurrentChatUser(chatList.getId()); // Change
+
+            StatusInfo statusInfo = new StatusInfo();
+            statusInfo.setMsgId("all");
+            statusInfo.setDocId(Integer.parseInt(docId));
+            statusInfo.setPatId(chatList.getId());
+            statusInfo.setSender(PATIENT);
+            statusInfo.setMessageStatus(SEEN);
+
+            mqttService.messageStatus(statusInfo);
         }
     };
 
