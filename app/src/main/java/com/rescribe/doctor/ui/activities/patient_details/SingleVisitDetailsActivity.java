@@ -54,7 +54,6 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     @BindView(R.id.emptyListView)
     RelativeLayout mNoRecordAvailable;
 
-    public static final String DOCTOR_ID = "doctor_id";
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)

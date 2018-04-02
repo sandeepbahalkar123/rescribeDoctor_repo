@@ -48,6 +48,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
+
 /**
  * Created by jeetal on 5/3/18.
  */
@@ -172,6 +174,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         doctorConnectChatModel.setSalutation(patientListObject.getSalutation());
         intent.putExtra(RescribeConstants.PATIENT_DETAILS, text);
         intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
+        intent.putExtra(RescribeConstants.CLINIC_ID, patientListObject.getClinicId());
         intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, patientListObject.getHospitalPatId());
         intent.putExtra(RescribeConstants.IS_CALL_FROM_MY_PATIENTS, true);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
@@ -232,16 +235,20 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT)) {
 
             MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
-            ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
 
-            mMyPatientsAdapter.addAll(mLoadedPatientList, searchText);
+            if (myAppointmentsBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {
 
-            if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
-                recyclerView.setVisibility(View.VISIBLE);
-                emptyListView.setVisibility(View.GONE);
-            } else {
-                recyclerView.setVisibility(View.GONE);
-                emptyListView.setVisibility(View.VISIBLE);
+                ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
+
+                mMyPatientsAdapter.addAll(mLoadedPatientList, searchText);
+
+                if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    emptyListView.setVisibility(View.GONE);
+                } else {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyListView.setVisibility(View.VISIBLE);
+                }
             }
         }
     }

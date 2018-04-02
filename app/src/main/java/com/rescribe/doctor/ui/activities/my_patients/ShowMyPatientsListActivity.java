@@ -51,8 +51,6 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Dra
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     private Context mContext;
-    private AppointmentHelper mAppointmentHelper;
-    private DrawerForMyPatients mDrawerForMyPatients;
     Intent mIntent;
     private String mActivityCalledFrom = "";
     private ChatPatientListFragment mMyPatientsFragment;

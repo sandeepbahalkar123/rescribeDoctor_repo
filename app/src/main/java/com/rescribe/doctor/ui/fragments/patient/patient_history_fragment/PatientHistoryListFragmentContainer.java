@@ -103,8 +103,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private String mLocationId;
     private String mHospitalId;
     private String mPatientId;
+    private int mClinicId;
     private String mHospitalPatId;
-    private Bundle args;
 
     public PatientHistoryListFragmentContainer() {
         // Required empty public constructor
@@ -124,15 +124,15 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     }
 
     public void initialize() {
-        args = getArguments();
-        mPatientId = args.getString(RescribeConstants.PATIENT_ID);
+        mPatientId = getArguments().getString(RescribeConstants.PATIENT_ID);
+        mClinicId = getArguments().getInt(RescribeConstants.CLINIC_ID);
 
-        if (args.getString(RescribeConstants.PATIENT_NAME) != null) {
-            titleTextView.setText(args.getString(RescribeConstants.PATIENT_NAME));
+        if (getArguments().getString(RescribeConstants.PATIENT_NAME) != null) {
+            titleTextView.setText(getArguments().getString(RescribeConstants.PATIENT_NAME));
             userInfoTextView.setVisibility(View.VISIBLE);
-            userInfoTextView.setText(args.getString(RescribeConstants.PATIENT_INFO));
-            mHospitalId = args.getString(RescribeConstants.CLINIC_ID);
-            mHospitalPatId = args.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
+            userInfoTextView.setText(getArguments().getString(RescribeConstants.PATIENT_INFO));
+            mHospitalId = getArguments().getString(RescribeConstants.CLINIC_ID);
+            mHospitalPatId = getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID);
         }
 
         YearSpinnerInteractionListener listener = new YearSpinnerInteractionListener();
@@ -151,7 +151,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
         Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedMyRecordInfoAndReports = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
         if (yearWiseSortedMyRecordInfoAndReports.get(mCurrentSelectedTimePeriodTab.getYear()) == null) {
-            mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), args.getString(RescribeConstants.PATIENT_NAME) == null);
+            mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null);
             mGeneratedRequestForYearList.add(mCurrentSelectedTimePeriodTab.getYear());
         }
 
@@ -185,7 +185,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mViewPagerAdapter.mFragmentTitleList.clear();
         for (Year data :
                 mTimePeriodList) {
-            Fragment fragment = PatientHistoryCalenderListFragment.createNewFragment(data, args);
+            Fragment fragment = PatientHistoryCalenderListFragment.createNewFragment(data, getArguments());
             mViewPagerAdapter.addFragment(fragment, data); // pass title here
         }
         mViewpager.setOffscreenPageLimit(0);
@@ -232,7 +232,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                     Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedPatientHistoryInfo = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
                     if (yearWiseSortedPatientHistoryInfo.get(year) == null) {
                         mGeneratedRequestForYearList.add(year);
-                        mPatientDetailHelper.doGetPatientHistory(mPatientId, year, args.getString(RescribeConstants.PATIENT_NAME) == null);
+                        mPatientDetailHelper.doGetPatientHistory(mPatientId, year, getArguments().getString(RescribeConstants.PATIENT_NAME) == null);
                     }
                 }
                 //---------
@@ -266,10 +266,25 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
         ArrayList<DoctorLocationModel> mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
+        ArrayList<DoctorLocationModel> myDoctorLocations = getMyDoctorLocations(mDoctorLocationModel, mClinicId);
+        if (myDoctorLocations.size() == 1) {
+            mLocationId = String.valueOf(myDoctorLocations.get(0).getLocationId());
+            mHospitalId = String.valueOf(myDoctorLocations.get(0).getClinicId());
+            callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth);
+        } else {
+            showDialogToSelectLocation(getMyDoctorLocations(mDoctorLocationModel, mClinicId), year, monthOfYear + 1, dayOfMonth);
+        }
+    }
 
-        showDialogToSelectLocation(mDoctorLocationModel, year, monthOfYear + 1, dayOfMonth);
+    private ArrayList<DoctorLocationModel> getMyDoctorLocations(ArrayList<DoctorLocationModel> mDoctorLocationModel, int mClinicId) {
+        ArrayList<DoctorLocationModel> mDoctorLocations = new ArrayList<>();
+        for (DoctorLocationModel doctorLocationModel : mDoctorLocationModel) {
+            if (doctorLocationModel.getClinicId() == mClinicId) {
+                mDoctorLocations.add(doctorLocationModel);
+            }
+        }
 
-
+        return mDoctorLocations;
     }
 
     private void showDialogToSelectLocation(ArrayList<DoctorLocationModel> mPatientListsOriginal, final int year, final int monthOfYear, final int dayOfMonth) {
@@ -442,25 +457,25 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 String salutation = "";
                 if (patientDetails.getSalutation() != 0)
                     salutation = SALUTATION[patientDetails.getSalutation() - 1];
-                args.putString(RescribeConstants.PATIENT_NAME, salutation + patientDetails.getPatientName());
+                getArguments().putString(RescribeConstants.PATIENT_NAME, salutation + patientDetails.getPatientName());
 
                 if (!patientDetails.getAge().equals("")) {
-                    args.putString(RescribeConstants.PATIENT_INFO, patientDetails.getAge() + " " + mContext.getString(R.string.years) + patientDetails.getGender());
+                    getArguments().putString(RescribeConstants.PATIENT_INFO, patientDetails.getAge() + " " + mContext.getString(R.string.years) + patientDetails.getGender());
                 } else {
                     String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
                     String getBirthdayDate = patientDetails.getPatientDob();
                     if (!getBirthdayDate.equals("")) {
                         DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
                         DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-                        args.putString(RescribeConstants.PATIENT_INFO, CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years) + patientDetails.getGender());
+                        getArguments().putString(RescribeConstants.PATIENT_INFO, CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years) + patientDetails.getGender());
                     }
                 }
 
-                titleTextView.setText(args.getString(RescribeConstants.PATIENT_NAME));
+                titleTextView.setText(getArguments().getString(RescribeConstants.PATIENT_NAME));
                 userInfoTextView.setVisibility(View.VISIBLE);
-                userInfoTextView.setText(args.getString(RescribeConstants.PATIENT_INFO));
-                mHospitalId = args.getString(RescribeConstants.CLINIC_ID);
-                mHospitalPatId = args.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
+                userInfoTextView.setText(getArguments().getString(RescribeConstants.PATIENT_INFO));
+                mHospitalId = getArguments().getString(RescribeConstants.CLINIC_ID);
+                mHospitalPatId = getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID);
             }
 
 

@@ -101,7 +101,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     private String year;
     private String patientName = "";
     private String patientInfo = "";
-    public static final String OTHERS = "Others";
     private String Url;
     private String mHospitalPatId;
     private String mLocationId;
