@@ -26,12 +26,7 @@ import java.util.Hashtable;
 public class RescribeApplication extends MultiDexApplication {
     public  final String TAG = this.getClass().getName();
     private static final Hashtable<String, Typeface> cache = new Hashtable<String, Typeface>();
-    private static RescribeApplication singleton;
     private static ArrayList<DoctorLocationModel> doctorLocationModels = new ArrayList<>();
-
-    public static RescribeApplication getInstance() {
-        return singleton;
-    }
 
     public static Typeface get(Context c, String name) {
         synchronized (cache) {

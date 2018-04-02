@@ -94,6 +94,13 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     private boolean isFiltered = false;
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null)
+            unbinder.unbind();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View mRootView = inflater.inflate(R.layout.my_appointments_layout, container, false);
@@ -190,9 +197,9 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         doctorConnectChatModel.setImageUrl(patientListObject.getPatientImageUrl());
         doctorConnectChatModel.setPatientName(patientListObject.getPatientName());
         doctorConnectChatModel.setSalutation(patientListObject.getSalutation());
-        intent.putExtra(RescribeConstants.PATIENT_DETAILS,text);
+        intent.putExtra(RescribeConstants.PATIENT_DETAILS, text);
         intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
-        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID,patientListObject.getHospitalPatId());
+        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, patientListObject.getHospitalPatId());
         intent.putExtra(RescribeConstants.IS_CALL_FROM_MY_PATIENTS, true);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         getActivity().startActivityForResult(intent, Activity.RESULT_OK);
@@ -249,7 +256,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
                 ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
                 int size = mMyPatientsAdapter.addAll(mLoadedPatientList);
 
-                if (size > 0){
+                if (size > 0) {
                     recyclerView.setVisibility(View.VISIBLE);
                     emptyListView.setVisibility(View.GONE);
                 } else {
@@ -268,7 +275,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
             }
 
             int size = mMyPatientsAdapter.addAll(mLoadedPatientList);
-            if (size > 0){
+            if (size > 0) {
                 recyclerView.setVisibility(View.VISIBLE);
                 emptyListView.setVisibility(View.GONE);
             } else {

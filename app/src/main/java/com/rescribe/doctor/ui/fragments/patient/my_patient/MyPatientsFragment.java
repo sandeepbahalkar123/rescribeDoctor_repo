@@ -112,7 +112,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     //-------
     private String mClinicCity;
     private String mClinicArea;
-    private int mCityId;
     private int mClinicId;
     private int mLocationId;
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
@@ -499,7 +498,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     mClinicName = clinicList.getClinicName();
                     mClinicCity = clinicList.getCity();
                     mClinicArea = clinicList.getArea();
-                    mCityId = clinicList.getCityId();
                     CommonMethods.Log("clinicList", "" + clinicList.toString());
 
                 }

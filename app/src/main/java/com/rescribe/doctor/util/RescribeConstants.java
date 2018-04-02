@@ -190,6 +190,18 @@ public class RescribeConstants {
     public static final String[] SALUTATION = {"Mr. ", "Mrs. ", "Miss ", ""};
     public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};
 
+    public interface APPOINTMENT_STATUS {
+        int BOOKED = 1;
+        int CONFIRM = 2;
+        int COMPLETED = 3;
+        int CANCEL = 4;
+        int NO_SHOW = 5;
+        int OTHER = 6;
+        int IN_CONSULTATION = 7;
+        int IN_QUEUE = 8;
+        int COMING = 9;
+    }
+
     public interface USER_STATUS {
         String ONLINE = "Online";
         String OFFLINE = "Offline";

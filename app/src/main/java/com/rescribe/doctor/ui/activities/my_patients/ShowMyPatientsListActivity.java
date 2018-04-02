@@ -19,6 +19,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
 import com.rescribe.doctor.ui.fragments.patient.patient_connect.ChatPatientListFragment;
@@ -140,7 +141,6 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Hel
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
         CommonMethods.showToast(mContext, errorMessage);
-
     }
 
     @Override
@@ -176,9 +176,9 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Hel
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.closeDrawer(GravityCompat.END);
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
-
     }
 
     @Override

@@ -45,6 +45,8 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
+
 /**
  * Created by jeetal on 31/1/18.
  */
@@ -93,8 +95,6 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetAppointmentData(date);
-
-
     }
 
     private void setUpNavigationDrawer() {
@@ -165,19 +165,17 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_APPOINTMENT_DATA)) {
-
             if (customResponse != null) {
                 myAppointmentsBaseMainModel = (MyAppointmentsBaseModel) customResponse;
-                bundle = new Bundle();
-
-                bundle.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsBaseMainModel.getMyAppointmentsDataModel());
-                bundle.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, true);
-                mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
-                setUpNavigationDrawer();
-
+                if (myAppointmentsBaseMainModel.getCommon().getStatusCode().equals(SUCCESS)) {
+                    bundle = new Bundle();
+                    bundle.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsBaseMainModel.getMyAppointmentsDataModel());
+                    bundle.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, true);
+                    mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundle);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
+                    setUpNavigationDrawer();
+                }
             }
-
         }
     }
 
@@ -273,7 +271,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
 
                     for (PatientList patientList : appointmentObject.getPatientList()) {
                         for (StatusList statusName : mStatusLists) {
-                            if (statusName.getStatusName().equalsIgnoreCase(patientList.getAppointmentStatus()))
+                            if (statusName.getStatusId().equals(patientList.getAppointmentStatusId()))
                                 mPatientListArrayList.add(patientList);
                         }
                     }
@@ -322,7 +320,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                     }
                     for (PatientList patientList : appointmentObject.getPatientList()) {
                         for (StatusList statusName : mStatusLists) {
-                            if (statusName.getStatusName().equalsIgnoreCase(patientList.getAppointmentStatus()))
+                            if (statusName.getStatusId().equals(patientList.getAppointmentStatusId()))
                                 mPatientListArrayList.add(patientList);
                         }
                     }
