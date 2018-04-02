@@ -102,7 +102,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private MyPatientsAdapter mMyPatientsAdapter;
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
-    public static final int PAGE_START = 0;
     private String searchText = "";
     private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
     private ArrayList<PatientAddToWaitingList> patientsListAddToWaitingLists;

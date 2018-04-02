@@ -54,8 +54,6 @@ import butterknife.Unbinder;
 
 public class ChatPatientListFragment extends Fragment implements ChatPatientListAdapter.OnDownArrowClicked, HelperResponse {
 
-    public static final int CALL_FROM_MY_PATIENT_LIST = 0600;
-    private static Bundle args;
     private AppointmentHelper mAppointmentHelper;
     @BindView(R.id.whiteUnderLine)
     ImageView whiteUnderLine;
@@ -76,22 +74,10 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     @BindView(R.id.searchEditText)
     EditTextWithDeleteButton searchEditText;
     private Unbinder unbinder;
-    private MyPatientBaseModel myPatientBaseModel;
     private ChatPatientListAdapter mMyPatientsAdapter;
-    private ArrayList<BottomMenu> mBottomMenuList;
-    private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
-    public int TOTAL_PAGE_COUNT = 1;
-    public boolean isLoading = false;
-    public static final int PAGE_START = 0;
-    public int currentPage = PAGE_START;
     private String searchText = "";
-    private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
-    private ArrayList<PatientList> mPatientListsOriginal;
-    private int mLocationId;
-    private ArrayList<PatientInfoList> patientInfoLists;
-    private int mClinicId;
-    private String mClinicName = "";
     private boolean isFiltered = false;
+    private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
 
     @Override
     public void onDestroy() {
@@ -112,42 +98,32 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     }
 
     private void init() {
-        mBottomMenuList = new ArrayList<>();
-        mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
-        for (String mMenuName : mMenuNames) {
-            BottomMenu bottomMenu = new BottomMenu();
-            bottomMenu.setMenuName(mMenuName);
-            mBottomMenuList.add(bottomMenu);
-        }
-        myPatientBaseModel = args.getParcelable(RescribeConstants.MY_PATIENTS_DATA);
 
-        if (myPatientBaseModel.getPatientDataModel().getPatientList().size() > 0) {
-            recyclerView.setVisibility(View.VISIBLE);
-            recyclerView.setClipToPadding(false);
-            emptyListView.setVisibility(View.GONE);
-            LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(linearlayoutManager);
-            // off recyclerView Animation
-            RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-            recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
-            recyclerView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.divider));
-            if (animator instanceof SimpleItemAnimator)
-                ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        recyclerView.setClipToPadding(false);
+        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearlayoutManager);
+        // off recyclerView Animation
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
+        recyclerView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.divider));
+        if (animator instanceof SimpleItemAnimator)
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
-            mMyPatientsAdapter = new ChatPatientListAdapter(getActivity(), myPatientBaseModel.getPatientDataModel().getPatientList(), this);
-            recyclerView.setAdapter(mMyPatientsAdapter);
-            recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
-                @Override
-                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                    loadNextPage(page);
-                }
-            });
+        ArrayList<PatientList> patientLists = new ArrayList<>();
+        mMyPatientsAdapter = new ChatPatientListAdapter(getActivity(), patientLists, this);
+        recyclerView.setAdapter(mMyPatientsAdapter);
 
-        } else {
-            recyclerView.setVisibility(View.GONE);
-            emptyListView.setVisibility(View.VISIBLE);
-        }
+        nextPage(0);
+
+        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                nextPage(page);
+            }
+        });
+
+
         searchEditText.setHint(getString(R.string.search_hint_patientconnect_to_mypatient));
         searchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
@@ -162,22 +138,19 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
             @Override
             public void afterTextChanged(Editable s) {
                 searchText = s.toString();
+
                 if (searchText.length() >= 3) {
-                    searchPatientsUsingSearchBar(getContext(), searchText);
+                    searchPatients();
                     isFiltered = true;
-                } else if (searchText.length() < 3 && isFiltered) {
+                } else if (isFiltered) {
                     isFiltered = false;
-                    resetFilter();
+                    searchText = "";
+                    searchPatients();
                 }
             }
         });
 
     }
-
-    private void resetFilter() {
-        init();
-    }
-
 
     @Override
     public void onRecordFound(boolean isListEmpty) {
@@ -210,11 +183,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
 
     public static ChatPatientListFragment newInstance(Bundle b) {
         ChatPatientListFragment fragment = new ChatPatientListFragment();
-        args = b;
-        if (args == null) {
-            args = new Bundle();
-        }
-        fragment.setArguments(args);
+        fragment.setArguments(b);
         return fragment;
     }
 
@@ -224,7 +193,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         switch (view.getId()) {
             case R.id.rightFab:
                 ShowMyPatientsListActivity activity = (ShowMyPatientsListActivity) getActivity();
-                activity.getActivityDrawerLayout().openDrawer(GravityCompat.END);
+                activity.openDrawer();
                 break;
             case R.id.leftFab:
 
@@ -232,50 +201,42 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         }
     }
 
-    public void loadNextPage(int currentPage) {
-        if (searchText.length() == 0) {
-            RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-            mRequestSearchPatients.setPageNo(currentPage);
-            mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
-        } else {
-            RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-            mRequestSearchPatients.setPageNo(currentPage);
-            mRequestSearchPatients.setSearchText(searchText);
-            mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
-        }
+    public void nextPage(int pageNo) {
+        mAppointmentHelper = new AppointmentHelper(getContext(), this);
+        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
+        mRequestSearchPatients.setSearchText(searchText);
+        mRequestSearchPatients.setPageNo(pageNo);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+    }
+
+    public void searchPatients() {
+        mMyPatientsAdapter.clear();
+        mRequestSearchPatients.setPageNo(0);
+        mAppointmentHelper = new AppointmentHelper(getContext(), this);
+        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
+        mRequestSearchPatients.setSearchText(searchText);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+    }
+
+    public void apply(RequestSearchPatients mRequestSearchPatients, boolean isReset) {
+        this.mRequestSearchPatients.setFilterParams(mRequestSearchPatients.getFilterParams());
+        this.mRequestSearchPatients.setSortField(mRequestSearchPatients.getSortField());
+        this.mRequestSearchPatients.setSortOrder(mRequestSearchPatients.getSortOrder());
+
+        if (!isReset)
+            searchPatients();
     }
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_PATIENT_DATA)) {
-            if (customResponse != null) {
-                //Paginated items added here
-                MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
-                ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
-                int size = mMyPatientsAdapter.addAll(mLoadedPatientList);
-
-                if (size > 0) {
-                    recyclerView.setVisibility(View.VISIBLE);
-                    emptyListView.setVisibility(View.GONE);
-                } else {
-                    recyclerView.setVisibility(View.GONE);
-                    emptyListView.setVisibility(View.VISIBLE);
-                }
-            }
-        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT)) {
+        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT)) {
 
             MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
             ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
-            mMyPatientsAdapter.clear();
 
-            for (PatientList patientList : mLoadedPatientList) {
-                patientList.setSpannableString(searchText);
-            }
+            mMyPatientsAdapter.addAll(mLoadedPatientList, searchText);
 
-            int size = mMyPatientsAdapter.addAll(mLoadedPatientList);
-            if (size > 0) {
+            if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
                 recyclerView.setVisibility(View.VISIBLE);
                 emptyListView.setVisibility(View.GONE);
             } else {
@@ -300,14 +261,4 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
 
     }
-
-    public void searchPatientsUsingSearchBar(Context mContext, String searchText) {
-        mAppointmentHelper = new AppointmentHelper(mContext, this);
-        RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
-        mRequestSearchPatients.setSearchText(searchText);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
-
-    }
-
 }
