@@ -46,6 +46,7 @@ android {
                             'src/main/res/layouts/doctor',
                             'src/main/res/layouts/patient/patient_connect',
                             'src/main/res/layouts/patient/patient_appointment',
+                            'src/main/res/layouts/patient/add_new_patient',
                             'src/main/res/layouts/patient/patient_detail_page',
                             'src/main/res/layouts/patient/patient_history',
                             'src/main/res/layouts/dashboard',
