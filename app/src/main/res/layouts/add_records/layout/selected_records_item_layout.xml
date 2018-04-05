@@ -38,7 +38,7 @@
 
         </RelativeLayout>
 
-        <EditText
+        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/addCaptionText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

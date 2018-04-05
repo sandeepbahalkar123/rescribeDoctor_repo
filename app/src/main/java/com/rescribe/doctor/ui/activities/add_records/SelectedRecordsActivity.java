@@ -1,14 +1,12 @@
 package com.rescribe.doctor.ui.activities.add_records;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -16,24 +14,32 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.adapters.add_records.SelectedRecordsAdapter;
-import com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
-import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.investigation.Image;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
@@ -47,6 +53,7 @@ import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
 import net.gotev.uploadservice.UploadService;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -62,17 +69,13 @@ import droidninja.filepicker.FilePickerConst;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.rescribe.doctor.services.CheckPendingUploads.DOC_UPLOAD;
 import static com.rescribe.doctor.services.CheckPendingUploads.getUploadConfig;
-import static net.gotev.uploadservice.Placeholders.ELAPSED_TIME;
-import static net.gotev.uploadservice.Placeholders.PROGRESS;
-import static net.gotev.uploadservice.Placeholders.UPLOAD_RATE;
 
 @RuntimePermissions
-public class SelectedRecordsActivity extends AppCompatActivity implements SelectedRecordsAdapter.OnClickOfComponentsOnSelectedPhoto {
+public class SelectedRecordsActivity extends AppCompatActivity {
 
-    @BindView(R.id.recyclerview)
-    RecyclerView recyclerView;
+    @BindView(R.id.gridLayout)
+    GridLayout gridLayout;
     @BindView(R.id.uploadButton)
     Button uploadButton;
     @BindView(R.id.coachmark)
@@ -92,8 +95,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     FloatingActionButton mAddImageViewRightFab;
     private Context mContext;
     private ArrayList<Image> imagePaths = new ArrayList<>();
-    ArrayList<Image> imageArrayList;
-    private SelectedRecordsAdapter selectedRecordsAdapter;
     private Dialog dialog;
     private String visitDate;
     private int docId;
@@ -113,6 +114,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     private String mOpdtime;
     private String currentOpdTime;
     private boolean openCameraDirect;
+    private int imageSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +123,12 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         ButterKnife.bind(this);
 
         init();
+
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics metrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(metrics);
+        int widthPixels = metrics.widthPixels;
+        imageSize = (widthPixels / 2) - getResources().getDimensionPixelSize(R.dimen.dp10);
 
         // Show two options for user
 
@@ -165,18 +173,51 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         });
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+    }
 
-        // End
-        // off recyclerView Animation
+    @SuppressLint("CheckResult")
+    private void addImage() {
+        final View child = getLayoutInflater().inflate(R.layout.selected_records_item_layout, gridLayout, false);
+        EditText addCaptionText = child.findViewById(R.id.addCaptionText);
+        ImageView crossImageView = child.findViewById(R.id.crossImageView);
+        ImageView iv_photo = child.findViewById(R.id.iv_photo);
+        child.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize));
+        gridLayout.addView(child);
 
-        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-        if (animator instanceof SimpleItemAnimator)
-            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.dontAnimate();
+        requestOptions.override(imageSize, imageSize);
+        requestOptions.error(R.drawable.ic_file);
+        requestOptions.placeholder(R.drawable.ic_file);
 
-        selectedRecordsAdapter = new SelectedRecordsAdapter(mContext, imagePaths, this);
-        recyclerView.setAdapter(selectedRecordsAdapter);
-        GridLayoutManager layoutManager = new GridLayoutManager(mContext, 2);
-        recyclerView.setLayoutManager(layoutManager);
+        Glide.with(mContext)
+                .load(new File(imagePaths.get(gridLayout.indexOfChild(child)).getImagePath()))
+                .apply(requestOptions).thumbnail(0.5f)
+                .into(iv_photo);
+
+        addCaptionText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                imagePaths.get(gridLayout.indexOfChild(child)).setParentCaption(s.toString());
+            }
+        });
+
+        crossImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imagePaths.remove(gridLayout.indexOfChild(child));
+                gridLayout.removeViewAt(gridLayout.indexOfChild(child));
+                gridLayout.invalidate();
+            }
+        });
     }
 
     private void init() {
@@ -195,7 +236,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
 
         patientName = getIntent().getStringExtra(RescribeConstants.PATIENT_NAME);
         patientInfo = getIntent().getStringExtra(RescribeConstants.PATIENT_INFO);
-        imageArrayList = getIntent().getParcelableArrayListExtra(RescribeConstants.DOCUMENTS);
         mOpdtime = getIntent().getStringExtra(RescribeConstants.OPD_TIME);
         opdId = getIntent().getStringExtra(RescribeConstants.OPD_ID);
 
@@ -347,9 +387,9 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                 image.setImagePath(imagePath);
                 image.setType(type);
                 imagePaths.add(image);
+                addImage();
             }
         }
-        selectedRecordsAdapter.notifyDataSetChanged();
     }
 
     @OnClick({R.id.coachmark, R.id.uploadButton, R.id.addImageViewRightFab, R.id.backImageView})
@@ -383,13 +423,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                 onBackPressed();
                 break;
         }
-    }
-
-    @Override
-    public void onClickOfCrossImage(int position) {
-
-        imagePaths.remove(position);
-        selectedRecordsAdapter.notifyDataSetChanged();
     }
 
     public void uploadImage(String uploadId, Image image) {
