@@ -273,7 +273,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
 
                     for (PatientList patientList : appointmentObject.getPatientList()) {
                         for (StatusList statusName : mStatusLists) {
-                            if (statusName.getStatusName().equalsIgnoreCase(patientList.getAppointmentStatus()))
+                            if (statusName.getStatusId().equals(patientList.getAppointmentStatusId()))
                                 mPatientListArrayList.add(patientList);
                         }
                     }
@@ -322,7 +322,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                     }
                     for (PatientList patientList : appointmentObject.getPatientList()) {
                         for (StatusList statusName : mStatusLists) {
-                            if (statusName.getStatusName().equalsIgnoreCase(patientList.getAppointmentStatus()))
+                            if (statusName.getStatusId().equals(patientList.getAppointmentStatusId()))
                                 mPatientListArrayList.add(patientList);
                         }
                     }

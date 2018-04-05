@@ -574,6 +574,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         addToWaitingArrayList.add(addToList);
         RequestToAddWaitingList requestForWaitingListPatients = new RequestToAddWaitingList();
         requestForWaitingListPatients.setAddToList(addToWaitingArrayList);
+        requestForWaitingListPatients.setTime(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss));
         requestForWaitingListPatients.setDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
         requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
         mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);

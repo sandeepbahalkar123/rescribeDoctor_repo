@@ -25,7 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.AppointmentAdapter;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
@@ -56,15 +55,12 @@ import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-
 import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
@@ -171,7 +167,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                         mPatientListsForBookAndCancel = tempAppointmentListObject.getPatientList();
                         if (!mPatientListsForBookAndCancel.isEmpty() && mPatientListsForBookAndCancel.size() > 0) {
                             for (int j = 0; j < mPatientListsForBookAndCancel.size(); j++) {
-                                if (mPatientListsForBookAndCancel.get(j).getAppointmentStatus().equals("Confirmed") || mPatientListsForBookAndCancel.get(j).getAppointmentStatus().equals("Booked")) {
+                                if (mPatientListsForBookAndCancel.get(j).getAppointmentStatusId().equals(1) || mPatientListsForBookAndCancel.get(j).getAppointmentStatusId().equals(2)) {
                                     PatientList patientList = new PatientList();
                                     patientList = mPatientListsForBookAndCancel.get(j);
                                     patientListToAddBookAndConfirmEntries.add(patientList);
@@ -520,7 +516,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 for (int childIndex = 0; childIndex < mAppointmentAdapter.getGroupList().get(groupIndex).getPatientList().size(); childIndex++) {
                     PatientList patientList = mAppointmentAdapter.getGroupList().get(groupIndex).getPatientList().get(childIndex);
                     if (patientList.isSelected()) {
-                        if (!patientList.getAppointmentStatus().equals("Completed") && !patientList.getAppointmentStatus().equals("Cancelled")) {
+                        if (!patientList.getAppointmentStatusId().equals(3) && !patientList.getAppointmentStatusId().equals(4)) {
                             PatientAddToWaitingList patientsAddToWaitingListObject = new PatientAddToWaitingList();
                             patientsAddToWaitingListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
                             patientsAddToWaitingListObject.setPatientId(String.valueOf(patientList.getPatientId()));
@@ -585,6 +581,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     private void callWaitingListApi() {
         RequestToAddWaitingList requestForWaitingListPatients = new RequestToAddWaitingList();
         requestForWaitingListPatients.setAddToList(addToArrayList);
+        requestForWaitingListPatients.setTime(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss));
         requestForWaitingListPatients.setDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
         requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
         mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);
@@ -649,17 +646,21 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 } else {
                     if (templateBaseModel.getCommon().getStatusMessage().equalsIgnoreCase(getString(R.string.appointment_completed))) {
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAppointmentStatus("Completed");
+                        mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAppointmentStatusId(3);
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAddedToWaiting(0);
                         if (childPos == 0) {
                             mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Completed");
+                            mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatusId(3);
                             mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAddedToWaiting(0);
 
                         }
                     } else if (templateBaseModel.getCommon().getStatusMessage().equalsIgnoreCase(getString(R.string.appointment_cancelled))) {
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAppointmentStatus("Cancelled");
+                        mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAppointmentStatusId(4);
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAddedToWaiting(0);
                         if (childPos == 0) {
                             mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Cancelled");
+                            mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatusId(4);
                             mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAddedToWaiting(0);
 
                         }

@@ -45,7 +45,19 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
 
     @Override
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
-
+        if(mStatusLists.get(position).getStatusId().equals(1)){
+            holder.menuName.setText(mContext.getString(R.string.booked));
+        }else if(mStatusLists.get(position).getStatusId().equals(2)){
+            holder.menuName.setText(mContext.getString(R.string.Confirmed));
+        }else if(mStatusLists.get(position).getStatusId().equals(3)){
+            holder.menuName.setText(mContext.getString(R.string.capitalcompleted));
+        }else if(mStatusLists.get(position).getStatusId().equals(4)){
+            holder.menuName.setText(mContext.getString(R.string.cancelled));
+        }else if(mStatusLists.get(position).getStatusId().equals(5)){
+            holder.menuName.setText(mContext.getString(R.string.no_show));
+        }else if(mStatusLists.get(position).getStatusId().equals(6)){
+            holder.menuName.setText(mContext.getString(R.string.other));
+        }
         holder.menuName.setText(mStatusLists.get(position).getStatusName());
         holder.menuName.setChecked(mStatusLists.get(position).isSelected());
         holder.menuName.setOnClickListener(new View.OnClickListener() {
