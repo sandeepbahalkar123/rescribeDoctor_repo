@@ -219,12 +219,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.other_color));
         }
         viewHolder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-        if (patientList.getOutStandingAmount().equals("0.00") || patientList.getOutStandingAmount().equals("0.0") || patientList.getOutStandingAmount().equals("0")) {
+        if (patientList.getOutStandingAmount().equals("0.00")||patientList.getOutStandingAmount().equals("0.0")||patientList.getOutStandingAmount().equals("0")) {
             viewHolder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
+
         } else {
             viewHolder.payableAmountTextView.setText(" Rs." + patientList.getOutStandingAmount() + "/-");
             viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
+
         }
 
         viewHolder.appointmentTime.setVisibility(View.VISIBLE);
@@ -347,6 +349,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                              View convertView, final ViewGroup parent) {
 
         GroupViewHolder groupViewHolder;
+//        Log.d("SANDEEP","isExpanded: "+isExpanded);
+
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
@@ -415,10 +419,11 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             if (appointmentListObject.getPatientList().size() == 1) {
                 groupViewHolder.mDownArrow.setVisibility(View.GONE);
                 groupViewHolder.upArrow.setVisibility(View.GONE);
-            } else {
+            }else{
                 groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
                 groupViewHolder.upArrow.setVisibility(View.GONE);
             }
+
         }
 
         groupViewHolder.mPatientGenderTextView.setText(CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getGender()));
@@ -445,10 +450,10 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
         groupViewHolder.mPatientPhoneNumber.setText(appointmentListObject.getPatientHeader().getPatientPhone());
         groupViewHolder.mOutstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-
         if (appointmentListObject.getPatientHeader().getOutStandingAmount().equals("0.00") || appointmentListObject.getPatientHeader().getOutStandingAmount().equals("0.0") || appointmentListObject.getPatientHeader().getOutStandingAmount().equals("0")) {
             groupViewHolder.mPayableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             groupViewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
+
         } else {
             groupViewHolder.mPayableAmountTextView.setText(" Rs." + appointmentListObject.getPatientHeader().getOutStandingAmount() + "/-");
             groupViewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));

@@ -633,28 +633,33 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                         mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Completed");
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(0).setAppointmentStatus("Completed");
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(0).setAddedToWaiting(0);
+                        mAppointmentListOfAdapter.get(groupPos).getPatientList().get(0).setAppointmentStatusId(COMPLETED);
                     } else if (templateBaseModel.getCommon().getStatusMessage().equalsIgnoreCase(getString(R.string.appointment_cancelled))) {
                         mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Cancelled");
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(0).setAppointmentStatus("Cancelled");
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(0).setAddedToWaiting(0);
+                        mAppointmentListOfAdapter.get(groupPos).getPatientList().get(0).setAppointmentStatusId(CANCEL);
                     }
 
                 } else {
                     if (templateBaseModel.getCommon().getStatusMessage().equalsIgnoreCase(getString(R.string.appointment_completed))) {
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAppointmentStatus("Completed");
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAddedToWaiting(0);
+                        mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAppointmentStatusId(COMPLETED);
                         if (childPos == 0) {
                             mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Completed");
                             mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAddedToWaiting(0);
+                            mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatusId(COMPLETED);
 
                         }
                     } else if (templateBaseModel.getCommon().getStatusMessage().equalsIgnoreCase(getString(R.string.appointment_cancelled))) {
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAppointmentStatus("Cancelled");
                         mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAddedToWaiting(0);
+                        mAppointmentListOfAdapter.get(groupPos).getPatientList().get(childPos).setAppointmentStatusId(CANCEL);
                         if (childPos == 0) {
                             mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Cancelled");
                             mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAddedToWaiting(0);
-
+                            mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatusId(CANCEL);
                         }
                     }
                 }

@@ -206,9 +206,9 @@
     <string name="appointment_cancelled">Appointment is cancelled</string>
     <string name="confirmed">confirmed</string>
     <string name="Confirmed">Confirmed</string>
-    <string name="cancelled">cancelled</string>
-    <string name="no_show">no show</string>
-    <string name="other">other</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="no_show">No show</string>
+    <string name="other">Other</string>
     <string name="enter_sms_text_here">Enter sms text here</string>
     <string name="location">Location</string>
     <string name="complete_and_cancelled_status">Complete and cancel status patients cannot be added to waiting list</string>
@@ -229,4 +229,12 @@
     <string name="records_will_upload_when_internet_available">Records will upload when internet is available</string>
     <string name="uploading">Uploading</string>
     <string name="camera">Camera</string>
+
+
+    <string name="first_name">First Name</string>
+    <string name="middle_name">Middle Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="reference_id">Reference ID.</string>
+
+
 </resources>
