@@ -629,10 +629,13 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         groupViewHolder.mDeleteAttachments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedAttachmentToDeleteGroupPosition = (Integer) v.getTag();
-                if (groupViewHolder.mDeleteAttachments.getVisibility() == View.VISIBLE) {
-                    deleteAttachmentsListener.deleteAttachments(mSelectedAttachmentToDelete);
+                if (mSelectedAttachmentToDelete.size() != 0) {
+                    selectedAttachmentToDeleteGroupPosition = (Integer) v.getTag();
+                    if (groupViewHolder.mDeleteAttachments.getVisibility() == View.VISIBLE) {
+                        deleteAttachmentsListener.deleteAttachments(mSelectedAttachmentToDelete);
+                    }
                 }
+
             }
         });
         //------------
@@ -990,6 +993,10 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 }
                 if (position != -1)
                     commonData.remove(position);
+            }
+
+            if (commonData.isEmpty()) {
+                mListDataHeader.remove(patientHistory);
             }
         }
         mSelectedAttachmentToDelete.clear();
