@@ -28,11 +28,9 @@ import butterknife.ButterKnife;
 
 public class ShowWaitingStatusAdapter extends RecyclerView.Adapter<ShowWaitingStatusAdapter.ListViewHolder> {
 
-    private Context mContext;
     private ArrayList<AddToWaitingResponse> mWaitingClinicList = new ArrayList<>();
 
     public ShowWaitingStatusAdapter(Context mContext, ArrayList<AddToWaitingResponse> mWaitingClinicList) {
-        this.mContext = mContext;
         this.mWaitingClinicList = mWaitingClinicList;
     }
 

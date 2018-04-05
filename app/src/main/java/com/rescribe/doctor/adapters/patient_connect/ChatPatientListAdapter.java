@@ -49,13 +49,11 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
 
-
     public ChatPatientListAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked) {
         this.mDataList = new ArrayList<>(dataList);
         this.mOriginalPatientList = new ArrayList<>(dataList);
         this.mContext = mContext;
         this.mOnDownArrowClicked = mOnDownArrowClicked;
-
     }
 
     @Override
@@ -307,16 +305,16 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
     }
 
     public interface OnDownArrowClicked {
-
         void onRecordFound(boolean isListEmpty);
-
         void onClickOfPatientDetails(PatientList patientListObject, String text);
-
     }
 
-    public int addAll(ArrayList<PatientList> mcList) {
-        mDataList.addAll(mcList);
-        return mDataList.size();
+    public void addAll(ArrayList<PatientList> mcList, String searchText) {
+        for (PatientList mc : mcList) {
+            mc.setSpannableString(searchText);
+            mDataList.add(mc);
+        }
+        notifyDataSetChanged();
     }
 
     public void clear() {

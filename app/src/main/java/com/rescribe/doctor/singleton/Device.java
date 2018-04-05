@@ -96,6 +96,4 @@ public class Device {
     public String getOS() {
         return "Android";
     }
-
-
 }

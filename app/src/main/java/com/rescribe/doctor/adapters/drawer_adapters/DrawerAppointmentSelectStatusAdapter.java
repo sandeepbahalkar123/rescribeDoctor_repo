@@ -18,13 +18,19 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.BOOKED;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.COMPLETED;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.NO_SHOW;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.OTHER;
+
 /**
  * Created by jeetal on 12/2/18.
  */
 
 public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<DrawerAppointmentSelectStatusAdapter.ListViewHolder> {
 
-    private final MyAppointmentsDataModel myAppointmentsDataModel;
     private Context mContext;
     private ArrayList<StatusList> mStatusLists;
 
@@ -32,7 +38,6 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
 
     public DrawerAppointmentSelectStatusAdapter(Context mContext, MyAppointmentsDataModel myAppointmentsDataModel, OnClickOfFilterComponents mOnClickOfFilterComponents) {
         this.mContext = mContext;
-        this.myAppointmentsDataModel = myAppointmentsDataModel;
         this.mStatusLists = myAppointmentsDataModel.getStatusList();
         this.mOnClickOfFilterComponents = mOnClickOfFilterComponents;
     }
@@ -47,7 +52,19 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
 
     @Override
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
-
+        if(mStatusLists.get(position).getStatusId().equals(BOOKED)){
+            holder.menuName.setText(mContext.getString(R.string.booked));
+        }else if(mStatusLists.get(position).getStatusId().equals(CONFIRM)){
+            holder.menuName.setText(mContext.getString(R.string.Confirmed));
+        }else if(mStatusLists.get(position).getStatusId().equals(COMPLETED)){
+            holder.menuName.setText(mContext.getString(R.string.capitalcompleted));
+        }else if(mStatusLists.get(position).getStatusId().equals(CANCEL)){
+            holder.menuName.setText(mContext.getString(R.string.cancelled));
+        }else if(mStatusLists.get(position).getStatusId().equals(NO_SHOW)){
+            holder.menuName.setText(mContext.getString(R.string.no_show));
+        }else if(mStatusLists.get(position).getStatusId().equals(OTHER)){
+            holder.menuName.setText(mContext.getString(R.string.other));
+        }
         holder.menuName.setText(mStatusLists.get(position).getStatusName());
         holder.menuName.setChecked(mStatusLists.get(position).isSelected());
         holder.menuName.setOnClickListener(new View.OnClickListener() {

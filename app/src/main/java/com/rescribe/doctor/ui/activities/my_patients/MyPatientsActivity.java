@@ -85,6 +85,7 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
             String mActivityCalledFrom = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
             bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM, mActivityCalledFrom);
         }
+
         mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
 

@@ -19,8 +19,10 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
+import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
 import com.rescribe.doctor.ui.fragments.patient.patient_connect.ChatPatientListFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -33,7 +35,7 @@ import butterknife.OnClick;
  * Created by jeetal on 5/3/18.
  */
 
-public class ShowMyPatientsListActivity extends AppCompatActivity implements HelperResponse, DrawerForMyPatients.OnDrawerInteractionListener {
+public class ShowMyPatientsListActivity extends AppCompatActivity implements DrawerForMyPatients.OnDrawerInteractionListener {
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -49,10 +51,9 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Hel
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     private Context mContext;
-    private AppointmentHelper mAppointmentHelper;
-    private DrawerForMyPatients mDrawerForMyPatients;
     Intent mIntent;
     private String mActivityCalledFrom = "";
+    private ChatPatientListFragment mMyPatientsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,94 +64,29 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Hel
     }
 
     private void initialize() {
+
+        // Load Drawer Fragment
+        DrawerForMyPatients mDrawerForMyPatients = DrawerForMyPatients.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.nav_view, mDrawerForMyPatients).commit();
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
+
         mIntent = getIntent();
         if (mIntent.getExtras() != null) {
             mActivityCalledFrom = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
         }
         mContext = ShowMyPatientsListActivity.this;
         titleTextView.setText(getString(R.string.my_patients));
-        mAppointmentHelper = new AppointmentHelper(this, this);
-        RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-        // mRequestSearchPatients.setDocId(2462);
-        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
-        mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
-        setUpNavigationDrawer();
+
+        // Load Patient Fragment
+        Bundle bundle = new Bundle();
+        bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM, mActivityCalledFrom);
+        mMyPatientsFragment = ChatPatientListFragment.newInstance(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
     }
 
-    private void setUpNavigationDrawer() {
-        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                //Called when a drawer's position changes.
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                //Called when a drawer has settled in a completely open state.
-                //The drawer is interactive at this point.
-                // If you have 2 drawers (left and right) you can distinguish
-                // them by using id of the drawerView. int id = drawerView.getId();
-                // id will be your layout's id: for example R.id.left_drawer
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                // Called when a drawer has settled in a completely closed state.
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-                // Called when the drawer motion state changes. The new state will be one of STATE_IDLE, STATE_DRAGGING or STATE_SETTLING.
-            }
-        });
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mDrawerForMyPatients = DrawerForMyPatients.newInstance();
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_view, mDrawerForMyPatients).commit();
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            }
-        }, 100);
-
-    }
-
-    public DrawerLayout getActivityDrawerLayout() {
-        return drawerLayout;
-    }
-
-    @Override
-    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_PATIENT_DATA)) {
-
-            if (customResponse != null) {
-                MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
-                Bundle bundle = new Bundle();
-                bundle.putString(RescribeConstants.ACTIVITY_LAUNCHED_FROM, mActivityCalledFrom);
-                bundle.putParcelable(RescribeConstants.MY_PATIENTS_DATA, myAppointmentsBaseModel);
-                ChatPatientListFragment mMyPatientsFragment = ChatPatientListFragment.newInstance(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
-            }
-
-        }
-    }
-
-    @Override
-    public void onParseError(String mOldDataTag, String errorMessage) {
-        CommonMethods.showToast(mContext, errorMessage);
-
-    }
-
-    @Override
-    public void onServerError(String mOldDataTag, String serverErrorMessage) {
-        CommonMethods.showToast(mContext, serverErrorMessage);
-    }
-
-    @Override
-    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-        CommonMethods.showToast(mContext, serverErrorMessage);
+    public void openDrawer() {
+        if (drawerLayout != null)
+            drawerLayout.openDrawer(GravityCompat.END);
     }
 
     @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
@@ -176,16 +112,18 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Hel
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.closeDrawer(GravityCompat.END);
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
-
     }
 
     @Override
     public void onApply(RequestSearchPatients mRequestSearchPatients, boolean isReset) {
-        drawerLayout.closeDrawers();
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
-        mAppointmentHelper.doGetMyPatients(mRequestSearchPatients);
+        mMyPatientsFragment.apply(mRequestSearchPatients, isReset);
+        if (!isReset) {
+            drawerLayout.closeDrawers();
+        }
     }
 
     @Override

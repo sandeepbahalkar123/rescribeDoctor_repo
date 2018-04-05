@@ -160,7 +160,6 @@ public class RescribeConstants {
     public static final String SMS_DETAIL_LIST = "sms_detail_list";
     public static final String WAITING_LIST_INFO = "waiting_list_info";
     public static final String SMS_PATIENT_LIST_TO_SHOW = "sms_list_to_show";
-    public static final String CLINIC_LIST = "clinic_list";
     public static final String PATIENT_HOS_PAT_ID = "hos_pat_id";
     public static final String PATIENT_OPDID = "patient_opdid";
     public static final String PATIENT_LIST = "patient_list";
@@ -192,6 +191,18 @@ public class RescribeConstants {
 
     public static final String[] SALUTATION = {"Mr. ", "Mrs. ", "Miss ", ""};
     public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};
+
+    public interface APPOINTMENT_STATUS {
+        int BOOKED = 1;
+        int CONFIRM = 2;
+        int COMPLETED = 3;
+        int CANCEL = 4;
+        int NO_SHOW = 5;
+        int OTHER = 6;
+        int IN_CONSULTATION = 7;
+        int IN_QUEUE = 8;
+        int COMING = 9;
+    }
 
     public interface USER_STATUS {
         String ONLINE = "Online";

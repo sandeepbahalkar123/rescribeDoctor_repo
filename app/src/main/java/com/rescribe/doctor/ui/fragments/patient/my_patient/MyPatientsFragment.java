@@ -71,6 +71,7 @@ import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActi
 import static com.rescribe.doctor.ui.fragments.patient.my_patient.SendSmsPatientActivity.RESULT_SEND_SMS;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 
 /**
@@ -101,7 +102,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private MyPatientsAdapter mMyPatientsAdapter;
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
-    public static final int PAGE_START = 0;
     private String searchText = "";
     private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
     private ArrayList<PatientAddToWaitingList> patientsListAddToWaitingLists;
@@ -111,7 +111,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     //-------
     private String mClinicCity;
     private String mClinicArea;
-    private int mCityId;
     private int mClinicId;
     private int mLocationId;
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
@@ -256,6 +255,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             Bundle b = new Bundle();
             b.putString(RescribeConstants.PATIENT_NAME, patientName);
             b.putString(RescribeConstants.PATIENT_INFO, text);
+            b.putInt(RescribeConstants.CLINIC_ID, patientListObject.getClinicId());
             b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
             b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
             Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
@@ -271,19 +271,12 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     patientInfoListObject.setPatientId(String.valueOf(patientList.getPatientId()));
                     patientInfoListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
                     patientsListAddToWaitingLists.add(patientInfoListObject);
-
                 }
             }
 
             if (!patientsListAddToWaitingLists.isEmpty()) {
-
                 showDialogToSelectLocation(mDoctorLocationModel, null);
-
-            } else {
-                //   CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
-
             }
-
         }
     }
 
@@ -471,7 +464,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
             for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
                 if (doctorLocationModel.getLocationId().equals(mLocationId)) {
-                    b.putString(RescribeConstants.CLINIC_ID, String.valueOf(doctorLocationModel.getClinicId()));
+                    b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
                     b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
                     b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
                     break;
@@ -498,9 +491,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     mClinicName = clinicList.getClinicName();
                     mClinicCity = clinicList.getCity();
                     mClinicArea = clinicList.getArea();
-                    mCityId = clinicList.getCityId();
                     CommonMethods.Log("clinicList", "" + clinicList.toString());
-
                 }
             });
             radioGroup.addView(radioButton);
@@ -516,7 +507,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
                         for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
                             if (doctorLocationModel.getLocationId().equals(mLocationId)) {
-                                b.putString(RescribeConstants.CLINIC_ID, String.valueOf(doctorLocationModel.getClinicId()));
+                                b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
                                 b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
                                 b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
                                 break;
@@ -574,6 +565,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         addToWaitingArrayList.add(addToList);
         RequestToAddWaitingList requestForWaitingListPatients = new RequestToAddWaitingList();
         requestForWaitingListPatients.setAddToList(addToWaitingArrayList);
+        requestForWaitingListPatients.setTime(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss));
         requestForWaitingListPatients.setDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
         requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
         mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);
@@ -609,17 +601,19 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT)) {
-
             MyPatientBaseModel myAppointmentsBaseModel = (MyPatientBaseModel) customResponse;
-            ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
-            mMyPatientsAdapter.addAll(mLoadedPatientList, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchText);
 
-            if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
-                emptyListView.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-            } else {
-                recyclerView.setVisibility(View.GONE);
-                emptyListView.setVisibility(View.VISIBLE);
+            if (myAppointmentsBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {
+                ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
+                mMyPatientsAdapter.addAll(mLoadedPatientList, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchText);
+
+                if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
+                    emptyListView.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyListView.setVisibility(View.VISIBLE);
+                }
             }
 
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_ADD_TO_WAITING_LIST)) {

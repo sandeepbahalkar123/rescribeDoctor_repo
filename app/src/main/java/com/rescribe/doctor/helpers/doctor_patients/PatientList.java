@@ -44,10 +44,12 @@ public class PatientList implements Parcelable , Comparable<PatientList>
     @SerializedName("patientEmail")
     @Expose
     private String patientEmail;
+    @SerializedName("clinicId")
+    @Expose
+    private int clinicId;
     @SerializedName("clinicName")
     @Expose
     private String clinicName;
-
     @SerializedName("hospitalPatId")
     @Expose
     private Integer hospitalPatId;
@@ -88,6 +90,7 @@ public class PatientList implements Parcelable , Comparable<PatientList>
         this.patientPhone = ((String) in.readValue((String.class.getClassLoader())));
         this.patientImageUrl = ((String) in.readValue((String.class.getClassLoader())));
         this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
+        this.clinicId = ((int) in.readValue((int.class.getClassLoader())));
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
@@ -191,6 +194,15 @@ public class PatientList implements Parcelable , Comparable<PatientList>
     public void setSpannableString(String spannableString) {
         this.spannableString = spannableString;
     }
+
+    public int getClinicId() {
+        return clinicId;
+    }
+
+    public void setClinicId(int clinicId) {
+        this.clinicId = clinicId;
+    }
+
     public String getClinicName() {
         return clinicName;
     }
@@ -227,6 +239,7 @@ public class PatientList implements Parcelable , Comparable<PatientList>
         dest.writeValue(patientPhone);
         dest.writeValue(patientImageUrl);
         dest.writeValue(patientEmail);
+        dest.writeValue(clinicId);
         dest.writeValue(clinicName);
         dest.writeValue(hospitalPatId);
         dest.writeValue(patientCity);

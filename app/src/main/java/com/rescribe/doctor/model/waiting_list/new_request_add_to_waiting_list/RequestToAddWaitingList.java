@@ -19,6 +19,9 @@ public class RequestToAddWaitingList implements Parcelable,CustomResponse
     @SerializedName("date")
     @Expose
     private String date;
+    @SerializedName("time")
+    @Expose
+    private String time;
     @SerializedName("addToList")
     @Expose
     private ArrayList<AddToList> addToList = new ArrayList<AddToList>();
@@ -42,6 +45,7 @@ public class RequestToAddWaitingList implements Parcelable,CustomResponse
     protected RequestToAddWaitingList(Parcel in) {
         this.docId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.date = ((String) in.readValue((String.class.getClassLoader())));
+        this.time = ((String) in.readValue((String.class.getClassLoader())));
         in.readList(this.addToList, (AddToList.class.getClassLoader()));
     }
 
@@ -64,6 +68,14 @@ public class RequestToAddWaitingList implements Parcelable,CustomResponse
         this.date = date;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public ArrayList<AddToList> getAddToList() {
         return addToList;
     }
@@ -75,6 +87,7 @@ public class RequestToAddWaitingList implements Parcelable,CustomResponse
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(docId);
         dest.writeValue(date);
+        dest.writeValue(time);
         dest.writeList(addToList);
     }
 

@@ -292,13 +292,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                 FilterParams filterParams = new FilterParams();
                 filterParams.setCity(cityList);
                 filterParams.setGender(mSelectedGender);
-                if (clinicFeesSeekBar.getSelectedMaxValue().toString().equals("0") && clinicFeesSeekBar.getSelectedMinValue().toString().equals("0")) {
-                    filterParams.setAge("");
-                } else if (clinicFeesSeekBar.getSelectedMinValue().toString().equals("0") && !clinicFeesSeekBar.getSelectedMaxValue().toString().equals("0")) {
-                    filterParams.setAge(String.valueOf(clinicFeesSeekBar.getSelectedMinValue()) + "-" + clinicFeesSeekBar.getSelectedMaxValue());
-                } else if (!clinicFeesSeekBar.getSelectedMinValue().toString().equals("0") && !clinicFeesSeekBar.getSelectedMaxValue().toString().equals("0")) {
-                    filterParams.setAge(String.valueOf(clinicFeesSeekBar.getSelectedMinValue()) + "-" + clinicFeesSeekBar.getSelectedMaxValue());
-                }
+                filterParams.setAge(String.valueOf(clinicFeesSeekBar.getSelectedMinValue()) + "-" + clinicFeesSeekBar.getSelectedMaxValue());
 
                 mRequestSearchPatients.setFilterParams(filterParams);
                 mRequestSearchPatients.setSortField("Outstanding");

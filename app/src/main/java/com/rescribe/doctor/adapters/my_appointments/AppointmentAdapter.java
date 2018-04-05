@@ -43,6 +43,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.BOOKED;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.COMPLETED;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.NO_SHOW;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.OTHER;
 
 /**
  * Created by jeetal on 31/1/18.
@@ -94,7 +100,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         mBinderHelper.bindAppointmentChildList(viewHolder.swipe_layout, patientObject);
         bind(patientObject, groupPosition, childPosition, viewHolder);
 
-        if (patientObject.getAppointmentStatus().equals(mContext.getString(R.string.booked)) || patientObject.getAppointmentStatus().equals(mContext.getString(R.string.Confirmed))) {
+        if (patientObject.getAppointmentStatusId().equals(BOOKED) || patientObject.getAppointmentStatusId().equals(CONFIRM)) {
             mBinderHelper.unlockSwipe(patientObject.getPatientName());
         } else {
             mBinderHelper.lockSwipe(patientObject.getPatientName());
@@ -191,29 +197,29 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
 
         viewHolder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientList.getGender()));
-        if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
+        if (patientList.getAppointmentStatusId().equals(BOOKED)) {
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.booked));
-        } else if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
+        } else if (patientList.getAppointmentStatusId().equals(COMPLETED)) {
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.capitalcompleted));
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
             viewHolder.waitingIcon.setVisibility(View.INVISIBLE);
-        } else if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.confirmed))) {
+        } else if (patientList.getAppointmentStatusId().equals(CONFIRM)) {
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientList.getAppointmentStatus());
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.confirm_color));
-        } else if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.cancelled))) {
+        } else if (patientList.getAppointmentStatusId().equals(CANCEL)) {
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientList.getAppointmentStatus());
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.cancel_color));
             viewHolder.waitingIcon.setVisibility(View.INVISIBLE);
-        } else if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.no_show))) {
+        } else if (patientList.getAppointmentStatusId().equals(NO_SHOW)) {
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientList.getAppointmentStatus());
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.no_show_color));
-        } else if (patientList.getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.other))) {
+        } else if (patientList.getAppointmentStatusId().equals(OTHER)) {
             viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientList.getAppointmentStatus());
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.other_color));
         }
         viewHolder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-        if (patientList.getOutStandingAmount().equals("0.00")||patientList.getOutStandingAmount().equals("0.0")||patientList.getOutStandingAmount().equals("0")) {
+        if (patientList.getOutStandingAmount().equals("0.00") || patientList.getOutStandingAmount().equals("0.0") || patientList.getOutStandingAmount().equals("0")) {
             viewHolder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
 
@@ -360,7 +366,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         mBinderHelper.bindGroup(groupViewHolder.swipe_layout, appointmentListObject, groupPosition);
         bindGroupItem(appointmentListObject, groupPosition, isExpanded, groupViewHolder);
 
-        if (appointmentListObject.getPatientHeader().getAppointmentStatus().equals("Booked") || appointmentListObject.getPatientHeader().getAppointmentStatus().equals("Confirmed")) {
+        if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(BOOKED) || appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(CONFIRM)) {
             mBinderHelper.unlockSwipe(groupPosition + "");
         } else {
             mBinderHelper.lockSwipe(groupPosition + "");
@@ -413,7 +419,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             if (appointmentListObject.getPatientList().size() == 1) {
                 groupViewHolder.mDownArrow.setVisibility(View.GONE);
                 groupViewHolder.upArrow.setVisibility(View.GONE);
-            }else{
+            } else {
                 groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
                 groupViewHolder.upArrow.setVisibility(View.GONE);
             }
@@ -421,24 +427,24 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
 
         groupViewHolder.mPatientGenderTextView.setText(CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getGender()));
-        if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.book))) {
+        if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(BOOKED)) {
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.booked));
-        } else if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.completed))) {
+        } else if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(COMPLETED)) {
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.capitalcompleted));
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
             groupViewHolder.waitingIcon.setVisibility(View.INVISIBLE);
-        } else if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.confirmed))) {
+        } else if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(CONFIRM)) {
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + appointmentListObject.getPatientHeader().getAppointmentStatus());
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.confirm_color));
-        } else if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.cancelled))) {
+        } else if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(CANCEL)) {
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + appointmentListObject.getPatientHeader().getAppointmentStatus());
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.cancel_color));
             groupViewHolder.waitingIcon.setVisibility(View.INVISIBLE);
-        } else if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.no_show))) {
+        } else if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(NO_SHOW)) {
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + appointmentListObject.getPatientHeader().getAppointmentStatus());
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.no_show_color));
-        } else if (appointmentListObject.getPatientHeader().getAppointmentStatus().toLowerCase().contains(mContext.getString(R.string.other))) {
+        } else if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(OTHER)) {
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + appointmentListObject.getPatientHeader().getAppointmentStatus());
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.other_color));
         }

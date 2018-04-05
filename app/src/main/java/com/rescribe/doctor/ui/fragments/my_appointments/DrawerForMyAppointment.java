@@ -208,9 +208,6 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
                 mListener.onApply(b, true);
 
                 break;
-            case R.id.titleTextView:
-
-                break;
             case R.id.resetButton:
                 configureDrawerFieldsData();
                 for (int i = 0; i < mDrawerAppointmetClinicNameAdapter.getAdapterClinicList().size(); i++) {
@@ -222,43 +219,10 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
                 }
                 mDrawerAppointmentSelectStatusAdapter.notifyDataSetChanged();
                 break;
-            case R.id.sortingHeaderView:
-                break;
-            case R.id.genderHeaderView:
-                break;
-            case R.id.selectStatus:
-                break;
-            case R.id.statusNameRecyclerView:
-                break;
-            case R.id.clinicFeesHeaderView:
-                break;
-            case R.id.selectClinic:
-                break;
-            case R.id.clinicNameRecyclerView:
-                break;
-            case R.id.clinicFeesContentView:
-                break;
-            case R.id.clinicFeesView:
-                break;
-            case R.id.nestedScroll:
-                break;
-            case R.id.hideMainLayout:
-                break;
+
             case R.id.doneButton:
                 hideMainLayout.setVisibility(View.VISIBLE);
                 showSortLayout.setVisibility(View.GONE);
-                break;
-            case R.id.sortingTitleTextView:
-                break;
-            case R.id.resetSortingButton:
-                break;
-            case R.id.sortingView:
-                break;
-            case R.id.sortRecyclerView:
-                break;
-            case R.id.showSortLayout:
-                break;
-            case R.id.mainParentLayout:
                 break;
         }
     }

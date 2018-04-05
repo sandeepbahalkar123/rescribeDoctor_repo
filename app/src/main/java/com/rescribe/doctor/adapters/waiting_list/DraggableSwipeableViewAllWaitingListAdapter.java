@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -215,7 +216,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
 
     @SuppressLint("CheckResult")
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final AbstractDataProvider.Data item = mProvider.getItem(position);
 
         // set listeners
@@ -320,6 +321,20 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         }
 
         holder.setMaxRightSwipeAmount(0);
+
+        // set height programmatically
+
+        ViewTreeObserver vto = holder.mContainer.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                holder.mContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                ViewGroup.LayoutParams layoutParams = holder.mBehindViews.getLayoutParams();
+                layoutParams.height = holder.mContainer.getMeasuredHeight();
+                layoutParams.width = holder.mContainer.getMeasuredWidth();
+                holder.mBehindViews.setLayoutParams(layoutParams);
+            }
+        });
     }
 
     @Override

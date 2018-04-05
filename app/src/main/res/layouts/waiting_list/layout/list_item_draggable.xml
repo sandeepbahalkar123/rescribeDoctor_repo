@@ -11,10 +11,9 @@
     <LinearLayout
         android:id="@+id/behind_views"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_alignBottom="@+id/container"
         android:layout_alignTop="@+id/container"
-        android:gravity="center_vertical"
         tools:visibility="visible">
 
         <android.support.v4.widget.Space
@@ -45,8 +44,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        tools:visibility="gone">
+        android:background="@color/transparent">
 
         <LinearLayout
             android:id="@+id/cardView"
