@@ -4,13 +4,13 @@ package com.rescribe.doctor.model.new_patient;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
 
-public class NewPatientBaseModel implements Parcelable,CustomResponse
-{
+public class NewPatientBaseModel implements Parcelable, CustomResponse {
 
     @SerializedName("common")
     @Expose
@@ -22,7 +22,7 @@ public class NewPatientBaseModel implements Parcelable,CustomResponse
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public NewPatientBaseModel createFromParcel(Parcel in) {
             return new NewPatientBaseModel(in);
@@ -32,8 +32,7 @@ public class NewPatientBaseModel implements Parcelable,CustomResponse
             return (new NewPatientBaseModel[size]);
         }
 
-    }
-    ;
+    };
 
     protected NewPatientBaseModel(Parcel in) {
         this.common = ((Common) in.readValue((Common.class.getClassLoader())));
@@ -65,7 +64,7 @@ public class NewPatientBaseModel implements Parcelable,CustomResponse
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

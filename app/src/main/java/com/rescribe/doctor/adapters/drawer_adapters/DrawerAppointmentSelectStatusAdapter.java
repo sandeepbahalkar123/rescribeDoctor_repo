@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 
 import com.rescribe.doctor.R;
@@ -28,6 +29,7 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
     private ArrayList<StatusList> mStatusLists;
 
     private OnClickOfFilterComponents mOnClickOfFilterComponents;
+
     public DrawerAppointmentSelectStatusAdapter(Context mContext, MyAppointmentsDataModel myAppointmentsDataModel, OnClickOfFilterComponents mOnClickOfFilterComponents) {
         this.mContext = mContext;
         this.myAppointmentsDataModel = myAppointmentsDataModel;
@@ -51,7 +53,16 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
         holder.menuName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mStatusLists.get(position).isSelected())
+                //------
+                if (holder.menuName.isChecked()) {
+                    holder.menuName.setChecked(false);
+                    holder.menuName.setCheckMarkDrawable(R.drawable.unchked);
+                } else {
+                    holder.menuName.setChecked(true);
+                    holder.menuName.setCheckMarkDrawable(R.drawable.check_box);
+                }
+                //------
+                if (mStatusLists.get(position).isSelected())
                     mStatusLists.get(position).setSelected(false);
                 else
                     mStatusLists.get(position).setSelected(true);
@@ -70,7 +81,7 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
     static class ListViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.menuName)
-        CheckBox menuName;
+        CheckedTextView menuName;
         View view;
 
         ListViewHolder(View view) {
@@ -80,11 +91,12 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
         }
     }
 
-    public interface OnClickOfFilterComponents{
+    public interface OnClickOfFilterComponents {
         public void onClickofSelectStatus(ArrayList<StatusList> mStatusLists);
 
     }
-    public ArrayList<StatusList> getAdapterStatusList(){
+
+    public ArrayList<StatusList> getAdapterStatusList() {
         return mStatusLists;
     }
 }

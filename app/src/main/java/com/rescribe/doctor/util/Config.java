@@ -26,6 +26,8 @@ public class Config {
     public static final String DRAG_AND_DROP_API = "doctor/api/appointment/dragDropPatientWaiting";
     public static final String GET_COMPELTED_OPD_URL = "doctor/api/appointment/getCompletedOpd";
     public static final String GET_NEW_PATIENTS_URL = "doctor/api/appointment/getNewPatients";
+    public static final String DELETE_PATIENT_OPD_ATTCHMENTS = "doctor/api/patient/deletePatientOpdAttachment";
+
     public static boolean DEV_BUILD = true;
     //Declared all URL used in app here
 
@@ -53,12 +55,12 @@ public class Config {
     public static final String LOGOUT = "api/doctors/logDoctorSignOut";
     public static final String ACTIVE = "api/doctors/logDoctorActivity";
     public static final String MY_RECORDS_UPLOAD = "api/upload/addOpdAttachments";
-    public static final String  ADD_NEW_PATIENT_WEB_URL = "https://drrescribe.com/app.html#/addpatientmobile/";
-    public static final String  ADD_NEW_PATIENT_WEB_URL_SUCCESS = "addpatientmobilesuccess";
+    public static final String ADD_NEW_PATIENT_WEB_URL = "https://drrescribe.com/app.html#/addpatientmobile/";
+    public static final String ADD_NEW_PATIENT_WEB_URL_SUCCESS = "addpatientmobilesuccess";
 
-    public static final String  GET_DOCTOR_PATIENT_CITY = "doctor/api/patient/getDoctorPatientCity";
+    public static final String GET_DOCTOR_PATIENT_CITY = "doctor/api/patient/getDoctorPatientCity";
 
- }
+}
 
 
 

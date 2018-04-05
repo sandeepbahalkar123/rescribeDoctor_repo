@@ -6,17 +6,18 @@
     android:focusable="false"
     android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <CheckedTextView
         android:id="@+id/menuName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:button="@drawable/checkboxselecter"
-        android:focusable="false"
-        android:layoutDirection="rtl"
-        android:layout_marginStart="@dimen/dp14"
         android:layout_marginEnd="@dimen/dp14"
-        android:paddingTop="@dimen/dp8"
+        android:layout_marginStart="@dimen/dp14"
+        android:checkMark="@drawable/unchked"
+        android:clickable="true"
+        android:focusable="false"
+        android:gravity="center"
         android:paddingBottom="@dimen/dp8"
+        android:paddingTop="@dimen/dp8"
         android:textColor="@color/black"
         android:textSize="@dimen/sp16"
         tools:text="Nagpur" />

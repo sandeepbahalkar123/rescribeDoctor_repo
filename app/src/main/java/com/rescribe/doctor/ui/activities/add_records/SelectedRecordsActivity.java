@@ -14,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +31,9 @@ import android.widget.Toast;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.add_records.SelectedRecordsAdapter;
+import com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.investigation.Image;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
@@ -85,6 +88,8 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     CustomTextView dateTextview;
     @BindView(R.id.addImageView)
     ImageView addImageView;
+    @BindView(R.id.addImageViewRightFab)
+    FloatingActionButton mAddImageViewRightFab;
     private Context mContext;
     private ArrayList<Image> imagePaths = new ArrayList<>();
     ArrayList<Image> imageArrayList;
@@ -185,7 +190,8 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);
         patientId = getIntent().getStringExtra(RescribeConstants.PATIENT_ID);
         mHospitalId = getIntent().getStringExtra(RescribeConstants.CLINIC_ID);
-        addImageView.setVisibility(View.VISIBLE);
+        addImageView.setVisibility(View.GONE);
+        mAddImageViewRightFab.setVisibility(View.VISIBLE);
         patientName = getIntent().getStringExtra(RescribeConstants.PATIENT_NAME);
         patientInfo = getIntent().getStringExtra(RescribeConstants.PATIENT_INFO);
         imageArrayList = getIntent().getParcelableArrayListExtra(RescribeConstants.DOCUMENTS);
@@ -345,7 +351,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         selectedRecordsAdapter.notifyDataSetChanged();
     }
 
-    @OnClick({R.id.coachmark, R.id.uploadButton, R.id.addImageView, R.id.backImageView})
+    @OnClick({R.id.coachmark, R.id.uploadButton, R.id.addImageViewRightFab, R.id.backImageView})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.coachmark:
@@ -369,7 +375,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                     onBackPressed();
                 }
                 break;
-            case R.id.addImageView:
+            case R.id.addImageViewRightFab:
                 dialog.show();
                 break;
             case R.id.backImageView:
@@ -420,7 +426,8 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
 
             if (!image.getParentCaption().isEmpty()) {
                 docCaption = image.getParentCaption();
-            } else docCaption = CommonMethods.stripExtension(CommonMethods.getFileNameFromPath(image.getImagePath()));
+            } else
+                docCaption = CommonMethods.stripExtension(CommonMethods.getFileNameFromPath(image.getImagePath()));
 
             uploadRequest.addHeader("captionname", docCaption);
 
@@ -473,5 +480,6 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
             }
         }
     };
+
 
 }

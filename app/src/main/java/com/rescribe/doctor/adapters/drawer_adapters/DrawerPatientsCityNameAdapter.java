@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.my_patient_filter.CityList;
@@ -51,6 +52,13 @@ public class DrawerPatientsCityNameAdapter extends RecyclerView.Adapter<DrawerPa
         holder.menuName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (holder.menuName.isChecked()) {
+                    holder.menuName.setChecked(false);
+                    holder.menuName.setCheckMarkDrawable(R.drawable.unchked);
+                } else {
+                    holder.menuName.setChecked(true);
+                    holder.menuName.setCheckMarkDrawable(R.drawable.check_box);
+                }
                 cityList.get(holder.getAdapterPosition()).setChecked(holder.menuName.isChecked());
                 cityCheckedListener.onChecked(cityList);
             }
@@ -75,7 +83,7 @@ public class DrawerPatientsCityNameAdapter extends RecyclerView.Adapter<DrawerPa
     static class ListViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.menuName)
-        CheckBox menuName;
+        CheckedTextView menuName;
         View view;
 
         ListViewHolder(View view) {

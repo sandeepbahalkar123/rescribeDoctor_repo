@@ -31,7 +31,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MQTTMessage;
-import com.rescribe.doctor.ui.activities.ZoomImageViewActivity;
+import com.rescribe.doctor.ui.activities.zoom_images.ZoomImageViewActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;

@@ -16,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp14"
+            android:paddingBottom="@dimen/dp10"
             android:paddingEnd="@dimen/dp10"
             android:paddingLeft="@dimen/dp14"
             android:paddingRight="@dimen/dp10"
@@ -23,24 +24,23 @@
             android:paddingTop="@dimen/dp6"
             app:srcCompat="@drawable/back_arrow_a_01" />
 
-
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp14"
-            android:lines="1"
             android:layout_toEndOf="@id/backImageView"
             android:layout_toLeftOf="@+id/dateTextview"
             android:layout_toRightOf="@id/backImageView"
             android:layout_toStartOf="@+id/dateTextview"
-            android:paddingStart="@dimen/dp16"
-            android:paddingEnd="@dimen/dp16"
             android:ellipsize="end"
-            tools:text="@string/appointment_completed"
+            android:lines="1"
+            android:paddingEnd="@dimen/dp16"
+            android:paddingStart="@dimen/dp16"
             android:textColor="@color/white"
             android:textSize="@dimen/sp17"
-            app:customFont="@string/roboto_bold"/>
+            app:customFont="@string/roboto_bold"
+            tools:text="@string/appointment_completed" />
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/userInfoTextView"

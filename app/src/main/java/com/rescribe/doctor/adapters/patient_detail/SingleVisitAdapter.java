@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,20 +27,24 @@ import com.rescribe.doctor.model.case_details.PatientHistory;
 import com.rescribe.doctor.model.case_details.Range;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.case_details.Vital;
-import com.rescribe.doctor.ui.activities.ZoomImageViewActivity;
+import com.rescribe.doctor.ui.activities.zoom_images.MultipleImageWithSwipeAndZoomActivity;
+import com.rescribe.doctor.ui.activities.zoom_images.ZoomImageViewActivity;
 import com.rescribe.doctor.ui.activities.patient_details.WebViewActivity;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import droidninja.filepicker.views.SmoothCheckBox;
 
 import static com.rescribe.doctor.util.CommonMethods.stripExtension;
 
 public class SingleVisitAdapter extends BaseExpandableListAdapter {
+    private OnDeleteAttachments deleteAttachmentsListener;
     private int mPosition = 0;
     private Context mContext;
 
@@ -50,9 +55,17 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
     private List<PatientHistory> mListDataHeader = new ArrayList<>(); // header titles
     public static final int TEXT_LIMIT = 33;
+    // To send all attachments to next screen(viewpager)
+    private List<VisitCommonData> mListDataHeaderAllAttachmentCommonDataList;
+    //---- Delete attachment functionality
+    private boolean mShowDeleteCheckbox = false;
+    private HashSet<VisitCommonData> mSelectedAttachmentToDelete = new HashSet<>();
+    private Integer selectedAttachmentToDeleteGroupPosition;
+    //-------
 
-    public SingleVisitAdapter(Context context, List<PatientHistory> listDataHeader) {
+    public SingleVisitAdapter(Context context, List<PatientHistory> listDataHeader, OnDeleteAttachments deleteAttachmentsListener) {
         this.mContext = context;
+        this.deleteAttachmentsListener = deleteAttachmentsListener;
         //  case details with no data are not added in the list
         for (int i = 0; i < listDataHeader.size(); i++) {
             List<VisitCommonData> commonData = listDataHeader.get(i).getCommonData();
@@ -145,6 +158,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 List<VisitCommonData> attachments = new ArrayList<>();
                 int size1 = mListDataHeader.get(groupPosition).getCommonData().size();
 
+                mListDataHeaderAllAttachmentCommonDataList = mListDataHeader.get(groupPosition).getCommonData();
                 for (int i = 0; i < size1; i++) {
                     attachments.add(mListDataHeader.get(groupPosition).getCommonData().get(i));
                     int check = i + 1;
@@ -299,6 +313,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             item.setTag(attachments.get(i));
             ImageView attachmentImage = (ImageView) item.findViewById(R.id.attachmentImage);
             TextView titleText = (TextView) item.findViewById(R.id.titleText);
+            CheckBox deleteCheckBox = (CheckBox) item.findViewById(R.id.deleteCheckBox);
 
             titleText.setText(stripExtension(attachments.get(i).getName()));
 
@@ -311,6 +326,26 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                     .load(attachments.get(i).getUrl())
                     .apply(requestOptions)
                     .into(attachmentImage);
+
+            //-------
+            if (mShowDeleteCheckbox) {
+                deleteCheckBox.setVisibility(View.VISIBLE);
+                deleteCheckBox.setTag(attachments.get(i));
+                deleteCheckBox.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CheckBox c = (CheckBox) v;
+                        if (c.isChecked()) {
+                            mSelectedAttachmentToDelete.add((VisitCommonData) v.getTag());
+                        } else {
+                            mSelectedAttachmentToDelete.remove((VisitCommonData) v.getTag());
+                        }
+                    }
+                });
+            } else {
+                deleteCheckBox.setVisibility(View.GONE);
+            }
+            //-------
 
             //dialog is opened to see info of vitals , Note : BpMin and BpMax is together shown as Bp
             item.setOnClickListener(new View.OnClickListener() {
@@ -328,11 +363,22 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                         mContext.startActivity(intent);
                     } else {
                         // do stuff here
-                        Intent intent = new Intent(mContext, ZoomImageViewActivity.class);
+                        //  Intent intent = new Intent(mContext, ZoomImageViewActivity.class);
+                        Intent intent = new Intent(mContext, MultipleImageWithSwipeAndZoomActivity.class);
                         intent.putExtra(RescribeConstants.DOCUMENTS, tag);
                         intent.putExtra(RescribeConstants.IS_URL, true);
+                        intent.putParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST, new ArrayList<VisitCommonData>(mListDataHeaderAllAttachmentCommonDataList));
                         mContext.startActivity(intent);
                     }
+                }
+            });
+
+            item.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mShowDeleteCheckbox = mShowDeleteCheckbox ? false : true;
+                    notifyDataSetChanged();
+                    return false;
                 }
             });
 
@@ -555,6 +601,15 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                         groupViewHolder.mDetailFirstPoint.setText(text.substring(0, TEXT_LIMIT - 1) + "...");
                     else groupViewHolder.mDetailFirstPoint.setText(text);
 
+                    //-----Show delete button on group to delete child attachments---
+                    if (mShowDeleteCheckbox) {
+                        groupViewHolder.mDeleteAttachments.setVisibility(View.VISIBLE);
+                        groupViewHolder.mDeleteAttachments.setTag(groupPosition);
+                    } else {
+                        groupViewHolder.mDeleteAttachments.setVisibility(View.GONE);
+                    }
+                    //--------
+
                 } else if (mVisitDetailList.size() > 1) {
                     int length = mVisitDetailList.get(0).getName().length();
                     String text = mVisitDetailList.get(0).getName().substring(0, length < TEXT_LIMIT ? length - 1 : TEXT_LIMIT - 1) + "...";
@@ -567,6 +622,18 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 }
             }
         }
+
+        //-------delete attachment click listerner-----
+        groupViewHolder.mDeleteAttachments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedAttachmentToDeleteGroupPosition = (Integer) v.getTag();
+                if (groupViewHolder.mDeleteAttachments.getVisibility() == View.VISIBLE) {
+                    deleteAttachmentsListener.deleteAttachments(mSelectedAttachmentToDelete);
+                }
+            }
+        });
+        //------------
         return convertView;
     }
 
@@ -594,6 +661,8 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         View mDivider;
         @BindView(R.id.detailFirstPoint)
         TextView mDetailFirstPoint;
+        @BindView(R.id.deleteAttachments)
+        ImageView mDeleteAttachments;
 
         GroupViewHolder(View view) {
             ButterKnife.bind(this, view);
@@ -899,4 +968,30 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         return mListDataHeader;
     }
 
+
+    public interface OnDeleteAttachments {
+        public void deleteAttachments(HashSet<VisitCommonData> list);
+    }
+
+    public void removeSelectedAttachmentFromList() {
+        PatientHistory patientHistory = mListDataHeader.get(selectedAttachmentToDeleteGroupPosition);
+        if (patientHistory.getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_ATTACHMENTS)) {
+            List<VisitCommonData> commonData = patientHistory.getCommonData();
+            for (VisitCommonData objToRemove :
+                    mSelectedAttachmentToDelete) {
+                int position = -1;
+                for (int i = 0; i < commonData.size(); i++) {
+                    if (objToRemove.getId() == commonData.get(i).getId()) {
+                        position = i;
+                        break;
+                    }
+                }
+                if (position != -1)
+                    commonData.remove(position);
+            }
+        }
+        mSelectedAttachmentToDelete.clear();
+        mShowDeleteCheckbox = false;
+        notifyDataSetChanged();
+    }
 }

@@ -15,6 +15,7 @@ public class RescribeConstants {
     public static final String DD_MM_YYYY = "dd-MM-yyyy";
     public static final String YES = "yes";
     public static final String DOCUMENTS = "documents";
+    public static final String ATTACHMENTS_LIST = "ATTACHMENTS_LIST";
     public static final String ALERT = "alert";
     public static final String ID = "_id";
     public static final String USER_ID = "User-ID";
@@ -110,6 +111,8 @@ public class RescribeConstants {
     public static final String TASK_GET_COMPLETED_OPD = RescribeConstants.BLANK + 32;
     public static final String TASK_GET_NEW_PATIENT_LIST = RescribeConstants.BLANK + 33;
     public static final String TASK_GET_DOCTOR_PATIENT_CITY = RescribeConstants.BLANK + 34;
+    public static final String TASK_ADD_NEW_PATIENT = RescribeConstants.BLANK + 35;
+    public static final String TASK_DELETE_PATIENT_OPD_ATTCHMENTS = RescribeConstants.BLANK + 36;
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -288,6 +291,23 @@ public class RescribeConstants {
         String OPD_SAVED = "opd saved";
         String ONLY_ATTACHMENTS = "only attachments";
         String NO_SHOW = "no show";
+    }
+
+    public interface ADD_NEW_PATIENT {
+        String TABLE_NAME = "addNewPatient";
+        String FIRST_NAME = "firstName";
+        String MIDDLE_NAME = "middleName";
+        String LAST_NAME = "lastName";
+        String MOBILE_NO = "mobileNo";
+        String AGE = "age";
+        String GENDER = "gender";
+        String REFERENCE_ID = "referenceID";
+        String PATIENT_OFFLINE_ID = "patientOfflineID";
+        String CREATED_TIME_STAMP = "createdTimeStamp";
+        String CLINIC_ID = "clinicID";
+        String LOCATION_ID = "locationID";
+        String CITY_D = "cityID";
+        String DOC_ID = "docID";
     }
 }
 

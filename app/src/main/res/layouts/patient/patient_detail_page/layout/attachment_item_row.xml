@@ -18,21 +18,32 @@
             android:id="@+id/attachmentImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/titleText"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:layout_above="@+id/titleText"
             tools:src="@drawable/ic_file" />
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:id="@+id/titleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:ellipsize="end"
             android:gravity="center"
-            android:layout_alignParentBottom="true"
             android:lines="1"
             android:padding="@dimen/dp4"
             tools:text="Attachment" />
+
+        <CheckBox
+            android:button="@drawable/checkboxselecter"
+            android:id="@+id/deleteCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:paddingRight="@dimen/dp5"
+            android:paddingTop="@dimen/dp10"
+            android:visibility="visible" />
 
     </droidninja.filepicker.views.SquareRelativeLayout>
 

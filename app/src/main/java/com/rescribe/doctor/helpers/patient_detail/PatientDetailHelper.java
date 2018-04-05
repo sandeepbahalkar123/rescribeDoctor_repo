@@ -1,12 +1,16 @@
 package com.rescribe.doctor.helpers.patient_detail;
 
 import android.content.Context;
+
 import com.android.volley.Request;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.case_details.CaseDetailsModel;
+import com.rescribe.doctor.model.case_details.VisitCommonData;
+import com.rescribe.doctor.model.patient.delete_attachment_req_model.DeleteAttachmentReqModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryDataModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
@@ -20,6 +24,7 @@ import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -58,12 +63,15 @@ public class PatientDetailHelper implements ConnectionListener {
 
                         if (patientHistoryInfoMonthContainer != null) {
                             Map<String, ArrayList<PatientHistoryInfo>> monthWiseSortedPatientHistory = patientHistoryInfoMonthContainer.getMonthWiseSortedPatientHistory();
-                            if(monthWiseSortedPatientHistory.size()>0)
+                            if (monthWiseSortedPatientHistory.size() > 0)
                                 yearWiseSortedPatientHistoryInfo.put(patientHistoryInfoMonthContainer.getYear(), monthWiseSortedPatientHistory);
                         }
                         mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                     }
                     break;
+                    default:
+                        mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
+
                 }
                 break;
             case ConnectionListener.PARSE_ERR0R:
@@ -98,7 +106,7 @@ public class PatientDetailHelper implements ConnectionListener {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ONE_DAY_VISIT, Request.Method.GET, false);
         mConnectionFactory.setHeaderParams();
         String docId = (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
-        mConnectionFactory.setUrl(Config.ONE_DAY_VISIT_URL + opdId + "&patientId="+ patientID+"&docId="+docId);
+        mConnectionFactory.setUrl(Config.ONE_DAY_VISIT_URL + opdId + "&patientId=" + patientID + "&docId=" + docId);
         mConnectionFactory.createConnection(RescribeConstants.TASK_ONE_DAY_VISIT);
        /* try {
             InputStream is = mContext.getAssets().open("patient_details.json");
@@ -129,6 +137,29 @@ public class PatientDetailHelper implements ConnectionListener {
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_PATIENT_HISTORY);
         mConnectionFactory.createConnection(RescribeConstants.TASK_PATIENT_HISTORY);
+    }
+
+    //get case study list
+    public void deleteSelectedAttachments(HashSet<VisitCommonData> list, String patientID) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_PATIENT_OPD_ATTCHMENTS, Request.Method.POST, true);
+
+        ArrayList<DeleteAttachmentReqModel.AttachmentData> deleteAttList = new ArrayList<>();
+        DeleteAttachmentReqModel delete = new DeleteAttachmentReqModel();
+
+        for (VisitCommonData s : list) {
+            DeleteAttachmentReqModel.AttachmentData i = new DeleteAttachmentReqModel.AttachmentData();
+            i.setId("" + s.getId());
+            String url = s.getUrl();
+            i.setFileName("" + url.substring(url.lastIndexOf('/') + 1, url.length()));
+            i.setPatientId(Integer.parseInt(patientID));
+            deleteAttList.add(i);
+        }
+        delete.setAttachmentDetails(deleteAttList);
+
+        mConnectionFactory.setPostParams(delete);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.DELETE_PATIENT_OPD_ATTCHMENTS);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_DELETE_PATIENT_OPD_ATTCHMENTS);
     }
 }
 

@@ -3,11 +3,11 @@ package com.rescribe.doctor.model.new_patient;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class NewPatientsDetail implements Parcelable
-{
+public class NewPatientsDetail implements Parcelable {
 
     @SerializedName("salutation")
     @Expose
@@ -52,7 +52,7 @@ public class NewPatientsDetail implements Parcelable
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public NewPatientsDetail createFromParcel(Parcel in) {
             return new NewPatientsDetail(in);
@@ -62,8 +62,7 @@ public class NewPatientsDetail implements Parcelable
             return (new NewPatientsDetail[size]);
         }
 
-    }
-    ;
+    };
 
     protected NewPatientsDetail(Parcel in) {
         this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -211,7 +210,7 @@ public class NewPatientsDetail implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

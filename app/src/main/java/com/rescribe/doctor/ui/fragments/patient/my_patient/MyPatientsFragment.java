@@ -1,7 +1,6 @@
 package com.rescribe.doctor.ui.fragments.patient.my_patient;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -49,8 +48,8 @@ import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.Pa
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.singleton.RescribeApplication;
-import com.rescribe.doctor.ui.activities.my_patients.AddNewPatientWebViewActivity;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientActivity;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
@@ -67,7 +66,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.rescribe.doctor.singleton.RescribeApplication.getDoctorLocationModels;
-import static com.rescribe.doctor.ui.activities.my_patients.AddNewPatientWebViewActivity.ADD_PATIENT_REQUEST;
+import static com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity.ADD_PATIENT_REQUEST;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.ui.fragments.patient.my_patient.SendSmsPatientActivity.RESULT_SEND_SMS;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
@@ -525,6 +524,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                         }
 
                         Intent i = new Intent(getActivity(), AddNewPatientWebViewActivity.class);
+                        //  Intent i = new Intent(getActivity(), AddNewPatientActivity.class);
                         i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
                         getActivity().startActivityForResult(i, ADD_PATIENT_REQUEST);
 

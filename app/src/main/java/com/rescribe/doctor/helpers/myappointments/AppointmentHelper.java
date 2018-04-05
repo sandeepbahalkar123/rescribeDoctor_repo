@@ -5,12 +5,14 @@ import android.content.Context;
 import com.android.volley.Request;
 import com.google.android.gms.location.LocationRequest;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.my_appointments.RequestAppointmentData;
 import com.rescribe.doctor.model.my_appointments.request_cancel_or_complete_appointment.RequestAppointmentCancelModel;
 import com.rescribe.doctor.model.my_patient_filter.LocationsRequest;
+import com.rescribe.doctor.model.patient.add_new_patient.AddNewPatient;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.RequestSendSmsModel;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
@@ -22,6 +24,7 @@ import com.rescribe.doctor.network.ConnectionFactory;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
+import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -202,6 +205,9 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_DOCTOR_PATIENT_CITY);
     }
 
+    public void addNewPatient(AddNewPatient obj) {
+        AppDBHelper.getInstance(mContext).addNewPatient(obj,mHelperResponseManager,RescribeConstants.TASK_ADD_NEW_PATIENT);
+    }
 }
 
 

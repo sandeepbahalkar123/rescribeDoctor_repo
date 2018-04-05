@@ -258,10 +258,12 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                 ArrayList<CityList> cityList = locationsModel.getData().getCityList();
                 mDrawerPatientsCityNameAdapter = new DrawerPatientsCityNameAdapter(DrawerForMyPatients.this, cityList);
                 LinearLayoutManager layoutManagerClinicList = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-                locationContentRecycleView.setLayoutManager(layoutManagerClinicList);
-                locationContentRecycleView.setHasFixedSize(true);
-                locationContentRecycleView.setNestedScrollingEnabled(false);
-                locationContentRecycleView.setAdapter(mDrawerPatientsCityNameAdapter);
+                if (locationContentRecycleView != null) {
+                    locationContentRecycleView.setLayoutManager(layoutManagerClinicList);
+                    locationContentRecycleView.setHasFixedSize(true);
+                    locationContentRecycleView.setNestedScrollingEnabled(false);
+                    locationContentRecycleView.setAdapter(mDrawerPatientsCityNameAdapter);
+                }
             }
         }
     }

@@ -7,9 +7,12 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
+import com.rescribe.doctor.model.patient.add_new_patient.AddNewPatient;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -512,4 +515,34 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String countQuery = "select * from " + CHAT_MESSAGES.CHAT_MESSAGES_TABLE + " where " + CHAT_MESSAGES.USER2ID + " = " + user2Id;
         return db.rawQuery(countQuery, null);
     }
+
+    //-----store patient in db : start----
+    public void addNewPatient(AddNewPatient newPatient, HelperResponse mHelperResponseManager, String taskAddNewPatient) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COLUMN_ID, newPatient.getId());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.FIRST_NAME, newPatient.getFirstName());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.MIDDLE_NAME, newPatient.getMiddleName());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.LAST_NAME, newPatient.getLastName());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.MOBILE_NO, newPatient.getContactNo());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.AGE, newPatient.getAge());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.GENDER, newPatient.getGender());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.REFERENCE_ID, newPatient.getReferenceID());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.CLINIC_ID, newPatient.getClinicID());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.LOCATION_ID, newPatient.getLocationID());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.CITY_D, newPatient.getCityID());
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.DOC_ID, newPatient.getDocID());
+
+        long insert = db.insert(RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME, null, contentValues);
+
+        if (insert != -1) {
+            mHelperResponseManager.onSuccess(taskAddNewPatient, newPatient);
+        } else {
+            mHelperResponseManager.onServerError(taskAddNewPatient, "");
+        }
+    }
+
+    //-----store patient in db : end----
 }

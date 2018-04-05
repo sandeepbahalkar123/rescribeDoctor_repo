@@ -18,6 +18,8 @@ import com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter;
 import com.rescribe.doctor.helpers.patient_detail.PatientDetailHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.Common;
+import com.rescribe.doctor.model.CommonBaseModelContainer;
 import com.rescribe.doctor.model.case_details.PatientHistory;
 import com.rescribe.doctor.model.case_details.Range;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
@@ -31,6 +33,7 @@ import com.rescribe.doctor.util.RescribeConstants;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,7 +49,7 @@ import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.TEX
  */
 
 
-public class SingleVisitDetailsActivity extends AppCompatActivity implements HelperResponse {
+public class SingleVisitDetailsActivity extends AppCompatActivity implements HelperResponse, SingleVisitAdapter.OnDeleteAttachments {
 
     @BindView(R.id.historyExpandableListView)
     ExpandableListView mHistoryExpandableListView;
@@ -83,6 +86,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String opdID;
     private String mHospitalPatId;
     private String mOpdTime;
+    private PatientDetailHelper mSingleVisitDetailHelper;
 
 
     @Override
@@ -124,7 +128,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             }
         }
 
-        PatientDetailHelper mSingleVisitDetailHelper = new PatientDetailHelper(this, this);
+        mSingleVisitDetailHelper = new PatientDetailHelper(this, this);
         mSingleVisitDetailHelper.doGetOneDayVisit(opdID, patientID);
 
         // title.setText(getString(R.string.visit_details));
@@ -176,102 +180,111 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        VisitData visitData = (VisitData) customResponse;
-        if (visitData != null) {
-            mHistoryExpandableListView.setVisibility(View.VISIBLE);
-            mNoRecordAvailable.setVisibility(View.GONE);
-        } else {
-            mHistoryExpandableListView.setVisibility(View.GONE);
-            mNoRecordAvailable.setVisibility(View.VISIBLE);
-        }
-        List<PatientHistory> patientHistoryList = visitData.getPatientHistory();
-        List<Vital> vitalSortedList = new ArrayList<>();
-        // Bpmin and Bpmax is clubed together as Bp in vitals
-        for (int i = 0; i < patientHistoryList.size(); i++) {
-            if (patientHistoryList.get(i).getVitals() != null) {
-                String pos = null;
-
-                List<Vital> vitalList = patientHistoryList.get(i).getVitals();
-                for (int j = 0; j < vitalList.size(); j++) {
-
-                    Vital dataObject = vitalList.get(j);
-                    if (dataObject.getUnitName().contains(getString(R.string.bp_max))) {
-                        setBpMax(true);
-                    }
-                    if (dataObject.getUnitName().contains(getString(R.string.bp_min))) {
-                        setBpMin(true);
-                    }
-                }
-
-                for (int j = 0; j < vitalList.size(); j++) {
-                    Vital dataObject = vitalList.get(j);
-                    if (isBpMax() && isBpMin()) {
-                        if (dataObject.getUnitName().contains(getString(R.string.bp_max)) || dataObject.getUnitName().contains(getString(R.string.bp_min))) {
-                            Vital vital = new Vital();
-                            if (pos == null) {
-                                vital.setUnitName(getString(R.string.bp) + " " + dataObject.getUnitValue());
-                                vital.setUnitValue(dataObject.getUnitValue());
-                                vital.setCategory(dataObject.getCategory());
-                                vital.setIcon(dataObject.getIcon());
-                                for (int k = 0; k < dataObject.getRanges().size(); k++) {
-                                    dataObject.getRanges().get(k).setNameOfVital(getString(R.string.bp_max));
-                                }
-                                vital.setRanges(dataObject.getRanges());
-                                vital.setDisplayName(dataObject.getDisplayName());
-                                vitalSortedList.add(vital);
-                                pos = String.valueOf(j);
-                            } else {
-                                Vital previousData = vitalSortedList.get(Integer.parseInt(pos));
-                                String unitValue = previousData.getUnitValue();
-                                String unitCategory = previousData.getCategory();
-                                unitCategory = unitCategory + getString(R.string.colon_sign) + dataObject.getCategory();
-                                unitValue = unitValue + "/" + dataObject.getUnitValue();
-                                previousData.setUnitName(getString(R.string.bp));
-                                previousData.setUnitValue(unitValue);
-                                previousData.setCategory(unitCategory);
-                                List<Range> ranges = previousData.getRanges();
-                                ranges.addAll(dataObject.getRanges());
-                                vitalSortedList.set(Integer.parseInt(pos), previousData);
-                            }
-                        } else {
-                            Vital vital = new Vital();
-                            vital.setUnitName(vitalList.get(j).getDisplayName());
-                            vital.setUnitValue(vitalList.get(j).getUnitValue());
-                            vital.setCategory(vitalList.get(j).getCategory());
-                            vital.setRanges(vitalList.get(j).getRanges());
-                            vital.setIcon(vitalList.get(j).getIcon());
-                            vital.setDisplayName(vitalList.get(j).getDisplayName());
-                            vitalSortedList.add(vital);
-                        }
-
-                    } else {
-                        Vital vital;
-                        if (dataObject.getUnitName().contains(getString(R.string.bp_max))) {
-                            vital = vitalList.get(j);
-                            vital.setUnitName("Systolic BP" + " " + vital.getUnitValue());
-                            vital.setDisplayName("Systolic BP");
-                            vitalSortedList.add(vital);
-                        } else if (dataObject.getUnitName().contains(getString(R.string.bp_min))) {
-                            vital = vitalList.get(j);
-                            vital.setUnitName("Diastolic BP" + " " + vital.getUnitValue());
-                            vital.setDisplayName("Diastolic BP");
-                            vitalSortedList.add(vital);
-                        } else {
-                            vital = vitalList.get(j);
-                            vital.setUnitName(vitalList.get(j).getDisplayName());
-                            vitalSortedList.add(vital);
-                        }
-                    }
-                }
-                patientHistoryList.get(i).setVitals(vitalSortedList);
+        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DELETE_PATIENT_OPD_ATTCHMENTS)) {
+            CommonBaseModelContainer common = (CommonBaseModelContainer) customResponse;
+            if (common.getCommonRespose().isSuccess()) {
+                mSingleVisitAdapter.removeSelectedAttachmentFromList();
             }
+            CommonMethods.showToast(this, common.getCommonRespose().getStatusMessage());
+        } else {
+            VisitData visitData = (VisitData) customResponse;
+            if (visitData != null) {
+                mHistoryExpandableListView.setVisibility(View.VISIBLE);
+                mNoRecordAvailable.setVisibility(View.GONE);
+            } else {
+                mHistoryExpandableListView.setVisibility(View.GONE);
+                mNoRecordAvailable.setVisibility(View.VISIBLE);
+            }
+            List<PatientHistory> patientHistoryList = visitData.getPatientHistory();
+            List<Vital> vitalSortedList = new ArrayList<>();
+            // Bpmin and Bpmax is clubed together as Bp in vitals
+            for (int i = 0; i < patientHistoryList.size(); i++) {
+                if (patientHistoryList.get(i).getVitals() != null) {
+                    String pos = null;
+
+                    List<Vital> vitalList = patientHistoryList.get(i).getVitals();
+                    for (int j = 0; j < vitalList.size(); j++) {
+
+                        Vital dataObject = vitalList.get(j);
+                        if (dataObject.getUnitName().contains(getString(R.string.bp_max))) {
+                            setBpMax(true);
+                        }
+                        if (dataObject.getUnitName().contains(getString(R.string.bp_min))) {
+                            setBpMin(true);
+                        }
+                    }
+
+                    for (int j = 0; j < vitalList.size(); j++) {
+                        Vital dataObject = vitalList.get(j);
+                        if (isBpMax() && isBpMin()) {
+                            if (dataObject.getUnitName().contains(getString(R.string.bp_max)) || dataObject.getUnitName().contains(getString(R.string.bp_min))) {
+                                Vital vital = new Vital();
+                                if (pos == null) {
+                                    vital.setUnitName(getString(R.string.bp) + " " + dataObject.getUnitValue());
+                                    vital.setUnitValue(dataObject.getUnitValue());
+                                    vital.setCategory(dataObject.getCategory());
+                                    vital.setIcon(dataObject.getIcon());
+                                    for (int k = 0; k < dataObject.getRanges().size(); k++) {
+                                        dataObject.getRanges().get(k).setNameOfVital(getString(R.string.bp_max));
+                                    }
+                                    vital.setRanges(dataObject.getRanges());
+                                    vital.setDisplayName(dataObject.getDisplayName());
+                                    vitalSortedList.add(vital);
+                                    pos = String.valueOf(j);
+                                } else {
+                                    Vital previousData = vitalSortedList.get(Integer.parseInt(pos));
+                                    String unitValue = previousData.getUnitValue();
+                                    String unitCategory = previousData.getCategory();
+                                    unitCategory = unitCategory + getString(R.string.colon_sign) + dataObject.getCategory();
+                                    unitValue = unitValue + "/" + dataObject.getUnitValue();
+                                    previousData.setUnitName(getString(R.string.bp));
+                                    previousData.setUnitValue(unitValue);
+                                    previousData.setCategory(unitCategory);
+                                    List<Range> ranges = previousData.getRanges();
+                                    ranges.addAll(dataObject.getRanges());
+                                    vitalSortedList.set(Integer.parseInt(pos), previousData);
+                                }
+                            } else {
+                                Vital vital = new Vital();
+                                vital.setUnitName(vitalList.get(j).getDisplayName());
+                                vital.setUnitValue(vitalList.get(j).getUnitValue());
+                                vital.setCategory(vitalList.get(j).getCategory());
+                                vital.setRanges(vitalList.get(j).getRanges());
+                                vital.setIcon(vitalList.get(j).getIcon());
+                                vital.setDisplayName(vitalList.get(j).getDisplayName());
+                                vitalSortedList.add(vital);
+                            }
+
+                        } else {
+                            Vital vital;
+                            if (dataObject.getUnitName().contains(getString(R.string.bp_max))) {
+                                vital = vitalList.get(j);
+                                vital.setUnitName("Systolic BP" + " " + vital.getUnitValue());
+                                vital.setDisplayName("Systolic BP");
+                                vitalSortedList.add(vital);
+                            } else if (dataObject.getUnitName().contains(getString(R.string.bp_min))) {
+                                vital = vitalList.get(j);
+                                vital.setUnitName("Diastolic BP" + " " + vital.getUnitValue());
+                                vital.setDisplayName("Diastolic BP");
+                                vitalSortedList.add(vital);
+                            } else {
+                                vital = vitalList.get(j);
+                                vital.setUnitName(vitalList.get(j).getDisplayName());
+                                vitalSortedList.add(vital);
+                            }
+                        }
+                    }
+                    patientHistoryList.get(i).setVitals(vitalSortedList);
+                }
+            }
+
+
+            mSingleVisitAdapter = new SingleVisitAdapter(this, patientHistoryList, this);
+            mHistoryExpandableListView.setAdapter(mSingleVisitAdapter);
+            addRecordButton.setVisibility(View.VISIBLE);
+
+
         }
-
-
-        mSingleVisitAdapter = new SingleVisitAdapter(this, patientHistoryList);
-        mHistoryExpandableListView.setAdapter(mSingleVisitAdapter);
-        addRecordButton.setVisibility(View.VISIBLE);
-
 
     }
 
@@ -337,6 +350,11 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    public void deleteAttachments(HashSet<VisitCommonData> list) {
+        mSingleVisitDetailHelper.deleteSelectedAttachments(list, patientID);
     }
 }
 

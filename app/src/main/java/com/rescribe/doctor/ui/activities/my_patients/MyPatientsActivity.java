@@ -1,7 +1,6 @@
 package com.rescribe.doctor.ui.activities.my_patients;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -31,7 +30,7 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.rescribe.doctor.ui.activities.my_patients.AddNewPatientWebViewActivity.ADD_PATIENT_REQUEST;
+import static com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity.ADD_PATIENT_REQUEST;
 
 /**
  * Created by jeetal on 31/1/18.

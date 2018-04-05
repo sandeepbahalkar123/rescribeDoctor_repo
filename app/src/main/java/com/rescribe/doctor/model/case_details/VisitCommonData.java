@@ -1,11 +1,14 @@
 
 package com.rescribe.doctor.model.case_details;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
 
-public class VisitCommonData implements CustomResponse {
+public class VisitCommonData implements CustomResponse, Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -29,6 +32,30 @@ public class VisitCommonData implements CustomResponse {
     @Expose
     private String medicineTypeName = "";
     private String vitalValue;
+
+    public final static Creator<VisitCommonData> CREATOR = new Creator<VisitCommonData>() {
+
+        @SuppressWarnings({
+                "unchecked"
+        })
+        public VisitCommonData createFromParcel(Parcel in) {
+            VisitCommonData instance = new VisitCommonData();
+            instance.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
+            instance.name = ((String) in.readValue((String.class.getClassLoader())));
+            instance.url = ((String) in.readValue((String.class.getClassLoader())));
+            instance.medicinename = ((String) in.readValue((String.class.getClassLoader())));
+            instance.remarks = ((String) in.readValue((String.class.getClassLoader())));
+            instance.dosage = ((String) in.readValue((String.class.getClassLoader())));
+            instance.medicineTypeName = ((String) in.readValue((String.class.getClassLoader())));
+            instance.vitalValue = ((String) in.readValue((String.class.getClassLoader())));
+            return instance;
+        }
+
+        public VisitCommonData[] newArray(int size) {
+            return (new VisitCommonData[size]);
+        }
+
+    };
 
 
     public String getUrl() {
@@ -93,6 +120,22 @@ public class VisitCommonData implements CustomResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(id);
+        dest.writeValue(name);
+        dest.writeValue(url);
+        dest.writeValue(medicinename);
+        dest.writeValue(remarks);
+        dest.writeValue(dosage);
+        dest.writeValue(medicineTypeName);
+        dest.writeValue(vitalValue);
+    }
+
+    public int describeContents() {
+        return 0;
     }
 
 }

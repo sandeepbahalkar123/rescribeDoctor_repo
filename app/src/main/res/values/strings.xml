@@ -235,6 +235,7 @@
     <string name="middle_name">Middle Name</string>
     <string name="last_name">Last Name</string>
     <string name="reference_id">Reference ID.</string>
+    <string name="add_patient_offline">No internet connection found, still you can add patient offline.</string>
 
 
 </resources>

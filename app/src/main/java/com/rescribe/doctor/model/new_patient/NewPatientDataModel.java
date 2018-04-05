@@ -3,14 +3,15 @@ package com.rescribe.doctor.model.new_patient;
 
 import java.util.ArrayList;
 import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class NewPatientDataModel implements Parcelable
-{
+public class NewPatientDataModel implements Parcelable {
 
     @SerializedName("newPatientsDetails")
     @Expose
@@ -19,7 +20,7 @@ public class NewPatientDataModel implements Parcelable
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public NewPatientDataModel createFromParcel(Parcel in) {
             return new NewPatientDataModel(in);
@@ -29,8 +30,7 @@ public class NewPatientDataModel implements Parcelable
             return (new NewPatientDataModel[size]);
         }
 
-    }
-    ;
+    };
 
     protected NewPatientDataModel(Parcel in) {
         in.readList(this.newPatientsDetails, (NewPatientsDetail.class.getClassLoader()));
@@ -52,7 +52,7 @@ public class NewPatientDataModel implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }
