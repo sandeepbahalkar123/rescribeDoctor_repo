@@ -101,9 +101,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     private PatientHistoryActivity mParentActivity;
     private String mLocationId;
-    private String mHospitalId;
+    private int mHospitalId;
     private String mPatientId;
-    private int mClinicId;
     private String mHospitalPatId;
 
     public PatientHistoryListFragmentContainer() {
@@ -125,13 +124,12 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     public void initialize() {
         mPatientId = getArguments().getString(RescribeConstants.PATIENT_ID);
-        mClinicId = getArguments().getInt(RescribeConstants.CLINIC_ID);
+        mHospitalId = getArguments().getInt(RescribeConstants.CLINIC_ID);
 
         if (getArguments().getString(RescribeConstants.PATIENT_NAME) != null) {
             titleTextView.setText(getArguments().getString(RescribeConstants.PATIENT_NAME));
             userInfoTextView.setVisibility(View.VISIBLE);
             userInfoTextView.setText(getArguments().getString(RescribeConstants.PATIENT_INFO));
-            mHospitalId = getArguments().getString(RescribeConstants.CLINIC_ID);
             mHospitalPatId = getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID);
         }
 
@@ -266,24 +264,25 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
         ArrayList<DoctorLocationModel> mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
-        ArrayList<DoctorLocationModel> myDoctorLocations = getMyDoctorLocations(mDoctorLocationModel, mClinicId);
+        ArrayList<DoctorLocationModel> myDoctorLocations = getMyDoctorLocations(mDoctorLocationModel, mHospitalId);
         if (myDoctorLocations.size() == 1) {
             mLocationId = String.valueOf(myDoctorLocations.get(0).getLocationId());
-            mHospitalId = String.valueOf(myDoctorLocations.get(0).getClinicId());
+            mHospitalId = myDoctorLocations.get(0).getClinicId();
             callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth);
         } else {
-            showDialogToSelectLocation(getMyDoctorLocations(mDoctorLocationModel, mClinicId), year, monthOfYear + 1, dayOfMonth);
+            showDialogToSelectLocation(getMyDoctorLocations(mDoctorLocationModel, mHospitalId), year, monthOfYear + 1, dayOfMonth);
         }
     }
 
     private ArrayList<DoctorLocationModel> getMyDoctorLocations(ArrayList<DoctorLocationModel> mDoctorLocationModel, int mClinicId) {
         ArrayList<DoctorLocationModel> mDoctorLocations = new ArrayList<>();
         for (DoctorLocationModel doctorLocationModel : mDoctorLocationModel) {
-            if (doctorLocationModel.getClinicId() == mClinicId) {
+            if (mClinicId == 0) {
+                mDoctorLocations.add(doctorLocationModel);
+            } else if (doctorLocationModel.getClinicId() == mClinicId) {
                 mDoctorLocations.add(doctorLocationModel);
             }
         }
-
         return mDoctorLocations;
     }
 
@@ -305,7 +304,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
             if (mLocationId != null) {
                 if (mLocationId.equals(String.valueOf(clinicList.getLocationId()))) {
-                    mHospitalId = String.valueOf(clinicList.getClinicId());
+                    mHospitalId = clinicList.getClinicId();
                     radioButton.setChecked(true);
                 } else {
                     radioButton.setChecked(false);
@@ -317,7 +316,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 @Override
                 public void onClick(View view) {
                     mLocationId = String.valueOf(clinicList.getLocationId());
-                    mHospitalId = String.valueOf(clinicList.getClinicId());
+                    mHospitalId = clinicList.getClinicId();
                 }
             });
             radioGroup.addView(radioButton);
@@ -354,7 +353,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     }
 
-    private void callAddRecordsActivity(String mLocationId, String mHospitalId, int year, int monthOfYear, int dayOfMonth) {
+    private void callAddRecordsActivity(String mLocationId, int mHospitalId, int year, int monthOfYear, int dayOfMonth) {
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, String.valueOf(mLocationId), getActivity());
         Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
         intent.putExtra(RescribeConstants.OPD_ID, "0");
@@ -474,7 +473,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 titleTextView.setText(getArguments().getString(RescribeConstants.PATIENT_NAME));
                 userInfoTextView.setVisibility(View.VISIBLE);
                 userInfoTextView.setText(getArguments().getString(RescribeConstants.PATIENT_INFO));
-                mHospitalId = getArguments().getString(RescribeConstants.CLINIC_ID);
+                mHospitalId = getArguments().getInt(RescribeConstants.CLINIC_ID);
                 mHospitalPatId = getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID);
             }
 

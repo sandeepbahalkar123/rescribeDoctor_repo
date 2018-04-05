@@ -46,7 +46,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
     public static final String CHILD_TYPE_VITALS = "vitals";
     public static final String CHILD_TYPE_ATTACHMENTS = "attachments";
     private static final String CHILD_TYPE_ALLERGIES = "allergies";
-    private static final String CHILD_TYPE_PRESCRIPTIONS = "prescriptions";
+    private static final String CHILD_TYPE_PRESCRIPTIONS = "prescription";
 
     private List<PatientHistory> mListDataHeader = new ArrayList<>(); // header titles
     public static final int TEXT_LIMIT = 33;
@@ -57,11 +57,11 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         for (int i = 0; i < listDataHeader.size(); i++) {
             List<VisitCommonData> commonData = listDataHeader.get(i).getCommonData();
             List<Vital> commonDatasVitals = listDataHeader.get(i).getVitals();
-            if (!(commonData == null)) {
+            if (commonData != null) {
                 if (commonData.size() > 0) {
                     mListDataHeader.add(listDataHeader.get(i));
                 }
-            } else if (!(commonDatasVitals == null)) {
+            } else if (commonDatasVitals != null) {
                 if (commonDatasVitals.size() > 0) {
                     VisitCommonData commonVitals = new VisitCommonData();
                     commonVitals.setId(0);
@@ -501,7 +501,9 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             if (mListDataHeader.get(groupPosition).getCommonData() != null) {
                 List<VisitCommonData> mVisitDetailList = mListDataHeader.get(groupPosition).getCommonData();
 
-                if (mListDataHeader.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_PRESCRIPTIONS)) {
+                String caseDetailName = mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase();
+
+                if (caseDetailName.contains(CHILD_TYPE_PRESCRIPTIONS)) {
 
                     if (!mListDataHeader.get(groupPosition).getCommonData().isEmpty()) {
 

@@ -37,7 +37,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
     @BindView(R.id.webViewTitle)
     TextView mWebViewTitle;
 
-    private String hospitalId = "";
+    private int hospitalId;
     private boolean isCalled = false;
 
     @Override
@@ -48,10 +48,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Bundle extras = getIntent().getBundleExtra(RescribeConstants.PATIENT_DETAILS);
-        hospitalId = extras.getString(RescribeConstants.CLINIC_ID);
+        hospitalId = extras.getInt(RescribeConstants.CLINIC_ID);
 
         String urlData = Config.ADD_NEW_PATIENT_WEB_URL + Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this)) + "/" +
-                extras.getString(RescribeConstants.CLINIC_ID) + "/" + extras.getString(RescribeConstants.LOCATION_ID) + "/" + extras.getString(RescribeConstants.CITY_ID);
+                extras.getInt(RescribeConstants.CLINIC_ID) + "/" + extras.getString(RescribeConstants.LOCATION_ID) + "/" + extras.getString(RescribeConstants.CITY_ID);
 
         mWebViewTitle.setText(getString(R.string.new_patients));
         loadWebViewData(urlData);
@@ -155,7 +155,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
 
         Bundle b = new Bundle();
         b.putString(RescribeConstants.PATIENT_ID, patientId);
-        b.putString(RescribeConstants.CLINIC_ID, hospitalId);
+        b.putInt(RescribeConstants.CLINIC_ID, hospitalId);
         b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, hospitalPatId);
         Intent intent = new Intent(this, PatientHistoryActivity.class);
         intent.putExtra(RescribeConstants.PATIENT_INFO, b);

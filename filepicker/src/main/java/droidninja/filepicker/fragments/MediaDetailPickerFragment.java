@@ -42,6 +42,7 @@ public class MediaDetailPickerFragment extends BaseFragment implements FileAdapt
 
     private static final String TAG = MediaDetailPickerFragment.class.getSimpleName();
     private static final int SCROLL_THRESHOLD = 30;
+    public static int PHOTO_TAKEN = 1;
     RecyclerView recyclerView;
 
     TextView emptyView;
@@ -96,6 +97,8 @@ public class MediaDetailPickerFragment extends BaseFragment implements FileAdapt
 
     public interface PhotoPickerFragmentListener {
         void onItemSelected();
+
+        void onCameraCanceled();
     }
 
 
@@ -235,11 +238,25 @@ public class MediaDetailPickerFragment extends BaseFragment implements FileAdapt
                         @Override
                         public void run() {
                             getDataFromMedia();
-                        }
-                    }, 1000);
 
-                    if (PickerManager.getInstance().isEnableMultiplePhotos())
-                        takePhoto();
+                            if (PickerManager.getInstance().isEnableMultiplePhotos()) {
+                                if (PHOTO_TAKEN < PickerManager.getInstance().getMaxCount()) {
+                                    PHOTO_TAKEN += 1;
+                                    takePhoto();
+                                } else {
+                                    if (PickerManager.getInstance().isOpenCameraDirect()) {
+                                        PHOTO_TAKEN = 1;
+                                        mListener.onCameraCanceled();
+                                    }
+                                    Toast.makeText(getContext(), "You taken " + PickerManager.getInstance().getMaxCount() + " photos.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                        }
+                    }, 500);
+                } else {
+                    if (PickerManager.getInstance().isOpenCameraDirect())
+                        mListener.onCameraCanceled();
                 }
                 break;
         }

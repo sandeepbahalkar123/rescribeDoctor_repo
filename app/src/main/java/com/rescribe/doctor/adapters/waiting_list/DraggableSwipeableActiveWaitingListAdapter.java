@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -213,7 +214,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
     @SuppressLint("CheckResult")
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final AbstractDataProvider.Data item = mProvider.getItem(position);
 
         // set listeners
@@ -306,7 +307,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
             holder.mContainer.setBackgroundResource(bgResId);
         }
 
-        if (item.getActiveAll().getWaitingStatus().equals("In Queue") || item.getActiveAll().getWaitingStatus().equals("Confirmed")) {
+        if (item.getActiveAll().getWaitingStatusId().equals(IN_QUEUE) || item.getActiveAll().getWaitingStatusId().equals(CONFIRMED)) {
             holder.mDragHandle.setVisibility(View.VISIBLE);
             holder.setMaxLeftSwipeAmount(-0.4f);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
@@ -317,6 +318,20 @@ public class DraggableSwipeableActiveWaitingListAdapter
         }
 
         holder.setMaxRightSwipeAmount(0);
+
+        // set height programmatically
+
+        ViewTreeObserver vto = holder.mContainer.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                holder.mContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                ViewGroup.LayoutParams layoutParams = holder.mBehindViews.getLayoutParams();
+                layoutParams.height = holder.mContainer.getMeasuredHeight();
+                layoutParams.width = holder.mContainer.getMeasuredWidth();
+                holder.mBehindViews.setLayoutParams(layoutParams);
+            }
+        });
     }
 
     @Override

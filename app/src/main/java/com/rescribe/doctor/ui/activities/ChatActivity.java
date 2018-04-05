@@ -219,6 +219,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     private String patientName = "";
     private int mHospitalPatId;
     private int preSize;
+    private int mClinicId;
 
     private void typingStatus() {
         StatusInfo statusInfo = new StatusInfo();
@@ -437,9 +438,11 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         Intent gotIntent = getIntent();
 
-        if (gotIntent.getAction() != null) {
             mPatientsDetails = gotIntent.getStringExtra(RescribeConstants.PATIENT_DETAILS);
             mHospitalPatId = gotIntent.getIntExtra(RescribeConstants.PATIENT_HOS_PAT_ID, 0);
+            mClinicId = gotIntent.getIntExtra(RescribeConstants.CLINIC_ID, 0);
+
+        if (gotIntent.getAction() != null) {
             if (gotIntent.getAction().equals(REPLY_ACTION)) {
                 chatList = new PatientData();
                 MQTTMessage mqttMessage = gotIntent.getParcelableExtra(ReplayBroadcastReceiver.MESSAGE_LIST);
@@ -981,6 +984,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 b.putString(RescribeConstants.PATIENT_INFO, mPatientsDetails);
                 b.putString(RescribeConstants.PATIENT_ID, String.valueOf(chatList.getId()));
                 b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mHospitalPatId));
+                b.putInt(RescribeConstants.CLINIC_ID, mClinicId);
                 Intent intent = new Intent(this, PatientHistoryActivity.class);
                 intent.putExtra(RescribeConstants.PATIENT_INFO, b);
                 startActivity(intent);

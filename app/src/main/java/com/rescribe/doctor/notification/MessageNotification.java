@@ -28,6 +28,7 @@ import static com.rescribe.doctor.util.RescribeConstants.FILE.DOC;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.IMG;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.LOC;
 import static com.rescribe.doctor.util.RescribeConstants.FILE.VID;
+import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
 /**
  * Helper class for showing and canceling new message
@@ -49,10 +50,14 @@ public class MessageNotification {
         MQTTMessage lastMessage = messageContent.get(messageContent.size() - 1);
         String content = getContent(lastMessage);
 
+        String salutation = "";
+        if (lastMessage.getSalutation() != 0)
+            salutation = SALUTATION[lastMessage.getSalutation() - 1];
+
         String title;
         if (unread > 1)
-            title = userName + " (" + unread + " messages)";
-        else title = userName;
+            title = salutation + userName + " (" + unread + " messages)";
+        else title = salutation + userName;
 
         // start your activity for Android M and below
         Intent resultIntent = new Intent(context, ChatActivity.class);

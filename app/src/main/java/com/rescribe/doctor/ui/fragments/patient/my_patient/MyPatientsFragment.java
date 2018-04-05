@@ -465,7 +465,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
             for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
                 if (doctorLocationModel.getLocationId().equals(mLocationId)) {
-                    b.putString(RescribeConstants.CLINIC_ID, String.valueOf(doctorLocationModel.getClinicId()));
+                    b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
                     b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
                     b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
                     break;
@@ -508,7 +508,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
                         for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
                             if (doctorLocationModel.getLocationId().equals(mLocationId)) {
-                                b.putString(RescribeConstants.CLINIC_ID, String.valueOf(doctorLocationModel.getClinicId()));
+                                b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
                                 b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
                                 b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
                                 break;

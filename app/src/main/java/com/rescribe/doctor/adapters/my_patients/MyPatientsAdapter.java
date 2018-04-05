@@ -43,6 +43,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+import static com.rescribe.doctor.util.RescribeConstants.CLINIC_ID;
+import static com.rescribe.doctor.util.RescribeConstants.PATIENT_HOS_PAT_ID;
 
 /**
  * Created by jeetal on 31/1/18.
@@ -218,6 +220,8 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 doctorConnectChatModel.setImageUrl(patientObject.getPatientImageUrl());
                 doctorConnectChatModel.setPatientName(patientObject.getPatientName());
                 doctorConnectChatModel.setSalutation(patientObject.getSalutation());
+                intent.putExtra(CLINIC_ID, patientObject.getClinicId());
+                intent.putExtra(PATIENT_HOS_PAT_ID, patientObject.getHospitalPatId());
                 intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
                 ((Activity) mContext).startActivityForResult(intent, Activity.RESULT_OK);
             }

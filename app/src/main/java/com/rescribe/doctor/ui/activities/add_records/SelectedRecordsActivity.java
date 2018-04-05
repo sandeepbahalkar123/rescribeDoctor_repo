@@ -104,7 +104,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
     private String Url;
     private String mHospitalPatId;
     private String mLocationId;
-    private String mHospitalId;
+    private int mHospitalId;
     private String mOpdtime;
     private String currentOpdTime;
     private boolean openCameraDirect;
@@ -183,7 +183,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         mHospitalPatId = getIntent().getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
         mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);
         patientId = getIntent().getStringExtra(RescribeConstants.PATIENT_ID);
-        mHospitalId = getIntent().getStringExtra(RescribeConstants.CLINIC_ID);
+        mHospitalId = getIntent().getIntExtra(RescribeConstants.CLINIC_ID, 0);
         addImageView.setVisibility(View.VISIBLE);
         patientName = getIntent().getStringExtra(RescribeConstants.PATIENT_NAME);
         patientInfo = getIntent().getStringExtra(RescribeConstants.PATIENT_INFO);
@@ -361,7 +361,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                             uploadImage(System.currentTimeMillis() + "_" + parentIndex + "_" + patientId, imagePaths.get(parentIndex));
                         else
                             CommonMethods.showToast(this, getString(R.string.records_will_upload_when_internet_available));
-                        appDBHelper.insertRecordUploads(System.currentTimeMillis() + "_" + parentIndex + "_" + patientId, patientId, docId, visitDate, mOpdtime, opdId, mHospitalId, mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath());
+                        appDBHelper.insertRecordUploads(System.currentTimeMillis() + "_" + parentIndex + "_" + patientId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath());
                     }
                     CommonMethods.showToast(this, getString(R.string.uploading));
 
@@ -410,7 +410,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
                     .addHeader("opddate", visitDateToPass)
                     .addHeader("opdtime", currentOpdTime)
                     .addHeader("opdid", opdId)
-                    .addHeader("hospitalid", mHospitalId)
+                    .addHeader("hospitalid", String.valueOf(mHospitalId))
                     .addHeader("hospitalpatid", mHospitalPatId)
                     .addHeader("locationid", mLocationId)
                     .addFileToUpload(image.getImagePath(), "attachment");
@@ -435,7 +435,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
         //  appDBHelper.insertMyRecordsData(uploadId, RescribeConstants.UPLOADING, new Gson().toJson(image), docId, opdId, visitDate);
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
@@ -456,7 +456,7 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
             if (intent.getAction() != null) {
                 if (intent.getAction().equals(DOC_UPLOAD)) {
 
-                   /*
+                   *//*
                     String isFailed = intent.getStringExtra(STATUS);
 
                     if (imagePaths.size() == count) {
@@ -467,10 +467,10 @@ public class SelectedRecordsActivity extends AppCompatActivity implements Select
 
                     } else {
 
-                    }*/
+                    }*//*
                 }
             }
         }
-    };
+    };*/
 
 }

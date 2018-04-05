@@ -35,6 +35,8 @@ import droidninja.filepicker.utils.GridSpacingItemDecoration;
 import droidninja.filepicker.utils.ImageCaptureManager;
 import droidninja.filepicker.utils.MediaStoreHelper;
 
+import static droidninja.filepicker.fragments.MediaDetailPickerFragment.PHOTO_TAKEN;
+
 
 public class MediaFolderPickerFragment extends BaseFragment implements FolderGridAdapter.FolderGridAdapterListener {
 
@@ -48,6 +50,7 @@ public class MediaFolderPickerFragment extends BaseFragment implements FolderGri
     private ImageCaptureManager imageCaptureManager;
     private RequestManager mGlideRequestManager;
     private int fileType;
+    private MediaDetailPickerFragment.PhotoPickerFragmentListener mListener;
 
     public MediaFolderPickerFragment() {
         // Required empty public constructor
@@ -61,10 +64,6 @@ public class MediaFolderPickerFragment extends BaseFragment implements FolderGri
         return inflater.inflate(R.layout.fragment_media_folder_picker, container, false);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
 
     public static MediaFolderPickerFragment newInstance(int fileType) {
         MediaFolderPickerFragment photoPickerFragment = new MediaFolderPickerFragment();
@@ -72,6 +71,23 @@ public class MediaFolderPickerFragment extends BaseFragment implements FolderGri
         bun.putInt(FILE_TYPE, fileType);
         photoPickerFragment.setArguments(bun);
         return photoPickerFragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof MediaDetailPickerFragment.PhotoPickerFragmentListener) {
+            mListener = (MediaDetailPickerFragment.PhotoPickerFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement PhotoPickerFragmentListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override
@@ -240,11 +256,25 @@ public class MediaFolderPickerFragment extends BaseFragment implements FolderGri
                         @Override
                         public void run() {
                             getDataFromMedia();
-                        }
-                    }, 1000);
 
-                    if (PickerManager.getInstance().isEnableMultiplePhotos())
-                        takePhoto();
+                            if (PickerManager.getInstance().isEnableMultiplePhotos()) {
+                                if (PHOTO_TAKEN < PickerManager.getInstance().getMaxCount()) {
+                                    PHOTO_TAKEN += 1;
+                                    takePhoto();
+                                } else {
+                                    if (PickerManager.getInstance().isOpenCameraDirect()) {
+                                        PHOTO_TAKEN = 1;
+                                        mListener.onCameraCanceled();
+                                    }
+                                    Toast.makeText(getContext(), "You taken " + PickerManager.getInstance().getMaxCount() + " photos.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                        }
+                    }, 500);
+                } else {
+                    if (PickerManager.getInstance().isOpenCameraDirect())
+                        mListener.onCameraCanceled();
                 }
                 break;
         }
