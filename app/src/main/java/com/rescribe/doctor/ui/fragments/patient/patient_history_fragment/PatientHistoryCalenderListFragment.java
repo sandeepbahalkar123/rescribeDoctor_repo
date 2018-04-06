@@ -30,6 +30,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.rescribe.doctor.ui.fragments.patient.patient_history_fragment.PatientHistoryListFragmentContainer.SELECT_REQUEST_CODE;
+
 
 public class PatientHistoryCalenderListFragment extends Fragment implements CalenderDayOfMonthGridAdapter.OnDayClickListener {
 
@@ -72,7 +74,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
     }
 
 
-    public static PatientHistoryCalenderListFragment createNewFragment(Year dataString,Bundle b) {
+    public static PatientHistoryCalenderListFragment createNewFragment(Year dataString, Bundle b) {
         PatientHistoryCalenderListFragment fragment = new PatientHistoryCalenderListFragment();
         Bundle args = new Bundle();
         args.putString(RescribeConstants.MONTH, dataString.getMonthName());
@@ -124,22 +126,23 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
 
     @Override
     public void onClickOFLayout(String visitDate, String opdId, String opdTime) {
-        Intent intent = new Intent(getActivity(),SingleVisitDetailsActivity.class);
-        intent.putExtra(RescribeConstants.PATIENT_OPDID,opdId);
-        intent.putExtra(RescribeConstants.PATIENT_ID,patientID);
-        intent.putExtra(RescribeConstants.PATIENT_NAME,patientName);
-        intent.putExtra(RescribeConstants.PATIENT_INFO,patientInfo);
-        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID,mHospitalPatId);
-        intent.putExtra(RescribeConstants.DATE,visitDate);
-        intent.putExtra(RescribeConstants.OPD_TIME,opdTime);
-        startActivity(intent);
+        Intent intent = new Intent(getActivity(), SingleVisitDetailsActivity.class);
+        intent.putExtra(RescribeConstants.PATIENT_OPDID, opdId);
+        intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
+        intent.putExtra(RescribeConstants.PATIENT_NAME, patientName);
+        intent.putExtra(RescribeConstants.PATIENT_INFO, patientInfo);
+        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+        intent.putExtra(RescribeConstants.DATE, visitDate);
+        intent.putExtra(RescribeConstants.OPD_TIME, opdTime);
+        getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
 
     }
 
     // To find nique status from list, and set list in recycleview of parent fragment.
 
 
-
-
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
