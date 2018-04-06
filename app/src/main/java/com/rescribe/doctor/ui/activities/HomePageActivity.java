@@ -157,9 +157,9 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         appDBHelper = new AppDBHelper(mContext);
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
         loginHelper = new LoginHelper(mContext, HomePageActivity.this);
-        ActiveRequest activeRequest = new ActiveRequest();
-        activeRequest.setId(Integer.parseInt(docId));
-        loginHelper.doActiveStatus(activeRequest);
+//        ActiveRequest activeRequest = new ActiveRequest();
+//        activeRequest.setId(Integer.parseInt(docId));
+//        loginHelper.doActiveStatus(activeRequest);
         initialize();
         setCurrentActivtyTab(getString(R.string.home));
 
@@ -356,12 +356,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         dialog.findViewById(R.id.button_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActiveRequest activeRequest = new ActiveRequest();
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, RescribeConstants.YES, mContext);
-                activeRequest.setId(Integer.parseInt(docId));
-                loginHelper.doLogout(activeRequest);
                 dialog.dismiss();
-
+                finishAffinity();
             }
         });
         dialog.findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener() {
@@ -401,7 +397,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         return super.onOptionsItemSelected(item);
     }
 
-    private void logout() {
+    /*private void logout() {
         String mobileNoGmail = "";
         String passwordGmail = "";
         String mobileNoFacebook = "";
@@ -437,80 +433,80 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         Intent intent = new Intent(mContext, LoginSignUpActivity.class);
         startActivity(intent);
         finishAffinity();
-    }
+    }*/
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equals(RescribeConstants.LOGOUT))
-            if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, mContext).equalsIgnoreCase(RescribeConstants.YES)) {
-                finishAffinity();
-            } else if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, mContext).equalsIgnoreCase(RescribeConstants.NO)) {
+        switch (mOldDataTag) {
+            case RescribeConstants.LOGOUT:
                 //if user turns on radio button
-            } else {
-                logout();
-            }
-        else if (mOldDataTag.equals(ACTIVE_STATUS)) {
-            CommonMethods.Log(ACTIVE_STATUS, "active");
-        } else if (mOldDataTag.equals(RescribeConstants.TASK_GET_LOCATION_LIST)) {
-            DoctorLocationBaseModel doctorLocationBaseModel = (DoctorLocationBaseModel) customResponse;
-            RescribeApplication.setDoctorLocationModels(doctorLocationBaseModel.getDoctorLocationModel());
-        } else if (mOldDataTag.equals(RescribeConstants.TASK_GET_DASHBOARD_RESPONSE)) {
-            DashboardBaseModel mDashboardBaseModel = (DashboardBaseModel) customResponse;
-            if (mDashboardBaseModel.getCommon().isSuccess()) {
-                mDashboardDetails = new DashboardDetails();
-                mDashboardDetails = mDashboardBaseModel.getDashboarddataModel().getDashboardDetails();
-                if (mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList().size() > 0) {
-                    todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayFollowUpCount() + "");
-                    todayNewAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayNewPatientCount() + "");
-                    todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount() + "");
-                    todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
-                    todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
-                    todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
-                    hostViewsLayout.removeAllViews();
+                CommonMethods.Log(TAG, "logout");
+                break;
+            case ACTIVE_STATUS:
+                CommonMethods.Log(ACTIVE_STATUS, "active");
+                break;
+            case RescribeConstants.TASK_GET_LOCATION_LIST:
+                DoctorLocationBaseModel doctorLocationBaseModel = (DoctorLocationBaseModel) customResponse;
+                RescribeApplication.setDoctorLocationModels(doctorLocationBaseModel.getDoctorLocationModel());
+                break;
+            case RescribeConstants.TASK_GET_DASHBOARD_RESPONSE:
+                DashboardBaseModel mDashboardBaseModel = (DashboardBaseModel) customResponse;
+                if (mDashboardBaseModel.getCommon().isSuccess()) {
+                    mDashboardDetails = new DashboardDetails();
+                    mDashboardDetails = mDashboardBaseModel.getDashboarddataModel().getDashboardDetails();
+                    if (mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList().size() > 0) {
+                        todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayFollowUpCount() + "");
+                        todayNewAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayNewPatientCount() + "");
+                        todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount() + "");
+                        todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+                        todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
+                        todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
+                        hostViewsLayout.removeAllViews();
 
-                    setLayoutForAppointment(true);
-                    // inflate waiting list layout
-                    setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
-                    // inflate patientConnect layout
-                    setLayoutForPatientConnect();
-                    // inflate MyPatientsActivity layout
-                    setLayoutForMyPatients();
-
-
-                } else if (mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size() > 0) {
-                    todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
-                    todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
-                    todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayWaitingCount() + "");
-                    todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
-                    todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
-                    todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
-
-                    hostViewsLayout.removeAllViews();
-                    setLayoutForWaitingListIfAppointmentListEmpty();
-                    // inflate patientConnect layout
-                    setLayoutForPatientConnect();
-                    // inflate MyPatientsActivity layout
-                    setLayoutForMyPatients();
+                        setLayoutForAppointment(true);
+                        // inflate waiting list layout
+                        setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
+                        // inflate patientConnect layout
+                        setLayoutForPatientConnect();
+                        // inflate MyPatientsActivity layout
+                        setLayoutForMyPatients();
 
 
-                } else {
-                    todayFollowAppointmentCount.setText("0");
-                    todayNewAppointmentCount.setText("0");
-                    todayWaitingListOrAppointmentCount.setText("0");
-                    todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
-                    todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
-                    todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
+                    } else if (mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size() > 0) {
+                        todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
+                        todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
+                        todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayWaitingCount() + "");
+                        todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+                        todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
+                        todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
+
+                        hostViewsLayout.removeAllViews();
+                        setLayoutForWaitingListIfAppointmentListEmpty();
+                        // inflate patientConnect layout
+                        setLayoutForPatientConnect();
+                        // inflate MyPatientsActivity layout
+                        setLayoutForMyPatients();
 
 
-                    setLayoutForAppointment(false);
-                    // inflate waiting list layout
-                    setLayoutForWaitingList("0");
-                    // inflate patientConnect layout
-                    setLayoutForPatientConnect();
-                    // inflate MyPatientsActivity layout
-                    setLayoutForMyPatients();
+                    } else {
+                        todayFollowAppointmentCount.setText("0");
+                        todayNewAppointmentCount.setText("0");
+                        todayWaitingListOrAppointmentCount.setText("0");
+                        todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+                        todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
+                        todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
+
+
+                        setLayoutForAppointment(false);
+                        // inflate waiting list layout
+                        setLayoutForWaitingList("0");
+                        // inflate patientConnect layout
+                        setLayoutForPatientConnect();
+                        // inflate MyPatientsActivity layout
+                        setLayoutForMyPatients();
+                    }
                 }
-            }
+                break;
         }
 
     }
@@ -594,8 +590,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 if (!todayFollowAppointmentCount.getText().toString().equals("0")) {
                     Intent intent = new Intent(this, CompletedOpdActivity.class);
                     startActivity(intent);
-                } else {
-
                 }
                 break;
             case R.id.viewPagerDoctorItem:
@@ -605,15 +599,11 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     if (!todayWaitingListOrAppointmentCount.getText().toString().equals("0")) {
                         Intent todayAppointmentsOrWaitingList = new Intent(this, MyAppointmentsActivity.class);
                         startActivity(todayAppointmentsOrWaitingList);
-                    } else {
-
                     }
                 } else {
                     if (!todayWaitingListOrAppointmentCount.getText().toString().equals("0")) {
                         Intent todayAppointmentsOrWaitingList = new Intent(this, WaitingMainListActivity.class);
                         startActivity(todayAppointmentsOrWaitingList);
-                    } else {
-
                     }
                 }
                 break;
@@ -621,8 +611,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 if (!todayNewAppointmentCount.getText().toString().equals("0")) {
                     Intent todayNewPatient = new Intent(this, NewPatientActivity.class);
                     startActivity(todayNewPatient);
-                } else {
-
                 }
                 break;
         }
