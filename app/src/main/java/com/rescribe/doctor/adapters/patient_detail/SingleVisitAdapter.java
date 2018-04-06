@@ -978,7 +978,8 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         public void deleteAttachments(HashSet<VisitCommonData> list);
     }
 
-    public void removeSelectedAttachmentFromList() {
+    public boolean removeSelectedAttachmentFromList() {
+        boolean isAllAttachmentDeleted = false;
         PatientHistory patientHistory = mListDataHeader.get(selectedAttachmentToDeleteGroupPosition);
         if (patientHistory.getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_ATTACHMENTS)) {
             List<VisitCommonData> commonData = patientHistory.getCommonData();
@@ -997,10 +998,12 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
             if (commonData.isEmpty()) {
                 mListDataHeader.remove(patientHistory);
+                isAllAttachmentDeleted = true;
             }
         }
         mSelectedAttachmentToDelete.clear();
         mShowDeleteCheckbox = false;
         notifyDataSetChanged();
+        return isAllAttachmentDeleted;
     }
 }
