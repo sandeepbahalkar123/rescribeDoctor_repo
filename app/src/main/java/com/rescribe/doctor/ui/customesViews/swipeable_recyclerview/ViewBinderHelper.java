@@ -1,25 +1,25 @@
 /**
- The MIT License (MIT)
-
- Copyright (c) 2016 Chau Thai
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
+ * The MIT License (MIT)
+ * <p>
+ * Copyright (c) 2016 Chau Thai
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package com.rescribe.doctor.ui.customesViews.swipeable_recyclerview;
@@ -49,35 +49,44 @@ public class ViewBinderHelper {
     private volatile boolean openOnlyOne = false;
     private final Object stateChangeLock = new Object();
 
-
-    public void bind(final SwipeRevealLayout swipeLayout,final Active mActiveList) {
+    public void bindAppointmentChildList(final SwipeRevealLayout swipeLayout, final int groupPosition, final int childPosition) {
         if (swipeLayout.shouldRequestLayout()) {
             swipeLayout.requestLayout();
         }
 
         mapLayouts.values().remove(swipeLayout);
-        mapLayouts.put(mActiveList.getPatientName(), swipeLayout);
+        mapLayouts.put(groupPosition + "_" + childPosition, swipeLayout);
 
         swipeLayout.abort();
-        swipeLayout.setDragStateChangeListener(new SwipeRevealLayout.DragStateChangeListener() {
+        swipeLayout.setSwipeListener(new SwipeRevealLayout.SwipeListener() {
             @Override
-            public void onDragStateChanged(int state) {
-                mapStates.put(mActiveList.getPatientName(), state);
+            public void onClosed(SwipeRevealLayout view) {
+                mapStates.put(groupPosition + "_" + childPosition, SwipeRevealLayout.STATE_CLOSE);
+            }
+
+            @Override
+            public void onOpened(SwipeRevealLayout view) {
+                mapStates.put(groupPosition + "_" + childPosition, SwipeRevealLayout.STATE_OPEN);
+
                 if (openOnlyOne) {
-                    closeOthers(mActiveList.getPatientName(), swipeLayout);
+                    closeOthers(groupPosition + "_" + childPosition, swipeLayout);
                 }
+            }
+
+            @Override
+            public void onSlide(SwipeRevealLayout view, float slideOffset) {
             }
         });
 
         // first time binding.
-        if (!mapStates.containsKey(mActiveList.getPatientName())) {
-            mapStates.put(mActiveList.getPatientName(), SwipeRevealLayout.STATE_CLOSE);
+        if (!mapStates.containsKey(groupPosition + "_" + childPosition)) {
+            mapStates.put(groupPosition + "_" + childPosition, SwipeRevealLayout.STATE_CLOSE);
             swipeLayout.close(false);
         }
 
         // not the first time, then close or open depends on the current state.
         else {
-            int state = mapStates.get(mActiveList.getPatientName());
+            int state = mapStates.get(groupPosition + "_" + childPosition);
 
             if (state == SwipeRevealLayout.STATE_CLOSE || state == SwipeRevealLayout.STATE_CLOSING ||
                     state == SwipeRevealLayout.STATE_DRAGGING) {
@@ -88,120 +97,48 @@ public class ViewBinderHelper {
         }
 
         // set lock swipe
-        swipeLayout.setLockDrag(lockedSwipeSet.contains(mActiveList.getPatientName()));
-    }
-    public void bindViewAll(final SwipeRevealLayout swipeLayout,final ViewAll mViewAll) {
-        if (swipeLayout.shouldRequestLayout()) {
-            swipeLayout.requestLayout();
-        }
-
-        mapLayouts.values().remove(swipeLayout);
-        mapLayouts.put(mViewAll.getPatientName(), swipeLayout);
-
-        swipeLayout.abort();
-        swipeLayout.setDragStateChangeListener(new SwipeRevealLayout.DragStateChangeListener() {
-            @Override
-            public void onDragStateChanged(int state) {
-                mapStates.put(mViewAll.getPatientName(), state);
-
-                if (openOnlyOne) {
-                    closeOthers(mViewAll.getPatientName(), swipeLayout);
-                }
-            }
-        });
-
-        // first time binding.
-        if (!mapStates.containsKey(mViewAll.getPatientName())) {
-            mapStates.put(mViewAll.getPatientName(), SwipeRevealLayout.STATE_CLOSE);
-            swipeLayout.close(false);
-        }
-
-        // not the first time, then close or open depends on the current state.
-        else {
-            int state = mapStates.get(mViewAll.getPatientName());
-
-            if (state == SwipeRevealLayout.STATE_CLOSE || state == SwipeRevealLayout.STATE_CLOSING ||
-                    state == SwipeRevealLayout.STATE_DRAGGING) {
-                swipeLayout.close(false);
-            } else {
-                swipeLayout.open(false);
-            }
-        }
-
-        // set lock swipe
-        swipeLayout.setLockDrag(lockedSwipeSet.contains(mViewAll.getPatientName()));
-    }
-    public void bindAppointmentChildList(final SwipeRevealLayout swipeLayout,final PatientList mPatientList) {
-        if (swipeLayout.shouldRequestLayout()) {
-            swipeLayout.requestLayout();
-        }
-
-        mapLayouts.values().remove(swipeLayout);
-        mapLayouts.put(mPatientList.getPatientName(), swipeLayout);
-
-        swipeLayout.abort();
-        swipeLayout.setDragStateChangeListener(new SwipeRevealLayout.DragStateChangeListener() {
-            @Override
-            public void onDragStateChanged(int state) {
-                mapStates.put(mPatientList.getPatientName(), state);
-
-                if (openOnlyOne) {
-                    closeOthers(mPatientList.getPatientName(), swipeLayout);
-                }
-            }
-        });
-
-        // first time binding.
-        if (!mapStates.containsKey(mPatientList.getPatientName())) {
-            mapStates.put(mPatientList.getPatientName(), SwipeRevealLayout.STATE_CLOSE);
-            swipeLayout.close(false);
-        }
-
-        // not the first time, then close or open depends on the current state.
-        else {
-            int state = mapStates.get(mPatientList.getPatientName());
-
-            if (state == SwipeRevealLayout.STATE_CLOSE || state == SwipeRevealLayout.STATE_CLOSING ||
-                    state == SwipeRevealLayout.STATE_DRAGGING) {
-                swipeLayout.close(false);
-            } else {
-                swipeLayout.open(false);
-            }
-        }
-
-        // set lock swipe
-        swipeLayout.setLockDrag(lockedSwipeSet.contains(mPatientList.getPatientName()));
+        swipeLayout.setLockDrag(lockedSwipeSet.contains(groupPosition + "_" + childPosition));
     }
 
-    public void bindGroup(final SwipeRevealLayout swipeLayout, final AppointmentList mPatientList, final int groupPosition) {
+    public void bindGroup(final SwipeRevealLayout swipeLayout, final int groupPosition) {
         if (swipeLayout.shouldRequestLayout()) {
             swipeLayout.requestLayout();
         }
 
         mapLayouts.values().remove(swipeLayout);
-        mapLayouts.put(groupPosition+"", swipeLayout);
+        mapLayouts.put(String.valueOf(groupPosition), swipeLayout);
 
         swipeLayout.abort();
-        swipeLayout.setDragStateChangeListener(new SwipeRevealLayout.DragStateChangeListener() {
+        swipeLayout.setSwipeListener(new SwipeRevealLayout.SwipeListener() {
             @Override
-            public void onDragStateChanged(int state) {
-                mapStates.put(groupPosition+"", state);
+            public void onClosed(SwipeRevealLayout view) {
+                mapStates.put(String.valueOf(groupPosition), SwipeRevealLayout.STATE_CLOSE);
+            }
+
+            @Override
+            public void onOpened(SwipeRevealLayout view) {
+                mapStates.put(String.valueOf(groupPosition), SwipeRevealLayout.STATE_OPEN);
 
                 if (openOnlyOne) {
-                    closeOthers(groupPosition+"", swipeLayout);
+                    closeOthers(String.valueOf(groupPosition), swipeLayout);
                 }
+            }
+
+            @Override
+            public void onSlide(SwipeRevealLayout view, float slideOffset) {
+
             }
         });
 
         // first time binding.
-        if (!mapStates.containsKey(groupPosition+"")) {
-            mapStates.put(groupPosition+"", SwipeRevealLayout.STATE_CLOSE);
+        if (!mapStates.containsKey(String.valueOf(groupPosition))) {
+            mapStates.put(String.valueOf(groupPosition), SwipeRevealLayout.STATE_CLOSE);
             swipeLayout.close(false);
         }
 
         // not the first time, then close or open depends on the current state.
         else {
-            int state = mapStates.get(groupPosition+"");
+            int state = mapStates.get(String.valueOf(groupPosition));
 
             if (state == SwipeRevealLayout.STATE_CLOSE || state == SwipeRevealLayout.STATE_CLOSING ||
                     state == SwipeRevealLayout.STATE_DRAGGING) {
@@ -212,7 +149,7 @@ public class ViewBinderHelper {
         }
 
         // set lock swipe
-        swipeLayout.setLockDrag(lockedSwipeSet.contains(groupPosition+""));
+        swipeLayout.setLockDrag(lockedSwipeSet.contains(String.valueOf(groupPosition)));
     }
 
     /**
@@ -291,8 +228,7 @@ public class ViewBinderHelper {
             if (mapLayouts.containsKey(id)) {
                 final SwipeRevealLayout layout = mapLayouts.get(id);
                 layout.open(true);
-            }
-            else if (openOnlyOne) {
+            } else if (openOnlyOne) {
                 closeOthers(id, mapLayouts.get(id));
             }
         }

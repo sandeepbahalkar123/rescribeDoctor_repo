@@ -8,14 +8,21 @@
     tools:context=".ui.activities.add_records.SelectedRecordsActivity"
     tools:showIn="@layout/activity_seleted_records">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/uploadButton"
-        android:paddingEnd="@dimen/dp10"
-        android:paddingStart="@dimen/dp10"
-        android:paddingTop="@dimen/dp10" />
+        android:layout_above="@+id/uploadButton">
+
+        <android.support.v7.widget.GridLayout
+            android:id="@+id/gridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/dp10"
+            android:paddingStart="@dimen/dp10"
+            android:paddingTop="@dimen/dp10"
+            app:columnCount="2"/>
+
+    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addImageViewRightFab"

@@ -97,7 +97,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
         final PatientList patientObject = mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition);
         mBinderHelper.setOpenOnlyOne(true);
-        mBinderHelper.bindAppointmentChildList(viewHolder.swipe_layout, patientObject);
+        mBinderHelper.bindAppointmentChildList(viewHolder.swipe_layout, groupPosition, childPosition);
         bind(patientObject, groupPosition, childPosition, viewHolder);
 
         if (patientObject.getAppointmentStatusId().equals(BOOKED) || patientObject.getAppointmentStatusId().equals(CONFIRM)) {
@@ -219,6 +219,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.other_color));
         }
         viewHolder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
+
         if (patientList.getOutStandingAmount().equals("0.00") || patientList.getOutStandingAmount().equals("0.0") || patientList.getOutStandingAmount().equals("0")) {
             viewHolder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
@@ -349,8 +350,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                              View convertView, final ViewGroup parent) {
 
         GroupViewHolder groupViewHolder;
-//        Log.d("SANDEEP","isExpanded: "+isExpanded);
-
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
@@ -363,7 +362,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
         final AppointmentList appointmentListObject = mAppointmentListTemp.get(groupPosition);
         mBinderHelper.setOpenOnlyOne(true);
-        mBinderHelper.bindGroup(groupViewHolder.swipe_layout, appointmentListObject, groupPosition);
+        mBinderHelper.bindGroup(groupViewHolder.swipe_layout, groupPosition);
         bindGroupItem(appointmentListObject, groupPosition, isExpanded, groupViewHolder);
 
         if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(BOOKED) || appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(CONFIRM)) {
@@ -397,6 +396,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         } else {
             groupViewHolder.waitingIcon.setVisibility(View.VISIBLE);
         }
+
         if (appointmentListObject.getPatientHeader().getAge().equals("") && !appointmentListObject.getPatientHeader().getDateOfBirth().equals("")) {
             groupViewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
