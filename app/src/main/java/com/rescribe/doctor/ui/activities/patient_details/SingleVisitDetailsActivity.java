@@ -86,7 +86,6 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private SingleVisitAdapter mSingleVisitAdapter;
     private boolean isBpMin = false;
     private boolean isBpMax = false;
-    private String mDocId;
     private Intent intent;
     private String month;
     private String mYear;

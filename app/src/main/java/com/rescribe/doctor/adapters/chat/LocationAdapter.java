@@ -16,7 +16,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ListViewHolder> {
-    private final Context mContext;
     private final ArrayList<ClinicList> locationList;
     private final ItemListener itemListener;
 
@@ -42,7 +41,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ListVi
 
     public LocationAdapter(ArrayList<ClinicList> locationList, Context mContext) {
         this.locationList = locationList;
-        this.mContext = mContext;
 
         try {
             this.itemListener = ((LocationAdapter.ItemListener) mContext);

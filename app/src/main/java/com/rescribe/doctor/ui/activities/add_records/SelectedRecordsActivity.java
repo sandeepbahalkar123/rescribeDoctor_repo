@@ -15,9 +15,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -29,14 +26,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
@@ -115,6 +110,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     private String currentOpdTime;
     private boolean openCameraDirect;
     private int imageSize;
+    private int dimension20PixelSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +124,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metrics);
         int widthPixels = metrics.widthPixels;
+        dimension20PixelSize = getResources().getDimensionPixelSize(R.dimen.dp20);
         imageSize = (widthPixels / 2) - getResources().getDimensionPixelSize(R.dimen.dp10);
 
         // Show two options for user
@@ -186,7 +183,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
-        requestOptions.override(imageSize, imageSize);
+        requestOptions.override(imageSize - dimension20PixelSize, imageSize - dimension20PixelSize);
         requestOptions.error(R.drawable.ic_file);
         requestOptions.placeholder(R.drawable.ic_file);
 

@@ -531,7 +531,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -542,8 +541,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         dialog.show();
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
-
-
     }
 
 
