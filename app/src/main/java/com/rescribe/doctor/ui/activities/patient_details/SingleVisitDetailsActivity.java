@@ -1,7 +1,9 @@
 package com.rescribe.doctor.ui.activities.patient_details;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +32,8 @@ import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import net.gotev.uploadservice.UploadInfo;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,6 +47,12 @@ import butterknife.OnClick;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_ATTACHMENTS;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_VITALS;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.TEXT_LIMIT;
+import static com.rescribe.doctor.services.ChatBackUpService.STATUS;
+import static com.rescribe.doctor.services.CheckPendingUploads.DOC_UPLOAD;
+import static com.rescribe.doctor.services.CheckPendingUploads.UPLOAD_INFO;
+import static com.rescribe.doctor.ui.fragments.patient.patient_history_fragment.PatientHistoryListFragmentContainer.SELECT_REQUEST_CODE;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 
 /**
  * Created by jeetal on 14/6/17.
@@ -86,6 +96,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String mHospitalPatId;
     private String mOpdTime;
     private PatientDetailHelper mSingleVisitDetailHelper;
+    private boolean isAllAttachmentDeleted = false;
 
 
     @Override
@@ -93,11 +104,11 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_detail_activity);
         ButterKnife.bind(this);
+        getBundleData();
         initialize();
     }
 
-
-    private void initialize() {
+    private void getBundleData() {
 
         intent = getIntent();
         userInfoTextView.setVisibility(View.VISIBLE);
@@ -126,6 +137,10 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 dateTextview.setText(Html.fromHtml(toDisplay));
             }
         }
+    }
+
+    private void initialize() {
+
 
         mSingleVisitDetailHelper = new PatientDetailHelper(this, this);
         mSingleVisitDetailHelper.doGetOneDayVisit(opdID, patientID);
@@ -182,7 +197,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DELETE_PATIENT_OPD_ATTCHMENTS)) {
             CommonBaseModelContainer common = (CommonBaseModelContainer) customResponse;
             if (common.getCommonRespose().isSuccess()) {
-                mSingleVisitAdapter.removeSelectedAttachmentFromList();
+                isAllAttachmentDeleted = mSingleVisitAdapter.removeSelectedAttachmentFromList();
             }
             CommonMethods.showToast(this, common.getCommonRespose().getStatusMessage());
         } else {
@@ -324,6 +339,11 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
+                if (isAllAttachmentDeleted) {
+                    Intent output = new Intent();
+                    output.putExtra("SINGLE_PAGE_ADAPTER", isAllAttachmentDeleted);
+                    setResult(RESULT_OK, output);
+                }
                 finish();
                 break;
             case R.id.userInfoTextView:
@@ -348,6 +368,11 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     @Override
     public void onBackPressed() {
+        if (isAllAttachmentDeleted) {
+            Intent output = new Intent();
+            output.putExtra("SINGLE_PAGE_ADAPTER", isAllAttachmentDeleted);
+            setResult(RESULT_OK, output);
+        }
         super.onBackPressed();
     }
 
@@ -355,5 +380,42 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     public void deleteAttachments(HashSet<VisitCommonData> list) {
         mSingleVisitDetailHelper.deleteSelectedAttachments(list, patientID);
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(DOC_UPLOAD)) {
+                    UploadInfo uploadInfo = intent.getParcelableExtra(UPLOAD_INFO);
+                    int isFailed = intent.getIntExtra(STATUS, FAILED);
+                    if (uploadInfo.getFilesLeft().isEmpty() && isFailed == COMPLETED)
+                        initialize();
+                }
+            }
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(DOC_UPLOAD);
+        registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_REQUEST_CODE)
+                initialize();
+        }
+    }
+
 }
 

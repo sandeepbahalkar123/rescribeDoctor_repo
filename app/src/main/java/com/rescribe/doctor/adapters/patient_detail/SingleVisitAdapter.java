@@ -540,6 +540,10 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             groupViewHolder.mDivider.setVisibility(View.VISIBLE);
         }
 
+        //-- Set mDeleteAttachments=GONE by default.
+        groupViewHolder.mDeleteAttachments.setVisibility(View.GONE);
+
+
         if (mListDataHeader.get(groupPosition).getCaseDetailName() != null) {
             groupViewHolder.lblListHeader.setText(CommonMethods.toCamelCase(mListDataHeader.get(groupPosition).getCaseDetailName()));
             groupViewHolder.mViewDetailIcon.setImageResource(CommonMethods.getCaseStudyIcons(mListDataHeader.get(groupPosition).getCaseDetailName()));

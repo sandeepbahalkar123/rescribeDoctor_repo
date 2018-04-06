@@ -379,6 +379,8 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                 if (!isTokenExpired) {
                     tokenRefreshRequest();
                 }
+            } else {
+                CommonMethods.showToast(mContext, error.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();
