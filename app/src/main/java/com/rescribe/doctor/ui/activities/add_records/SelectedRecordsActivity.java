@@ -41,6 +41,7 @@ import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
+import com.rescribe.doctor.util.KeyboardEvent;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -88,6 +89,10 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     ImageView addImageView;
     @BindView(R.id.addImageViewRightFab)
     FloatingActionButton mAddImageViewRightFab;
+
+    @BindView(R.id.mainRelativeLayout)
+    RelativeLayout mainRelativeLayout;
+
     private Context mContext;
     private ArrayList<Image> imagePaths = new ArrayList<>();
     private Dialog dialog;
@@ -119,6 +124,20 @@ public class SelectedRecordsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         init();
+
+        new KeyboardEvent(mainRelativeLayout, new KeyboardEvent.KeyboardListener() {
+            @Override
+            public void onKeyboardOpen() {
+                uploadButton.setVisibility(View.GONE);
+                mAddImageViewRightFab.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onKeyboardClose() {
+                uploadButton.setVisibility(View.VISIBLE);
+                mAddImageViewRightFab.setVisibility(View.VISIBLE);
+            }
+        });
 
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metrics = new DisplayMetrics();

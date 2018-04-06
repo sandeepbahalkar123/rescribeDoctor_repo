@@ -69,6 +69,7 @@ import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
+import com.rescribe.doctor.util.KeyboardEvent;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -196,6 +197,9 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     CardView mRevealView;
     @BindView(R.id.exitRevealDialog)
     FrameLayout exitRevealDialog;
+
+    @BindView(R.id.mainRelativeLayout)
+    RelativeLayout mainRelativeLayout;
 
     // Check Typing
     private boolean isCallFromPatientList;
@@ -435,6 +439,18 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         downloadInit();
         uploadInit();
         audioSliderInit();
+
+        new KeyboardEvent(mainRelativeLayout, new KeyboardEvent.KeyboardListener() {
+            @Override
+            public void onKeyboardOpen() {
+                bookAppointmentLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onKeyboardClose() {
+                bookAppointmentLayout.setVisibility(View.VISIBLE);
+            }
+        });
 
         Intent gotIntent = getIntent();
 
