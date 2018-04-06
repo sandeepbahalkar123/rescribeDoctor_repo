@@ -358,7 +358,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     }
 
     @Override
-    public void onClickOfPatientDetails(PatientList patientListObject, String patientDetails) {
+    public void onClickOfPatientDetails(PatientList patientListObject, int clinicId, String patientDetails) {
 
         if (patientListObject.getSalutation() != 0)
             patientName = RescribeConstants.SALUTATION[patientListObject.getSalutation() - 1] + toCamelCase(patientListObject.getPatientName());
@@ -367,6 +367,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         Bundle b = new Bundle();
         b.putString(RescribeConstants.PATIENT_NAME, patientName);
         b.putString(RescribeConstants.PATIENT_INFO, patientDetails);
+        b.putInt(RescribeConstants.CLINIC_ID, clinicId);
         b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
         b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
         Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);

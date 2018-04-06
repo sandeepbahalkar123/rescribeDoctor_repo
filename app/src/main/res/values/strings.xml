@@ -236,6 +236,8 @@
     <string name="last_name">Last Name</string>
     <string name="reference_id">Reference ID.</string>
     <string name="add_patient_offline">No internet connection found, still you can add patient offline.</string>
+    <string name="select_this_location">Select this Location</string>
+    <string name="detect_location">Detect my location</string>
 
 
 </resources>
