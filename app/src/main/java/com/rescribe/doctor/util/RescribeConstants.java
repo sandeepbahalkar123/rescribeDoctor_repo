@@ -178,7 +178,6 @@ public class RescribeConstants {
     public static final float ZOOM_CAMERA_VALUE = 7.0f;
     public static final String COMPLETE_OPD = "complete_opd";
     public static final String NOT_FROM_COMPLETE_OPD = "not_complete_opd";
-    public static final String FORGOT_PASSWORD_URL = "https://drrescribe.com/app.html#/access/forgotPassword";
     public static final String PATIENT_DETAILS = "patient_details";
 
     public static final String STARTFOREGROUND_ACTION = "com.rescribe.download";
