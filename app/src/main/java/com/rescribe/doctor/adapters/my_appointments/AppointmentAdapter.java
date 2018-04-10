@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment.isLongPressed;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.BOOKED;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
@@ -57,7 +58,6 @@ import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.OTHE
 public class AppointmentAdapter extends BaseExpandableListAdapter implements Filterable {
 
     private OnDownArrowClicked mOnDownArrowClicked;
-    public static boolean isLongPressed;
     private ArrayList<AppointmentList> mAppointmentListTemp;
     private Context mContext;
     private ArrayList<AppointmentList> mDataList;
@@ -286,7 +286,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public boolean onLongClick(View v) {
                 isLongPressed = !isLongPressed;
-                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed, groupPosition);
+                mOnDownArrowClicked.onLongPressOpenBottomMenu(groupPosition);
                 notifyDataSetChanged();
                 return false;
             }
@@ -571,7 +571,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public boolean onLongClick(View v) {
                 isLongPressed = !isLongPressed;
-                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed, groupPosition);
+                mOnDownArrowClicked.onLongPressOpenBottomMenu(groupPosition);
                 notifyDataSetChanged();
                 return false;
             }
@@ -638,14 +638,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
-    }
-
-    public boolean isLongPressed() {
-        return isLongPressed;
-    }
-
-    public void setLongPressed(boolean longPressed) {
-        isLongPressed = longPressed;
     }
 
     // Sorting clicniclist by patientName , patientId , patientPhoneNo
@@ -857,7 +849,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     public interface OnDownArrowClicked {
         void onDownArrowSetClick(int groupPosition, boolean isExpanded);
 
-        void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
+        void onLongPressOpenBottomMenu(int groupPosition);
 
         void onRecordFound(boolean isListEmpty);
 

@@ -174,7 +174,6 @@ public class RescribeConstants {
     public static final String OPD_TIME = "opd_time";
     public static final String IS_CALL_FROM_MY_PATIENTS = "call_from_my_patients_chat";
     public static final String TEMPLATE_LIST = "template_list";
-    public static final String IS_BOOK_AND_CONFIRM_REQUIRED = "is_book_confirm_required";
     public static final float ZOOM_CAMERA_VALUE = 7.0f;
     public static final String COMPLETE_OPD = "complete_opd";
     public static final String NOT_FROM_COMPLETE_OPD = "not_complete_opd";

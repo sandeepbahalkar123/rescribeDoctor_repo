@@ -68,6 +68,7 @@ import butterknife.Unbinder;
 import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_DATA;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.*;
 
 /**
@@ -75,11 +76,15 @@ import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.*;
  */
 
 public class MyAppointmentsFragment extends Fragment implements AppointmentAdapter.OnDownArrowClicked, BottomMenuAppointmentAdapter.OnMenuBottomItemClickListener, HelperResponse {
+
+    public static boolean isLongPressed;
+
     @BindView(R.id.searchEditText)
     EditTextWithDeleteButton searchEditText;
     @BindView(R.id.whiteUnderLine)
     ImageView whiteUnderLine;
-    public ExpandableListView expandableListView;
+    @BindView(R.id.historyExpandableListView)
+    ExpandableListView expandableListView;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.appointmentLayoutContainer)
@@ -94,149 +99,49 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     RecyclerView recyclerViewBottom;
     Unbinder unbinder;
     private AppointmentAdapter mAppointmentAdapter;
-    private MyAppointmentsDataModel mMyAppointmentsDataModel;
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
-    private ArrayList<BottomMenu> mBottomMenuList;
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
     private int lastExpandedPosition = -1;
     private String charString = "";
-    private List<PatientList> mPatientLists;
     private AppointmentHelper mAppointmentHelper;
-    private ArrayList<PatientAddToWaitingList> mPatientAddToWaitingList;
-    private ArrayList<AppointmentList> mAppointmentListOfAdapter = new ArrayList<>();
     private int childPos;
     private int groupPos;
     private boolean isFromGroup;
-    private String patientName;
     private ArrayList<AppointmentList> mAppointmentLists;
-    private ArrayList<AppointmentList> mAppointListForBookAndConfirm;
-    private boolean isBookAndConfirmedRequired;
-    private ArrayList<PatientList> mPatientListsForBookAndCancel;
     private ArrayList<AddToList> addToArrayList;
-    private ArrayList<AddToList> addToArrayListForSelectedCount;
-    private ArrayList<PatientAddToWaitingList> mPatientListForCountOfPatientsSelected;
-    private ShowWaitingStatusAdapter mShowWaitingStatusAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View mRootView = inflater.inflate(R.layout.my_appointments_layout, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
-        expandableListView = (ExpandableListView) mRootView.findViewById(R.id.historyExpandableListView);
         init();
         return mRootView;
     }
 
     private void init() {
-
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
-        mBottomMenuList = new ArrayList<>();
-        isBookAndConfirmedRequired = getArguments().getBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED);
+        ArrayList<BottomMenu> mBottomMenuList = new ArrayList<>();
+
         for (String mMenuName : mMenuNames) {
             BottomMenu bottomMenu = new BottomMenu();
             bottomMenu.setMenuName(mMenuName);
             mBottomMenuList.add(bottomMenu);
         }
-        mMyAppointmentsDataModel = getArguments().getParcelable(RescribeConstants.APPOINTMENT_DATA);
-        final ArrayList<AppointmentList> mAppointmentList = new ArrayList<>();
-        if (!mMyAppointmentsDataModel.getAppointmentList().isEmpty()) {
-            expandableListView.setVisibility(View.VISIBLE);
-            expandableListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
-            expandableListView.setClipToPadding(false);
-            emptyListView.setVisibility(View.GONE);
 
-            for (int i = 0; i < mMyAppointmentsDataModel.getAppointmentList().size(); i++) {
-                AppointmentList clinicList = mMyAppointmentsDataModel.getAppointmentList().get(i);
-                mPatientLists = mMyAppointmentsDataModel.getAppointmentList().get(i).getPatientList();
-                if (!mPatientLists.isEmpty()) {
-                    clinicList.setPatientHeader(mPatientLists.get(0));
-                    mAppointmentList.add(clinicList);
-                }
-            }
-
-            if (!mAppointmentList.isEmpty()) {
-                //list is sorted for Booked and Confirmed Status appointments
-                if (isBookAndConfirmedRequired) {
-                    mAppointListForBookAndConfirm = new ArrayList<>();
-                    for (int i = 0; i < mAppointmentList.size(); i++) {
-                        ArrayList<PatientList> patientListToAddBookAndConfirmEntries = new ArrayList<>();
-
-                        AppointmentList tempAppointmentListObject = null;
-                        try {
-                            tempAppointmentListObject = (AppointmentList) mAppointmentList.get(i).clone();
-                        } catch (CloneNotSupportedException e) {
-                            e.printStackTrace();
-                        }
-
-                        mPatientListsForBookAndCancel = tempAppointmentListObject.getPatientList();
-                        if (!mPatientListsForBookAndCancel.isEmpty()) {
-                            for (int j = 0; j < mPatientListsForBookAndCancel.size(); j++) {
-                                if (mPatientListsForBookAndCancel.get(j).getAppointmentStatusId().equals(CONFIRM) || mPatientListsForBookAndCancel.get(j).getAppointmentStatusId().equals(BOOKED)) {
-                                    PatientList patientList = mPatientListsForBookAndCancel.get(j);
-                                    patientListToAddBookAndConfirmEntries.add(patientList);
-                                }
-                            }
-                            if (!patientListToAddBookAndConfirmEntries.isEmpty()) {
-                                tempAppointmentListObject.setPatientList(patientListToAddBookAndConfirmEntries);
-                                mAppointListForBookAndConfirm.add(tempAppointmentListObject);
-                            }
-                        }
-                    }
-                    //from sorted patientlist the first position element is set as patientheader
-                    for (int i = 0; i < mAppointListForBookAndConfirm.size(); i++) {
-                        mPatientLists = mAppointListForBookAndConfirm.get(i).getPatientList();
-                        if (!mPatientLists.isEmpty()) {
-                            mAppointListForBookAndConfirm.get(i).setPatientHeader(mPatientLists.get(0));
-                        }
-                    }
-                    if (!mAppointListForBookAndConfirm.isEmpty()) {
-                        mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointListForBookAndConfirm, this);
-                        expandableListView.setAdapter(mAppointmentAdapter);
-                    } else {
-                        expandableListView.setVisibility(View.GONE);
-                        emptyListView.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointmentList, this);
-                    expandableListView.setAdapter(mAppointmentAdapter);
-                    mAppointmentAdapter.setLongPressed(false);
-                }
-            } else {
-                expandableListView.setVisibility(View.GONE);
-                emptyListView.setVisibility(View.VISIBLE);
-            }
-        } else {
-            expandableListView.setVisibility(View.GONE);
-            emptyListView.setVisibility(View.VISIBLE);
-        }
-
+        expandableListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
+        expandableListView.setClipToPadding(false);
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 return true;
             }
         });
+
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 return true;
-            }
-        });
-
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                if (charString.equals("")) {
-                    if (mAppointmentList.get(groupPosition).getPatientList().size() == 1) {
-                        expandableListView.collapseGroup(groupPosition);
-                    }
-                    if (lastExpandedPosition != -1
-                            && groupPosition != lastExpandedPosition) {
-                        expandableListView.collapseGroup(lastExpandedPosition);
-                    }
-                    lastExpandedPosition = groupPosition;
-                }  //CommonMethods.showToast(getActivity(), "all expand");
-
             }
         });
 
@@ -255,20 +160,23 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
             @Override
             public void afterTextChanged(Editable s) {
-
-                if (mAppointmentAdapter != null) {
+                if (mAppointmentAdapter != null && !charString.equals(s.toString())) {
                     charString = s.toString();
                     mAppointmentAdapter.getFilter().filter(s);
                 }
-
             }
         });
+
+        MyAppointmentsDataModel myAppointmentsDataModel = getArguments().getParcelable(APPOINTMENT_DATA);
+        setFilteredData(myAppointmentsDataModel);
     }
 
-    public static MyAppointmentsFragment newInstance(Bundle b) {
-        MyAppointmentsFragment fragment = new MyAppointmentsFragment();
-        fragment.setArguments(b);
-        return fragment;
+    public static MyAppointmentsFragment newInstance(MyAppointmentsDataModel myAppointmentsDataModel) {
+        MyAppointmentsFragment myAppointmentsFragment = new MyAppointmentsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(APPOINTMENT_DATA, myAppointmentsDataModel);
+        myAppointmentsFragment.setArguments(bundle);
+        return myAppointmentsFragment;
     }
 
     public void expandAll() {
@@ -304,7 +212,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     }
 
     @Override
-    public void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition) {
+    public void onLongPressOpenBottomMenu(int groupPosition) {
         if (isLongPressed) {
             recyclerViewBottom.setVisibility(View.VISIBLE);
         } else {
@@ -360,6 +268,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     @Override
     public void onClickOfPatientDetails(PatientList patientListObject, int clinicId, String patientDetails) {
 
+        String patientName;
         if (patientListObject.getSalutation() != 0)
             patientName = RescribeConstants.SALUTATION[patientListObject.getSalutation() - 1] + toCamelCase(patientListObject.getPatientName());
         else patientName = toCamelCase(patientListObject.getPatientName());
@@ -508,10 +417,10 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             //Add to WaitingList
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
             addToArrayList = new ArrayList<>();
-            addToArrayListForSelectedCount = new ArrayList<>();
+            ArrayList<AddToList> addToArrayListForSelectedCount = new ArrayList<>();
             for (int groupIndex = 0; groupIndex < mAppointmentAdapter.getGroupList().size(); groupIndex++) {
-                mPatientAddToWaitingList = new ArrayList<>();
-                mPatientListForCountOfPatientsSelected = new ArrayList<>();
+                ArrayList<PatientAddToWaitingList> mPatientAddToWaitingList = new ArrayList<>();
+                ArrayList<PatientAddToWaitingList> mPatientListForCountOfPatientsSelected = new ArrayList<>();
                 for (int childIndex = 0; childIndex < mAppointmentAdapter.getGroupList().get(groupIndex).getPatientList().size(); childIndex++) {
                     PatientList patientList = mAppointmentAdapter.getGroupList().get(groupIndex).getPatientList().get(childIndex);
                     if (patientList.isSelected()) {
@@ -585,14 +494,9 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);
     }
 
-
-    public boolean callOnBackPressed() {
-        return mAppointmentAdapter.isLongPressed;
-    }
-
     public void removeCheckBox() {
         recyclerViewBottom.setVisibility(View.GONE);
-        mAppointmentAdapter.setLongPressed(false);
+        isLongPressed = false;
         for (int index = 0; index < mAppointmentAdapter.getGroupList().size(); index++) {
             for (AppointmentList clinicList : mAppointmentAdapter.getGroupList()) {
                 clinicList.setSelectedGroupCheckbox(false);
@@ -628,7 +532,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
             if (templateBaseModel.getCommon().isSuccess()) {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
-                mAppointmentListOfAdapter = mAppointmentAdapter.getGroupList();
+                ArrayList<AppointmentList> mAppointmentListOfAdapter = mAppointmentAdapter.getGroupList();
                 if (isFromGroup) {
                     if (templateBaseModel.getCommon().getStatusMessage().equalsIgnoreCase(getString(R.string.appointment_completed))) {
                         mAppointmentListOfAdapter.get(groupPos).getPatientHeader().setAppointmentStatus("Completed");
@@ -727,11 +631,10 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         dialog.setContentView(R.layout.waiting_status_list_dialog);
         dialog.setCancelable(true);
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
         RecyclerView recyclerViewBottom = (RecyclerView) dialog.findViewById(R.id.recyclerViewBottom);
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewBottom.setLayoutManager(linearlayoutManager);
-        mShowWaitingStatusAdapter = new ShowWaitingStatusAdapter(getActivity(), addToWaitingResponse);
+        ShowWaitingStatusAdapter mShowWaitingStatusAdapter = new ShowWaitingStatusAdapter(getActivity(), addToWaitingResponse);
         recyclerViewBottom.setAdapter(mShowWaitingStatusAdapter);
         TextView okButton = (TextView) dialog.findViewById(R.id.okButton);
         okButton.setOnClickListener(new View.OnClickListener() {
@@ -742,7 +645,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 startActivity(intent);
                 getActivity().finish();
                 getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
-                mAppointmentAdapter.setLongPressed(false);
+                isLongPressed = false;
             }
         });
 
@@ -775,4 +678,52 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         CommonMethods.showToast(getActivity(), serverErrorMessage);
     }
 
+    public void setFilteredData(MyAppointmentsDataModel myAppointmentsDataModel) {
+
+        final ArrayList<AppointmentList> mAppointmentList = new ArrayList<>();
+        if (!myAppointmentsDataModel.getAppointmentList().isEmpty()) {
+            expandableListView.setVisibility(View.VISIBLE);
+            emptyListView.setVisibility(View.GONE);
+
+            List<PatientList> mPatientLists;
+            for (int i = 0; i < myAppointmentsDataModel.getAppointmentList().size(); i++) {
+                AppointmentList clinicList = myAppointmentsDataModel.getAppointmentList().get(i);
+                mPatientLists = myAppointmentsDataModel.getAppointmentList().get(i).getPatientList();
+                if (!mPatientLists.isEmpty()) {
+                    clinicList.setPatientHeader(mPatientLists.get(0));
+                    mAppointmentList.add(clinicList);
+                }
+            }
+
+            if (!mAppointmentList.isEmpty()) {
+                //list is sorted for Booked and Confirmed Status appointments
+                mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointmentList, this);
+                expandableListView.setAdapter(mAppointmentAdapter);
+
+            } else {
+                expandableListView.setVisibility(View.GONE);
+                emptyListView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            expandableListView.setVisibility(View.GONE);
+            emptyListView.setVisibility(View.VISIBLE);
+        }
+
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (charString.equals("")) {
+                    if (mAppointmentList.get(groupPosition).getPatientList().size() == 1) {
+                        expandableListView.collapseGroup(groupPosition);
+                    }
+                    if (lastExpandedPosition != -1
+                            && groupPosition != lastExpandedPosition) {
+                        expandableListView.collapseGroup(lastExpandedPosition);
+                    }
+                    lastExpandedPosition = groupPosition;
+                }  //CommonMethods.showToast(getActivity(), "all expand");
+
+            }
+        });
+    }
 }

@@ -36,9 +36,9 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
 
     private OnClickOfFilterComponents mOnClickOfFilterComponents;
 
-    public DrawerAppointmentSelectStatusAdapter(Context mContext, MyAppointmentsDataModel myAppointmentsDataModel, OnClickOfFilterComponents mOnClickOfFilterComponents) {
+    public DrawerAppointmentSelectStatusAdapter(Context mContext, ArrayList<StatusList> statusLists, OnClickOfFilterComponents mOnClickOfFilterComponents) {
         this.mContext = mContext;
-        this.mStatusLists = myAppointmentsDataModel.getStatusList();
+        this.mStatusLists = statusLists;
         this.mOnClickOfFilterComponents = mOnClickOfFilterComponents;
     }
 
