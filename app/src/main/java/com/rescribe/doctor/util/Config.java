@@ -27,6 +27,8 @@ public class Config {
     public static final String GET_COMPELTED_OPD_URL = "doctor/api/appointment/getCompletedOpd";
     public static final String GET_NEW_PATIENTS_URL = "doctor/api/appointment/getNewPatients";
     public static final String DELETE_PATIENT_OPD_ATTCHMENTS = "doctor/api/patient/deletePatientOpdAttachment";
+    public static final String TIME_SLOT_TO_BOOK_APPOINTMENT = "api/doctors/getDocOpenTimeSlots?";
+    public static final String CONFIRM_APPOINTMENT = "api/patient/bookAppointment";
 
     public static boolean DEV_BUILD = true;
     //Declared all URL used in app here

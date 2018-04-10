@@ -28,10 +28,10 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:background="@color/transparent"
-                android:text="@string/appointment_completed_button"
+                android:text="@string/capitalcompleted"
                 android:textAllCaps="false"
                 android:textColor="@color/tagColor"
-                android:textSize="@dimen/sp14" />
+                android:textSize="@dimen/sp12" />
 
             <View
                 android:layout_width="match_parent"
@@ -46,10 +46,28 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:background="@color/transparent"
-                android:text="@string/appointment_cancelled_button"
+                android:text="@string/cancel"
                 android:textAllCaps="false"
                 android:textColor="@color/Red"
-                android:textSize="@dimen/sp14" />
+                android:textSize="@dimen/sp12" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="@dimen/dp3"
+                android:layout_marginStart="@dimen/dp3"
+                android:background="@color/tagColor" />
+
+            <Button
+                android:id="@+id/appointmentReschedule"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:text="@string/Reschedule"
+                android:textAllCaps="false"
+                android:textColor="@color/tagColor"
+                android:textSize="@dimen/sp12" />
+
 
         </LinearLayout>
     </FrameLayout>
@@ -178,6 +196,10 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp15"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingEnd="@dimen/dp6"
+                        android:paddingRight="@dimen/dp6"
                         app:customFont="@string/roboto_bold"
                         tools:text="Mr. Uren Chhadva" />
 

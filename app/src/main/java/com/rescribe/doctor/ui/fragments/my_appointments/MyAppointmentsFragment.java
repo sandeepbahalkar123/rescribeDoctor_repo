@@ -1,5 +1,6 @@
 package com.rescribe.doctor.ui.fragments.my_appointments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -48,8 +49,10 @@ import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.Re
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingResponse;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.activities.book_appointment.SelectSlotToBookAppointmentBaseActivity;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity;
+import com.rescribe.doctor.ui.activities.my_patients.ShowMyPatientsListActivity;
 import com.rescribe.doctor.ui.activities.my_patients.TemplateListActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
@@ -68,13 +71,17 @@ import butterknife.Unbinder;
 import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
-import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.*;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.BOOKED;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.COMPLETED;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
 
 /**
  * Created by jeetal on 31/1/18.
  */
 
 public class MyAppointmentsFragment extends Fragment implements AppointmentAdapter.OnDownArrowClicked, BottomMenuAppointmentAdapter.OnMenuBottomItemClickListener, HelperResponse {
+
     @BindView(R.id.searchEditText)
     EditTextWithDeleteButton searchEditText;
     @BindView(R.id.whiteUnderLine)
@@ -93,6 +100,8 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     @BindView(R.id.recyclerViewBottom)
     RecyclerView recyclerViewBottom;
     Unbinder unbinder;
+    @BindView(R.id.leftFabForAppointment)
+    FloatingActionButton leftFabForAppointment;
     private AppointmentAdapter mAppointmentAdapter;
     private MyAppointmentsDataModel mMyAppointmentsDataModel;
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
@@ -128,7 +137,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     }
 
     private void init() {
-
+        leftFabForAppointment.setVisibility(View.VISIBLE);
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         mBottomMenuList = new ArrayList<>();
         isBookAndConfirmedRequired = getArguments().getBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED);
@@ -427,6 +436,22 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     }
 
     @Override
+    public void onAppointmentReshedule(PatientList patientList,String text) {
+        Intent intent = new Intent(getActivity(), SelectSlotToBookAppointmentBaseActivity.class);
+        com.rescribe.doctor.helpers.doctor_patients.PatientList patientListforBookAppointment = new com.rescribe.doctor.helpers.doctor_patients.PatientList();
+        patientListforBookAppointment.setPatientName(patientList.getPatientName());
+        patientListforBookAppointment.setPatientId(patientList.getPatientId());
+        patientListforBookAppointment.setSalutation(patientList.getSalutation());
+        patientListforBookAppointment.setPatientImageUrl(patientList.getPatientImageUrl());
+        patientListforBookAppointment.setAptId(patientList.getAptId());
+        intent.putExtra(RescribeConstants.PATIENT_INFO,patientListforBookAppointment);
+        intent.putExtra(RescribeConstants.PATIENT_DETAILS, text);
+        intent.putExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE,true);
+        startActivityForResult(intent,Activity.RESULT_OK);
+
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -604,14 +629,17 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         mAppointmentAdapter.notifyDataSetChanged();
     }
 
-    @OnClick({R.id.rightFab, R.id.leftFab})
+    @OnClick({R.id.rightFab, R.id.leftFabForAppointment})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rightFab:
                 MyAppointmentsActivity activity = (MyAppointmentsActivity) getActivity();
                 activity.getActivityDrawerLayout().openDrawer(GravityCompat.END);
                 break;
-            case R.id.leftFab:
+            case R.id.leftFabForAppointment:
+                Intent intent = new Intent(getActivity(), ShowMyPatientsListActivity.class);
+                intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM, RescribeConstants.MY_APPOINTMENTS);
+                startActivityForResult(intent, Activity.RESULT_OK);
                 break;
         }
     }
@@ -774,5 +802,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
         CommonMethods.showToast(getActivity(), serverErrorMessage);
     }
+
+
 
 }

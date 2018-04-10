@@ -5,7 +5,7 @@
     <color name="bg_item_dragging_active_state">#00000000</color>
     <color name="bg_item_swiping_state">#00000000</color>
     <color name="bg_item_swiping_active_state">#00000000</color>
-
+    <color name="slot_color">#909090</color>
     <color name="grey_500">#9E9E9E</color>
     <color name="transparent">#00000000</color>
     <color name="placeHolder">#55000000</color>
@@ -24,6 +24,7 @@
     <color name="dashboard_text_color">#995b5b5b</color>
     <color name="dashboard_menu_text_color">#5b5b5b</color>
     <color name="white">#ffffff</color>
+    <color name="black_shade">#4c4c4c</color>
     <color name="complete_color">#6bbb8e</color>
     <color name="confirm_color">#f1b76b</color>
     <color name="cancel_color">#dc5e56</color>

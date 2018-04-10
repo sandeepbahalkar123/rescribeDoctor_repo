@@ -65,4 +65,7 @@
     <dimen name="dialog_waitinglist_bullet_width_height">8dp</dimen>
     <dimen name="dialog_waitinglist_textsize">14sp</dimen>
     <dimen name="dialog_waitinglist_okbtn_width">92dp</dimen>
+    <dimen name="sp22">22sp</dimen>
+    <dimen name="dp62">72dp</dimen>
+    <dimen name="sp8">8sp</dimen>
 </resources>

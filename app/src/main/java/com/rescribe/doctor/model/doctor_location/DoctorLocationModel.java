@@ -31,6 +31,9 @@ public class DoctorLocationModel implements Parcelable
     @SerializedName("address")
     @Expose
     private String address;
+    @SerializedName("apptScheduleLmtDays")
+    @Expose
+    private Integer apptScheduleLmtDays;
     public final static Creator<DoctorLocationModel> CREATOR = new Creator<DoctorLocationModel>() {
 
 
@@ -56,6 +59,7 @@ public class DoctorLocationModel implements Parcelable
         this.city = ((String) in.readValue((String.class.getClassLoader())));
         this.cityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.address = ((String) in.readValue((String.class.getClassLoader())));
+        this.apptScheduleLmtDays = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public DoctorLocationModel() {
@@ -117,6 +121,14 @@ public class DoctorLocationModel implements Parcelable
         this.address = address;
     }
 
+    public Integer getApptScheduleLmtDays() {
+        return apptScheduleLmtDays;
+    }
+
+    public void setApptScheduleLmtDays(Integer apptScheduleLmtDays) {
+        this.apptScheduleLmtDays = apptScheduleLmtDays;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(clinicName);
         dest.writeValue(clinicId);
@@ -125,22 +137,16 @@ public class DoctorLocationModel implements Parcelable
         dest.writeValue(city);
         dest.writeValue(cityId);
         dest.writeValue(address);
+        dest.writeValue(apptScheduleLmtDays);
     }
 
     public int describeContents() {
         return  0;
     }
-
+//
     @Override
     public String toString() {
-        return "DoctorLocationModel{" +
-                "clinicName='" + clinicName + '\'' +
-                ", clinicId=" + clinicId +
-                ", locationId=" + locationId +
-                ", area='" + area + '\'' +
-                ", city='" + city + '\'' +
-                ", cityId=" + cityId +
-                ", address='" + address + '\'' +
-                '}';
+        return clinicName +", "+area+", "+city;
+
     }
 }

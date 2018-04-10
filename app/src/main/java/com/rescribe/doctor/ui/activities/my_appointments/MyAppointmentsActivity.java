@@ -78,6 +78,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private DrawerForMyAppointment mDrawerForMyAppointment;
     private MyAppointmentsBaseModel myAppointmentsBaseMainModel;
     private String phoneNo;
+    public static final int CLOSE_APPOINTMENT_ACTIVITY_AFTER_BOOK_APPOINTMENT = 666;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -414,4 +415,12 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetAppointmentData(year + "-" + monthOfYearToShow + "-" + dayOfMonth);
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==CLOSE_APPOINTMENT_ACTIVITY_AFTER_BOOK_APPOINTMENT) {
+            finish();
+        }
+    }
+
 }

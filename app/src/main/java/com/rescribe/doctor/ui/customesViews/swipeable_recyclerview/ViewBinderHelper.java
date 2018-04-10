@@ -58,23 +58,14 @@ public class ViewBinderHelper {
         mapLayouts.put(groupPosition + "_" + childPosition, swipeLayout);
 
         swipeLayout.abort();
-        swipeLayout.setSwipeListener(new SwipeRevealLayout.SwipeListener() {
+        swipeLayout.setDragStateChangeListener(new SwipeRevealLayout.DragStateChangeListener() {
             @Override
-            public void onClosed(SwipeRevealLayout view) {
-                mapStates.put(groupPosition + "_" + childPosition, SwipeRevealLayout.STATE_CLOSE);
-            }
-
-            @Override
-            public void onOpened(SwipeRevealLayout view) {
-                mapStates.put(groupPosition + "_" + childPosition, SwipeRevealLayout.STATE_OPEN);
+            public void onDragStateChanged(int state) {
+                mapStates.put(groupPosition + "_" + childPosition, state);
 
                 if (openOnlyOne) {
                     closeOthers(groupPosition + "_" + childPosition, swipeLayout);
                 }
-            }
-
-            @Override
-            public void onSlide(SwipeRevealLayout view, float slideOffset) {
             }
         });
 
@@ -106,39 +97,28 @@ public class ViewBinderHelper {
         }
 
         mapLayouts.values().remove(swipeLayout);
-        mapLayouts.put(String.valueOf(groupPosition), swipeLayout);
+        mapLayouts.put(groupPosition+"", swipeLayout);
 
         swipeLayout.abort();
-        swipeLayout.setSwipeListener(new SwipeRevealLayout.SwipeListener() {
-            @Override
-            public void onClosed(SwipeRevealLayout view) {
-                mapStates.put(String.valueOf(groupPosition), SwipeRevealLayout.STATE_CLOSE);
-            }
-
-            @Override
-            public void onOpened(SwipeRevealLayout view) {
-                mapStates.put(String.valueOf(groupPosition), SwipeRevealLayout.STATE_OPEN);
+        swipeLayout.setDragStateChangeListener(new SwipeRevealLayout.DragStateChangeListener() {
+            public void onDragStateChanged(int state) {
+                mapStates.put(groupPosition+"", state);
 
                 if (openOnlyOne) {
-                    closeOthers(String.valueOf(groupPosition), swipeLayout);
+                    closeOthers(groupPosition+"", swipeLayout);
                 }
-            }
-
-            @Override
-            public void onSlide(SwipeRevealLayout view, float slideOffset) {
-
             }
         });
 
         // first time binding.
-        if (!mapStates.containsKey(String.valueOf(groupPosition))) {
-            mapStates.put(String.valueOf(groupPosition), SwipeRevealLayout.STATE_CLOSE);
+        if (!mapStates.containsKey(groupPosition+"")) {
+            mapStates.put(groupPosition+"", SwipeRevealLayout.STATE_CLOSE);
             swipeLayout.close(false);
         }
 
         // not the first time, then close or open depends on the current state.
         else {
-            int state = mapStates.get(String.valueOf(groupPosition));
+            int state = mapStates.get(groupPosition+"");
 
             if (state == SwipeRevealLayout.STATE_CLOSE || state == SwipeRevealLayout.STATE_CLOSING ||
                     state == SwipeRevealLayout.STATE_DRAGGING) {
@@ -149,7 +129,7 @@ public class ViewBinderHelper {
         }
 
         // set lock swipe
-        swipeLayout.setLockDrag(lockedSwipeSet.contains(String.valueOf(groupPosition)));
+        swipeLayout.setLockDrag(lockedSwipeSet.contains(groupPosition+""));
     }
 
     /**

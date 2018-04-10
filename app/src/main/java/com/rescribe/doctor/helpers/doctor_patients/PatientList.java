@@ -60,9 +60,12 @@ public class PatientList implements Parcelable , Comparable<PatientList>
     @SerializedName("patientArea")
     @Expose
     private String patientArea = "";
-
+    @SerializedName("aptId")
+    @Expose
+    private Integer aptId;
     private String spannableString;
     private boolean selected;
+
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
 
@@ -94,6 +97,7 @@ public class PatientList implements Parcelable , Comparable<PatientList>
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
+        this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -191,8 +195,17 @@ public class PatientList implements Parcelable , Comparable<PatientList>
         return spannableString;
     }
 
+
     public void setSpannableString(String spannableString) {
+
         this.spannableString = spannableString;
+    }
+    public Integer getAptId() {
+        return aptId;
+    }
+
+    public void setAptId(Integer aptId) {
+        this.aptId = aptId;
     }
 
     public int getClinicId() {
@@ -243,6 +256,7 @@ public class PatientList implements Parcelable , Comparable<PatientList>
         dest.writeValue(clinicName);
         dest.writeValue(hospitalPatId);
         dest.writeValue(patientCity);
+        dest.writeValue(aptId);
     }
 
     public int describeContents() {

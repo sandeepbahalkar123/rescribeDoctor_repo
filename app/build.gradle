@@ -55,6 +55,7 @@ android {
                             'src/main/res/layouts/add_records',
                             'src/main/res/layouts/profile',
                             'src/main/res/layouts/waiting_list',
+                            'src/main/res/layouts/book_appointment',
                             'src/main/res/layout-sw720dp',
                             'src/main/res/layout-sw600dp']
         }
@@ -76,10 +77,9 @@ dependencies {
     compile project(':advanced_recycler')
 
     // Recommended
-    compile('com.philliphsu:bottomsheetpickers:2.3.3') {
+    compile(project(':bottomsheetpickers')) {
         exclude group: 'com.android.support', module: 'appcompat-v7'
         exclude group: 'com.android.support', module: 'design'
-        exclude group: 'com.android.support', module: 'gridlayout-v7'
     }
 
     compile project(':materialdrawer') // For drawer layout

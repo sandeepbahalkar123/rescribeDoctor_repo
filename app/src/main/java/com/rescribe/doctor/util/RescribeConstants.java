@@ -113,7 +113,8 @@ public class RescribeConstants {
     public static final String TASK_GET_DOCTOR_PATIENT_CITY = RescribeConstants.BLANK + 34;
     public static final String TASK_ADD_NEW_PATIENT = RescribeConstants.BLANK + 35;
     public static final String TASK_DELETE_PATIENT_OPD_ATTCHMENTS = RescribeConstants.BLANK + 36;
-
+    public static final String TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT = RescribeConstants.BLANK + 37;
+    public static final String TASK_CONFIRM_APPOINTMENT = RescribeConstants.BLANK + 38;
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
 
@@ -184,7 +185,9 @@ public class RescribeConstants {
     public static final String STARTFOREGROUND_ACTION = "com.rescribe.download";
     public static final int FOREGROUND_SERVICE = 21;
     public static final String MY_PATIENTS_DATA = "my_patient_data";
-
+    public static final String MY_APPOINTMENTS = "my_appointments";
+    public static final String PATIENT_CONNECT = "patient_connect";
+    public static final String IS_APPOINTMENT_TYPE_RESHEDULE = "appointment_type_reschedule";
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
@@ -243,6 +246,7 @@ public class RescribeConstants {
     public interface DATE_PATTERN {
         String YYYY_MM_DD_hh_mm_a = "yyyy-MM-dd hh:mm a";
         String DD_MM = "dd/MM";
+        String DD_MMM = "dd MMM";
         String MM = "MM";
         String MMM = "MMM";
         String UTC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
@@ -256,6 +260,7 @@ public class RescribeConstants {
         String HH_mm_ss = "HH:mm:ss";
         String DD_MM_YYYY_hh_mm = "dd/MM/yyyy hh:mm aa";
         String HH_MM = "hh:mm";
+        String HH_mm = "HH:mm";
         String MMM_YYYY = "MMM, yyyy";
         String MMM_YY = "MMM, yy";
         String DD_MM_YYYY_hh_mm_ss = "dd-MM-yyyy hh:mm:ss";

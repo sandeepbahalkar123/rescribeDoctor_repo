@@ -56,7 +56,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     RelativeLayout mEmptyListView;
     Unbinder unbinder;
     @BindView(R.id.leftFab)
-    FloatingActionButton leftFab;
+    FloatingActionButton f;
     @BindView(R.id.nestedScrollView)
     NestedScrollView nestedScrollView;
 
@@ -394,6 +394,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
                 break;
             case R.id.leftFab:
                 Intent intent = new Intent(getActivity(), ShowMyPatientsListActivity.class);
+                intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM,RescribeConstants.PATIENT_CONNECT);
                 getActivity().startActivityForResult(intent, PATIENT_CONNECT_REQUEST);
                 break;
         }

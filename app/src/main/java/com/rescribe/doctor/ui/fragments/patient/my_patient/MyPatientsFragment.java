@@ -48,7 +48,6 @@ import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.Pa
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientActivity;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
@@ -114,7 +113,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private int mClinicId;
     private int mLocationId;
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
-    private String from = "";
+    private String fromActivityLaunched = "";
     private boolean isFiltered = false;
 
     @Override
@@ -138,7 +137,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private void init() {
 
         if (getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM) != null)
-            from = getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
+            fromActivityLaunched = getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
 
         ArrayList<BottomMenu> mBottomMenuList = new ArrayList<>();
         mDoctorLocationModel = getDoctorLocationModels();
@@ -160,7 +159,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         ArrayList<PatientList> patientLists = new ArrayList<>();
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearlayoutManager);
-        mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, from.equals(RescribeConstants.HOME_PAGE));
+
+        mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, fromActivityLaunched.equals(RescribeConstants.HOME_PAGE));
         recyclerView.setAdapter(mMyPatientsAdapter);
 
         nextPage(0);
@@ -197,7 +197,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 }
             }
         });
-        if (from.equals(RescribeConstants.HOME_PAGE)) {
+        if (fromActivityLaunched.equals(RescribeConstants.HOME_PAGE)) {
             mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList, true, RescribeConstants.NOT_FROM_COMPLETE_OPD);
             recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
             recyclerViewBottom.setAdapter(mBottomMenuAppointmentAdapter);

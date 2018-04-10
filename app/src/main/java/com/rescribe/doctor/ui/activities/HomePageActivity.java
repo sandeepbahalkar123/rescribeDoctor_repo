@@ -587,7 +587,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     }
 
-    @OnClick({R.id.todayCompletedOpd, R.id.viewPagerDoctorItem, R.id.todayAppointmentsOrWaitingList, R.id.todayNewPatient})
+    @OnClick({R.id.todayCompletedOpd, R.id.viewPagerDoctorItem, R.id.todayAppointmentsOrWaitingList, R.id.todayNewPatient,R.id.doctorDashboardImage})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.todayCompletedOpd:
@@ -625,6 +625,10 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
                 }
                 break;
+            case R.id.doctorDashboardImage:
+
+                break;
+
         }
     }
 
@@ -672,4 +676,5 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             startActivity(intent);
         }
     }
+
 }

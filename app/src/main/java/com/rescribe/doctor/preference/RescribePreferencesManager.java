@@ -249,5 +249,6 @@ public class RescribePreferencesManager {
         String DOC_INFO = "doc_info";
         String SELECTED_LOCATION_ID = "selected_location_id";
         String BACK_UP = "back_up";
+        String COACHMARK_GET_TOKEN = "coachmark_get_token" ;
     }
 }
