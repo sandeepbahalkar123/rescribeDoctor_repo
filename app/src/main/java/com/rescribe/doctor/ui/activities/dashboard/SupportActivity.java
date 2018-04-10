@@ -70,7 +70,7 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
 
     private void callSupport() {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:123456789"));
+        callIntent.setData(Uri.parse("tel:9921385816"));
         startActivity(callIntent);
     }
 
@@ -108,7 +108,7 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
                 break;
             case R.id.emailtextView:
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + "your_email"));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + "anirudh.kulkarni@scorgtechnologies.com"));
                     intent.putExtra(Intent.EXTRA_SUBJECT, "your_subject");
                     intent.putExtra(Intent.EXTRA_TEXT, "your_text");
                     startActivity(intent);
