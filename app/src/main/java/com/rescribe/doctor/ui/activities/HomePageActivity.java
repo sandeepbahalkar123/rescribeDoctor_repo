@@ -4,15 +4,22 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +36,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.dashboard.DashBoardAppointmentListAdapter;
@@ -46,7 +54,9 @@ import com.rescribe.doctor.model.doctor_location.DoctorLocationBaseModel;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.singleton.RescribeApplication;
+import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.ui.activities.completed_opd.CompletedOpdActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SettingsActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
@@ -58,7 +68,16 @@ import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.SwitchButton;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.Config;
+import com.rescribe.doctor.util.Imageutils;
 import com.rescribe.doctor.util.RescribeConstants;
+
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadNotificationConfig;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,6 +85,7 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.services.CheckPendingUploads.getUploadConfig;
 import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
 
 /**
@@ -73,7 +93,7 @@ import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
  */
 
 @RuntimePermissions
-public class HomePageActivity extends BottomMenuActivity implements HelperResponse {
+public class HomePageActivity extends BottomMenuActivity implements HelperResponse, Imageutils.ImageAttachmentListener {
 
     private static final String TAG = "Home";
 
@@ -145,6 +165,12 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private String doctorNameToDisplay;
     private String mDoctorName;
     private ColorGenerator mColorGenerator;
+    private Imageutils imageutils;
+    private Bitmap bitmap;
+    private String file_name;
+    private String Url = Config.BASE_URL + Config.UPLOAD_PROFILE_PHOTO;
+    private String authorizationString;
+    private Device device;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +193,9 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     }
 
     private void initialize() {
-
+        imageutils = new Imageutils(this);
+        device = Device.getInstance(HomePageActivity.this);
+        authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, HomePageActivity.this);
         String doctorDetails = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, this);
         final DocDetail docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
 
@@ -338,6 +366,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         HomePageActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        imageutils.request_permission_result(requestCode, permissions, grantResults);
+
     }
 
     @Override
@@ -531,10 +561,10 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     .buildRound(("" + mDoctorName.charAt(0)).toUpperCase(), color2);
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.dontAnimate();
-            requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-            requestOptions.skipMemoryCache(true);
             requestOptions.placeholder(drawable);
             requestOptions.error(drawable);
+            requestOptions.skipMemoryCache(true);
+            requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
 
             Glide.with(mContext)
                     .load(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext))
@@ -587,7 +617,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     }
 
-    @OnClick({R.id.todayCompletedOpd, R.id.viewPagerDoctorItem, R.id.todayAppointmentsOrWaitingList, R.id.todayNewPatient,R.id.doctorDashboardImage})
+    @OnClick({R.id.todayCompletedOpd, R.id.viewPagerDoctorItem, R.id.todayAppointmentsOrWaitingList, R.id.todayNewPatient, R.id.doctorDashboardImage})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.todayCompletedOpd:
@@ -626,7 +656,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 }
                 break;
             case R.id.doctorDashboardImage:
-
+                imageutils.imagepicker(1);
                 break;
 
         }
@@ -677,4 +707,71 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageutils.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    @Override
+    public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
+        this.bitmap = file;
+        this.file_name = filename;
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.dontAnimate();
+        requestOptions.skipMemoryCache(true);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+
+        Glide.with(mContext)
+                .load(uri)
+                .apply(requestOptions).thumbnail(0.5f)
+                .into(doctorDashboardImage);
+        String actualPath = getRealPathFromURI(uri);
+
+        String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
+        imageutils.createImage(file, filename, path, false);
+
+        try {
+
+            UploadNotificationConfig uploadConfig = getUploadConfig(this);
+
+
+            MultipartUploadRequest uploadRequest = new MultipartUploadRequest(HomePageActivity.this, System.currentTimeMillis() + docId, Url)
+                    .setUtf8Charset()
+                    .setMaxRetries(RescribeConstants.MAX_RETRIES)
+                    .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
+                    .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
+                    .addHeader(RescribeConstants.OS, device.getOS())
+                    .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
+                    .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
+                    .addHeader("docid", String.valueOf(docId))
+                    .addFileToUpload(actualPath, "docImage");
+
+            uploadRequest.setNotificationConfig(uploadConfig);
+
+            uploadRequest.startUpload();
+
+        } catch (FileNotFoundException | MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(mContext, contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
+    }
 }
