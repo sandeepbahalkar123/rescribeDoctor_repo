@@ -668,7 +668,6 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 mAppointmentAdapter.notifyDataSetChanged();
             } else {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
-
             }
 
         }

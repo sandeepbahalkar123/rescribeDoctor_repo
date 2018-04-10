@@ -146,12 +146,12 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     private int prePosition = -1;
     // Audio End
     private static final int MAX_ATTACHMENT_COUNT = 10;
-    private static final String RESCRIBE_FILES = "/Rescribe/Files/";
-    private static final String RESCRIBE_PHOTOS = "/Rescribe/Photos/";
-    private static final String RESCRIBE_AUDIO = "/Rescribe/Audios/";
-    private static final String RESCRIBE_UPLOAD_FILES = "/Rescribe/SentFiles/";
-    private static final String RESCRIBE_UPLOAD_PHOTOS = "/Rescribe/SentPhotos/";
-    private static final String RESCRIBE_UPLOAD_AUDIO = "/Rescribe/SentAudios/";
+    private static final String RESCRIBE_FILES = "/DrRescribe/Files/";
+    private static final String RESCRIBE_PHOTOS = "/DrRescribe/Photos/";
+    private static final String RESCRIBE_AUDIO = "/DrRescribe/Audios/";
+    private static final String RESCRIBE_UPLOAD_FILES = "/DrRescribe/SentFiles/";
+    private static final String RESCRIBE_UPLOAD_PHOTOS = "/DrRescribe/SentPhotos/";
+    private static final String RESCRIBE_UPLOAD_AUDIO = "/DrRescribe/SentAudios/";
     private String filesFolder;
     private String photosFolder;
     private String audioFolder;
