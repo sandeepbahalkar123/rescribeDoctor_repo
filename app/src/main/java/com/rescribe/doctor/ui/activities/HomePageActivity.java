@@ -489,6 +489,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
 
                     } else {
+                        hostViewsLayout.removeAllViews();
                         todayFollowAppointmentCount.setText("0");
                         todayNewAppointmentCount.setText("0");
                         todayWaitingListOrAppointmentCount.setText("0");

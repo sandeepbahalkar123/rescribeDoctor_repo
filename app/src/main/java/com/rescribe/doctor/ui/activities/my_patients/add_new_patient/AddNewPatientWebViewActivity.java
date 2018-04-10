@@ -72,7 +72,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     @BindView(R.id.genderRadioGroup)
     RadioGroup mGenderRadioGroup;
 
-    private String hospitalId = "";
+    private int hospitalId;
     private boolean isCalled = false;
     private String locationID;
     private AppointmentHelper mAppointmentHelper;
@@ -87,7 +87,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         ButterKnife.bind(this);
 
         Bundle extras = getIntent().getBundleExtra(RescribeConstants.PATIENT_DETAILS);
-        hospitalId = extras.getString(RescribeConstants.CLINIC_ID);
+        hospitalId = extras.getInt(RescribeConstants.CLINIC_ID);
         locationID = extras.getString(RescribeConstants.LOCATION_ID);
         cityID = extras.getString(RescribeConstants.CITY_ID);
         docID = Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this));
@@ -228,7 +228,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
         Bundle b = new Bundle();
         b.putString(RescribeConstants.PATIENT_ID, patientId);
-        b.putString(RescribeConstants.CLINIC_ID, hospitalId);
+        b.putInt(RescribeConstants.CLINIC_ID, hospitalId);
         b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, hospitalPatId);
         Intent intent = new Intent(this, PatientHistoryActivity.class);
         intent.putExtra(RescribeConstants.PATIENT_INFO, b);
@@ -302,7 +302,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             a.setGender(viewById.getText().toString());
             a.setReferenceID(refID);
             a.setPatientOfflineID("OFFLINE_" + id);
-            a.setClinicID(Integer.parseInt(hospitalId));
+            a.setClinicID(hospitalId);
             a.setLocationID(Integer.parseInt(locationID));
             a.setCityID(Integer.parseInt(cityID));
             a.setDocID(docID);
