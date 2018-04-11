@@ -71,6 +71,7 @@ import butterknife.Unbinder;
 import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_DATA;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.BOOKED;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.COMPLETED;
@@ -137,115 +138,29 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     }
 
     private void init() {
-        leftFabForAppointment.setVisibility(View.VISIBLE);
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
-        mBottomMenuList = new ArrayList<>();
-        isBookAndConfirmedRequired = getArguments().getBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED);
+        leftFabForAppointment.setVisibility(View.VISIBLE);
+        ArrayList<BottomMenu> mBottomMenuList = new ArrayList<>();
+
         for (String mMenuName : mMenuNames) {
             BottomMenu bottomMenu = new BottomMenu();
             bottomMenu.setMenuName(mMenuName);
             mBottomMenuList.add(bottomMenu);
         }
-        mMyAppointmentsDataModel = getArguments().getParcelable(RescribeConstants.APPOINTMENT_DATA);
-        final ArrayList<AppointmentList> mAppointmentList = new ArrayList<>();
-        if (!mMyAppointmentsDataModel.getAppointmentList().isEmpty()) {
-            expandableListView.setVisibility(View.VISIBLE);
-            expandableListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
-            expandableListView.setClipToPadding(false);
-            emptyListView.setVisibility(View.GONE);
 
-            for (int i = 0; i < mMyAppointmentsDataModel.getAppointmentList().size(); i++) {
-                AppointmentList clinicList = mMyAppointmentsDataModel.getAppointmentList().get(i);
-                mPatientLists = mMyAppointmentsDataModel.getAppointmentList().get(i).getPatientList();
-                if (!mPatientLists.isEmpty()) {
-                    clinicList.setPatientHeader(mPatientLists.get(0));
-                    mAppointmentList.add(clinicList);
-                }
-            }
-
-            if (!mAppointmentList.isEmpty()) {
-                //list is sorted for Booked and Confirmed Status appointments
-                if (isBookAndConfirmedRequired) {
-                    mAppointListForBookAndConfirm = new ArrayList<>();
-                    for (int i = 0; i < mAppointmentList.size(); i++) {
-                        ArrayList<PatientList> patientListToAddBookAndConfirmEntries = new ArrayList<>();
-
-                        AppointmentList tempAppointmentListObject = null;
-                        try {
-                            tempAppointmentListObject = (AppointmentList) mAppointmentList.get(i).clone();
-                        } catch (CloneNotSupportedException e) {
-                            e.printStackTrace();
-                        }
-
-                        mPatientListsForBookAndCancel = tempAppointmentListObject.getPatientList();
-                        if (!mPatientListsForBookAndCancel.isEmpty()) {
-                            for (int j = 0; j < mPatientListsForBookAndCancel.size(); j++) {
-                                if (mPatientListsForBookAndCancel.get(j).getAppointmentStatusId().equals(CONFIRM) || mPatientListsForBookAndCancel.get(j).getAppointmentStatusId().equals(BOOKED)) {
-                                    PatientList patientList = mPatientListsForBookAndCancel.get(j);
-                                    patientListToAddBookAndConfirmEntries.add(patientList);
-                                }
-                            }
-                            if (!patientListToAddBookAndConfirmEntries.isEmpty()) {
-                                tempAppointmentListObject.setPatientList(patientListToAddBookAndConfirmEntries);
-                                mAppointListForBookAndConfirm.add(tempAppointmentListObject);
-                            }
-                        }
-                    }
-                    //from sorted patientlist the first position element is set as patientheader
-                    for (int i = 0; i < mAppointListForBookAndConfirm.size(); i++) {
-                        mPatientLists = mAppointListForBookAndConfirm.get(i).getPatientList();
-                        if (!mPatientLists.isEmpty()) {
-                            mAppointListForBookAndConfirm.get(i).setPatientHeader(mPatientLists.get(0));
-                        }
-                    }
-                    if (!mAppointListForBookAndConfirm.isEmpty()) {
-                        mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointListForBookAndConfirm, this);
-                        expandableListView.setAdapter(mAppointmentAdapter);
-                    } else {
-                        expandableListView.setVisibility(View.GONE);
-                        emptyListView.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointmentList, this);
-                    expandableListView.setAdapter(mAppointmentAdapter);
-                    mAppointmentAdapter.setLongPressed(false);
-                }
-            } else {
-                expandableListView.setVisibility(View.GONE);
-                emptyListView.setVisibility(View.VISIBLE);
-            }
-        } else {
-            expandableListView.setVisibility(View.GONE);
-            emptyListView.setVisibility(View.VISIBLE);
-        }
-
+        expandableListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
+        expandableListView.setClipToPadding(false);
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 return true;
             }
         });
+
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 return true;
-            }
-        });
-
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                if (charString.equals("")) {
-                    if (mAppointmentList.get(groupPosition).getPatientList().size() == 1) {
-                        expandableListView.collapseGroup(groupPosition);
-                    }
-                    if (lastExpandedPosition != -1
-                            && groupPosition != lastExpandedPosition) {
-                        expandableListView.collapseGroup(lastExpandedPosition);
-                    }
-                    lastExpandedPosition = groupPosition;
-                }  //CommonMethods.showToast(getActivity(), "all expand");
-
             }
         });
 
@@ -264,20 +179,24 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
             @Override
             public void afterTextChanged(Editable s) {
-
-                if (mAppointmentAdapter != null) {
+                if (mAppointmentAdapter != null && !charString.equals(s.toString())) {
                     charString = s.toString();
                     mAppointmentAdapter.getFilter().filter(s);
+                    mAppointmentAdapter.openedChildGroupPos = "";
                 }
-
             }
         });
+
+        MyAppointmentsDataModel myAppointmentsDataModel = getArguments().getParcelable(APPOINTMENT_DATA);
+        setFilteredData(myAppointmentsDataModel);
     }
 
-    public static MyAppointmentsFragment newInstance(Bundle b) {
-        MyAppointmentsFragment fragment = new MyAppointmentsFragment();
-        fragment.setArguments(b);
-        return fragment;
+    public static MyAppointmentsFragment newInstance(MyAppointmentsDataModel myAppointmentsDataModel) {
+        MyAppointmentsFragment myAppointmentsFragment = new MyAppointmentsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(APPOINTMENT_DATA, myAppointmentsDataModel);
+        myAppointmentsFragment.setArguments(bundle);
+        return myAppointmentsFragment;
     }
 
     public void expandAll() {
@@ -803,6 +722,53 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         CommonMethods.showToast(getActivity(), serverErrorMessage);
     }
 
+    public void setFilteredData(MyAppointmentsDataModel myAppointmentsDataModel) {
 
+        final ArrayList<AppointmentList> mAppointmentList = new ArrayList<>();
+        if (!myAppointmentsDataModel.getAppointmentList().isEmpty()) {
+            expandableListView.setVisibility(View.VISIBLE);
+            emptyListView.setVisibility(View.GONE);
+
+            List<PatientList> mPatientLists;
+            for (int i = 0; i < myAppointmentsDataModel.getAppointmentList().size(); i++) {
+                AppointmentList clinicList = myAppointmentsDataModel.getAppointmentList().get(i);
+                mPatientLists = myAppointmentsDataModel.getAppointmentList().get(i).getPatientList();
+                if (!mPatientLists.isEmpty()) {
+                    clinicList.setPatientHeader(mPatientLists.get(0));
+                    mAppointmentList.add(clinicList);
+                }
+            }
+
+            if (!mAppointmentList.isEmpty()) {
+                //list is sorted for Booked and Confirmed Status appointments
+                mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointmentList, this);
+                expandableListView.setAdapter(mAppointmentAdapter);
+
+            } else {
+                expandableListView.setVisibility(View.GONE);
+                emptyListView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            expandableListView.setVisibility(View.GONE);
+            emptyListView.setVisibility(View.VISIBLE);
+        }
+
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (charString.equals("")) {
+                    if (mAppointmentList.get(groupPosition).getPatientList().size() == 1) {
+                        expandableListView.collapseGroup(groupPosition);
+                    }
+                    if (lastExpandedPosition != -1
+                            && groupPosition != lastExpandedPosition) {
+                        expandableListView.collapseGroup(lastExpandedPosition);
+                    }
+                    lastExpandedPosition = groupPosition;
+                }  //CommonMethods.showToast(getActivity(), "all expand");
+
+            }
+        });
+    }
 
 }

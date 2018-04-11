@@ -3,12 +3,19 @@ package com.rescribe.doctor.ui.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.SpannableString;
@@ -26,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -37,19 +45,34 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.bottom_menus.BottomMenuAdapter;
+import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.model.login.DocDetail;
+import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.dashboard.SettingsActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
 import com.rescribe.doctor.ui.customesViews.BottomSheetDialog;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
+import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.Config;
+import com.rescribe.doctor.util.Imageutils;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.ServerResponse;
+import net.gotev.uploadservice.UploadInfo;
+import net.gotev.uploadservice.UploadNotificationConfig;
+import net.gotev.uploadservice.UploadStatusDelegate;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -57,12 +80,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.rescribe.doctor.ui.activities.MapActivityShowDoctorLocation.ADDRESS;
+import static com.rescribe.doctor.util.Imageutils.FILEPATH;
 
 /**
  * Created by jeetal on 16/2/18.
  */
 
-public class ProfileActivity extends BottomMenuActivity implements BottomMenuAdapter.OnBottomMenuClickListener {
+public class ProfileActivity extends BottomMenuActivity implements BottomMenuAdapter.OnBottomMenuClickListener , Imageutils.ImageAttachmentListener {
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -147,7 +171,14 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     private String mDoctorName;
     private DoctorLocationModel doctorLocationModel;
     private ArrayList<String> mServices = new ArrayList<>();
-
+    private Imageutils imageutils;
+    private Bitmap bitmap;
+    private String file_name;
+    private String Url = Config.BASE_URL + Config.UPLOAD_PROFILE_PHOTO;
+    private String authorizationString;
+    private Device device;
+    private String docId;
+    CustomProgressDialog mCustomProgressDialog;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +192,10 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     private void initialize() {
         mContext = ProfileActivity.this;
         mColorGenerator = ColorGenerator.MATERIAL;
+        imageutils = new Imageutils(this);
+        device = Device.getInstance(ProfileActivity.this);
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+        authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, ProfileActivity.this);
         mArrayListDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
         int size = mArrayListDoctorLocationModel.size();
         titleTextView.setText(getString(R.string.profile));
@@ -331,7 +366,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         super.onBottomMenuClick(bottomMenu);
     }
 
-    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices, R.id.viewAllClinicsOnMap})
+    @OnClick({R.id.profileImage,R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices, R.id.viewAllClinicsOnMap})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -357,6 +392,9 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
                 intentObjectMap.putExtra(ADDRESS, locations);
                 startActivity(intentObjectMap);
+                break;
+            case R.id.profileImage:
+                imageutils.imagepicker(1);
                 break;
         }
     }
@@ -467,6 +505,107 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             return view;
         }
     }
+    @Override
+    public void image_attachment(int from, Bitmap file, Uri uri) {
+        this.bitmap = file;
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.dontAnimate();
+        requestOptions.skipMemoryCache(true);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
 
+        Glide.with(mContext)
+                .load(uri)
+                .apply(requestOptions).thumbnail(0.5f)
+                .into(profileImage);
+        String actualPath = getRealPathFromURI(uri);
+        String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
+        imageutils.createImage(file, path, false);
+        mCustomProgressDialog = new CustomProgressDialog(this);
+        UploadProfileImage(FILEPATH);
+
+
+    }
+
+    public void UploadProfileImage(String filePath) {
+        try {
+            mCustomProgressDialog.show();
+            MultipartUploadRequest uploadRequest = new MultipartUploadRequest(ProfileActivity.this, System.currentTimeMillis() + docId, Url)
+                    .setUtf8Charset()
+                    .setMaxRetries(RescribeConstants.MAX_RETRIES)
+                    .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
+                    .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
+                    .addHeader(RescribeConstants.OS, device.getOS())
+                    .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
+                    .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
+                    .addHeader("docid", String.valueOf(docId))
+                    .addFileToUpload(filePath, "docImage");
+
+            uploadRequest.setNotificationConfig(new UploadNotificationConfig());
+
+            uploadRequest.setDelegate(new UploadStatusDelegate() {
+                @Override
+                public void onProgress(Context context, UploadInfo uploadInfo) {
+                    // your code here
+                }
+
+                @Override
+                public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse,
+                                    Exception exception) {
+                    // your code here
+                    mCustomProgressDialog.dismiss();
+                    Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
+                    // your code here
+                    // if you have mapped your server response to a POJO, you can easily get it:
+                    TemplateBaseModel obj = new Gson().fromJson(serverResponse.getBodyAsString(), TemplateBaseModel.class);
+                    Toast.makeText(context, obj.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                    mCustomProgressDialog.dismiss();
+                }
+
+                @Override
+                public void onCancelled(Context context, UploadInfo uploadInfo) {
+                    // your code here
+                }
+            });
+
+
+            uploadRequest.startUpload();
+
+        } catch (FileNotFoundException | MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(mContext, contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageutils.onActivityResult(requestCode, resultCode, data);
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        imageutils.request_permission_result(requestCode, permissions, grantResults);
+    }
 
 }

@@ -249,6 +249,8 @@
     <string name="book_time_slot_err">Slot must be greater than current time.</string>
     <string name="booking_appointment">Booking Appointment for :-</string>
     <string name="Reschedule">Reschedule</string>
+    <string name="view">VIEW</string>
+    <string name="add_profile_image">Add Profile Image</string>
 
 
 </resources>

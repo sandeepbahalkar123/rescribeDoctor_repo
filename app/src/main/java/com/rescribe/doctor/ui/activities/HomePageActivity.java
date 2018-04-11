@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -73,7 +74,11 @@ import com.rescribe.doctor.util.Imageutils;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.ServerResponse;
+import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadNotificationConfig;
+import net.gotev.uploadservice.UploadServiceSingleBroadcastReceiver;
+import net.gotev.uploadservice.UploadStatusDelegate;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -86,14 +91,16 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.rescribe.doctor.services.CheckPendingUploads.getUploadConfig;
+import static com.rescribe.doctor.util.Imageutils.FILEPATH;
 import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
+import static net.gotev.uploadservice.UploadServiceSingleBroadcastReceiver.*;
 
 /**
  * Created by jeetal on 28/6/17.
  */
 
 @RuntimePermissions
-public class HomePageActivity extends BottomMenuActivity implements HelperResponse, Imageutils.ImageAttachmentListener {
+public class HomePageActivity extends BottomMenuActivity implements HelperResponse{
 
     private static final String TAG = "Home";
 
@@ -165,12 +172,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private String doctorNameToDisplay;
     private String mDoctorName;
     private ColorGenerator mColorGenerator;
-    private Imageutils imageutils;
-    private Bitmap bitmap;
-    private String file_name;
-    private String Url = Config.BASE_URL + Config.UPLOAD_PROFILE_PHOTO;
-    private String authorizationString;
-    private Device device;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,9 +195,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     }
 
     private void initialize() {
-        imageutils = new Imageutils(this);
-        device = Device.getInstance(HomePageActivity.this);
-        authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, HomePageActivity.this);
+
         String doctorDetails = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, this);
         final DocDetail docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
 
@@ -218,6 +218,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     @Override
     protected void onResume() {
         mDashboardHelper.doGetDashboardResponse();
+        setUpImage();
         super.onResume();
     }
 
@@ -231,7 +232,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         dashboardArrowImageView = (ImageView) inflaterMyPatientsLayout.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflaterMyPatientsLayout.findViewById(R.id.radioSwitch);
         menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patient));
-        menuNameTextView.setText("My Patients");
+        menuNameTextView.setText(getString(R.string.my_patients));
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -253,7 +254,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         dashboardArrowImageView = (ImageView) inflaterPatientConnectLayout.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflaterPatientConnectLayout.findViewById(R.id.radioSwitch);
         menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patientconnect));
-        menuNameTextView.setText("Patient Connect");
+        menuNameTextView.setText(getString(R.string.patient_connect));
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -276,7 +277,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         dashboardArrowImageView = (ImageView) inflatedLayoutWaitingList.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflatedLayoutWaitingList.findViewById(R.id.radioSwitch);
         menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patientwaitinglist));
-        menuNameTextView.setText("Waiting List - " + waitingListCount);
+        menuNameTextView.setText(getString(R.string.waiting_list) + " - " + waitingListCount);
         dashboardArrowImageView.setVisibility(View.VISIBLE);
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -299,7 +300,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         appointmentTextView.setText("Today's Appointments");
         viewTextView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
-        viewTextView.setText("VIEW");
+        viewTextView.setText(getString(R.string.view));
         recyclerView.setNestedScrollingEnabled(false);
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearlayoutManager);
@@ -334,10 +335,10 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         appointmentTextView = (CustomTextView) inflatedLayout.findViewById(R.id.appointmentTextView);
         viewTextView = (CustomTextView) inflatedLayout.findViewById(R.id.viewTextView);
         menuImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.appointment));
-        appointmentTextView.setText("Waiting List");
+        appointmentTextView.setText(getString(R.string.waiting_list));
         viewTextView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
-        viewTextView.setText("VIEW");
+        viewTextView.setText(getString(R.string.view));
         recyclerView.setNestedScrollingEnabled(false);
         mDashBoardWaitingList = new DashBoardWaitingList(mContext, mDashboardDetails.getDashboardWaitingList().getWaitingClinicList());
         viewTextView.setOnClickListener(new View.OnClickListener() {
@@ -366,8 +367,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         HomePageActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-        imageutils.request_permission_result(requestCode, permissions, grantResults);
-
     }
 
     @Override
@@ -656,7 +655,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 }
                 break;
             case R.id.doctorDashboardImage:
-                imageutils.imagepicker(1);
+
                 break;
 
         }
@@ -710,68 +709,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        imageutils.onActivityResult(requestCode, resultCode, data);
-
     }
 
-    @Override
-    public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-        this.bitmap = file;
-        this.file_name = filename;
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.dontAnimate();
-        requestOptions.skipMemoryCache(true);
-        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
 
-        Glide.with(mContext)
-                .load(uri)
-                .apply(requestOptions).thumbnail(0.5f)
-                .into(doctorDashboardImage);
-        String actualPath = getRealPathFromURI(uri);
-
-        String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
-        imageutils.createImage(file, filename, path, false);
-
-        try {
-
-            UploadNotificationConfig uploadConfig = getUploadConfig(this);
-
-
-            MultipartUploadRequest uploadRequest = new MultipartUploadRequest(HomePageActivity.this, System.currentTimeMillis() + docId, Url)
-                    .setUtf8Charset()
-                    .setMaxRetries(RescribeConstants.MAX_RETRIES)
-                    .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
-                    .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
-                    .addHeader(RescribeConstants.OS, device.getOS())
-                    .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
-                    .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
-                    .addHeader("docid", String.valueOf(docId))
-                    .addFileToUpload(actualPath, "docImage");
-
-            uploadRequest.setNotificationConfig(uploadConfig);
-
-            uploadRequest.startUpload();
-
-        } catch (FileNotFoundException | MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
-    private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        CursorLoader loader = new CursorLoader(mContext, contentUri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String result = cursor.getString(column_index);
-        cursor.close();
-        return result;
-    }
 }

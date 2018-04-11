@@ -45,6 +45,8 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.BOOKED;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 /**
@@ -97,6 +99,8 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetAppointmentData(date);
     }
+
+
 
     private void setUpNavigationDrawer() {
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -169,12 +173,17 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             if (customResponse != null) {
                 myAppointmentsBaseMainModel = (MyAppointmentsBaseModel) customResponse;
                 if (myAppointmentsBaseMainModel.getCommon().getStatusCode().equals(SUCCESS)) {
-                    bundle = new Bundle();
-                    bundle.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsBaseMainModel.getMyAppointmentsDataModel());
-                    bundle.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, true);
-                    mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundle);
+
+                    MyAppointmentsDataModel myAppointmentsDM = new MyAppointmentsDataModel();
+                    myAppointmentsDM.setAppointmentList(getBookedAndConfirmed(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentList()));
+
+                    mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(myAppointmentsDM);
                     getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
-                    setUpNavigationDrawer();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsBaseMainModel.getMyAppointmentsDataModel());
+                    DrawerForMyAppointment mDrawerForMyAppointment = DrawerForMyAppointment.newInstance(bundle);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.nav_view, mDrawerForMyAppointment).commit();
                 }
             }
         }
@@ -246,124 +255,95 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     }
 
     @Override
-    public void onApply(Bundle b, boolean drawerRequired) {
+    public void onApply(ArrayList<StatusList> statusLists, ArrayList<ClinicList> clinicLists, boolean drawerRequiredBundle) {
         drawerLayout.closeDrawers();
-        Bundle bundleOnApply = new Bundle();
 
-        ArrayList<ClinicList> mClinicListsFilter = b.getParcelableArrayList(RescribeConstants.FILTER_CLINIC_LIST);
-        ArrayList<StatusList> mStatusLists = b.getParcelableArrayList(RescribeConstants.FILTER_STATUS_LIST);
+        if (statusLists.isEmpty() && clinicLists.isEmpty()) {
+            MyAppointmentsDataModel myAppointmentsDM = new MyAppointmentsDataModel();
+            myAppointmentsDM.setAppointmentList(getBookedAndConfirmed(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentList()));
+            mMyAppointmentsFragment.setFilteredData(myAppointmentsDM);
+        } else {
 
-        ArrayList<AppointmentList> mAppointmentLists = new ArrayList<>();
-        MyAppointmentsDataModel myAppointmentsDataModel = new MyAppointmentsDataModel();
+            ArrayList<AppointmentList> mAppointmentLists = new ArrayList<>();
+            ArrayList<AppointmentList> mFilterAppointmentList = new ArrayList<>();
 
-        ArrayList<AppointmentList> appointmentLists = myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentList();
-        ArrayList<AppointmentList> mFilterAppointmentList;
-        if (mStatusLists != null && mClinicListsFilter != null) {
-            if (!mStatusLists.isEmpty() && mClinicListsFilter.isEmpty()) {
-
-                for (AppointmentList appointmentObject : appointmentLists) {
-                    ArrayList<PatientList> mPatientListArrayList = new ArrayList<>();
-                    AppointmentList tempAppointmentListObject = null;
-                    try {
-                        tempAppointmentListObject = (AppointmentList) appointmentObject.clone();
-                    } catch (CloneNotSupportedException e) {
-                        e.printStackTrace();
-                    }
-
-                    for (PatientList patientList : appointmentObject.getPatientList()) {
-                        for (StatusList statusName : mStatusLists) {
-                            if (statusName.getStatusId().equals(patientList.getAppointmentStatusId()))
-                                mPatientListArrayList.add(patientList);
-                        }
-                    }
-
-                    if (!mPatientListArrayList.isEmpty()) {
-                        tempAppointmentListObject.setPatientList(mPatientListArrayList);
-                        mAppointmentLists.add(tempAppointmentListObject);
-                    }
-                }
-                myAppointmentsDataModel.setAppointmentList(mAppointmentLists);
-                myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
-                myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
-                bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
-                bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, false);
-                mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
-                getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
-                setUpNavigationDrawer();
-            } else if (mStatusLists.isEmpty() && !mClinicListsFilter.isEmpty()) {
-
-                mFilterAppointmentList = new ArrayList<>();
-
-                for (AppointmentList appointmentObject : appointmentLists) {
-                    for (ClinicList clinicList : mClinicListsFilter) {
-                        if (clinicList.getLocationId().equals(appointmentObject.getLocationId()))
-                            mFilterAppointmentList.add(appointmentObject);
-                    }
-                }
-
-                myAppointmentsDataModel.setAppointmentList(mFilterAppointmentList);
-                myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
-                myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
-                bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
-                bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, false);
-                mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
-                getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
-                setUpNavigationDrawer();
-            } else if (!mStatusLists.isEmpty() && !mClinicListsFilter.isEmpty()) {
-
-                for (AppointmentList appointmentObject : appointmentLists) {
-                    ArrayList<PatientList> mPatientListArrayList = new ArrayList<>();
-                    AppointmentList tempAppointmentListObject = null;
-                    try {
-                        tempAppointmentListObject = (AppointmentList) appointmentObject.clone();
-                    } catch (CloneNotSupportedException e) {
-                        e.printStackTrace();
-                    }
-                    for (PatientList patientList : appointmentObject.getPatientList()) {
-                        for (StatusList statusName : mStatusLists) {
-                            if (statusName.getStatusId().equals(patientList.getAppointmentStatusId()))
-                                mPatientListArrayList.add(patientList);
-                        }
-                    }
-
-                    if (!mPatientListArrayList.isEmpty()) {
-                        tempAppointmentListObject.setPatientList(mPatientListArrayList);
-                        mAppointmentLists.add(tempAppointmentListObject);
-                    }
-                }
-
-                mFilterAppointmentList = new ArrayList<>();
-
-                for (AppointmentList appointmentObject : mAppointmentLists) {
-                    for (ClinicList clinicList : mClinicListsFilter) {
-                        if (clinicList.getLocationId().equals(appointmentObject.getLocationId()))
-                            mFilterAppointmentList.add(appointmentObject);
-                    }
-                }
-
-                myAppointmentsDataModel.setAppointmentList(mFilterAppointmentList);
-                myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
-                myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
-                bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
-                bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, false);
-                mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
-                getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
-                setUpNavigationDrawer();
+            if (statusLists.isEmpty()) {
+                mAppointmentLists.addAll(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentList());
             } else {
-                myAppointmentsDataModel.setAppointmentList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentList());
-                myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
-                myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
-                bundleOnApply.putParcelable(RescribeConstants.APPOINTMENT_DATA, myAppointmentsDataModel);
-                bundleOnApply.putBoolean(RescribeConstants.IS_BOOK_AND_CONFIRM_REQUIRED, true);
-                mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(bundleOnApply);
-                getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
-                setUpNavigationDrawer();
+                for (AppointmentList appointmentObject : myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentList()) {
+
+                    ArrayList<PatientList> mPatientListArrayList = new ArrayList<>();
+                    AppointmentList tempAppointmentListObject = null;
+                    try {
+                        tempAppointmentListObject = (AppointmentList) appointmentObject.clone();
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+
+                    for (PatientList patientList : appointmentObject.getPatientList()) {
+                        for (StatusList statusName : statusLists) {
+                            if (statusName.getStatusId().equals(patientList.getAppointmentStatusId()))
+                                mPatientListArrayList.add(patientList);
+                        }
+                    }
+
+                    if (!mPatientListArrayList.isEmpty()) {
+                        tempAppointmentListObject.setPatientList(mPatientListArrayList);
+                        mAppointmentLists.add(tempAppointmentListObject);
+                    }
+                }
+            }
+
+            if (clinicLists.isEmpty()) {
+                mFilterAppointmentList.addAll(mAppointmentLists);
+            } else {
+                for (AppointmentList appointmentObject : mAppointmentLists) {
+                    for (ClinicList clinicList : clinicLists) {
+                        if (clinicList.getLocationId().equals(appointmentObject.getLocationId()))
+                            mFilterAppointmentList.add(appointmentObject);
+                    }
+                }
+            }
+
+            MyAppointmentsDataModel myAppointmentsDataModel = new MyAppointmentsDataModel();
+            myAppointmentsDataModel.setAppointmentList(mFilterAppointmentList);
+            myAppointmentsDataModel.setClinicList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getClinicList());
+            myAppointmentsDataModel.setStatusList(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getStatusList());
+
+            mMyAppointmentsFragment.setFilteredData(myAppointmentsDataModel);
+        }
+
+    }
+    private ArrayList<AppointmentList> getBookedAndConfirmed(ArrayList<AppointmentList> mAppointmentList) {
+
+        ArrayList<AppointmentList> mAppointListForBookAndConfirm = new ArrayList<>();
+        for (int i = 0; i < mAppointmentList.size(); i++) {
+            ArrayList<PatientList> patientListToAddBookAndConfirmEntries = new ArrayList<>();
+
+            AppointmentList tempAppointmentListObject = null;
+            try {
+                tempAppointmentListObject = (AppointmentList) mAppointmentList.get(i).clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+
+            ArrayList<PatientList> mPatientListsForBookAndCancel = tempAppointmentListObject.getPatientList();
+            if (!mPatientListsForBookAndCancel.isEmpty()) {
+                for (int j = 0; j < mPatientListsForBookAndCancel.size(); j++) {
+                    if (mPatientListsForBookAndCancel.get(j).getAppointmentStatusId().equals(CONFIRM) || mPatientListsForBookAndCancel.get(j).getAppointmentStatusId().equals(BOOKED)) {
+                        PatientList patientList = mPatientListsForBookAndCancel.get(j);
+                        patientListToAddBookAndConfirmEntries.add(patientList);
+                    }
+                }
+                if (!patientListToAddBookAndConfirmEntries.isEmpty()) {
+                    tempAppointmentListObject.setPatientList(patientListToAddBookAndConfirmEntries);
+                    mAppointListForBookAndConfirm.add(tempAppointmentListObject);
+                }
             }
         }
 
-
+        return mAppointListForBookAndConfirm;
     }
-
     @Override
     public void onReset(boolean drawerRequired) {
 

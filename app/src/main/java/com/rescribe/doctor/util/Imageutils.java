@@ -3,6 +3,7 @@ package com.rescribe.doctor.util;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,8 +13,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -24,8 +27,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.beloo.widget.chipslayoutmanager.layouter.Item;
+import com.rescribe.doctor.R;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,8 +50,7 @@ import java.io.IOException;
 import static android.content.ContentValues.TAG;
 
 @SuppressLint("SdCardPath")
-public class Imageutils
-{
+public class Imageutils {
 
 
     Context context;
@@ -45,29 +59,32 @@ public class Imageutils
 
     private ImageAttachmentListener imageAttachment_callBack;
 
-    private String selected_path="";
+    private String selected_path = "";
     private Uri imageUri;
     private File path = null;
 
-    private int from=0;
-    private boolean isFragment=false;
+    private int from = 0;
+    private boolean isFragment = false;
+    public static String FILEPATH;
+    private Dialog dialog;
+    private int imageSize;
+
 
     public Imageutils(Activity act) {
 
-        this.context=act;
+        this.context = act;
         this.current_activity = act;
-        imageAttachment_callBack=(ImageAttachmentListener)context;
+        imageAttachment_callBack = (ImageAttachmentListener) context;
     }
 
     public Imageutils(Activity act, Fragment fragment, boolean isFragment) {
 
-        this.context=act;
+        this.context = act;
         this.current_activity = act;
-        imageAttachment_callBack= (ImageAttachmentListener) fragment;
-        if(isFragment)
-        {
-            this.isFragment=true;
-            current_fragment=fragment;
+        imageAttachment_callBack = (ImageAttachmentListener) fragment;
+        if (isFragment) {
+            this.isFragment = true;
+            current_fragment = fragment;
         }
 
     }
@@ -79,9 +96,8 @@ public class Imageutils
      * @return
      */
 
-    public String getfilename_from_path(String path)
-    {
-        return path.substring( path.lastIndexOf('/')+1, path.length() );
+    public String getfilename_from_path(String path) {
+        return path.substring(path.lastIndexOf('/') + 1, path.length());
 
     }
 
@@ -93,8 +109,7 @@ public class Imageutils
      * @return
      */
 
-    public Uri getImageUri(Context context, Bitmap photo)
-    {
+    public Uri getImageUri(Context context, Bitmap photo) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         photo.compress(Bitmap.CompressFormat.PNG, 80, bytes);
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), photo, "Title", null);
@@ -108,19 +123,17 @@ public class Imageutils
      * @return
      */
 
-    public String getPath(Uri uri)
-    {
-        String[] projection = { MediaStore.Images.Media.DATA };
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = this.context.getContentResolver().query(uri, projection, null, null, null);
         int column_index = 0;
         if (cursor != null) {
             column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
-            String path=cursor.getString(column_index);
+            String path = cursor.getString(column_index);
             cursor.close();
             return path;
-        }
-        else
+        } else
             return uri.getPath();
     }
 
@@ -130,12 +143,12 @@ public class Imageutils
      * @param encodedString
      * @return
      */
-    public Bitmap StringToBitMap(String encodedString){
+    public Bitmap StringToBitMap(String encodedString) {
         try {
-            byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
             return bitmap;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.getMessage();
             return null;
         }
@@ -149,11 +162,11 @@ public class Imageutils
      * @return
      */
 
-    public String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,80, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+    public String BitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, baos);
+        byte[] b = baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
         return temp;
     }
 
@@ -285,7 +298,7 @@ public class Imageutils
                 matrix.postRotate(270);
                 Log.d("EXIF", "Exif: " + orientation);
             }
-            scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0,scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix,
+            scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix,
                     true);
 
             return scaledBitmap;
@@ -349,19 +362,15 @@ public class Imageutils
      * @param from
      */
 
-    public void launchCamera(int from)
-    {
-        this.from=from;
+    public void launchCamera(int from) {
+        this.from = from;
 
-        if (Build.VERSION.SDK_INT >= 23)
-        {
-            if(isFragment)
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (isFragment)
                 permission_check_fragment(1);
             else
                 permission_check(1);
-        }
-        else
-        {
+        } else {
             camera_call();
         }
     }
@@ -372,69 +381,78 @@ public class Imageutils
      * @param from
      */
 
-    public void launchGallery(int from)
-    {
+    public void launchGallery(int from) {
 
-        this.from=from;
+        this.from = from;
 
-        if (Build.VERSION.SDK_INT >= 23)
-        {
-            if(isFragment)
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (isFragment)
                 permission_check_fragment(2);
             else
                 permission_check(2);
-        }
-        else
-        {
+        } else {
             galley_call();
         }
     }
 
     /**
      * Show AlertDialog with the following options
-     *
-     *          Camera
-     *          Gallery
-     *
+     * <p>
+     * Camera
+     * Gallery
      *
      * @param from
      */
 
-    public void imagepicker(final int from)
-    {
-        this.from=from;
+    public void imagepicker(final int from) {
+        this.from = from;
 
         final CharSequence[] items;
 
-        if(isDeviceSupportCamera())
-        {
-            items=new CharSequence[2];
-            items[0]="Camera";
-            items[1]="Gallery";
+        if (isDeviceSupportCamera()) {
+            items = new CharSequence[2];
+            items[0] = context.getString(R.string.camera);
+            items[1] = context.getString(R.string.gallery);
+        } else {
+            items = new CharSequence[1];
+            items[0] = "Gallery";
         }
 
-        else
-        {
-            items=new CharSequence[1];
-            items[0]="Gallery";
-        }
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics metrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(metrics);
+        int widthPixels = metrics.widthPixels;
+        imageSize = (widthPixels / 2) - context.getResources().getDimensionPixelSize(R.dimen.dp10);
 
-        android.app.AlertDialog.Builder alertdialog = new android.app.AlertDialog.Builder(current_activity);
-        alertdialog.setTitle("Add Image");
-        alertdialog.setItems(items, new DialogInterface.OnClickListener() {
+        // Show two options for user
+
+        dialog = new Dialog(context);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.select_file_dialog);
+        dialog.setCanceledOnTouchOutside(false);
+        RelativeLayout relativeLayoutFiles = (RelativeLayout)dialog.findViewById(R.id.files);
+        relativeLayoutFiles.setVisibility(View.GONE);
+        dialog.findViewById(R.id.camera).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (items[item].equals("Camera"))
-                {
-                    launchCamera(from);
-                }
-                else if (items[item].equals("Gallery"))
-                {
-                    launchGallery(from);
-                }
+            public void onClick(View v) {
+                launchCamera(from);
+                dialog.dismiss();
+
             }
         });
-        alertdialog.show();
+
+        dialog.findViewById(R.id.gallery).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchGallery(from);
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     /**
@@ -443,13 +461,11 @@ public class Imageutils
      * @param code
      */
 
-    public void permission_check(final int code)
-    {
+    public void permission_check(final int code) {
         int hasWriteContactsPermission = ContextCompat.checkSelfPermission(current_activity,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED)
-        {
+        if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(current_activity,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
@@ -459,7 +475,7 @@ public class Imageutils
                             public void onClick(DialogInterface dialog, int which) {
 
                                 ActivityCompat.requestPermissions(current_activity,
-                                        new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                         code);
                             }
                         });
@@ -467,14 +483,14 @@ public class Imageutils
             }
 
             ActivityCompat.requestPermissions(current_activity,
-                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     code);
             return;
         }
 
-        if(code==1)
+        if (code == 1)
             camera_call();
-        else if(code==2)
+        else if (code == 2)
             galley_call();
     }
 
@@ -485,9 +501,8 @@ public class Imageutils
      * @param code
      */
 
-    public void permission_check_fragment(final int code)
-    {
-        Log.d(TAG, "permission_check_fragment: "+code);
+    public void permission_check_fragment(final int code) {
+        Log.d(TAG, "permission_check_fragment: " + code);
         int hasWriteContactsPermission = ContextCompat.checkSelfPermission(current_activity,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -503,7 +518,7 @@ public class Imageutils
                             public void onClick(DialogInterface dialog, int which) {
 
                                 current_fragment.requestPermissions(
-                                        new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                         code);
                             }
                         });
@@ -511,18 +526,16 @@ public class Imageutils
             }
 
             current_fragment.requestPermissions(
-                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     code);
             return;
         }
 
-        if(code==1)
+        if (code == 1)
             camera_call();
-        else if(code==2)
+        else if (code == 2)
             galley_call();
     }
-
-
 
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
@@ -539,34 +552,31 @@ public class Imageutils
      * Capture image from camera
      */
 
-    public void camera_call()
-    {
+    public void camera_call() {
         ContentValues values = new ContentValues();
         imageUri = current_activity.getContentResolver().insert(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent1.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
 
-        if(isFragment)
-            current_fragment.startActivityForResult(intent1,0);
+        if (isFragment)
+            current_fragment.startActivityForResult(intent1, 0);
         else
             current_activity.startActivityForResult(intent1, 0);
     }
 
     /**
      * pick image from Gallery
-     *
      */
 
-    public void galley_call()
-    {
+    public void galley_call() {
         Log.d(TAG, "galley_call: ");
 
         Intent intent2 = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent2.setType("image/*");
 
-        if(isFragment)
-            current_fragment.startActivityForResult(intent2,1);
+        if (isFragment)
+            current_fragment.startActivityForResult(intent2, 1);
         else
             current_activity.startActivityForResult(intent2, 1);
 
@@ -580,10 +590,8 @@ public class Imageutils
      * @param permissions
      * @param grantResults
      */
-    public void request_permission_result(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        switch (requestCode)
-        {
+    public void request_permission_result(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     camera_call();
@@ -612,55 +620,43 @@ public class Imageutils
      * @param resultCode
      * @param data
      */
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String file_name;
         Bitmap bitmap;
 
-        switch (requestCode)
-        {
+        switch (requestCode) {
             case 0:
 
-                if(resultCode==current_activity.RESULT_OK)
-                {
+                if (resultCode == Activity.RESULT_OK) {
 
-                    Log.i("Camera Selected","Photo");
+                    Log.i("Camera Selected", "Photo");
 
-                    try
-                    {
-                        selected_path=null;
-                        selected_path=getPath(imageUri);
-                        // Log.i("selected","path"+selected_path);
-                        file_name =selected_path.substring(selected_path.lastIndexOf("/")+1);
+                    try {
+                        selected_path = null;
+                        selected_path = getPath(imageUri);
+
                         // Log.i("file","name"+file_name);
-                        bitmap =compressImage(imageUri.toString(),816,612);
-                        imageAttachment_callBack.image_attachment(from, file_name, bitmap,imageUri);
-                    }
-                    catch(Exception e)
-                    {
+                        bitmap = compressImage(imageUri.toString(), 816, 612);
+                        imageAttachment_callBack.image_attachment(from, bitmap, imageUri);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-
 
 
                 }
                 break;
             case 1:
-                if(resultCode==current_activity.RESULT_OK)
-                {
-                    Log.i("Gallery","Photo");
-                    Uri selectedImage=data.getData();
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.i("Gallery", "Photo");
+                    Uri selectedImage = data.getData();
 
-                    try
-                    {
-                        selected_path=null;
-                        selected_path=getPath(selectedImage);
-                        file_name =selected_path.substring(selected_path.lastIndexOf("/")+1);
-                        bitmap =compressImage(selectedImage.toString(),816,612);
-                        imageAttachment_callBack.image_attachment(from, file_name, bitmap,selectedImage);
-                    }
-                    catch(Exception e)
-                    {
+                    try {
+                        selected_path = null;
+                        selected_path = getPath(selectedImage);
+                        file_name = selected_path.substring(selected_path.lastIndexOf("/") + 1);
+                        bitmap = compressImage(selectedImage.toString(), 816, 612);
+                        imageAttachment_callBack.image_attachment(from, bitmap, selectedImage);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -680,16 +676,12 @@ public class Imageutils
      * @param width
      * @return
      */
-    public Bitmap getImage_FromUri(Uri uri, float height, float width)
-    {
-        Bitmap bitmap=null;
+    public Bitmap getImage_FromUri(Uri uri, float height, float width) {
+        Bitmap bitmap = null;
 
-        try
-        {
-            bitmap=compressImage(uri.toString(),height,width);
-        }
-        catch (Exception e)
-        {
+        try {
+            bitmap = compressImage(uri.toString(), height, width);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -698,20 +690,18 @@ public class Imageutils
 
     /**
      * Get filename from URI
+     *
      * @param uri
      * @return
      */
-    public String getFileName_from_Uri(Uri uri)
-    {
-        String path=null,file_name=null;
+    public String getFileName_from_Uri(Uri uri) {
+        String path = null, file_name = null;
 
         try {
 
             path = getRealPathFromURI(uri.getPath());
             file_name = path.substring(path.lastIndexOf("/") + 1);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -729,26 +719,21 @@ public class Imageutils
      * @return
      */
 
-    public boolean checkimage(String file_name, String file_path)
-    {
+    public boolean checkimage(String file_name, String file_path) {
         boolean flag;
         path = new File(file_path);
 
-        File file = new File(path,file_name);
-        if (file.exists ())
-        {
-            Log.i("file","exists");
-            flag=true;
-        }
-        else
-        {
-            Log.i("file","not exist");
-            flag=false;
+        File file = new File(path, file_name);
+        if (file.exists()) {
+            Log.i("file", "exists");
+            flag = true;
+        } else {
+            Log.i("file", "not exist");
+            flag = false;
         }
 
         return flag;
     }
-
 
 
     /**
@@ -759,20 +744,19 @@ public class Imageutils
      * @return
      */
 
-    public Bitmap getImage(String file_name, String file_path)
-    {
+    public Bitmap getImage(String file_name, String file_path) {
 
         path = new File(file_path);
-        File file = new File(path,file_name);
+        File file = new File(path, file_name);
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         options.inSampleSize = 2;
         options.inTempStorage = new byte[16 * 1024];
 
-        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),options);
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
 
-        if(bitmap!=null)
+        if (bitmap != null)
             return bitmap;
         else
             return null;
@@ -782,55 +766,49 @@ public class Imageutils
      * Create an image
      *
      * @param bitmap
-     * @param file_name
      * @param filepath
      * @param file_replace
      */
 
 
-    public void createImage(Bitmap bitmap, String file_name, String filepath, boolean file_replace)
-    {
+    public void createImage(Bitmap bitmap, String filepath, boolean file_replace) {
 
         path = new File(filepath);
 
-        if(!path.exists())
-        {
+        if (!path.exists()) {
             path.mkdirs();
         }
 
-        File file = new File(path,file_name);
+        String file_name = "profile_" + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, context) + "_" + System.currentTimeMillis() + ".jpg";
 
-        if (file.exists ())
-        {
-            if(file_replace)
-            {
-                file.delete ();
-                file = new File(path,file_name);
-                store_image(file,bitmap);
-                Log.i("file","replaced");
+        File file = new File(path, file_name);
+
+        if (file.exists()) {
+            if (file_replace) {
+                file.delete();
+                file = new File(path, file_name);
+                store_image(file, bitmap);
+                Log.i("file", "replaced");
             }
-        }
-        else
-        {
-            store_image(file,bitmap);
+        } else {
+            store_image(file, bitmap);
         }
 
     }
 
 
     /**
-     *
-     *
      * @param file
      * @param bmp
      */
-    public void store_image(File file, Bitmap bmp)
-    {
+    public void store_image(File file, Bitmap bmp) {
         try {
             FileOutputStream out = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.JPEG, 80, out);
             out.flush();
             out.close();
+            Log.e("File Path:========", file.getAbsolutePath());
+            FILEPATH = file.getAbsolutePath();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -840,7 +818,7 @@ public class Imageutils
     // Image Attachment Callback
 
     public interface ImageAttachmentListener {
-        public void image_attachment(int from, String filename, Bitmap file, Uri uri);
+        public void image_attachment(int from, Bitmap file, Uri uri);
     }
 
 

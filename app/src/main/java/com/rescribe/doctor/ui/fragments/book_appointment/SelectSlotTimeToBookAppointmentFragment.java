@@ -356,7 +356,6 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
             case RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT:
                 TimeSlotListBaseModel slotListBaseModel = (TimeSlotListBaseModel) customResponse;
                 if (slotListBaseModel != null) {
-
                     tokenMessageTextView.setVisibility(View.GONE);
 
                     TimeSlotListDataModel selectSlotList = slotListBaseModel.getTimeSlotListDataModel();
@@ -436,6 +435,7 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                 if (customResponse != null) {
                     ResponseAppointmentConfirmationModel mResponseAppointmentConfirmationModel = (ResponseAppointmentConfirmationModel) customResponse;
                     if (mResponseAppointmentConfirmationModel.getCommon().isSuccess()) {
+                        Toast.makeText(mContext, mResponseAppointmentConfirmationModel.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
                         Intent intentObject = new Intent(getContext(), MyAppointmentsActivity.class);
                         intentObject.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intentObject);

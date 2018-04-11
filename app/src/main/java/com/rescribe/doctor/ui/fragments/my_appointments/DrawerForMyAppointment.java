@@ -113,25 +113,8 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     }
 
     private void initialize() {
-        for (String amtString : sortOptions) {
-            FilterSortByHighLowList filterSortByHighLowListObject = new FilterSortByHighLowList();
-            filterSortByHighLowListObject.setAmountHighOrLow(amtString);
-            filterSortByHighLowLists.add(filterSortByHighLowListObject);
-        }
-        // mSelectedDays = new HashMap<>();
-        configureDrawerFieldsData();
-    }
+        MyAppointmentsDataModel mMyAppointmentsDataModel = getArguments().getParcelable(RescribeConstants.APPOINTMENT_DATA);
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (unbinder != null)
-            unbinder.unbind();
-    }
-
-    private void configureDrawerFieldsData() {
-        mMyAppointmentsDataModel = bundle.getParcelable(RescribeConstants.APPOINTMENT_DATA);
-        chooseOptionForSort.setText(getString(R.string.choose_one_option));
         SpannableString selectStatusString = new SpannableString("Select Status");
         selectStatusString.setSpan(new UnderlineSpan(), 0, selectStatusString.length(), 0);
         selectStatus.setText(selectStatusString);
@@ -139,7 +122,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
         selectClinicString.setSpan(new UnderlineSpan(), 0, selectClinicString.length(), 0);
         selectClinic.setText(selectClinicString);
         //select status recyelerview
-        mDrawerAppointmentSelectStatusAdapter = new DrawerAppointmentSelectStatusAdapter(getActivity(), mMyAppointmentsDataModel, this);
+        mDrawerAppointmentSelectStatusAdapter = new DrawerAppointmentSelectStatusAdapter(getActivity(), mMyAppointmentsDataModel.getStatusList(), this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         statusNameRecyclerView.setLayoutManager(layoutManager);
         statusNameRecyclerView.setHasFixedSize(true);
@@ -153,14 +136,19 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
         clinicNameRecyclerView.setHasFixedSize(true);
         clinicNameRecyclerView.setNestedScrollingEnabled(false);
         clinicNameRecyclerView.setAdapter(mDrawerAppointmetClinicNameAdapter);
-
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null)
+            unbinder.unbind();
+    }
+
 
     public static DrawerForMyAppointment newInstance(Bundle b) {
         DrawerForMyAppointment fragment = new DrawerForMyAppointment();
-        bundle = new Bundle();
-        bundle = b;
-        fragment.setArguments(bundle);
+        fragment.setArguments(b);
         return fragment;
     }
 
@@ -189,27 +177,25 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.applyButton:
-                Bundle b = new Bundle();
-                mStatuslistOfFilter.clear();
+                ArrayList<StatusList> mStatuslistOfFilter = new ArrayList<>();
                 for (StatusList statusList : mDrawerAppointmentSelectStatusAdapter.getAdapterStatusList()) {
                     if (statusList.isSelected()) {
                         mStatuslistOfFilter.add(statusList);
                     }
                 }
 
+                ArrayList<ClinicList> mCliniclistOfFilter = new ArrayList<>();
                 for (ClinicList clinicObj : mDrawerAppointmetClinicNameAdapter.getAdapterClinicList()) {
                     if (clinicObj.isSelected()) {
                         mCliniclistOfFilter.add(clinicObj);
                     }
                 }
-                b.putParcelable(RescribeConstants.APPOINTMENT_DATA, mMyAppointmentsDataModel);
-                b.putParcelableArrayList(RescribeConstants.FILTER_STATUS_LIST, mStatuslistOfFilter);
-                b.putParcelableArrayList(RescribeConstants.FILTER_CLINIC_LIST, mCliniclistOfFilter);
-                mListener.onApply(b, true);
+
+                mListener.onApply(mStatuslistOfFilter, mCliniclistOfFilter, true);
 
                 break;
             case R.id.resetButton:
-                configureDrawerFieldsData();
+                initialize();
                 for (int i = 0; i < mDrawerAppointmetClinicNameAdapter.getAdapterClinicList().size(); i++) {
                     mDrawerAppointmetClinicNameAdapter.getAdapterClinicList().get(i).setSelected(false);
                 }
@@ -218,11 +204,6 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
                     mDrawerAppointmentSelectStatusAdapter.getAdapterStatusList().get(i).setSelected(false);
                 }
                 mDrawerAppointmentSelectStatusAdapter.notifyDataSetChanged();
-                break;
-
-            case R.id.doneButton:
-                hideMainLayout.setVisibility(View.VISIBLE);
-                showSortLayout.setVisibility(View.GONE);
                 break;
         }
     }
@@ -242,8 +223,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     }
 
     public interface OnDrawerInteractionListener {
-        void onApply(Bundle b, boolean drawerRequired);
-
+        void onApply(ArrayList<StatusList> statusLists, ArrayList<ClinicList> clinicLists, boolean drawerRequired);
         void onReset(boolean drawerRequired);
     }
 
