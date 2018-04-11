@@ -2,18 +2,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ui.activities.ChatActivity"
     tools:showIn="@layout/activity_chat">
 
+    <com.rescribe.doctor.ui.customesViews.JCropImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/messageTypeLayout"
+        android:src="@drawable/layer_3"
+        app:cropAlign="top"
+        app:cropType="fit_width" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chatList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bookAppointmentLayout"
-        android:background="@drawable/layer_3"
         android:paddingEnd="@dimen/dp6"
         android:paddingStart="@dimen/dp6" />
 
@@ -153,8 +161,8 @@
             android:layout_marginEnd="@dimen/dp2"
             android:layout_marginRight="@dimen/dp2"
             android:padding="@dimen/dp6"
-            app:srcCompat="@drawable/send"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            app:srcCompat="@drawable/send" />
 
     </RelativeLayout>
 

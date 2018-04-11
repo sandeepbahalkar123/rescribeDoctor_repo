@@ -31,13 +31,16 @@ public class Config {
     public static final String CONFIRM_APPOINTMENT = "api/patient/bookAppointment";
     public static final String UPLOAD_PROFILE_PHOTO = "api/upload/uploadDoctorImage";
 
-    public static boolean DEV_BUILD = true;
-    //Declared all URL used in app here
-
     //    public static final String BROKER = "tcp://ec2-13-126-175-156.ap-south-1.compute.amazonaws.com:1883";
     public static final String BROKER = "tcp://52.66.154.249:1883"; // Dr Rescribe IP
 
-    public static String BASE_URL = "http://drrescribe.com:3003/";
+    // http://172.16.100.219:3003/";
+    public static String BASE_URL =  "http://drrescribe.com:3003/";
+//    public static String BASE_URL = "http://rescribe.in:3003/";
+    public static final String FORGOT_PASSWORD_URL = "https://drrescribe.com/app.html#/access/forgotPassword";
+    public static final String ADD_NEW_PATIENT_WEB_URL = "https://drrescribe.com/app.html#/addpatientmobile/";
+
+
     public static final String MY_RECORDS_DOCTOR_LIST = "api/doctors/getDoctorsWithPatientVisits";
     public static final String MY_RECORDS_ADD_DOCTOR = "api/doctors/addDoctor";
     public static final String REQUEST_SEND_SMS = "doctor/api/appointment/sendSmsToPatients";
@@ -58,7 +61,6 @@ public class Config {
     public static final String LOGOUT = "api/doctors/logDoctorSignOut";
     public static final String ACTIVE = "api/doctors/logDoctorActivity";
     public static final String MY_RECORDS_UPLOAD = "api/upload/addOpdAttachments";
-    public static final String ADD_NEW_PATIENT_WEB_URL = "https://drrescribe.com/app.html#/addpatientmobile/";
     public static final String ADD_NEW_PATIENT_WEB_URL_SUCCESS = "addpatientmobilesuccess";
 
     public static final String GET_DOCTOR_PATIENT_CITY = "doctor/api/patient/getDoctorPatientCity";

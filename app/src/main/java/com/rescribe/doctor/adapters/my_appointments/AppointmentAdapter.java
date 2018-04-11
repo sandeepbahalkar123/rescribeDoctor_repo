@@ -32,7 +32,6 @@ import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout;
-import com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.ViewBinderHelper;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -43,6 +42,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment.isLongPressed;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.BOOKED;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
@@ -58,10 +58,8 @@ import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.OTHE
 public class AppointmentAdapter extends BaseExpandableListAdapter implements Filterable {
 
     private OnDownArrowClicked mOnDownArrowClicked;
-    public static boolean isLongPressed;
     private ArrayList<AppointmentList> mAppointmentListTemp;
     private Context mContext;
-    private final ViewBinderHelper mBinderHelper = new ViewBinderHelper();
     private ArrayList<AppointmentList> mDataList;
     public String openedChildGroupPos = "";
     private Object slidingViewHolder;
@@ -98,6 +96,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         } else {
             viewHolder = (ChildViewHolder) convertView.getTag();
         }
+
         final PatientList patientObject = mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition);
         bind(patientObject, groupPosition, childPosition, viewHolder);
 
@@ -192,7 +191,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 }
                 viewHolder.patientIdTextView.setText(spannableIdString);
             } else {
-
                 viewHolder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientList.getHospitalPatId()));
             }
         } else {
@@ -213,7 +211,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder.patientAgeTextView.setText(patientList.getAge() + " " + mContext.getString(R.string.years));
         } else if (patientList.getAge().equals("") && patientList.getDateOfBirth().equals("")) {
             viewHolder.patientAgeTextView.setVisibility(View.GONE);
-
         }
 
         if (patientList.getAddedToWaiting().equals(0)) {
@@ -249,11 +246,9 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         if (patientList.getOutStandingAmount().equals("0.00") || patientList.getOutStandingAmount().equals("0.0") || patientList.getOutStandingAmount().equals("0")) {
             viewHolder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
-
         } else {
             viewHolder.payableAmountTextView.setText(" Rs." + patientList.getOutStandingAmount() + "/-");
             viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
-
         }
 
         viewHolder.appointmentTime.setVisibility(View.VISIBLE);
@@ -291,7 +286,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public boolean onLongClick(View v) {
                 isLongPressed = !isLongPressed;
-                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed, groupPosition);
+                mOnDownArrowClicked.onLongPressOpenBottomMenu(groupPosition);
                 notifyDataSetChanged();
                 return false;
             }
@@ -299,7 +294,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnDownArrowClicked.onClickOfPatientDetails(mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition), viewHolder.patientAgeTextView.getText().toString() + viewHolder.patientGenderTextView.getText().toString());
+                mOnDownArrowClicked.onClickOfPatientDetails(mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition), mAppointmentListTemp.get(groupPosition).getClinicId(), viewHolder.patientAgeTextView.getText().toString() + viewHolder.patientGenderTextView.getText().toString());
             }
         });
         viewHolder.appointmentComplete.setOnClickListener(new View.OnClickListener() {
@@ -308,6 +303,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 mOnDownArrowClicked.onAppointmentClicked(patientList.getAptId(), patientList.getPatientId(), COMPLETED, "complete", childPosition, groupPosition);
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
+
             }
         });
         viewHolder.appointmentReschedule.setOnClickListener(new View.OnClickListener() {
@@ -316,6 +312,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 mOnDownArrowClicked.onAppointmentReshedule(patientList,viewHolder.patientAgeTextView.getText().toString());
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
+
             }
         });
         viewHolder.appointmentCancel.setOnClickListener(new View.OnClickListener() {
@@ -441,11 +438,12 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.mClinicAddress.setText(appointmentListObject.getArea() + ", " + appointmentListObject.getCity());
 
         int count = appointmentListObject.getPatientList().size();
-        if (count < 10) {
+        if (count < 10)
             groupViewHolder.mClinicPatientCount.setText("0" + count);
-        } else {
+        else
             groupViewHolder.mClinicPatientCount.setText("" + count);
-        }
+
+
         groupViewHolder.mPatientIdTextView.setText(mContext.getString(R.string.id) + " " + appointmentListObject.getPatientHeader().getHospitalPatId() + "");
 
         if (appointmentListObject.getPatientHeader().getSalutation() != 0)
@@ -453,11 +451,10 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         else
             groupViewHolder.mPatientNameTextView.setText(CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
 
-        if (appointmentListObject.getPatientHeader().getAddedToWaiting().equals(0)) {
+        if (appointmentListObject.getPatientHeader().getAddedToWaiting().equals(0))
             groupViewHolder.waitingIcon.setVisibility(View.INVISIBLE);
-        } else {
+        else
             groupViewHolder.waitingIcon.setVisibility(View.VISIBLE);
-        }
 
         if (appointmentListObject.getPatientHeader().getAge().equals("") && !appointmentListObject.getPatientHeader().getDateOfBirth().equals("")) {
             groupViewHolder.mPatientAgeTextView.setVisibility(View.VISIBLE);
@@ -485,7 +482,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 groupViewHolder.mDownArrow.setVisibility(View.VISIBLE);
                 groupViewHolder.upArrow.setVisibility(View.GONE);
             }
-
         }
 
         groupViewHolder.mPatientGenderTextView.setText(CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getGender()));
@@ -510,16 +506,15 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + appointmentListObject.getPatientHeader().getAppointmentStatus());
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.other_color));
         }
+
         groupViewHolder.mPatientPhoneNumber.setText(appointmentListObject.getPatientHeader().getPatientPhone());
         groupViewHolder.mOutstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (appointmentListObject.getPatientHeader().getOutStandingAmount().equals("0.00") || appointmentListObject.getPatientHeader().getOutStandingAmount().equals("0.0") || appointmentListObject.getPatientHeader().getOutStandingAmount().equals("0")) {
             groupViewHolder.mPayableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             groupViewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
-
         } else {
             groupViewHolder.mPayableAmountTextView.setText(" Rs." + appointmentListObject.getPatientHeader().getOutStandingAmount() + "/-");
             groupViewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
-
         }
 
         groupViewHolder.mAppointmentTime.setVisibility(View.VISIBLE);
@@ -587,7 +582,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public boolean onLongClick(View v) {
                 isLongPressed = !isLongPressed;
-                mOnDownArrowClicked.onLongPressOpenBottomMenu(isLongPressed, groupPosition);
+                mOnDownArrowClicked.onLongPressOpenBottomMenu(groupPosition);
                 notifyDataSetChanged();
                 return false;
             }
@@ -595,7 +590,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.mPatientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnDownArrowClicked.onClickOfPatientDetails(appointmentListObject.getPatientHeader(), groupViewHolder.mPatientAgeTextView.getText().toString() + groupViewHolder.mPatientGenderTextView.getText().toString());
+                mOnDownArrowClicked.onClickOfPatientDetails(appointmentListObject.getPatientHeader(), appointmentListObject.getClinicId(), groupViewHolder.mPatientAgeTextView.getText().toString() + groupViewHolder.mPatientGenderTextView.getText().toString());
             }
         });
 
@@ -613,6 +608,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 mOnDownArrowClicked.onGroupAppointmentCancelled(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 3, "complete", groupPosition);
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
+
             }
         });
         groupViewHolder.mAppointmentReschedule.setOnClickListener(new View.OnClickListener() {
@@ -621,6 +617,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 mOnDownArrowClicked.onAppointmentReshedule(appointmentListObject.getPatientHeader(),groupViewHolder.mPatientAgeTextView.getText().toString());
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
+
             }
         });
         groupViewHolder.mAppointmentCancel.setOnClickListener(new View.OnClickListener() {
@@ -664,14 +661,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
-    }
-
-    public boolean isLongPressed() {
-        return isLongPressed;
-    }
-
-    public void setLongPressed(boolean longPressed) {
-        isLongPressed = longPressed;
     }
 
     // Sorting clicniclist by patientName , patientId , patientPhoneNo
@@ -770,10 +759,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         };
     }
 
-    /*  private ArrayList<AppointmentList> cloneList() {
-          return mAppointmentListTemp = (ArrayList<AppointmentList>) mDataList.clone();
-      }
-  */
     public static class ChildViewHolder extends RecyclerView.ViewHolder {
 
         private FrameLayout delete_layout;
@@ -781,8 +766,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         private CheckBox checkbox;
         private SwipeRevealLayout swipe_layout;
         private RelativeLayout patientDetailsClickLinearLayout;
-        private LinearLayout cardView;
-        private ImageView bluelineImageView;
         private CustomTextView appointmentTime;
         private ImageView waitingIcon;
         private CustomTextView patientIdTextView;
@@ -790,10 +773,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         private CustomTextView patientNameTextView;
         private CustomTextView patientAgeTextView;
         private CustomTextView patientGenderTextView;
-        private LinearLayout patientDetailsLinearLayout;
         private CustomTextView opdTypeTextView;
         private CustomTextView patientPhoneNumber;
-        private View separatorView;
         private CustomTextView outstandingAmountTextView;
         private CustomTextView payableAmountTextView;
         private Button appointmentReschedule;
@@ -811,20 +792,16 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             swipe_layout = (SwipeRevealLayout) convertView.findViewById(R.id.swipe_layout);
             checkbox = (CheckBox) convertView.findViewById(R.id.checkbox);
             patientDetailsClickLinearLayout = (RelativeLayout) convertView.findViewById(R.id.patientDetailsClickLinearLayout);
-            bluelineImageView = (ImageView) convertView.findViewById(R.id.bluelineImageView);
             appointmentTime = (CustomTextView) convertView.findViewById(R.id.appointmentTime);
             patientIdTextView = (CustomTextView) convertView.findViewById(R.id.patientIdTextView);
             patientImageView = (CircularImageView) convertView.findViewById(R.id.patientImageView);
             patientNameTextView = (CustomTextView) convertView.findViewById(R.id.patientNameTextView);
             patientAgeTextView = (CustomTextView) convertView.findViewById(R.id.patientAgeTextView);
             patientGenderTextView = (CustomTextView) convertView.findViewById(R.id.patientGenderTextView);
-            patientDetailsLinearLayout = (LinearLayout) convertView.findViewById(R.id.patientDetailsLinearLayout);
             opdTypeTextView = (CustomTextView) convertView.findViewById(R.id.opdTypeTextView);
             patientPhoneNumber = (CustomTextView) convertView.findViewById(R.id.patientPhoneNumber);
-            separatorView = (View) convertView.findViewById(R.id.separatorView);
             outstandingAmountTextView = (CustomTextView) convertView.findViewById(R.id.outstandingAmountTextView);
             payableAmountTextView = (CustomTextView) convertView.findViewById(R.id.payableAmountTextView);
-            cardView = (LinearLayout) convertView.findViewById(R.id.cardView);
         }
     }
 
@@ -838,25 +815,20 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         private CheckBox mCheckbox;
         private RelativeLayout mPatientDetailsClickLinearLayout;
         private CheckBox mGroupCheckbox;
-        private LinearLayout downArrowClickLinearLayout;
         private RelativeLayout mHospitalDetailsLinearLayout;
-        private CircularImageView mBulletImageView;
         private CustomTextView mClinicNameTextView;
         private CustomTextView mClinicAddress;
         private CustomTextView mClinicPatientCount;
         private ImageView mDownArrow;
         private ImageView upArrow;
-        private ImageView mBluelineImageView;
         private CustomTextView mPatientIdTextView;
         private CircularImageView mPatientImageView;
         private CustomTextView mPatientNameTextView;
         private ImageView waitingIcon;
         private CustomTextView mPatientAgeTextView;
         private CustomTextView mPatientGenderTextView;
-        private LinearLayout mPatientDetailsLinearLayout;
         private CustomTextView mOpdTypeTextView;
         private CustomTextView mPatientPhoneNumber;
-        private View mSeparatorView;
         private CustomTextView mOutstandingAmountTextView;
         private CustomTextView mPayableAmountTextView;
         private CustomTextView mAppointmentTime;
@@ -878,25 +850,20 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             mCheckbox = (CheckBox) convertView.findViewById(R.id.checkbox);
             mPatientDetailsClickLinearLayout = (RelativeLayout) convertView.findViewById(R.id.patientDetailsClickLinearLayout);
             mGroupCheckbox = (CheckBox) convertView.findViewById(R.id.groupCheckbox);
-            downArrowClickLinearLayout = (LinearLayout) convertView.findViewById(R.id.downArrowClickLinearLayout);
             cardView = (LinearLayout) convertView.findViewById(R.id.cardView);
             mHospitalDetailsLinearLayout = (RelativeLayout) convertView.findViewById(R.id.hospitalDetailsLinearLayout);
-            mBulletImageView = (CircularImageView) convertView.findViewById(R.id.bulletImageView);
             mClinicNameTextView = (CustomTextView) convertView.findViewById(R.id.clinicNameTextView);
             mClinicAddress = (CustomTextView) convertView.findViewById(R.id.clinicAddress);
             mClinicPatientCount = (CustomTextView) convertView.findViewById(R.id.clinicPatientCount);
             mDownArrow = (ImageView) convertView.findViewById(R.id.downArrow);
             upArrow = (ImageView) convertView.findViewById(R.id.upArrow);
-            mBluelineImageView = (ImageView) convertView.findViewById(R.id.bluelineImageView);
             mPatientIdTextView = (CustomTextView) convertView.findViewById(R.id.patientIdTextView);
             mPatientImageView = (CircularImageView) convertView.findViewById(R.id.patientImageView);
             mPatientNameTextView = (CustomTextView) convertView.findViewById(R.id.patientNameTextView);
             mPatientAgeTextView = (CustomTextView) convertView.findViewById(R.id.patientAgeTextView);
             mPatientGenderTextView = (CustomTextView) convertView.findViewById(R.id.patientGenderTextView);
-            mPatientDetailsLinearLayout = (LinearLayout) convertView.findViewById(R.id.patientDetailsLinearLayout);
             mOpdTypeTextView = (CustomTextView) convertView.findViewById(R.id.opdTypeTextView);
             mPatientPhoneNumber = (CustomTextView) convertView.findViewById(R.id.patientPhoneNumber);
-            mSeparatorView = (View) convertView.findViewById(R.id.separatorView);
             mOutstandingAmountTextView = (CustomTextView) convertView.findViewById(R.id.outstandingAmountTextView);
             mPayableAmountTextView = (CustomTextView) convertView.findViewById(R.id.payableAmountTextView);
             mAppointmentTime = (CustomTextView) convertView.findViewById(R.id.appointmentTime);
@@ -906,13 +873,13 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     public interface OnDownArrowClicked {
         void onDownArrowSetClick(int groupPosition, boolean isExpanded);
 
-        void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
+        void onLongPressOpenBottomMenu(int groupPosition);
 
         void onRecordFound(boolean isListEmpty);
 
         void onCheckUncheckRemoveSelectAllSelection(boolean ischecked);
 
-        void onClickOfPatientDetails(PatientList patientListObject, String text);
+        void onClickOfPatientDetails(PatientList patientListObject, int clinicId, String text);
 
         void onAppointmentClicked(Integer aptId, Integer patientId, int status, String type, int childPosition, int groupPosition);
 

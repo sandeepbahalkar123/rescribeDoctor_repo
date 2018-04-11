@@ -47,6 +47,7 @@ public class RescribeApplication extends MultiDexApplication {
         AppDBHelper.getInstance(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
+//        new NukeSSLCerts().nuke(); // disable all ssl certificates (dangerous)
         //--------------
     }
     public static ArrayList<DoctorLocationModel> getDoctorLocationModels() {

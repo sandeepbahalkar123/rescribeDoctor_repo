@@ -175,11 +175,9 @@ public class RescribeConstants {
     public static final String OPD_TIME = "opd_time";
     public static final String IS_CALL_FROM_MY_PATIENTS = "call_from_my_patients_chat";
     public static final String TEMPLATE_LIST = "template_list";
-    public static final String IS_BOOK_AND_CONFIRM_REQUIRED = "is_book_confirm_required";
     public static final float ZOOM_CAMERA_VALUE = 7.0f;
     public static final String COMPLETE_OPD = "complete_opd";
     public static final String NOT_FROM_COMPLETE_OPD = "not_complete_opd";
-    public static final String FORGOT_PASSWORD_URL = "https://drrescribe.com/app.html#/access/forgotPassword";
     public static final String PATIENT_DETAILS = "patient_details";
 
     public static final String STARTFOREGROUND_ACTION = "com.rescribe.download";

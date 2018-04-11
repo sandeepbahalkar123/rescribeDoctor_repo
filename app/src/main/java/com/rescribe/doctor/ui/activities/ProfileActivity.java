@@ -508,15 +508,6 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     @Override
     public void image_attachment(int from, Bitmap file, Uri uri) {
         this.bitmap = file;
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.dontAnimate();
-        requestOptions.skipMemoryCache(true);
-        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-
-        Glide.with(mContext)
-                .load(uri)
-                .apply(requestOptions).thumbnail(0.5f)
-                .into(profileImage);
         String actualPath = getRealPathFromURI(uri);
         String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
         imageutils.createImage(file, path, false);
@@ -526,7 +517,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
     }
 
-    public void UploadProfileImage(String filePath) {
+    public void UploadProfileImage(final String filePath) {
         try {
             mCustomProgressDialog.show();
             MultipartUploadRequest uploadRequest = new MultipartUploadRequest(ProfileActivity.this, System.currentTimeMillis() + docId, Url)
@@ -561,8 +552,22 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                     // your code here
                     // if you have mapped your server response to a POJO, you can easily get it:
                     TemplateBaseModel obj = new Gson().fromJson(serverResponse.getBodyAsString(), TemplateBaseModel.class);
-                    Toast.makeText(context, obj.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
-                    mCustomProgressDialog.dismiss();
+                    if(obj.getCommon().isSuccess()) {
+                        Toast.makeText(context, obj.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                        RequestOptions requestOptions = new RequestOptions();
+                        requestOptions.dontAnimate();
+                        requestOptions.skipMemoryCache(true);
+                        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+
+                        Glide.with(mContext)
+                                .load(filePath)
+                                .apply(requestOptions).thumbnail(0.5f)
+                                .into(profileImage);
+                        mCustomProgressDialog.dismiss();
+                    }else{
+                        mCustomProgressDialog.dismiss();
+                        Toast.makeText(context, obj.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 @Override
@@ -571,7 +576,6 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                     mCustomProgressDialog.dismiss();
                 }
             });
-
 
             uploadRequest.startUpload();
 

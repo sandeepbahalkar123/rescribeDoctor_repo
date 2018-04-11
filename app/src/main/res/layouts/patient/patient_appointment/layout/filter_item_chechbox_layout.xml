@@ -12,13 +12,16 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp14"
         android:layout_marginStart="@dimen/dp14"
-        android:checkMark="@drawable/unchked"
         android:clickable="true"
+        android:drawableEnd="@drawable/unchked"
+        android:drawableRight="@drawable/unchked"
         android:focusable="false"
         android:gravity="center"
+        android:drawablePadding="@dimen/dp6"
         android:paddingBottom="@dimen/dp8"
         android:paddingTop="@dimen/dp8"
         android:textColor="@color/black"
         android:textSize="@dimen/sp16"
-        tools:text="Nagpur" />
+        tools:text="Nagpurjhbjhvbjhvjhvjhvjhvjhjhvjhvjvjvhjhjhjjjvhjjjhvjjhvj" />
+
 </LinearLayout>

@@ -52,37 +52,35 @@ public class DrawerAppointmentSelectStatusAdapter extends RecyclerView.Adapter<D
 
     @Override
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
-        if(mStatusLists.get(position).getStatusId().equals(BOOKED)){
+        if (mStatusLists.get(position).getStatusId().equals(BOOKED)) {
             holder.menuName.setText(mContext.getString(R.string.booked));
-        }else if(mStatusLists.get(position).getStatusId().equals(CONFIRM)){
+        } else if (mStatusLists.get(position).getStatusId().equals(CONFIRM)) {
             holder.menuName.setText(mContext.getString(R.string.Confirmed));
-        }else if(mStatusLists.get(position).getStatusId().equals(COMPLETED)){
+        } else if (mStatusLists.get(position).getStatusId().equals(COMPLETED)) {
             holder.menuName.setText(mContext.getString(R.string.capitalcompleted));
-        }else if(mStatusLists.get(position).getStatusId().equals(CANCEL)){
+        } else if (mStatusLists.get(position).getStatusId().equals(CANCEL)) {
             holder.menuName.setText(mContext.getString(R.string.cancelled));
-        }else if(mStatusLists.get(position).getStatusId().equals(NO_SHOW)){
+        } else if (mStatusLists.get(position).getStatusId().equals(NO_SHOW)) {
             holder.menuName.setText(mContext.getString(R.string.no_show));
-        }else if(mStatusLists.get(position).getStatusId().equals(OTHER)){
+        } else if (mStatusLists.get(position).getStatusId().equals(OTHER)) {
             holder.menuName.setText(mContext.getString(R.string.other));
         }
         holder.menuName.setText(mStatusLists.get(position).getStatusName());
         holder.menuName.setChecked(mStatusLists.get(position).isSelected());
+
+        if (!holder.menuName.isChecked()) {
+            holder.menuName.setChecked(false);
+            holder.menuName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.unchked, 0);
+        } else {
+            holder.menuName.setChecked(true);
+            holder.menuName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.check_box, 0);
+        }
+
         holder.menuName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //------
-                if (holder.menuName.isChecked()) {
-                    holder.menuName.setChecked(false);
-                    holder.menuName.setCheckMarkDrawable(R.drawable.unchked);
-                } else {
-                    holder.menuName.setChecked(true);
-                    holder.menuName.setCheckMarkDrawable(R.drawable.check_box);
-                }
-                //------
-                if (mStatusLists.get(position).isSelected())
-                    mStatusLists.get(position).setSelected(false);
-                else
-                    mStatusLists.get(position).setSelected(true);
+                mStatusLists.get(position).setSelected(!mStatusLists.get(position).isSelected());
+                notifyDataSetChanged();
 
                 mOnClickOfFilterComponents.onClickofSelectStatus(mStatusLists);
             }

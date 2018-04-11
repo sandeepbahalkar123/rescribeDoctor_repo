@@ -17,6 +17,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import butterknife.BindView;
@@ -41,7 +42,7 @@ public class ForgotPasswordWebViewActivity extends AppCompatActivity implements 
         setContentView(R.layout.activity_web_view_forgot_password);
         ButterKnife.bind(this);
         titleTextView.setText(getString(R.string.forgot_password_header));
-        loadWebViewData(RescribeConstants.FORGOT_PASSWORD_URL);
+        loadWebViewData(Config.FORGOT_PASSWORD_URL);
     }
 
 

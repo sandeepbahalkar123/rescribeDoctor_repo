@@ -96,8 +96,6 @@ public class NewPatientFragment extends Fragment implements NewPatientAdapter.On
     private int mClinicId;
     private String mClinicName = "";
     private ArrayList<NewPatientsDetail> mNewPatientsDetail;
-    private String searchText;
-
 
     @Override
     public void onDestroy() {
@@ -154,7 +152,6 @@ public class NewPatientFragment extends Fragment implements NewPatientAdapter.On
             @Override
             public void afterTextChanged(Editable s) {
                 if (mCompletedOpdAdapter != null) {
-                    searchText = s.toString();
                     mCompletedOpdAdapter.getFilter().filter(s);
                 }
             }

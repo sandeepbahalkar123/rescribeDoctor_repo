@@ -540,6 +540,10 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             groupViewHolder.mDivider.setVisibility(View.VISIBLE);
         }
 
+        //-- Set mDeleteAttachments=GONE by default.
+        groupViewHolder.mDeleteAttachments.setVisibility(View.GONE);
+
+
         if (mListDataHeader.get(groupPosition).getCaseDetailName() != null) {
             groupViewHolder.lblListHeader.setText(CommonMethods.toCamelCase(mListDataHeader.get(groupPosition).getCaseDetailName()));
             groupViewHolder.mViewDetailIcon.setImageResource(CommonMethods.getCaseStudyIcons(mListDataHeader.get(groupPosition).getCaseDetailName()));
@@ -629,10 +633,13 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         groupViewHolder.mDeleteAttachments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedAttachmentToDeleteGroupPosition = (Integer) v.getTag();
-                if (groupViewHolder.mDeleteAttachments.getVisibility() == View.VISIBLE) {
-                    deleteAttachmentsListener.deleteAttachments(mSelectedAttachmentToDelete);
+                if (mSelectedAttachmentToDelete.size() != 0) {
+                    selectedAttachmentToDeleteGroupPosition = (Integer) v.getTag();
+                    if (groupViewHolder.mDeleteAttachments.getVisibility() == View.VISIBLE) {
+                        deleteAttachmentsListener.deleteAttachments(mSelectedAttachmentToDelete);
+                    }
                 }
+
             }
         });
         //------------
@@ -975,7 +982,8 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         public void deleteAttachments(HashSet<VisitCommonData> list);
     }
 
-    public void removeSelectedAttachmentFromList() {
+    public boolean removeSelectedAttachmentFromList() {
+        boolean isAllAttachmentDeleted = false;
         PatientHistory patientHistory = mListDataHeader.get(selectedAttachmentToDeleteGroupPosition);
         if (patientHistory.getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_ATTACHMENTS)) {
             List<VisitCommonData> commonData = patientHistory.getCommonData();
@@ -991,9 +999,15 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 if (position != -1)
                     commonData.remove(position);
             }
+
+            if (commonData.isEmpty()) {
+                mListDataHeader.remove(patientHistory);
+                isAllAttachmentDeleted = true;
+            }
         }
         mSelectedAttachmentToDelete.clear();
         mShowDeleteCheckbox = false;
         notifyDataSetChanged();
+        return isAllAttachmentDeleted;
     }
 }

@@ -69,6 +69,7 @@ import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
+import com.rescribe.doctor.util.KeyboardEvent;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -145,12 +146,12 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     private int prePosition = -1;
     // Audio End
     private static final int MAX_ATTACHMENT_COUNT = 10;
-    private static final String RESCRIBE_FILES = "/Rescribe/Files/";
-    private static final String RESCRIBE_PHOTOS = "/Rescribe/Photos/";
-    private static final String RESCRIBE_AUDIO = "/Rescribe/Audios/";
-    private static final String RESCRIBE_UPLOAD_FILES = "/Rescribe/SentFiles/";
-    private static final String RESCRIBE_UPLOAD_PHOTOS = "/Rescribe/SentPhotos/";
-    private static final String RESCRIBE_UPLOAD_AUDIO = "/Rescribe/SentAudios/";
+    private static final String RESCRIBE_FILES = "/DrRescribe/Files/";
+    private static final String RESCRIBE_PHOTOS = "/DrRescribe/Photos/";
+    private static final String RESCRIBE_AUDIO = "/DrRescribe/Audios/";
+    private static final String RESCRIBE_UPLOAD_FILES = "/DrRescribe/SentFiles/";
+    private static final String RESCRIBE_UPLOAD_PHOTOS = "/DrRescribe/SentPhotos/";
+    private static final String RESCRIBE_UPLOAD_AUDIO = "/DrRescribe/SentAudios/";
     private String filesFolder;
     private String photosFolder;
     private String audioFolder;
@@ -196,6 +197,9 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     CardView mRevealView;
     @BindView(R.id.exitRevealDialog)
     FrameLayout exitRevealDialog;
+
+    @BindView(R.id.mainRelativeLayout)
+    RelativeLayout mainRelativeLayout;
 
     // Check Typing
     private boolean isCallFromPatientList;
@@ -435,6 +439,18 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
         downloadInit();
         uploadInit();
         audioSliderInit();
+
+        new KeyboardEvent(mainRelativeLayout, new KeyboardEvent.KeyboardListener() {
+            @Override
+            public void onKeyboardOpen() {
+                bookAppointmentLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onKeyboardClose() {
+                bookAppointmentLayout.setVisibility(View.VISIBLE);
+            }
+        });
 
         Intent gotIntent = getIntent();
 

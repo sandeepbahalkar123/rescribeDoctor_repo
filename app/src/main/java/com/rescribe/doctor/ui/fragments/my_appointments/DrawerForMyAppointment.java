@@ -41,19 +41,12 @@ import butterknife.Unbinder;
 
 public class DrawerForMyAppointment extends Fragment implements HelperResponse, SortByPriceFilterAdapter.onSortByAmountMenuClicked, DrawerAppointmentSelectStatusAdapter.OnClickOfFilterComponents, DrawerAppointmetClinicNameAdapter.OnClickOfFilterClinic {
 
-    private static Bundle bundle;
     @BindView(R.id.applyButton)
     Button applyButton;
     @BindView(R.id.titleTextView)
     CustomTextView titleTextView;
     @BindView(R.id.resetButton)
     Button resetButton;
-    @BindView(R.id.sortingHeaderView)
-    LinearLayout sortingHeaderView;
-    @BindView(R.id.chooseOptionForSort)
-    CustomTextView chooseOptionForSort;
-    @BindView(R.id.chooseOptionToSort)
-    LinearLayout chooseOptionToSort;
     @BindView(R.id.genderHeaderView)
     LinearLayout genderHeaderView;
     @BindView(R.id.statusNameRecyclerView)
@@ -62,28 +55,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     LinearLayout clinicFeesHeaderView;
     @BindView(R.id.clinicNameRecyclerView)
     RecyclerView clinicNameRecyclerView;
-    @BindView(R.id.clinicFeesContentView)
-    LinearLayout clinicFeesContentView;
-    @BindView(R.id.clinicFeesView)
-    LinearLayout clinicFeesView;
-    @BindView(R.id.nestedScroll)
-    NestedScrollView nestedScroll;
-    @BindView(R.id.hideMainLayout)
-    LinearLayout hideMainLayout;
-    @BindView(R.id.doneButton)
-    Button doneButton;
-    @BindView(R.id.sortingTitleTextView)
-    CustomTextView sortingTitleTextView;
-    @BindView(R.id.resetSortingButton)
-    Button resetSortingButton;
-    @BindView(R.id.sortingView)
-    LinearLayout sortingView;
-    @BindView(R.id.sortRecyclerView)
-    RecyclerView sortRecyclerView;
-    @BindView(R.id.showSortLayout)
-    LinearLayout showSortLayout;
-    @BindView(R.id.mainParentLayout)
-    LinearLayout mainParentLayout;
+
     @BindView(R.id.selectStatus)
     CustomTextView selectStatus;
     @BindView(R.id.selectClinic)
@@ -92,15 +64,6 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     private DrawerAppointmentSelectStatusAdapter mDrawerAppointmentSelectStatusAdapter;
     private DrawerAppointmetClinicNameAdapter mDrawerAppointmetClinicNameAdapter;
     private OnDrawerInteractionListener mListener;
-    private SortByPriceFilterAdapter mSortByPriceFilterAdapter;
-    private String lowToHigh = "(low to high)";
-    private String highToLow = "(high to low)";
-    private ArrayList<FilterSortByHighLowList> filterSortByHighLowLists = new ArrayList<>();
-    private String[] sortOptions = new String[]{"Outstanding Amt" + lowToHigh,
-            "Outstanding Amt" + highToLow};
-    private MyAppointmentsDataModel mMyAppointmentsDataModel;
-    private ArrayList<StatusList> mStatuslistOfFilter = new ArrayList<>();
-    private ArrayList<ClinicList> mCliniclistOfFilter = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -113,6 +76,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     }
 
     private void initialize() {
+
         MyAppointmentsDataModel mMyAppointmentsDataModel = getArguments().getParcelable(RescribeConstants.APPOINTMENT_DATA);
 
         SpannableString selectStatusString = new SpannableString("Select Status");
@@ -173,7 +137,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
 
     }
 
-    @OnClick({R.id.applyButton, R.id.titleTextView, R.id.resetButton, R.id.sortingHeaderView, R.id.genderHeaderView, R.id.selectStatus, R.id.statusNameRecyclerView, R.id.clinicFeesHeaderView, R.id.selectClinic, R.id.clinicNameRecyclerView, R.id.clinicFeesContentView, R.id.clinicFeesView, R.id.nestedScroll, R.id.hideMainLayout, R.id.doneButton, R.id.sortingTitleTextView, R.id.resetSortingButton, R.id.sortingView, R.id.sortRecyclerView, R.id.showSortLayout, R.id.mainParentLayout})
+    @OnClick({R.id.applyButton, R.id.resetButton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.applyButton:

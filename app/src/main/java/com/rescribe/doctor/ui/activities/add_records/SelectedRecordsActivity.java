@@ -11,13 +11,11 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -29,14 +27,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
@@ -46,6 +42,7 @@ import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
+import com.rescribe.doctor.util.KeyboardEvent;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -93,6 +90,10 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     ImageView addImageView;
     @BindView(R.id.addImageViewRightFab)
     FloatingActionButton mAddImageViewRightFab;
+
+    @BindView(R.id.mainRelativeLayout)
+    RelativeLayout mainRelativeLayout;
+
     private Context mContext;
     private ArrayList<Image> imagePaths = new ArrayList<>();
     private Dialog dialog;
@@ -115,6 +116,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     private String currentOpdTime;
     private boolean openCameraDirect;
     private int imageSize;
+    private int dimension20PixelSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,10 +126,25 @@ public class SelectedRecordsActivity extends AppCompatActivity {
 
         init();
 
+        new KeyboardEvent(mainRelativeLayout, new KeyboardEvent.KeyboardListener() {
+            @Override
+            public void onKeyboardOpen() {
+                uploadButton.setVisibility(View.GONE);
+                mAddImageViewRightFab.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onKeyboardClose() {
+                uploadButton.setVisibility(View.VISIBLE);
+                mAddImageViewRightFab.setVisibility(View.VISIBLE);
+            }
+        });
+
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metrics);
         int widthPixels = metrics.widthPixels;
+        dimension20PixelSize = getResources().getDimensionPixelSize(R.dimen.dp20);
         imageSize = (widthPixels / 2) - getResources().getDimensionPixelSize(R.dimen.dp10);
 
         // Show two options for user
@@ -186,7 +203,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
-        requestOptions.override(imageSize, imageSize);
+        requestOptions.override(imageSize - dimension20PixelSize, imageSize - dimension20PixelSize);
         requestOptions.error(R.drawable.ic_file);
         requestOptions.placeholder(R.drawable.ic_file);
 
@@ -369,6 +386,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                 } else
                     addFiles(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS), FilePickerConst.REQUEST_CODE_DOC);
             }
+
         } else if (imagePaths.isEmpty())
             finish();
     }

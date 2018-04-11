@@ -51,12 +51,9 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
     @BindView(R.id.emptyListView)
     RelativeLayout emptyListView;
     private Context mContext;
-    private AppointmentHelper mAppointmentHelper;
     private NewPatientFragment mNewPatientFragment;
     private boolean isLongPressed;
     Intent mIntent;
-    private String mActivityCalledFrom = "";
-    private boolean isFromDrawer;
     public HashSet<Integer> selectedDoctorId = new HashSet<>();
     private String phoneNo;
 
@@ -70,12 +67,9 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
 
     private void initialize() {
         mIntent = getIntent();
-        if (mIntent.getExtras() != null) {
-            mActivityCalledFrom = mIntent.getStringExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
-        }
         mContext = NewPatientActivity.this;
         titleTextView.setText(getString(R.string.today_new_patients));
-        mAppointmentHelper = new AppointmentHelper(this, this);
+        AppointmentHelper mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetNewPatientList();
         //  setUpNavigationDrawer();
     }
@@ -101,7 +95,6 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
     public void onParseError(String mOldDataTag, String errorMessage) {
         CommonMethods.showToast(mContext, errorMessage);
         emptyListView.setVisibility(View.VISIBLE);
-
     }
 
     @Override
@@ -116,21 +109,11 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
 
     }
 
-    @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
+    @OnClick({R.id.backImageView})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
                 onBackPressed();
-                break;
-            case R.id.userInfoTextView:
-                break;
-            case R.id.dateTextview:
-                break;
-            case R.id.viewContainer:
-                break;
-            case R.id.nav_view:
-                break;
-            case R.id.drawer_layout:
                 break;
         }
     }
@@ -150,9 +133,6 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
 
         }
     }
-
-
-
 
     public void callPatient(String patientPhone) {
         phoneNo = patientPhone;
