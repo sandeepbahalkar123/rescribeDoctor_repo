@@ -268,7 +268,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         if (myDoctorLocations.size() == 1) {
             mLocationId = String.valueOf(myDoctorLocations.get(0).getLocationId());
             mHospitalId = myDoctorLocations.get(0).getClinicId();
-            callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth);
+            callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear+1, dayOfMonth);
         } else {
             showDialogToSelectLocation(getMyDoctorLocations(mDoctorLocationModel, mHospitalId), year, monthOfYear + 1, dayOfMonth);
         }

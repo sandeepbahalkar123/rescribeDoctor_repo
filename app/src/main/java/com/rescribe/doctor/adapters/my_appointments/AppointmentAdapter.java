@@ -61,7 +61,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     private ArrayList<AppointmentList> mAppointmentListTemp;
     private Context mContext;
     private ArrayList<AppointmentList> mDataList;
-    private String openedChildGroupPos = "";
+    public String openedChildGroupPos = "";
     private Object slidingViewHolder;
 
     public AppointmentAdapter(Context context, ArrayList<AppointmentList> mAppointmentList, OnDownArrowClicked mOnDownArrowClicked) {

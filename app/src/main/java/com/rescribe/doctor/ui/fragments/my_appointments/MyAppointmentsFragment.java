@@ -163,6 +163,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 if (mAppointmentAdapter != null && !charString.equals(s.toString())) {
                     charString = s.toString();
                     mAppointmentAdapter.getFilter().filter(s);
+                    mAppointmentAdapter.openedChildGroupPos = "";
                 }
             }
         });
