@@ -5,14 +5,20 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.rescribe.doctor.R;
+
 public class KeyboardEvent {
 
-    public KeyboardEvent(RelativeLayout mainRelativeLayout, final KeyboardListener keyboardListener) {
+    public KeyboardEvent(final RelativeLayout mainRelativeLayout, final KeyboardListener keyboardListener) {
         mainRelativeLayout.setLayoutTransition(new LayoutTransition());
         mainRelativeLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, final int newBottom, int oldLeft, int oldTop, int oldRight, final int oldBottom) {
-                if (getDifference(oldBottom, newBottom) > 100) {
+
+                int difference = getDifference(oldBottom, newBottom);
+                CommonMethods.Log("LAYOUT_DIFFERENCE", String.valueOf(difference));
+
+                if (difference > mainRelativeLayout.getContext().getResources().getDimension(R.dimen.dp210)) {
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -33,7 +39,6 @@ public class KeyboardEvent {
 
     public interface KeyboardListener {
         void onKeyboardOpen();
-
         void onKeyboardClose();
     }
 }
