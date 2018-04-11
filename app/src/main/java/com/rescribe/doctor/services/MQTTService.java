@@ -146,7 +146,8 @@ public class MQTTService extends Service {
                                     }
 
                                     // checking pending uploads
-                                    checkPendingUploads.check();
+                                    if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, mContext).equals(RescribeConstants.YES))
+                                        checkPendingUploads.check();
                                 }
                             }
                         });
