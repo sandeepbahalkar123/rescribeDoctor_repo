@@ -188,12 +188,12 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
 //        else holder.checkbox.setVisibility(View.GONE);
 
           //Click event disabled by sandeep
-//        holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mOnDownArrowClicked.onPhoneNoClick(patientObject.getPatientPhon());
-//            }
-//        });
+        holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnDownArrowClicked.onPhoneNoClick(patientObject.getPatientPhon());
+            }
+        });
 
 
     }
