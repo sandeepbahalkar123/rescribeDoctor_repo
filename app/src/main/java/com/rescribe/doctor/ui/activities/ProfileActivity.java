@@ -568,6 +568,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                 @Override
                 public void onCancelled(Context context, UploadInfo uploadInfo) {
                     // your code here
+                    mCustomProgressDialog.dismiss();
                 }
             });
 
