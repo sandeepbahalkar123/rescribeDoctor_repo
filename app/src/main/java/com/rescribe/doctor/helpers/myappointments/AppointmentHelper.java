@@ -6,6 +6,7 @@ import com.android.volley.Request;
 import com.google.android.gms.location.LocationRequest;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -205,7 +206,7 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_DOCTOR_PATIENT_CITY);
     }
 
-    public void addNewPatient(AddNewPatient obj) {
+    public void addNewPatient(PatientList obj) {
         AppDBHelper.getInstance(mContext).addNewPatient(obj,mHelperResponseManager,RescribeConstants.TASK_ADD_NEW_PATIENT);
     }
 }

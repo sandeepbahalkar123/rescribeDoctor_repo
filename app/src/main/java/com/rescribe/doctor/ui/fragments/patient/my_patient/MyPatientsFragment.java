@@ -33,6 +33,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
 import com.rescribe.doctor.adapters.my_patients.MyPatientsAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
@@ -48,7 +49,6 @@ import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.Pa
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientActivity;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
@@ -509,6 +509,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                             if (doctorLocationModel.getLocationId().equals(mLocationId)) {
                                 b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
                                 b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
+                                b.putString(RescribeConstants.CITY_NAME, String.valueOf(doctorLocationModel.getCity()));
                                 b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
                                 break;
                             }
@@ -602,7 +603,13 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
             if (myAppointmentsBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {
                 ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
-                mMyPatientsAdapter.addAll(mLoadedPatientList, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchText);
+
+                //-----Get Offline added patient if any, to show in list-----
+                ArrayList<PatientList> offlineAddedPatients = AppDBHelper.getInstance(getActivity()).getOfflineAddedPatients();
+                offlineAddedPatients.addAll(mLoadedPatientList);
+                //----------
+
+                mMyPatientsAdapter.addAll(offlineAddedPatients, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchText);
 
                 if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
                     emptyListView.setVisibility(View.GONE);
@@ -704,4 +711,5 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         if (!isReset)
             searchPatients();
     }
+
 }

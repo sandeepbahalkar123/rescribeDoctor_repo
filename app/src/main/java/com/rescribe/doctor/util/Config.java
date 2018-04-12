@@ -32,7 +32,9 @@ public class Config {
     public static final String BROKER = "tcp://52.66.154.249:1883"; // Dr Rescribe IP
 
 
-    public static String BASE_URL = "http://rescribe.in:3003/"; //http://172.16.100.219:3003/"; // http://drrescribe.com:3003/";
+    // public static String BASE_URL = "http://rescribe.in:3003/"; // production
+    //public static String BASE_URL = "http://172.16.100.219:3003/"; // no idea for this
+    public static String BASE_URL = " http://drrescribe.com:3003/"; // development
     public static final String FORGOT_PASSWORD_URL = "https://rescribe.in/app.html#/access/forgotPassword";
     public static final String ADD_NEW_PATIENT_WEB_URL = "https://rescribe.in/app.html#/addpatientmobile/";
 

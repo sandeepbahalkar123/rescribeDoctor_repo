@@ -21,6 +21,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -78,6 +79,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private AppointmentHelper mAppointmentHelper;
     private String cityID;
     private int docID;
+    private String cityName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         hospitalId = extras.getInt(RescribeConstants.CLINIC_ID);
         locationID = extras.getString(RescribeConstants.LOCATION_ID);
         cityID = extras.getString(RescribeConstants.CITY_ID);
+        cityName = extras.getString(RescribeConstants.CITY_NAME);
         docID = Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this));
 
         String urlData = Config.ADD_NEW_PATIENT_WEB_URL + docID + "/" +
@@ -126,7 +129,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
                 break;
             case R.id.btnAddPatientSubmit:
-                AddNewPatient validate = validate();
+                PatientList validate = validate();
                 if (validate != null) {
                     mAppointmentHelper.addNewPatient(validate);
                 }
@@ -234,16 +237,24 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         intent.putExtra(RescribeConstants.PATIENT_INFO, b);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
-
         finish();
     }
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
 
-        AddNewPatient customResponse1 = (AddNewPatient) customResponse;
+        PatientList customResponse1 = (PatientList) customResponse;
         //todo : pending next work
-        // callNextActivity(customResponse1.getPatientOfflineID(), "");
+        Bundle b = new Bundle();
+        b.putString(RescribeConstants.PATIENT_NAME, customResponse1.getPatientName());
+        b.putString(RescribeConstants.PATIENT_INFO, "" + customResponse1.getAge());
+        b.putInt(RescribeConstants.CLINIC_ID, customResponse1.getClinicId());
+        b.putString(RescribeConstants.PATIENT_ID, String.valueOf(customResponse1.getPatientId()));
+        b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(customResponse1.getHospitalPatId()));
+        Intent intent = new Intent(this, PatientHistoryActivity.class);
+        intent.putExtra(RescribeConstants.PATIENT_INFO, b);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -261,9 +272,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
     }
 
-    private AddNewPatient validate() {
+    private PatientList validate() {
         String message = null;
-        AddNewPatient a = null;
+        PatientList a = null;
         String enter = getString(R.string.enter);
         String firstName = mFirstName.getText().toString();
         String middleName = mMiddleName.getText().toString();
@@ -290,22 +301,25 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             message = enter + getString(R.string.age);
             CommonMethods.showToast(this, message);
         } else {
-            a = new AddNewPatient();
-            int id = (int) System.currentTimeMillis();
-            a.setId("" + id);
-            a.setFirstName(firstName);
-            a.setMiddleName(middleName);
-            a.setLastName(lastName);
-            a.setContactNo(Long.parseLong(mob));
-            a.setAge(Integer.parseInt(age));
+            a = new PatientList();
+            int id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
+            a.setPatientId(id);
+            a.setPatientName(firstName + " " + middleName + " " + lastName);
+            a.setSalutation(0);
+            a.setOutStandingAmount("0.00");
+            a.setPatientImageUrl("");
+            a.setPatientEmail("");
+            a.setPatientPhone(mob);
+            a.setAge(age);
             RadioButton viewById = (RadioButton) findViewById(mGenderRadioGroup.getCheckedRadioButtonId());
             a.setGender(viewById.getText().toString());
-            a.setReferenceID(refID);
-            a.setPatientOfflineID("OFFLINE_" + id);
-            a.setClinicID(hospitalId);
-            a.setLocationID(Integer.parseInt(locationID));
-            a.setCityID(Integer.parseInt(cityID));
-            a.setDocID(docID);
+            a.setOfflineReferenceID(refID);
+            a.setPatientInsertedOffline(true);
+            a.setOfflinePatientSynced(false);
+            a.setClinicId(hospitalId);
+            a.setHospitalPatId(hospitalId);
+            a.setPatientCity(cityName);
+            a.setOfflinePatientCreatedTimeStamp(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss));
         }
         return a;
     }
