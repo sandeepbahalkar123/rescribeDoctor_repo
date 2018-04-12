@@ -9,6 +9,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
@@ -17,6 +18,7 @@ import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.util.CommonMethods;
 
+import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -42,6 +44,7 @@ public class RescribeApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         //------------
         MultiDex.install(this);
         AppDBHelper.getInstance(this);

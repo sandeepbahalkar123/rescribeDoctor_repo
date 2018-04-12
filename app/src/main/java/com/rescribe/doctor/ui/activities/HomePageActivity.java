@@ -29,6 +29,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.dashboard.DashBoardAppointmentListAdapter;
@@ -152,10 +153,11 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         setContentView(R.layout.home_page_layout);
         ButterKnife.bind(this);
         mContext = HomePageActivity.this;
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+        logUser();
         mColorGenerator = ColorGenerator.MATERIAL;
         HomePageActivityPermissionsDispatcher.getPermissionWithCheck(HomePageActivity.this);
         appDBHelper = new AppDBHelper(mContext);
-        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
         loginHelper = new LoginHelper(mContext, HomePageActivity.this);
 //        ActiveRequest activeRequest = new ActiveRequest();
 //        activeRequest.setId(Integer.parseInt(docId));
@@ -165,6 +167,15 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
         //drawerConfiguration();
     }
+
+    private void logUser() {
+        // TODO: Use the current user's information
+        // You can call any combination of these three methods
+        Crashlytics.setUserIdentifier(String.valueOf(docId));
+        Crashlytics.setUserEmail(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.EMAIL, mContext));
+        Crashlytics.setUserName(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext));
+    }
+
 
     private void initialize() {
 
