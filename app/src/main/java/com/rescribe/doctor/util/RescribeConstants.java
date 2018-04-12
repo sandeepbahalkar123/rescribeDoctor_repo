@@ -165,6 +165,7 @@ public class RescribeConstants {
     public static final String PATIENT_LIST = "patient_list";
     public static final String LOCATION_ID = "location_id";
     public static final String CITY_ID = "city_id";
+    public static final String CITY_NAME = "city_name";
     public static final String TEMPLATE_OBJECT = "template_object";
     public static final String CLINIC_ID = "clinic_id";
     public static final String CLINIC_NAME = "clinic_name";
@@ -304,19 +305,31 @@ public class RescribeConstants {
 
     public interface ADD_NEW_PATIENT {
         String TABLE_NAME = "addNewPatient";
+        String SALUTATION = "salutation";
         String FIRST_NAME = "firstName";
         String MIDDLE_NAME = "middleName";
         String LAST_NAME = "lastName";
+        String IMAGE_URL = "imageURL";
+        String DOB = "dob";
+        String OUTSTANDING_AMT = "outstandingAmount";
+        String EMAIL = "email";
         String MOBILE_NO = "mobileNo";
         String AGE = "age";
         String GENDER = "gender";
         String REFERENCE_ID = "referenceID";
-        String PATIENT_OFFLINE_ID = "patientOfflineID";
+        String IS_INSERTED_OFFLINE = "isInsertedOffline";
+        String IS_SYNC = "isSync";
         String CREATED_TIME_STAMP = "createdTimeStamp";
+        String HOSPITALPATID = "hospitalPatId";
         String CLINIC_ID = "clinicID";
+        String CITY_NAME = "city";
         String LOCATION_ID = "locationID";
         String CITY_D = "cityID";
         String DOC_ID = "docID";
+        Integer OFFLINE = 1;
+        Integer ONLINE = 0;
+        Integer IS_SYNC_WITH_SERVER = 1;
+        Integer IS_NOT_SYNC_WITH_SERVER = 0;
     }
 }
 

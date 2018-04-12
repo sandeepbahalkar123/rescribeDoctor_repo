@@ -28,26 +28,25 @@ public class Config {
     public static final String GET_NEW_PATIENTS_URL = "doctor/api/appointment/getNewPatients";
     public static final String DELETE_PATIENT_OPD_ATTCHMENTS = "doctor/api/patient/deletePatientOpdAttachment";
 
-    //    public static final String BROKER = "tcp://ec2-13-126-175-156.ap-south-1.compute.amazonaws.com:1883";
+    //  public static final String BROKER = "tcp://ec2-13-126-175-156.ap-south-1.compute.amazonaws.com:1883";
     public static final String BROKER = "tcp://52.66.154.249:1883"; // Dr Rescribe IP
 
-    // http://172.16.100.219:3003/";
-    public static String BASE_URL =  "http://drrescribe.com:3003/";
-//    public static String BASE_URL = "http://rescribe.in:3003/";
+    //  public static String BASE_URL = "http://rescribe.in:3003/"; // production
+    //  public static String BASE_URL = "http://172.16.100.219:3003/"; // add local IP
+    //  public static String BASE_URL = "http://192.168.0.182:3003/";
+    public static String BASE_URL = " http://drrescribe.com:3003/"; // development
+
     public static final String FORGOT_PASSWORD_URL = "https://rescribe.in/app.html#/access/forgotPassword";
     public static final String ADD_NEW_PATIENT_WEB_URL = "https://rescribe.in/app.html#/addpatientmobile/";
-
 
     public static final String MY_RECORDS_DOCTOR_LIST = "api/doctors/getDoctorsWithPatientVisits";
     public static final String MY_RECORDS_ADD_DOCTOR = "api/doctors/addDoctor";
     public static final String REQUEST_SEND_SMS = "doctor/api/appointment/sendSmsToPatients";
-//            public static String BASE_URL = "http://192.168.0.182:3003/";
 
     public Context mContext;
-    //Declared all URL used in app here
+    //  Declared all URL used in app here
     public static final String LOGIN_WITH_OTP_URL = "authApi/authenticate/otpLogin";
     public static final String GET_PATIENT_LIST = "api/patient/getChatPatientList?docId=";
-    public static final String DOCTOR_LIST_FILTER_URL = "api/patient/searchDoctors";
 
     public static final String SEND_MSG_TO_PATIENT = "api/chat/sendMsgToPatient";
     public static final String CHAT_HISTORY = "api/chat/getChatHistory?";

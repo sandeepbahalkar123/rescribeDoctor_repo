@@ -9,14 +9,14 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.util.CommonMethods;
 
-public class PatientList implements Parcelable , Comparable<PatientList>
-{
+public class PatientList implements Parcelable, Comparable<PatientList>, CustomResponse {
 
     @SerializedName("salutation")
     @Expose
-    private Integer salutation ;
+    private Integer salutation;
     @SerializedName("patientName")
     @Expose
     private String patientName;
@@ -63,11 +63,18 @@ public class PatientList implements Parcelable , Comparable<PatientList>
 
     private String spannableString;
     private boolean selected;
+
+    //--Added for offline adding patient.
+    private String offlineReferenceID;
+    private boolean isPatientInsertedOffline;
+    private boolean isOfflinePatientSynced;
+    private String offlinePatientCreatedTimeStamp;
+    //--------
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public PatientList createFromParcel(Parcel in) {
             return new PatientList(in);
@@ -246,7 +253,7 @@ public class PatientList implements Parcelable , Comparable<PatientList>
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
     @Override
@@ -256,5 +263,37 @@ public class PatientList implements Parcelable , Comparable<PatientList>
 
     public String getPatientArea() {
         return patientArea;
+    }
+
+    public String getOfflineReferenceID() {
+        return offlineReferenceID;
+    }
+
+    public void setOfflineReferenceID(String offlineReferenceID) {
+        this.offlineReferenceID = offlineReferenceID;
+    }
+
+    public boolean isPatientInsertedOffline() {
+        return isPatientInsertedOffline;
+    }
+
+    public void setPatientInsertedOffline(boolean patientInsertedOffline) {
+        isPatientInsertedOffline = patientInsertedOffline;
+    }
+
+    public boolean isOfflinePatientSynced() {
+        return isOfflinePatientSynced;
+    }
+
+    public void setOfflinePatientSynced(boolean offlinePatientSynced) {
+        isOfflinePatientSynced = offlinePatientSynced;
+    }
+
+    public String getOfflinePatientCreatedTimeStamp() {
+        return offlinePatientCreatedTimeStamp;
+    }
+
+    public void setOfflinePatientCreatedTimeStamp(String offlinePatientCreatedTimeStamp) {
+        this.offlinePatientCreatedTimeStamp = offlinePatientCreatedTimeStamp;
     }
 }
