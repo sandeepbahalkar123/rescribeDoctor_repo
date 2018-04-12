@@ -25,8 +25,9 @@ import butterknife.ButterKnife;
 public class DrawerAppointmetClinicNameAdapter extends RecyclerView.Adapter<DrawerAppointmetClinicNameAdapter.ListViewHolder> {
 
     private Context mContext;
-    private ArrayList<ClinicList> mClinicList ;
+    private ArrayList<ClinicList> mClinicList;
     private OnClickOfFilterClinic mOnClickOfFilterClinic;
+
     public DrawerAppointmetClinicNameAdapter(Context mContext, ArrayList<ClinicList> clinicList, DrawerForMyAppointment drawerForMyAppointment) {
         this.mContext = mContext;
         this.mClinicList = clinicList;
@@ -44,28 +45,21 @@ public class DrawerAppointmetClinicNameAdapter extends RecyclerView.Adapter<Draw
     @Override
     public void onBindViewHolder(final DrawerAppointmetClinicNameAdapter.ListViewHolder holder, final int position) {
 
-        holder.menuName.setText(mClinicList.get(position).getClinicName()+", "+mClinicList.get(position).getArea()+", "+mClinicList.get(position).getCity());
+        holder.menuName.setText(mClinicList.get(position).getClinicName() + ", " + mClinicList.get(position).getArea() + ", " + mClinicList.get(position).getCity());
         holder.menuName.setChecked(mClinicList.get(position).isSelected());
+
+        if (!holder.menuName.isChecked()) {
+            holder.menuName.setChecked(false);
+            holder.menuName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.unchked, 0);
+        } else {
+            holder.menuName.setChecked(true);
+            holder.menuName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.check_box, 0);
+        }
+
         holder.menuName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //---
-                if (holder.menuName.isChecked()) {
-                    holder.menuName.setChecked(false);
-                    holder.menuName.setCheckMarkDrawable(R.drawable.unchked);
-                } else {
-                    holder.menuName.setChecked(true);
-                    holder.menuName.setCheckMarkDrawable(R.drawable.check_box);
-                }
-                //---
-
-                if(mClinicList.get(position).isSelected()){
-
-                    mClinicList.get(position).setSelected(false);
-                }else{
-                    mClinicList.get(position).setSelected(true);
-                }
+                mClinicList.get(position).setSelected(!holder.menuName.isChecked());
                 notifyDataSetChanged();
                 mOnClickOfFilterClinic.onClickofClinic(mClinicList);
             }
@@ -89,11 +83,13 @@ public class DrawerAppointmetClinicNameAdapter extends RecyclerView.Adapter<Draw
             this.view = view;
         }
     }
-    public interface OnClickOfFilterClinic{
+
+    public interface OnClickOfFilterClinic {
         public void onClickofClinic(ArrayList<ClinicList> mClinicList);
 
     }
-    public ArrayList<ClinicList> getAdapterClinicList(){
+
+    public ArrayList<ClinicList> getAdapterClinicList() {
         return mClinicList;
     }
 }

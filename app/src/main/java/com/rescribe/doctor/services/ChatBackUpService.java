@@ -100,17 +100,13 @@ public class ChatBackUpService extends Service {
                 startForeground(RescribeConstants.FOREGROUND_SERVICE, notification);
 
                 // Start Downloading
-                try {
-                    request();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                request();
             }
         } else stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void request() throws JSONException {
+    private void request() {
 
         RUNNING = true;
 
@@ -129,6 +125,7 @@ public class ChatBackUpService extends Service {
                             ArrayList<PatientData> patientDataList = patientConnectModel.getPatientListData().getPatientDataList();
                             if (patientDataList.isEmpty()) {
                                 CommonMethods.showToast(ChatBackUpService.this, patientConnectModel.getCommon().getStatusMessage());
+                                isFailed = false;
                                 restored();
                             } else
                                 restoreMessages(patientDataList);

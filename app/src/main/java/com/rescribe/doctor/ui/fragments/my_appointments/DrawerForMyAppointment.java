@@ -64,6 +64,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
     private DrawerAppointmentSelectStatusAdapter mDrawerAppointmentSelectStatusAdapter;
     private DrawerAppointmetClinicNameAdapter mDrawerAppointmetClinicNameAdapter;
     private OnDrawerInteractionListener mListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

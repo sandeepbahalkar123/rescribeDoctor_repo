@@ -110,13 +110,13 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
 
         String toDisplay = day + "<sup>" + CommonMethods.getSuffixForNumber(Integer.parseInt(day)) + "</sup> " + CommonMethods.getCurrentDate("MMM'' yy");
 
-        Spanned dateTodisplay;
+        Spanned dateToDisplay;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            dateTodisplay = Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY);
+            dateToDisplay = Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY);
         else
-            dateTodisplay = Html.fromHtml(toDisplay);
+            dateToDisplay = Html.fromHtml(toDisplay);
 
-        dateTextview.setText(dateTodisplay);
+        dateTextview.setText(dateToDisplay);
 
     }
 
@@ -163,13 +163,11 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
 
     }
 
-    @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
+    @OnClick({R.id.backImageView, R.id.dateTextview})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
                 onBackPressed();
-                break;
-            case R.id.userInfoTextView:
                 break;
             case R.id.dateTextview:
                 Calendar now = Calendar.getInstance();
@@ -183,12 +181,6 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                 datePickerDialog.setMinDate(Calendar.getInstance());
                 datePickerDialog.show(getSupportFragmentManager(), getResources().getString(R.string.select_date_text));
 
-                break;
-            case R.id.viewContainer:
-                break;
-            case R.id.nav_view:
-                break;
-            case R.id.drawer_layout:
                 break;
         }
     }

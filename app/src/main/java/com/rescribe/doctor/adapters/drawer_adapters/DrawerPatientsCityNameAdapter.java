@@ -49,21 +49,23 @@ public class DrawerPatientsCityNameAdapter extends RecyclerView.Adapter<DrawerPa
         holder.menuName.setText(cityList.get(holder.getAdapterPosition()).getCityName());
         holder.menuName.setChecked(cityList.get(holder.getAdapterPosition()).isChecked());
 
+        if (!holder.menuName.isChecked()) {
+            holder.menuName.setChecked(false);
+            holder.menuName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.unchked, 0);
+        } else {
+            holder.menuName.setChecked(true);
+            holder.menuName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.check_box, 0);
+        }
+
         holder.menuName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.menuName.isChecked()) {
-                    holder.menuName.setChecked(false);
-                    holder.menuName.setCheckMarkDrawable(R.drawable.unchked);
-                } else {
-                    holder.menuName.setChecked(true);
-                    holder.menuName.setCheckMarkDrawable(R.drawable.check_box);
-                }
-                cityList.get(holder.getAdapterPosition()).setChecked(holder.menuName.isChecked());
+                cityList.get(holder.getAdapterPosition()).setChecked(!holder.menuName.isChecked());
+                notifyDataSetChanged();
+
                 cityCheckedListener.onChecked(cityList);
             }
         });
-
     }
 
     @Override

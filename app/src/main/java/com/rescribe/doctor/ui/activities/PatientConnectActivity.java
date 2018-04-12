@@ -99,7 +99,7 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
                         addFragment();
                         customProgressDialog.dismiss();
                     } else {
-                        // Retry
+                        // You can retry here
                     }
                 }
             }

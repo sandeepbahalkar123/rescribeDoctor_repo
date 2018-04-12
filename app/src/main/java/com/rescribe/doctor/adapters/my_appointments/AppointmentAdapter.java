@@ -372,12 +372,12 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     public View getGroupView(final int groupPosition, final boolean isExpanded,
                              View convertView, final ViewGroup parent) {
 
-        GroupViewHolder groupViewHolder;
+        final GroupViewHolder groupViewHolder;
 
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this.mContext
+            LayoutInflater inflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.my_appointment_patients_item_layout, parent, false);
+            convertView = inflater.inflate(R.layout.my_appointment_patients_item_layout, parent, false);
             groupViewHolder = new GroupViewHolder(convertView);
             convertView.setTag(groupViewHolder);
         } else {
@@ -394,8 +394,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.swipe_layout.setSwipeListener(new SwipeRevealLayout.SwipeListener() {
             @Override
             public void onClosed(SwipeRevealLayout view) {
-                if (slidingViewHolder != null && view.getTag() != null) {
-                    if (view.getTag().equals(slidingViewHolder))
+                if (slidingViewHolder != null && ((View)view.getParent()).getTag() != null) {
+                    if (((View)view.getParent()).getTag().equals(slidingViewHolder))
                         openedChildGroupPos = "";
                 }
             }
@@ -408,8 +408,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
             @Override
             public void onSlide(SwipeRevealLayout view, float slideOffset) {
-                Log.d("SLIDE", String.valueOf(slideOffset) + " " + view.getTag());
-                slidingViewHolder = view.getTag();
+                Log.d("SLIDE", String.valueOf(slideOffset) + " " + ((View)view.getParent()).getTag());
+                slidingViewHolder = ((View)view.getParent()).getTag();
             }
         });
 
