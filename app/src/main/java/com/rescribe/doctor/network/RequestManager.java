@@ -79,7 +79,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
     private static final int N0OF_RETRY = 0;
     private AppDBHelper dbHelper;
     private String requestTag;
-    private int connectionType = Request.Method.POST;
+    private int connectionType;
 
     private String mDataTag;
     private RequestTimer requestTimer;
