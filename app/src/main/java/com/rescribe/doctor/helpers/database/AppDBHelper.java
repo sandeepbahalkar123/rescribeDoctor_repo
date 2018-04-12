@@ -11,6 +11,7 @@ import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
+import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -23,12 +24,15 @@ import java.util.ArrayList;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.PATIENT;
+import static com.rescribe.doctor.util.RescribeConstants.ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER;
+import static com.rescribe.doctor.util.RescribeConstants.ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.READ;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.UNREAD;
+import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
 
 public class AppDBHelper extends SQLiteOpenHelper {
 
@@ -517,23 +521,22 @@ public class AppDBHelper extends SQLiteOpenHelper {
     }
 
     //-----store patient in db : start----
-    public void addNewPatient(PatientList newPatient, HelperResponse mHelperResponseManager, String taskAddNewPatient) {
+    public long addNewPatient(PatientList newPatient) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(COLUMN_ID, newPatient.getPatientId());
         contentValues.put(RescribeConstants.ADD_NEW_PATIENT.SALUTATION, newPatient.getSalutation());
-        String patientName = newPatient.getPatientName();
-        if (patientName.length() > 0 && patientName.contains(" ")) {
+        String patientName = newPatient.getPatientName().trim();
+
+        if (!patientName.isEmpty()) {
             String[] split = patientName.split(" ");
             contentValues.put(RescribeConstants.ADD_NEW_PATIENT.FIRST_NAME, split[0]);
-            contentValues.put(RescribeConstants.ADD_NEW_PATIENT.MIDDLE_NAME, split[1]);
-            contentValues.put(RescribeConstants.ADD_NEW_PATIENT.LAST_NAME, split[2]);
-        } else {
-            contentValues.put(RescribeConstants.ADD_NEW_PATIENT.FIRST_NAME, patientName);
-            contentValues.put(RescribeConstants.ADD_NEW_PATIENT.MIDDLE_NAME, "");
-            contentValues.put(RescribeConstants.ADD_NEW_PATIENT.LAST_NAME, "");
+            if (split.length > 1)
+                contentValues.put(RescribeConstants.ADD_NEW_PATIENT.MIDDLE_NAME, split[1]);
+            if (split.length > 2)
+                contentValues.put(RescribeConstants.ADD_NEW_PATIENT.LAST_NAME, split[2]);
         }
 
         contentValues.put(RescribeConstants.ADD_NEW_PATIENT.MOBILE_NO, newPatient.getPatientPhone());
@@ -546,23 +549,22 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(RescribeConstants.ADD_NEW_PATIENT.OUTSTANDING_AMT, newPatient.getOutStandingAmount());
         contentValues.put(RescribeConstants.ADD_NEW_PATIENT.IMAGE_URL, newPatient.getPatientImageUrl());
         contentValues.put(RescribeConstants.ADD_NEW_PATIENT.EMAIL, newPatient.getPatientEmail());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.IS_INSERTED_OFFLINE, newPatient.isPatientInsertedOffline() ? RescribeConstants.ADD_NEW_PATIENT.OFFLINE : RescribeConstants.ADD_NEW_PATIENT.ONLINE);
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.IS_SYNC, newPatient.isOfflinePatientSynced() ? RescribeConstants.ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER : RescribeConstants.ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER);
+        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.IS_SYNC, newPatient.isOfflinePatientSynced() ? IS_SYNC_WITH_SERVER : RescribeConstants.ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER);
         contentValues.put(RescribeConstants.ADD_NEW_PATIENT.CREATED_TIME_STAMP, newPatient.getOfflinePatientCreatedTimeStamp());
         contentValues.put(RescribeConstants.ADD_NEW_PATIENT.HOSPITALPATID, newPatient.getHospitalPatId());
 
-        long insert = db.insert(RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME, null, contentValues);
-
-        if (insert != -1) {
-            mHelperResponseManager.onSuccess(taskAddNewPatient, newPatient);
-        } else {
-            mHelperResponseManager.onServerError(taskAddNewPatient, "");
-        }
+        return db.insert(RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME, null, contentValues);
     }
 
-    public ArrayList<PatientList> getOfflineAddedPatients() {
+    public ArrayList<PatientList> getOfflineAddedPatients(boolean isAll, int pageNumber) {
         SQLiteDatabase db = getReadableDatabase();
-        String countQuery = "select * from " + RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME;
+        int numberOfRows = 30;
+
+        String countQuery;
+        if (isAll)
+            countQuery = "select * from " + RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME + " limit " + pageNumber + ", ";
+        else countQuery = "select * from " + RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME + " where " + RescribeConstants.ADD_NEW_PATIENT.IS_SYNC + " = " + IS_NOT_SYNC_WITH_SERVER;
+
         Cursor cursor = db.rawQuery(countQuery, null);
         ArrayList<PatientList> list = new ArrayList<>();
 
@@ -591,11 +593,57 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 patient.setPatientEmail(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.EMAIL)));
 
                 //----------
-                int anInt = cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.IS_INSERTED_OFFLINE));
-                patient.setPatientInsertedOffline(anInt == RescribeConstants.ADD_NEW_PATIENT.OFFLINE ? true : false);
+                int anInt = cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.IS_SYNC));
+                patient.setOfflinePatientSynced(anInt == IS_SYNC_WITH_SERVER);
                 //----------
-                anInt = cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.IS_SYNC));
-                patient.setOfflinePatientSynced(anInt == RescribeConstants.ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER ? true : false);
+                patient.setOfflinePatientCreatedTimeStamp(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
+                patient.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.HOSPITALPATID)));
+
+                list.add(patient);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+
+        return list;
+    }
+
+    public ArrayList<PatientDetail> getOfflinePatients() {
+        SQLiteDatabase db = getReadableDatabase();
+        String countQuery = "select * from " + RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        ArrayList<PatientDetail> list = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                PatientDetail patient = new PatientDetail();
+
+                patient.setMobilePatientId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+
+                patient.setPatientFname(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.FIRST_NAME)));
+                patient.setPatientMname(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.MIDDLE_NAME)));
+                patient.setPatientLname(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.LAST_NAME)));
+
+//                cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.SALUTATION));
+
+                patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.MOBILE_NO)));
+                patient.setPatientAge(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.AGE)));
+                patient.setPatientGender(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.GENDER)));
+
+//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.REFERENCE_ID));
+
+                patient.setClinicId(cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.CLINIC_ID)));
+
+//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.CITY_NAME));
+//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.DOB));
+//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.OUTSTANDING_AMT));
+//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.IMAGE_URL));
+//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.EMAIL));
+
+                //----------
+                int anInt = cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.IS_SYNC));
+                patient.setOfflinePatientSynced(anInt == IS_SYNC_WITH_SERVER);
                 //----------
                 patient.setOfflinePatientCreatedTimeStamp(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
                 patient.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.HOSPITALPATID)));

@@ -317,7 +317,6 @@ public class RescribeConstants {
         String AGE = "age";
         String GENDER = "gender";
         String REFERENCE_ID = "referenceID";
-        String IS_INSERTED_OFFLINE = "isInsertedOffline";
         String IS_SYNC = "isSync";
         String CREATED_TIME_STAMP = "createdTimeStamp";
         String HOSPITALPATID = "hospitalPatId";
@@ -326,8 +325,6 @@ public class RescribeConstants {
         String LOCATION_ID = "locationID";
         String CITY_D = "cityID";
         String DOC_ID = "docID";
-        Integer OFFLINE = 1;
-        Integer ONLINE = 0;
         Integer IS_SYNC_WITH_SERVER = 1;
         Integer IS_NOT_SYNC_WITH_SERVER = 0;
     }

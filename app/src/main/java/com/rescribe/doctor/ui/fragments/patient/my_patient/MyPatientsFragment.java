@@ -605,7 +605,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
 
                 //-----Get Offline added patient if any, to show in list-----
-                ArrayList<PatientList> offlineAddedPatients = AppDBHelper.getInstance(getActivity()).getOfflineAddedPatients();
+                ArrayList<PatientList> offlineAddedPatients = AppDBHelper.getInstance(getActivity()).getOfflineAddedPatients(false, 0);
                 offlineAddedPatients.addAll(mLoadedPatientList);
                 //----------
 

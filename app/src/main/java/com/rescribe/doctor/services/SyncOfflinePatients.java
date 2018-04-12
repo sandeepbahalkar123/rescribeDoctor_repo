@@ -1,17 +1,13 @@
 package com.rescribe.doctor.services;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -23,11 +19,12 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
+import com.rescribe.doctor.model.patient.add_new_patient.SyncPatientsRequest;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.network.RequestPool;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
-import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -43,83 +40,66 @@ import static com.rescribe.doctor.util.Config.BASE_URL;
 import static com.rescribe.doctor.util.Config.GET_MY_PATIENTS_LIST;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
-public class LoadAllPatientsService extends Service {
-    public static boolean RUNNING = false;
+public class SyncOfflinePatients {
 
-    private static final String LOG_TAG = "LoadAllPatientsService";
+    public static final String PATIENT_SYNC = "com.rescribe.doctor.PATIENT_SYNC";
+    public static final String UPLOAD_INFO = "upload_info";
+    private static final String LOG_TAG = "SyncOfflinePatients";
+    private static final int SYNC_NOTIFICATION_ID = 122;
 
-    public static final String STATUS = "status";
-    public static final String LOAD_ALL_PATIENTS = "com.rescribe.doctor.LOAD_ALL_PATIENTS";
-
-    private NotificationManager mNotifyManager;
-    private NotificationCompat.Builder mBuilder;
-    private int pageCount = 1;
-    private boolean isFailed = true;
+    private Context context;
     private AppDBHelper appDBHelper;
-    private static final int RECORD_COUNT = 500;
+    private NotificationCompat.Builder mBuilder;
+    private NotificationManager mNotifyManager;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        appDBHelper = new AppDBHelper(this);
+    SyncOfflinePatients() {
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+    void onCreate(Context mContext) {
+        this.context = mContext;
+        appDBHelper = new AppDBHelper(context);
+        check();
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, final int startId) {
+    public void check() {
 
-        if (intent.getAction() != null) {
-            if (intent.getAction().equals(RescribeConstants.STARTFOREGROUND_ACTION)) {
+        Log.i(LOG_TAG, "Checking offline patients");
 
-                Log.i(LOG_TAG, "Received Start Foreground Intent ");
-                Intent notificationIntent = new Intent(this, PatientConnectActivity.class);
-                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                        notificationIntent, 0);
+        Intent notificationIntent = new Intent();
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                notificationIntent, 0);
 
-                mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mBuilder = new NotificationCompat.Builder(this);
-                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+        mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mBuilder = new NotificationCompat.Builder(context);
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
 
-                Notification notification = mBuilder
-                        .setContentTitle("Download all patients")
-                        .setTicker("Downloading")
-                        .setContentText("Downloading patients")
-                        .setSmallIcon(R.drawable.logosmall)
-                        .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                        .setContentIntent(pendingIntent).build();
-
-                startForeground(RescribeConstants.FOREGROUND_SERVICE, notification);
-
-                // Start Downloading
-                request();
-            }
-        } else stopSelf();
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    private void request() {
-
-        RUNNING = true;
+        mBuilder.setContentTitle("Syncing patients")
+                .setTicker("Syncing")
+                .setContentText("Syncing patients")
+                .setSmallIcon(R.drawable.logosmall)
+                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setContentIntent(pendingIntent).build();
 
         mBuilder.setContentText("Downloading patients")
                 // Removes the progress bar
                 .setProgress(0, 0, true);
-        mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
+        mNotifyManager.notify(SYNC_NOTIFICATION_ID, mBuilder.build());
 
-        RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
+        ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients();
+        ArrayList<PatientDetail> patientDetails = new ArrayList<>();
+        for (PatientList patientL :offlineAddedPatients) {
+            PatientDetail patientDetail = new PatientDetail();
+            patientDetail.setClinicId(patientL.getClinicId());
+            patientDetail.setPatientFname(patientL.getPatientName());
+            patientDetail.set
+        }
 
-        String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this);
-        mRequestSearchPatients.setPageNo(pageCount);
-        mRequestSearchPatients.setDocId(Integer.valueOf(id));
-        mRequestSearchPatients.setSearchText("");
-        mRequestSearchPatients.setPaginationSize(500);
+        SyncPatientsRequest mSyncPatientsRequest = new SyncPatientsRequest();
+        String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, context);
+        mSyncPatientsRequest.setDocId(id);
+        mSyncPatientsRequest.setPatientDetails();
 
         final Gson gson = new Gson();
         JSONObject jsonObject = null;
@@ -143,7 +123,7 @@ public class LoadAllPatientsService extends Service {
                             ArrayList<PatientList> patientList = myPatientBaseModel.getPatientDataModel().getPatientList();
                             if (patientList.isEmpty()) {
                                 isFailed = true;
-                                restored();
+                                synced();
                             } else {
                                 // add in database
                                 for (PatientList patientL : patientList) {
@@ -156,7 +136,7 @@ public class LoadAllPatientsService extends Service {
                                 if (patientList.size() < RECORD_COUNT) {
                                     // after add database
                                     isFailed = false;
-                                    restored();
+                                    synced();
                                 } else {
                                     request();
                                     pageCount += 1;
@@ -168,14 +148,14 @@ public class LoadAllPatientsService extends Service {
             @Override
             public void onErrorResponse(VolleyError error) {
                 isFailed = true;
-                restored();
+                synced();
             }
         }) {
             @Override
             public Map<String, String> getHeaders() {
-                Device device = Device.getInstance(LoadAllPatientsService.this);
+                Device device = Device.getInstance(context);
                 Map<String, String> headerParams = new HashMap<>();
-                String authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, LoadAllPatientsService.this);
+                String authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, context);
                 headerParams.put(RescribeConstants.CONTENT_TYPE, RescribeConstants.APPLICATION_JSON);
                 headerParams.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
                 headerParams.put(RescribeConstants.DEVICEID, device.getDeviceId());
@@ -187,33 +167,17 @@ public class LoadAllPatientsService extends Service {
             }
         };
         jsonRequest.setRetryPolicy(new DefaultRetryPolicy(1000 * 60, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        jsonRequest.setTag("MyPatientRequest");
-        RequestPool.getInstance(this).addToRequestQueue(jsonRequest);
+        jsonRequest.setTag("SyncingPatientsRequest");
+        RequestPool.getInstance(context).addToRequestQueue(jsonRequest);
     }
 
-    private void restored() {
-
-        pageCount = 0;
-        RUNNING = false;
-
-        Intent intent = new Intent(LOAD_ALL_PATIENTS);
-        intent.putExtra(STATUS, isFailed);
-        sendBroadcast(intent);
-
-        mBuilder.setContentText(!isFailed ? "Downloaded all patients" : "Patients download failed")
+    private void synced() {
+        mBuilder.setContentText("Sync patients completed")
                 // Removes the progress bar
-                .setProgress(0, 0, false);
-        mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
-
-        RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, !isFailed, LoadAllPatientsService.this);
-
-        stopForeground(true);
-        stopSelf();
+                .setProgress(0, 100, false);
+        mNotifyManager.notify(SYNC_NOTIFICATION_ID, mBuilder.build());
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.i(LOG_TAG, "In onDestroy");
+    void onDestroy() {
     }
 }

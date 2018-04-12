@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -66,7 +65,7 @@ import droidninja.filepicker.FilePickerConst;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.rescribe.doctor.services.CheckPendingUploads.getUploadConfig;
+import static com.rescribe.doctor.services.SyncOfflineRecords.getUploadConfig;
 
 @RuntimePermissions
 public class SelectedRecordsActivity extends AppCompatActivity {

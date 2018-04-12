@@ -29,6 +29,10 @@ public class RequestSearchPatients implements Parcelable,CustomResponse
     @SerializedName("searchText")
     @Expose
     private String searchText;
+    @SerializedName("paginationSize")
+    @Expose
+    private int paginationSize;
+
     public final static Creator<RequestSearchPatients> CREATOR = new Creator<RequestSearchPatients>() {
 
 
@@ -53,6 +57,7 @@ public class RequestSearchPatients implements Parcelable,CustomResponse
         this.sortOrder = ((String) in.readValue((String.class.getClassLoader())));
         this.sortField = ((String) in.readValue((String.class.getClassLoader())));
         this.searchText = ((String) in.readValue((String.class.getClassLoader())));
+        this.paginationSize = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public RequestSearchPatients() {
@@ -106,6 +111,14 @@ public class RequestSearchPatients implements Parcelable,CustomResponse
         this.searchText = searchText;
     }
 
+    public int getPaginationSize() {
+        return paginationSize;
+    }
+
+    public void setPaginationSize(int paginationSize) {
+        this.paginationSize = paginationSize;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(docId);
         dest.writeValue(pageNo);
@@ -113,6 +126,7 @@ public class RequestSearchPatients implements Parcelable,CustomResponse
         dest.writeValue(sortOrder);
         dest.writeValue(sortField);
         dest.writeValue(searchText);
+        dest.writeValue(paginationSize);
     }
 
     public int describeContents() {

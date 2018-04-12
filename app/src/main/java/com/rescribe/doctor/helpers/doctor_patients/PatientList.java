@@ -1,16 +1,13 @@
 
 package com.rescribe.doctor.helpers.doctor_patients;
 
-import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
-import com.rescribe.doctor.util.CommonMethods;
 
 public class PatientList implements Parcelable, Comparable<PatientList>, CustomResponse {
 
@@ -66,7 +63,6 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
 
     //--Added for offline adding patient.
     private String offlineReferenceID;
-    private boolean isPatientInsertedOffline;
     private boolean isOfflinePatientSynced;
     private String offlinePatientCreatedTimeStamp;
     //--------
@@ -272,15 +268,6 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     public void setOfflineReferenceID(String offlineReferenceID) {
         this.offlineReferenceID = offlineReferenceID;
     }
-
-    public boolean isPatientInsertedOffline() {
-        return isPatientInsertedOffline;
-    }
-
-    public void setPatientInsertedOffline(boolean patientInsertedOffline) {
-        isPatientInsertedOffline = patientInsertedOffline;
-    }
-
     public boolean isOfflinePatientSynced() {
         return isOfflinePatientSynced;
     }

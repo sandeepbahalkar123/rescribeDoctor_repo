@@ -1,6 +1,7 @@
 package com.rescribe.doctor.ui.activities.my_patients.add_new_patient;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -40,7 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AddNewPatientWebViewActivity extends AppCompatActivity implements HelperResponse {
+public class AddNewPatientWebViewActivity extends AppCompatActivity {
 
     private static final String TAG = "AddPatient";
     public static final int ADD_PATIENT_REQUEST = 121;
@@ -76,10 +78,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private int hospitalId;
     private boolean isCalled = false;
     private String locationID;
-    private AppointmentHelper mAppointmentHelper;
     private String cityID;
     private int docID;
     private String cityName;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.add_new_patient);
         ButterKnife.bind(this);
+
+        mContext = this;
 
         Bundle extras = getIntent().getBundleExtra(RescribeConstants.PATIENT_DETAILS);
         hospitalId = extras.getInt(RescribeConstants.CLINIC_ID);
@@ -99,8 +103,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 hospitalId + "/" + locationID + "/" + cityID;
 
         mWebViewTitle.setText(getString(R.string.new_patients));
-
-        mAppointmentHelper = new AppointmentHelper(this, this);
 
         if (NetworkUtil.isInternetAvailable(this)) {
             mWebViewObject.setVisibility(View.VISIBLE);
@@ -131,7 +133,20 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             case R.id.btnAddPatientSubmit:
                 PatientList validate = validate();
                 if (validate != null) {
-                    mAppointmentHelper.addNewPatient(validate);
+                    AppDBHelper appDBHelper = new AppDBHelper(mContext);
+                    if (appDBHelper.addNewPatient(validate) != -1) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(RescribeConstants.PATIENT_NAME, validate.getPatientName());
+                        bundle.putString(RescribeConstants.PATIENT_INFO, "" + validate.getAge());
+                        bundle.putInt(RescribeConstants.CLINIC_ID, validate.getClinicId());
+                        bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(validate.getPatientId()));
+                        bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(validate.getHospitalPatId()));
+                        Intent intent = new Intent(this, PatientHistoryActivity.class);
+                        intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
+                        startActivity(intent);
+                        finish();
+                    } else
+                        CommonMethods.showToast(mContext, "Failed to store");
                 }
                 break;
         }
@@ -240,41 +255,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         finish();
     }
 
-    @Override
-    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-
-        PatientList customResponse1 = (PatientList) customResponse;
-        //todo : pending next work
-        Bundle b = new Bundle();
-        b.putString(RescribeConstants.PATIENT_NAME, customResponse1.getPatientName());
-        b.putString(RescribeConstants.PATIENT_INFO, "" + customResponse1.getAge());
-        b.putInt(RescribeConstants.CLINIC_ID, customResponse1.getClinicId());
-        b.putString(RescribeConstants.PATIENT_ID, String.valueOf(customResponse1.getPatientId()));
-        b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(customResponse1.getHospitalPatId()));
-        Intent intent = new Intent(this, PatientHistoryActivity.class);
-        intent.putExtra(RescribeConstants.PATIENT_INFO, b);
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
-    public void onParseError(String mOldDataTag, String errorMessage) {
-
-    }
-
-    @Override
-    public void onServerError(String mOldDataTag, String serverErrorMessage) {
-
-    }
-
-    @Override
-    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-
-    }
-
     private PatientList validate() {
         String message = null;
-        PatientList a = null;
+        PatientList patientList = null;
         String enter = getString(R.string.enter);
         String firstName = mFirstName.getText().toString();
         String middleName = mMiddleName.getText().toString();
@@ -301,27 +284,26 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             message = enter + getString(R.string.age);
             CommonMethods.showToast(this, message);
         } else {
-            a = new PatientList();
+            patientList = new PatientList();
             int id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
-            a.setPatientId(id);
-            a.setPatientName(firstName + " " + middleName + " " + lastName);
-            a.setSalutation(0);
-            a.setOutStandingAmount("0.00");
-            a.setPatientImageUrl("");
-            a.setPatientEmail("");
-            a.setPatientPhone(mob);
-            a.setAge(age);
+            patientList.setPatientId(id);
+            patientList.setPatientName(firstName + " " + middleName + " " + lastName);
+            patientList.setSalutation(0);
+            patientList.setOutStandingAmount("0.00");
+            patientList.setPatientImageUrl("");
+            patientList.setPatientEmail("");
+            patientList.setPatientPhone(mob);
+            patientList.setAge(age);
             RadioButton viewById = (RadioButton) findViewById(mGenderRadioGroup.getCheckedRadioButtonId());
-            a.setGender(viewById.getText().toString());
-            a.setOfflineReferenceID(refID);
-            a.setPatientInsertedOffline(true);
-            a.setOfflinePatientSynced(false);
-            a.setClinicId(hospitalId);
-            a.setHospitalPatId(hospitalId);
-            a.setPatientCity(cityName);
-            a.setOfflinePatientCreatedTimeStamp(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss));
+            patientList.setGender(viewById.getText().toString());
+            patientList.setOfflineReferenceID(refID);
+            patientList.setOfflinePatientSynced(false);
+            patientList.setClinicId(hospitalId);
+            patientList.setHospitalPatId(hospitalId);
+            patientList.setPatientCity(cityName);
+            patientList.setOfflinePatientCreatedTimeStamp(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss));
         }
-        return a;
+        return patientList;
     }
 
 }

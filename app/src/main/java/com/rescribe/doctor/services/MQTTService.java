@@ -98,13 +98,15 @@ public class MQTTService extends Service {
     private AppDBHelper appDBHelper;
     private MqttConnectOptions connOpts = new MqttConnectOptions();
     private Context mContext;
-    private CheckPendingUploads checkPendingUploads = new CheckPendingUploads();
+    private SyncOfflineRecords syncOfflineRecords = new SyncOfflineRecords();
+    private SyncOfflinePatients syncOfflinePatients = new SyncOfflinePatients();
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = this;
-        checkPendingUploads.onCreate(mContext);
+        syncOfflineRecords.onCreate(mContext);
+        syncOfflinePatients.onCreate(mContext);
         initRxNetwork();
         appDBHelper = new AppDBHelper(mContext);
 
@@ -146,8 +148,10 @@ public class MQTTService extends Service {
                                     }
 
                                     // checking pending uploads
-                                    if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, mContext).equals(RescribeConstants.YES))
-                                        checkPendingUploads.check();
+                                    if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, mContext).equals(RescribeConstants.YES)) {
+                                        syncOfflineRecords.check();
+                                        syncOfflinePatients.check();
+                                    }
                                 }
                             }
                         });
@@ -439,7 +443,7 @@ public class MQTTService extends Service {
         } else CommonMethods.Log(TAG, "Not Connected 1");
         sendStateSubscription.unsubscribe();
         sendStateSubscription = null;
-        checkPendingUploads.onDestroy();
+        syncOfflineRecords.onDestroy();
     }
 
 

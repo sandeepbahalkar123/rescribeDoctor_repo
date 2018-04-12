@@ -199,7 +199,7 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void addNewPatient(PatientList obj) {
-        AppDBHelper.getInstance(mContext).addNewPatient(obj,mHelperResponseManager,RescribeConstants.TASK_ADD_NEW_PATIENT);
+
     }
 }
 
