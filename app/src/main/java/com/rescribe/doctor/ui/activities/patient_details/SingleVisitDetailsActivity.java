@@ -61,6 +61,7 @@ import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 
 public class SingleVisitDetailsActivity extends AppCompatActivity implements HelperResponse, SingleVisitAdapter.OnDeleteAttachments {
 
+    private static final String PAIN_SCALE = "pain scale";
     @BindView(R.id.historyExpandableListView)
     ExpandableListView mHistoryExpandableListView;
 
@@ -157,7 +158,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 if (childObject.size() == 1) {
 
                     boolean flag = true;
-                    if (listDataList.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_ATTACHMENTS) || listDataList.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_VITALS))
+                    if (listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_VITALS))
                         flag = false;
 
                     if (flag) {
@@ -197,6 +198,17 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             CommonBaseModelContainer common = (CommonBaseModelContainer) customResponse;
             if (common.getCommonRespose().isSuccess()) {
                 isAllAttachmentDeleted = mSingleVisitAdapter.removeSelectedAttachmentFromList();
+                if (mSingleVisitAdapter.getListDataList().size() == 1) {
+                    if (mSingleVisitAdapter.getListDataList().get(0).getCaseDetailName().equals(PAIN_SCALE)) {
+                        mSingleVisitAdapter.getListDataList().remove(0);
+                        mSingleVisitAdapter.notifyDataSetChanged();
+                        mNoRecordAvailable.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    mSingleVisitAdapter.notifyDataSetChanged();
+                    mNoRecordAvailable.setVisibility(View.GONE);
+
+                }
             }
             CommonMethods.showToast(this, common.getCommonRespose().getStatusMessage());
         } else {

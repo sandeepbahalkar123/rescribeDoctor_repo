@@ -136,6 +136,8 @@
             android:name=".ui.fragments.patient.my_patient.TemplateListForMyPatients"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
         <activity
             android:name=".ui.fragments.patient.my_patient.SendSmsPatientActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

@@ -20,6 +20,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -41,13 +42,17 @@ import android.widget.Toast;
 import com.beloo.widget.chipslayoutmanager.layouter.Item;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
+import static com.theartofdev.edmodo.cropper.CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE;
 
 @SuppressLint("SdCardPath")
 public class Imageutils {
@@ -68,6 +73,7 @@ public class Imageutils {
     public static String FILEPATH;
     private Dialog dialog;
     private int imageSize;
+    private Bitmap  bitmap;
 
 
     public Imageutils(Activity act) {
@@ -622,22 +628,20 @@ public class Imageutils {
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String file_name;
-        Bitmap bitmap;
 
         switch (requestCode) {
             case 0:
 
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
 
                     Log.i("Camera Selected", "Photo");
 
                     try {
                         selected_path = null;
                         selected_path = getPath(imageUri);
-
+                        callCropActivity(imageUri);
                         // Log.i("file","name"+file_name);
-                        bitmap = compressImage(imageUri.toString(), 816, 612);
-                        imageAttachment_callBack.image_attachment(from, bitmap, imageUri);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -646,7 +650,7 @@ public class Imageutils {
                 }
                 break;
             case 1:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Log.i("Gallery", "Photo");
                     Uri selectedImage = data.getData();
 
@@ -654,8 +658,7 @@ public class Imageutils {
                         selected_path = null;
                         selected_path = getPath(selectedImage);
                         file_name = selected_path.substring(selected_path.lastIndexOf("/") + 1);
-                        bitmap = compressImage(selectedImage.toString(), 816, 612);
-                        imageAttachment_callBack.image_attachment(from, bitmap, selectedImage);
+                        callCropActivity(selectedImage);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -663,9 +666,33 @@ public class Imageutils {
 
                 }
                 break;
+              default:
+                    if (resultCode == CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+                            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                            if (resultCode == RESULT_OK) {
+                                Uri resultUri = result.getUri();
+
+                            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                                Exception error = result.getError();
+                            }
+
+
+                    }
+                    break;
         }
 
 
+    }
+
+    private void callCropActivity(Uri uri) {
+        CropImage.activity(uri)
+                .start((Activity) context);
+    }
+
+    public void callImageCropMethod(Uri imageUri) {
+        bitmap = compressImage(imageUri.toString(), 816, 612);
+        imageAttachment_callBack.image_attachment(from, bitmap, imageUri);
     }
 
     /**

@@ -684,7 +684,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
         mRequestSearchPatients.setSearchText(searchText);
         mRequestSearchPatients.setPageNo(pageNo);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchEditText.getText().toString().isEmpty());
     }
 
     public void searchPatients() {
@@ -693,7 +693,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         mAppointmentHelper = new AppointmentHelper(getContext(), this);
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
         mRequestSearchPatients.setSearchText(searchText);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchEditText.getText().toString().isEmpty());
     }
 
     public void apply(RequestSearchPatients mRequestSearchPatients, boolean isReset) {

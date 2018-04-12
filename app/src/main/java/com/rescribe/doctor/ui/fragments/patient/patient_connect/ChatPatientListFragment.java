@@ -222,7 +222,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
         mRequestSearchPatients.setSearchText(searchText);
         mRequestSearchPatients.setPageNo(pageNo);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, true);
     }
 
     public void searchPatients() {
@@ -231,7 +231,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         mAppointmentHelper = new AppointmentHelper(getContext(), this);
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
         mRequestSearchPatients.setSearchText(searchText);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, false);
     }
 
     public void apply(RequestSearchPatients mRequestSearchPatients, boolean isReset) {

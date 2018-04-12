@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +19,6 @@ import android.support.v7.widget.AppCompatImageView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +42,6 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.bottom_menus.BottomMenuAdapter;
-import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.model.login.DocDetail;
@@ -63,6 +59,7 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.Imageutils;
 import com.rescribe.doctor.util.RescribeConstants;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -508,16 +505,15 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     @Override
     public void image_attachment(int from, Bitmap file, Uri uri) {
         this.bitmap = file;
-        String actualPath = getRealPathFromURI(uri);
         String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
         imageutils.createImage(file, path, false);
         mCustomProgressDialog = new CustomProgressDialog(this);
-        UploadProfileImage(FILEPATH);
+        uploadProfileImage(FILEPATH);
 
 
     }
 
-    public void UploadProfileImage(final String filePath) {
+    public void uploadProfileImage(final String filePath) {
         try {
             mCustomProgressDialog.show();
             MultipartUploadRequest uploadRequest = new MultipartUploadRequest(ProfileActivity.this, System.currentTimeMillis() + docId, Url)
@@ -590,22 +586,23 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
     }
 
-
-    private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        CursorLoader loader = new CursorLoader(mContext, contentUri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String result = cursor.getString(column_index);
-        cursor.close();
-        return result;
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        imageutils.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
+                imageutils.callImageCropMethod(resultUri );
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }else{
+            imageutils.onActivityResult(requestCode, resultCode, data);
+
+        }
 
     }
     @Override

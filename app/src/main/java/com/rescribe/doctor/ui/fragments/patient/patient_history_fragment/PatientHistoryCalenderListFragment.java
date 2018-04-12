@@ -100,13 +100,14 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
                 if (monthArrayListHashMap != null) {
 
                     formattedDoctorList = monthArrayListHashMap.get(mMonthName);
+                    if(formattedDoctorList!=null) {
+                        Collections.sort(formattedDoctorList, new DateWiseComparator());
 
-                    Collections.sort(formattedDoctorList, new DateWiseComparator());
-
-                    mCalenderDayOfMonthGridAdapter = new CalenderDayOfMonthGridAdapter(this.getContext(), formattedDoctorList, this);
-                    LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                    mCalenderDays.setLayoutManager(linearlayoutManager);
-                    mCalenderDays.setAdapter(mCalenderDayOfMonthGridAdapter);
+                        mCalenderDayOfMonthGridAdapter = new CalenderDayOfMonthGridAdapter(this.getContext(), formattedDoctorList, this);
+                        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                        mCalenderDays.setLayoutManager(linearlayoutManager);
+                        mCalenderDays.setAdapter(mCalenderDayOfMonthGridAdapter);
+                    }
 
                     //setOPDStatusGridViewAdapter(parentFragment, formattedDoctorList);
                 }

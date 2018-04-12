@@ -97,17 +97,9 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_APPOINTMENT_DATA);
     }
 
-    public void doGetMyPatients(RequestSearchPatients mRequestSearchPatients) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_PATIENT_DATA, Request.Method.POST, true);
-        mConnectionFactory.setPostParams(mRequestSearchPatients);
-        mConnectionFactory.setHeaderParams();
-        mConnectionFactory.setUrl(Config.GET_MY_PATIENTS_LIST);
-        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_PATIENT_DATA);
-    }
+    public void doGetSearchResult(RequestSearchPatients mRequestSearchPatients, boolean isProgressShow) {
 
-    public void doGetSearchResult(RequestSearchPatients mRequestSearchPatients) {
-
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, isProgressShow, RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT, Request.Method.POST, true);
         mConnectionFactory.setPostParams(mRequestSearchPatients);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_MY_PATIENTS_LIST);
