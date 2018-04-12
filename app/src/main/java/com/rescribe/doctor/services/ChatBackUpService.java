@@ -129,6 +129,7 @@ public class ChatBackUpService extends Service {
                             ArrayList<PatientData> patientDataList = patientConnectModel.getPatientListData().getPatientDataList();
                             if (patientDataList.isEmpty()) {
                                 CommonMethods.showToast(ChatBackUpService.this, patientConnectModel.getCommon().getStatusMessage());
+                                isFailed = false;
                                 restored();
                             } else
                                 restoreMessages(patientDataList);

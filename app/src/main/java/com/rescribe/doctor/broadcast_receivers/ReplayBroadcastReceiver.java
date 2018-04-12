@@ -21,7 +21,6 @@ import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements HelperResponse*/ {
     public static final String MESSAGE_LIST = "message_list";
     private MQTTMessage recievedMessage;
-    private Context context;
     private AppDBHelper appDBHelper;
 
     public static Intent getReplyMessageIntent(Context context, MQTTMessage MQTTMessage) {
@@ -42,7 +41,6 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements Help
             CharSequence message = MQTTService.getReplyMessage(intent);
             appDBHelper = new AppDBHelper(context);
             recievedMessage = intent.getParcelableExtra(MESSAGE_LIST);
-            this.context = context;
 
             MQTTMessage messageL = new MQTTMessage();
             messageL.setTopic(MQTTService.TOPIC[MESSAGE_TOPIC]);
