@@ -50,16 +50,18 @@ import static com.rescribe.doctor.util.RescribeConstants.PATIENT_HOS_PAT_ID;
  * Created by jeetal on 31/1/18.
  */
 
-public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.ListViewHolder> {
+public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.ListViewHolder> implements Filterable {
 
     private Context mContext;
-    private ArrayList<PatientList> mDataList;
+    private ArrayList<PatientList> mDataList = new ArrayList<>();
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
     private boolean isClickOnPatientDetailsRequired;
+    private ArrayList<PatientList> mListToShowAfterFilter;
 
     public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
-        this.mDataList = new ArrayList<>(dataList);
+        this.mListToShowAfterFilter = dataList;
+        mDataList.addAll(dataList);
         this.mContext = mContext;
         this.mOnDownArrowClicked = mOnDownArrowClicked;
         this.isClickOnPatientDetailsRequired = isClickOnPatientDetailsRequired;
@@ -309,11 +311,14 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired);
 
         void onPhoneNoClick(String patientPhone);
+
+        void onRecordFound(boolean isListEmpty);
     }
 
 
     public void add(PatientList mc) {
         mDataList.add(mc);
+        mListToShowAfterFilter.add(mc);
         notifyItemInserted(mDataList.size() - 1);
     }
 
@@ -330,5 +335,49 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
     public void clear() {
         mDataList.clear();
+    }
+
+    @Override
+    public Filter getFilter() {
+
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString().toLowerCase();
+                mDataList.clear();
+
+                if (charString.isEmpty()) {
+                    for (PatientList patList : mListToShowAfterFilter) {
+                        patList.setSpannableString("");
+                        mDataList.add(patList);
+                    }
+                } else {
+                    for (PatientList patientListObject : mListToShowAfterFilter) {
+                        if (patientListObject.getPatientName().toLowerCase().contains(charString)
+                                || patientListObject.getPatientPhone().contains(charString)
+                                || String.valueOf(patientListObject.getPatientId()).contains(charString)) {
+
+                            patientListObject.setSpannableString(charString);
+                            mDataList.add(patientListObject);
+                        }
+                    }
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mDataList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                mDataList = (ArrayList<PatientList>) filterResults.values;
+                if (mDataList.isEmpty())
+                    mOnDownArrowClicked.onRecordFound(true);
+                else
+                    mOnDownArrowClicked.onRecordFound(false);
+
+                notifyDataSetChanged();
+            }
+        };
     }
 }

@@ -224,9 +224,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         doctorNameTextView.setText(doctorNameToDisplay);
         aboutDoctorTextView.setText(docDetail.getDocDegree());
         setUpImage();
-
-        //setWaitingOrAppointmentLayoutHere
-
     }
 
     @Override
@@ -429,54 +426,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-/*
-
-//        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-
-        }
-*/
-
         return super.onOptionsItemSelected(item);
     }
-
-    /*private void logout() {
-        String mobileNoGmail = "";
-        String passwordGmail = "";
-        String mobileNoFacebook = "";
-        String passwordFacebook = "";
-        String gmailLogin = "";
-        String facebookLogin = "";
-
-        //Logout functionality
-        if (RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_gmail))) {
-            gmailLogin = RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext);
-            mobileNoGmail = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL, mContext);
-            passwordGmail = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL, mContext);
-
-        }
-        if (RescribePreferencesManager.getString(RescribeConstants.FACEBOOK_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_facebook))) {
-            facebookLogin = RescribePreferencesManager.getString(RescribeConstants.FACEBOOK_LOGIN, mContext);
-            mobileNoFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_FACEBOOK, mContext);
-            passwordFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, mContext);
-
-        }
-
-        RescribePreferencesManager.clearSharedPref(mContext);
-        RescribePreferencesManager.putString(RescribeConstants.GMAIL_LOGIN, gmailLogin, mContext);
-        RescribePreferencesManager.putString(RescribeConstants.FACEBOOK_LOGIN, facebookLogin, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL, mobileNoGmail, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL, passwordGmail, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_FACEBOOK, mobileNoFacebook, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, passwordFacebook, mContext);
-        RescribePreferencesManager.putString(getString(R.string.logout), "" + 1, mContext);
-
-        appDBHelper.deleteDatabase();
-
-        Intent intent = new Intent(mContext, LoginSignUpActivity.class);
-        startActivity(intent);
-        finishAffinity();
-    }*/
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
@@ -505,7 +456,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
                         hostViewsLayout.removeAllViews();
-
                         setLayoutForAppointment(true);
                         // inflate waiting list layout
                         setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
@@ -513,8 +463,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         setLayoutForPatientConnect();
                         // inflate MyPatientsActivity layout
                         setLayoutForMyPatients();
-
-
                     } else if (mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size() > 0) {
                         todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
                         todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
@@ -522,15 +470,12 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
-
                         hostViewsLayout.removeAllViews();
                         setLayoutForWaitingListIfAppointmentListEmpty();
                         // inflate patientConnect layout
                         setLayoutForPatientConnect();
                         // inflate MyPatientsActivity layout
                         setLayoutForMyPatients();
-
-
                     } else {
                         hostViewsLayout.removeAllViews();
                         todayFollowAppointmentCount.setText("0");
@@ -539,8 +484,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
-
-
                         setLayoutForAppointment(false);
                         // inflate waiting list layout
                         setLayoutForWaitingList("0");
@@ -557,7 +500,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     private void setUpImage() {
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext) != null) {
-
             mDoctorName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
             if (mDoctorName.contains("Dr. ")) {
                 mDoctorName = mDoctorName.replace("Dr. ", "");
@@ -580,10 +522,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     .load(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext))
                     .apply(requestOptions).thumbnail(0.5f)
                     .into(doctorDashboardImage);
-
         }
-
-
     }
 
     @Override
