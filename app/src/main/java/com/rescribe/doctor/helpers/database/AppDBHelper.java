@@ -622,12 +622,16 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
                 patient.setPatientId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ID)));
 
-                //-------
-                String name = cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.FIRST_NAME)) + " " +
-                        cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MIDDLE_NAME)) + " " +
-                        cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.LAST_NAME));
+                String name = "";
+                name += cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.FIRST_NAME));
+                if (cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MIDDLE_NAME)) != null)
+                    name += " " + cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MIDDLE_NAME));
+
+                if (cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.LAST_NAME)) != null)
+                    name += " " + cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.LAST_NAME));
+
                 patient.setPatientName(name);
-                //-------
+
                 patient.setSalutation(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.SALUTATION)));
                 patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));
                 patient.setAge(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.AGE)));

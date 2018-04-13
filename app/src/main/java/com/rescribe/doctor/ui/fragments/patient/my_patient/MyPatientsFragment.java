@@ -56,6 +56,7 @@ import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -116,6 +117,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
     private String from = "";
     private boolean isFiltered = false;
+    private AppDBHelper appDBHelper;
 
     @Override
     public void onDestroy() {
@@ -136,6 +138,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     }
 
     private void init() {
+
+        appDBHelper = new AppDBHelper(getContext());
 
         if (getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM) != null)
             from = getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
@@ -687,11 +691,26 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     }
 
     public void nextPage(int pageNo) {
-        mAppointmentHelper = new AppointmentHelper(getContext(), this);
-        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
-        mRequestSearchPatients.setSearchText(searchText);
-        mRequestSearchPatients.setPageNo(pageNo);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+        if (NetworkUtil.getConnectivityStatusBoolean(getContext())) {
+            mAppointmentHelper = new AppointmentHelper(getContext(), this);
+            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
+            mRequestSearchPatients.setSearchText(searchText);
+            mRequestSearchPatients.setPageNo(pageNo);
+            mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+        } else {
+            ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients(true, pageNo);
+            if (!offlineAddedPatients.isEmpty()){
+                recyclerView.setVisibility(View.VISIBLE);
+                emptyListView.setVisibility(View.GONE);
+                mMyPatientsAdapter.addAll(offlineAddedPatients, ((MyPatientsActivity) getActivity()).selectedDoctorId, "");
+                mMyPatientsAdapter.notifyDataSetChanged();
+            } else {
+                if (pageNo == 0){
+                    recyclerView.setVisibility(View.GONE);
+                    emptyListView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
     }
 
     public void searchPatients() {
