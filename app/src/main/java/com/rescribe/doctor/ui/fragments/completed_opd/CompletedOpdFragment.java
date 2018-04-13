@@ -33,7 +33,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.completed_opd.CompletedOpdAdapter;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuForCompleteAppointmentAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;

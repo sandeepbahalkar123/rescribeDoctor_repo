@@ -17,9 +17,14 @@ import android.widget.RelativeLayout;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.services.ChatBackUpService;
+import com.rescribe.doctor.services.LoadAllPatientsService;
+import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
+import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.HashSet;
@@ -53,6 +58,10 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
     DrawerLayout drawerLayout;
     @BindView(R.id.emptyListView)
     RelativeLayout emptyListView;
+
+    @BindView(R.id.downloadPatients)
+    ImageView downloadPatients;
+
     private Context mContext;
     private MyPatientsFragment mMyPatientsFragment;
     private boolean isLongPressed;
@@ -89,6 +98,20 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
         mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
 
+        if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
+            downloadPatients.setVisibility(View.VISIBLE);
+            downloadPatients.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
+                        Intent startIntentUpload = new Intent(mContext, LoadAllPatientsService.class);
+                        startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
+                        startService(startIntentUpload);
+                    } else CommonMethods.showToast(mContext, getString(R.string.internet));
+                }
+            });
+        } else
+            downloadPatients.setVisibility(View.GONE);
     }
 
     public void openDrawer() {

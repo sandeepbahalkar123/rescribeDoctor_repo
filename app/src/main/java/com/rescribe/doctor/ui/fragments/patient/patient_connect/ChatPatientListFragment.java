@@ -1,14 +1,12 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_connect;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -23,18 +21,14 @@ import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_connect.ChatPatientListAdapter;
-import com.rescribe.doctor.bottom_menus.BottomMenu;
-import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
-import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.activities.my_patients.ShowMyPatientsListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;

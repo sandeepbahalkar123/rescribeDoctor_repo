@@ -7,13 +7,12 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
-import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
 import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
+import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.util.CommonMethods;
-import com.rescribe.doctor.util.RescribeConstants;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,18 +20,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.PATIENT;
-import static com.rescribe.doctor.util.RescribeConstants.ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER;
-import static com.rescribe.doctor.util.RescribeConstants.ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.READ;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SEEN;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.UNREAD;
-import static com.rescribe.doctor.util.RescribeConstants.USER_STATUS.OFFLINE;
 
 public class AppDBHelper extends SQLiteOpenHelper {
 
@@ -357,6 +354,33 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String RECEIVER_IMG_URL = "receiverImgUrl";
     }
 
+    public interface ADD_NEW_PATIENT {
+        String PATIENT_ID = "dataId";
+        String TABLE_NAME = "addNewPatient";
+        String SALUTATION = "salutation";
+        String FIRST_NAME = "firstName";
+        String MIDDLE_NAME = "middleName";
+        String LAST_NAME = "lastName";
+        String IMAGE_URL = "imageURL";
+        String DOB = "dob";
+        String OUTSTANDING_AMT = "outstandingAmount";
+        String EMAIL = "email";
+        String MOBILE_NO = "mobileNo";
+        String AGE = "age";
+        String GENDER = "gender";
+        String REFERENCE_ID = "referenceID";
+        String IS_SYNC = "isSync";
+        String CREATED_TIME_STAMP = "createdTimeStamp";
+        String HOSPITALPATID = "hospitalPatId";
+        String CLINIC_ID = "clinicID";
+        String CITY_NAME = "city";
+        String LOCATION_ID = "locationID";
+        String CITY_D = "cityID";
+        String DOC_ID = "docID";
+        Integer IS_SYNC_WITH_SERVER = 1;
+        Integer IS_NOT_SYNC_WITH_SERVER = 0;
+    }
+
     // New
 
     public boolean deleteChatMessageByMsgId(int messageId) {
@@ -526,44 +550,68 @@ public class AppDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(COLUMN_ID, newPatient.getPatientId());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.SALUTATION, newPatient.getSalutation());
+        contentValues.put(ADD_NEW_PATIENT.PATIENT_ID, newPatient.getPatientId());
+        contentValues.put(ADD_NEW_PATIENT.SALUTATION, newPatient.getSalutation());
         String patientName = newPatient.getPatientName().trim();
 
         if (!patientName.isEmpty()) {
             String[] split = patientName.split(" ");
-            contentValues.put(RescribeConstants.ADD_NEW_PATIENT.FIRST_NAME, split[0]);
+            contentValues.put(ADD_NEW_PATIENT.FIRST_NAME, split[0]);
             if (split.length > 1)
-                contentValues.put(RescribeConstants.ADD_NEW_PATIENT.MIDDLE_NAME, split[1]);
+                contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, split[1]);
             if (split.length > 2)
-                contentValues.put(RescribeConstants.ADD_NEW_PATIENT.LAST_NAME, split[2]);
+                contentValues.put(ADD_NEW_PATIENT.LAST_NAME, split[2]);
         }
 
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.MOBILE_NO, newPatient.getPatientPhone());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.AGE, newPatient.getAge());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.GENDER, newPatient.getGender());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.REFERENCE_ID, newPatient.getOfflineReferenceID());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.CLINIC_ID, newPatient.getClinicId());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.CITY_NAME, newPatient.getPatientCity());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.DOB, newPatient.getDateOfBirth());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.OUTSTANDING_AMT, newPatient.getOutStandingAmount());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.IMAGE_URL, newPatient.getPatientImageUrl());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.EMAIL, newPatient.getPatientEmail());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.IS_SYNC, newPatient.isOfflinePatientSynced() ? IS_SYNC_WITH_SERVER : RescribeConstants.ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER);
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.CREATED_TIME_STAMP, newPatient.getOfflinePatientCreatedTimeStamp());
-        contentValues.put(RescribeConstants.ADD_NEW_PATIENT.HOSPITALPATID, newPatient.getHospitalPatId());
+        contentValues.put(ADD_NEW_PATIENT.MOBILE_NO, newPatient.getPatientPhone());
+        contentValues.put(ADD_NEW_PATIENT.AGE, newPatient.getAge());
+        contentValues.put(ADD_NEW_PATIENT.GENDER, newPatient.getGender());
+        contentValues.put(ADD_NEW_PATIENT.REFERENCE_ID, newPatient.getOfflineReferenceID());
+        contentValues.put(ADD_NEW_PATIENT.CLINIC_ID, newPatient.getClinicId());
+        contentValues.put(ADD_NEW_PATIENT.CITY_NAME, newPatient.getPatientCity());
+        contentValues.put(ADD_NEW_PATIENT.DOB, newPatient.getDateOfBirth());
+        contentValues.put(ADD_NEW_PATIENT.OUTSTANDING_AMT, newPatient.getOutStandingAmount());
+        contentValues.put(ADD_NEW_PATIENT.IMAGE_URL, newPatient.getPatientImageUrl());
+        contentValues.put(ADD_NEW_PATIENT.EMAIL, newPatient.getPatientEmail());
+        contentValues.put(ADD_NEW_PATIENT.IS_SYNC, newPatient.isOfflinePatientSynced() ? ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER : ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER);
+        contentValues.put(ADD_NEW_PATIENT.CREATED_TIME_STAMP, newPatient.getOfflinePatientCreatedTimeStamp());
+        contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, newPatient.getHospitalPatId());
 
-        return db.insert(RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME, null, contentValues);
+        if (checkIsPatientExist(newPatient.getPatientId()) > 0)
+            return db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?", new String[]{String.valueOf(newPatient.getPatientId())});
+        else return db.insert(ADD_NEW_PATIENT.TABLE_NAME, null, contentValues);
     }
 
-    public ArrayList<PatientList> getOfflineAddedPatients(boolean isAll, int pageNumber) {
+    private long checkIsPatientExist(int patientId) {
+        SQLiteDatabase db = getReadableDatabase();
+        return DatabaseUtils.queryNumEntries(db, ADD_NEW_PATIENT.TABLE_NAME, ADD_NEW_PATIENT.PATIENT_ID + " = " + patientId);
+    }
+
+    public void updateOfflinePatient(ArrayList<PatientUpdateDetail> patientUpdateDetail) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        for (PatientUpdateDetail patientUpdate : patientUpdateDetail) {
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(ADD_NEW_PATIENT.IS_SYNC, true);
+            contentValues.put(ADD_NEW_PATIENT.PATIENT_ID, patientUpdate.getPatientId());
+            contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, patientUpdate.getHospitalPatId());
+
+            db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?  AND " + ADD_NEW_PATIENT.IS_SYNC + " = " + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER, new String[]{patientUpdate.getMobilePatientId()});
+        }
+
+        db.close();
+    }
+
+    public ArrayList<PatientList> getOfflineAddedPatients(boolean isOffline, int pageNumber) {
         SQLiteDatabase db = getReadableDatabase();
         int numberOfRows = 30;
 
         String countQuery;
-        if (isAll)
-            countQuery = "select * from " + RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME + " limit " + pageNumber + ", ";
-        else countQuery = "select * from " + RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME + " where " + RescribeConstants.ADD_NEW_PATIENT.IS_SYNC + " = " + IS_NOT_SYNC_WITH_SERVER;
+        if (isOffline)
+            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " LIMIT + " + numberOfRows + " OFFSET " + ((pageNumber + 1) * numberOfRows);
+        else
+            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " where " + ADD_NEW_PATIENT.IS_SYNC + " = " + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER;
 
         Cursor cursor = db.rawQuery(countQuery, null);
         ArrayList<PatientList> list = new ArrayList<>();
@@ -572,32 +620,32 @@ public class AppDBHelper extends SQLiteOpenHelper {
             while (!cursor.isAfterLast()) {
                 PatientList patient = new PatientList();
 
-                patient.setPatientId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+                patient.setPatientId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ID)));
 
                 //-------
-                String name = cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.FIRST_NAME)) + " " +
-                        cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.MIDDLE_NAME)) + " " +
-                        cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.LAST_NAME));
+                String name = cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.FIRST_NAME)) + " " +
+                        cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MIDDLE_NAME)) + " " +
+                        cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.LAST_NAME));
                 patient.setPatientName(name);
                 //-------
-                patient.setSalutation(cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.SALUTATION)));
-                patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.MOBILE_NO)));
-                patient.setAge(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.AGE)));
-                patient.setGender(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.GENDER)));
-                patient.setOfflineReferenceID(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.REFERENCE_ID)));
-                patient.setClinicId(cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.CLINIC_ID)));
-                patient.setPatientCity(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.CITY_NAME)));
-                patient.setDateOfBirth(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.DOB)));
-                patient.setOutStandingAmount(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.OUTSTANDING_AMT)));
-                patient.setPatientImageUrl(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.IMAGE_URL)));
-                patient.setPatientEmail(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.EMAIL)));
+                patient.setSalutation(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.SALUTATION)));
+                patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));
+                patient.setAge(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.AGE)));
+                patient.setGender(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.GENDER)));
+                patient.setOfflineReferenceID(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID)));
+                patient.setClinicId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.CLINIC_ID)));
+                patient.setPatientCity(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CITY_NAME)));
+                patient.setDateOfBirth(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.DOB)));
+                patient.setOutStandingAmount(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.OUTSTANDING_AMT)));
+                patient.setPatientImageUrl(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.IMAGE_URL)));
+                patient.setPatientEmail(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.EMAIL)));
 
                 //----------
-                int anInt = cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.IS_SYNC));
-                patient.setOfflinePatientSynced(anInt == IS_SYNC_WITH_SERVER);
+                int anInt = cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.IS_SYNC));
+                patient.setOfflinePatientSynced(anInt == ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER);
                 //----------
-                patient.setOfflinePatientCreatedTimeStamp(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
-                patient.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.HOSPITALPATID)));
+                patient.setOfflinePatientCreatedTimeStamp(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
+                patient.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.HOSPITALPATID)));
 
                 list.add(patient);
                 cursor.moveToNext();
@@ -609,9 +657,9 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<PatientDetail> getOfflinePatients() {
+    public ArrayList<PatientDetail> getOfflinePatientsToUpload() {
         SQLiteDatabase db = getReadableDatabase();
-        String countQuery = "select * from " + RescribeConstants.ADD_NEW_PATIENT.TABLE_NAME;
+        String countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " where " + ADD_NEW_PATIENT.IS_SYNC + " = " + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER;
         Cursor cursor = db.rawQuery(countQuery, null);
         ArrayList<PatientDetail> list = new ArrayList<>();
 
@@ -619,34 +667,30 @@ public class AppDBHelper extends SQLiteOpenHelper {
             while (!cursor.isAfterLast()) {
                 PatientDetail patient = new PatientDetail();
 
-                patient.setMobilePatientId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+                patient.setMobilePatientId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ID)));
 
-                patient.setPatientFname(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.FIRST_NAME)));
-                patient.setPatientMname(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.MIDDLE_NAME)));
-                patient.setPatientLname(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.LAST_NAME)));
+                patient.setPatientFname(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.FIRST_NAME)));
+                patient.setPatientMname(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MIDDLE_NAME)));
+                patient.setPatientLname(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.LAST_NAME)));
 
-//                cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.SALUTATION));
+//                cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.SALUTATION));
 
-                patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.MOBILE_NO)));
-                patient.setPatientAge(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.AGE)));
-                patient.setPatientGender(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.GENDER)));
+                patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));
+                patient.setPatientAge(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.AGE)));
+                patient.setPatientGender(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.GENDER)));
 
-//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.REFERENCE_ID));
+//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID));
 
-                patient.setClinicId(cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.CLINIC_ID)));
+                patient.setClinicId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.CLINIC_ID)));
 
-//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.CITY_NAME));
-//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.DOB));
-//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.OUTSTANDING_AMT));
-//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.IMAGE_URL));
-//                cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.EMAIL));
-
-                //----------
-                int anInt = cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.IS_SYNC));
-                patient.setOfflinePatientSynced(anInt == IS_SYNC_WITH_SERVER);
-                //----------
-                patient.setOfflinePatientCreatedTimeStamp(cursor.getString(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
-                patient.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(RescribeConstants.ADD_NEW_PATIENT.HOSPITALPATID)));
+//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CITY_NAME));
+                patient.setPatientDob(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.DOB)));
+//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.OUTSTANDING_AMT));
+//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.IMAGE_URL));
+//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.EMAIL));
+//                cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.IS_SYNC));
+//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CREATED_TIME_STAMP));
+//                cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.HOSPITALPATID));
 
                 list.add(patient);
                 cursor.moveToNext();

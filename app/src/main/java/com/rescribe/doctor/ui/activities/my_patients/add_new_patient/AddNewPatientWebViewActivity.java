@@ -1,6 +1,5 @@
 package com.rescribe.doctor.ui.activities.my_patients.add_new_patient;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,11 +22,7 @@ import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
-import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
-import com.rescribe.doctor.interfaces.CustomResponse;
-import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.patient.add_new_patient.AddNewPatient;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;

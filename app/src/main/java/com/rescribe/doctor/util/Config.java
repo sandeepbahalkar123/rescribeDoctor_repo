@@ -60,6 +60,8 @@ public class Config {
     public static final String ADD_NEW_PATIENT_WEB_URL_SUCCESS = "addpatientmobilesuccess";
 
     public static final String GET_DOCTOR_PATIENT_CITY = "doctor/api/patient/getDoctorPatientCity";
+    public static final String GET_PATIENTS_SYNC = "doctor/api/patient/getPatientSyncList";
+    public static final String ADD_PATIENTS_SYNC = "doctor/api/patient/addPatients";
 
 }
 

@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -21,13 +20,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
-import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.network.RequestPool;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
-import com.rescribe.doctor.ui.activities.PatientConnectActivity;
+import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -41,27 +40,29 @@ import java.util.Map;
 import static com.android.volley.Request.Method.POST;
 import static com.rescribe.doctor.util.Config.BASE_URL;
 import static com.rescribe.doctor.util.Config.GET_MY_PATIENTS_LIST;
+import static com.rescribe.doctor.util.Config.GET_PATIENTS_SYNC;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class LoadAllPatientsService extends Service {
     public static boolean RUNNING = false;
 
     private static final String LOG_TAG = "LoadAllPatientsService";
-
     public static final String STATUS = "status";
     public static final String LOAD_ALL_PATIENTS = "com.rescribe.doctor.LOAD_ALL_PATIENTS";
 
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
-    private int pageCount = 1;
+    private int pageCount = 0;
     private boolean isFailed = true;
     private AppDBHelper appDBHelper;
-    private static final int RECORD_COUNT = 500;
+    private static final int RECORD_COUNT = 50;
+    private Gson gson;
 
     @Override
     public void onCreate() {
         super.onCreate();
         appDBHelper = new AppDBHelper(this);
+        gson = new Gson();
     }
 
     @Override
@@ -77,7 +78,7 @@ public class LoadAllPatientsService extends Service {
             if (intent.getAction().equals(RescribeConstants.STARTFOREGROUND_ACTION)) {
 
                 Log.i(LOG_TAG, "Received Start Foreground Intent ");
-                Intent notificationIntent = new Intent(this, PatientConnectActivity.class);
+                Intent notificationIntent = new Intent(this, MyPatientsActivity.class);
                 notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
@@ -98,16 +99,17 @@ public class LoadAllPatientsService extends Service {
                 startForeground(RescribeConstants.FOREGROUND_SERVICE, notification);
 
                 // Start Downloading
-                request();
+                request(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, LoadAllPatientsService.this));
             }
         } else stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void request() {
+    private void request(final boolean isDownloaded) {
+
+        Log.i(LOG_TAG, "Checking is patients downloaded" + isDownloaded);
 
         RUNNING = true;
-
         mBuilder.setContentText("Downloading patients")
                 // Removes the progress bar
                 .setProgress(0, 0, true);
@@ -119,9 +121,9 @@ public class LoadAllPatientsService extends Service {
         mRequestSearchPatients.setPageNo(pageCount);
         mRequestSearchPatients.setDocId(Integer.valueOf(id));
         mRequestSearchPatients.setSearchText("");
-        mRequestSearchPatients.setPaginationSize(500);
+        mRequestSearchPatients.setPaginationSize(RECORD_COUNT);
+        mRequestSearchPatients.setDate(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN));
 
-        final Gson gson = new Gson();
         JSONObject jsonObject = null;
         try {
             String jsonString = gson.toJson(mRequestSearchPatients);
@@ -134,7 +136,7 @@ public class LoadAllPatientsService extends Service {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(POST, BASE_URL + GET_MY_PATIENTS_LIST, jsonObject,
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(POST, isDownloaded ? BASE_URL + GET_PATIENTS_SYNC : BASE_URL + GET_MY_PATIENTS_LIST, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -142,7 +144,7 @@ public class LoadAllPatientsService extends Service {
                         if (myPatientBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {
                             ArrayList<PatientList> patientList = myPatientBaseModel.getPatientDataModel().getPatientList();
                             if (patientList.isEmpty()) {
-                                isFailed = true;
+                                isFailed = false;
                                 restored();
                             } else {
                                 // add in database
@@ -158,7 +160,7 @@ public class LoadAllPatientsService extends Service {
                                     isFailed = false;
                                     restored();
                                 } else {
-                                    request();
+                                    request(isDownloaded);
                                     pageCount += 1;
                                 }
                             }
@@ -192,6 +194,9 @@ public class LoadAllPatientsService extends Service {
     }
 
     private void restored() {
+
+        Log.i(LOG_TAG, "Patients downloaded " + isFailed);
+        CommonMethods.showToast(LoadAllPatientsService.this, !isFailed ? "Downloaded all patients" : "Patients download failed");
 
         pageCount = 0;
         RUNNING = false;

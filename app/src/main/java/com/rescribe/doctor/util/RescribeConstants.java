@@ -285,48 +285,11 @@ public class RescribeConstants {
         String LOC_FILE = "📍 Location";
     }
 
-    public interface INVESTIGATION_KEYS {
-        String INVESTIGATION_DATE = "investigation_date";
-        String INVESTIGATION_TIME = "investigation_time";
-        String INVESTIGATION_TEMP_DATA = "investigation_temp_data";
-        String INVESTIGATION_MESSAGE = "investigation_message";
-        String INVESTIGATION_DATA = "investigation_data";
-        String INVESTIGATION_NOTIFICATION_ID = "investigation_notification_id";
-        String IMAGE_ID = "imgId";
-        String INV_ID = "invId";
-    }
-
     public interface PATIENT_OPDS_STATUS {
         String OPD_COMPLETED = "opd completed";
         String OPD_SAVED = "opd saved";
         String ONLY_ATTACHMENTS = "only attachments";
         String NO_SHOW = "no show";
-    }
-
-    public interface ADD_NEW_PATIENT {
-        String TABLE_NAME = "addNewPatient";
-        String SALUTATION = "salutation";
-        String FIRST_NAME = "firstName";
-        String MIDDLE_NAME = "middleName";
-        String LAST_NAME = "lastName";
-        String IMAGE_URL = "imageURL";
-        String DOB = "dob";
-        String OUTSTANDING_AMT = "outstandingAmount";
-        String EMAIL = "email";
-        String MOBILE_NO = "mobileNo";
-        String AGE = "age";
-        String GENDER = "gender";
-        String REFERENCE_ID = "referenceID";
-        String IS_SYNC = "isSync";
-        String CREATED_TIME_STAMP = "createdTimeStamp";
-        String HOSPITALPATID = "hospitalPatId";
-        String CLINIC_ID = "clinicID";
-        String CITY_NAME = "city";
-        String LOCATION_ID = "locationID";
-        String CITY_D = "cityID";
-        String DOC_ID = "docID";
-        Integer IS_SYNC_WITH_SERVER = 1;
-        Integer IS_NOT_SYNC_WITH_SERVER = 0;
     }
 }
 

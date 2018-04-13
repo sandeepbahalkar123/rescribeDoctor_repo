@@ -17,11 +17,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
-import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
 import com.rescribe.doctor.model.patient.add_new_patient.SyncPatientsRequest;
-import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
+import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.SyncPatientsModel;
 import com.rescribe.doctor.network.RequestPool;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
@@ -36,14 +34,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.android.volley.Request.Method.POST;
+import static com.rescribe.doctor.services.LoadAllPatientsService.STATUS;
+import static com.rescribe.doctor.util.Config.ADD_PATIENTS_SYNC;
 import static com.rescribe.doctor.util.Config.BASE_URL;
-import static com.rescribe.doctor.util.Config.GET_MY_PATIENTS_LIST;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class SyncOfflinePatients {
 
     public static final String PATIENT_SYNC = "com.rescribe.doctor.PATIENT_SYNC";
-    public static final String UPLOAD_INFO = "upload_info";
     private static final String LOG_TAG = "SyncOfflinePatients";
     private static final int SYNC_NOTIFICATION_ID = 122;
 
@@ -51,6 +49,8 @@ public class SyncOfflinePatients {
     private AppDBHelper appDBHelper;
     private NotificationCompat.Builder mBuilder;
     private NotificationManager mNotifyManager;
+    private boolean isFailed = false;
+    private Gson gson;
 
     SyncOfflinePatients() {
     }
@@ -58,121 +58,109 @@ public class SyncOfflinePatients {
     void onCreate(Context mContext) {
         this.context = mContext;
         appDBHelper = new AppDBHelper(context);
+        gson = new Gson();
         check();
     }
 
     public void check() {
+        ArrayList<PatientDetail> offlineAddedPatients = appDBHelper.getOfflinePatientsToUpload();
+        Log.i(LOG_TAG, "Checking offline patients " + offlineAddedPatients.size());
 
-        Log.i(LOG_TAG, "Checking offline patients");
+        if (!offlineAddedPatients.isEmpty()) {
 
-        Intent notificationIntent = new Intent();
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                notificationIntent, 0);
+            Intent notificationIntent = new Intent();
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                    notificationIntent, 0);
 
-        mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mBuilder = new NotificationCompat.Builder(context);
-        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+            mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mBuilder = new NotificationCompat.Builder(context);
+            Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
 
-        mBuilder.setContentTitle("Syncing patients")
-                .setTicker("Syncing")
-                .setContentText("Syncing patients")
-                .setSmallIcon(R.drawable.logosmall)
-                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                .setContentIntent(pendingIntent).build();
+            mBuilder.setContentTitle("Syncing patients")
+                    .setTicker("Syncing")
+                    .setContentText("Syncing patients")
+                    .setSmallIcon(R.drawable.logosmall)
+                    .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                    .setContentIntent(pendingIntent).build();
 
-        mBuilder.setContentText("Downloading patients")
-                // Removes the progress bar
-                .setProgress(0, 0, true);
-        mNotifyManager.notify(SYNC_NOTIFICATION_ID, mBuilder.build());
+            mBuilder.setContentText("Downloading patients")
+                    // Removes the progress bar
+                    .setProgress(0, 0, true);
+            mNotifyManager.notify(SYNC_NOTIFICATION_ID, mBuilder.build());
 
-        ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients();
-        ArrayList<PatientDetail> patientDetails = new ArrayList<>();
-        for (PatientList patientL :offlineAddedPatients) {
-            PatientDetail patientDetail = new PatientDetail();
-            patientDetail.setClinicId(patientL.getClinicId());
-            patientDetail.setPatientFname(patientL.getPatientName());
-            patientDetail.set
-        }
+            SyncPatientsRequest mSyncPatientsRequest = new SyncPatientsRequest();
+            String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, context);
+            mSyncPatientsRequest.setDocId(id);
+            mSyncPatientsRequest.setPatientDetails(offlineAddedPatients);
 
-        SyncPatientsRequest mSyncPatientsRequest = new SyncPatientsRequest();
-        String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, context);
-        mSyncPatientsRequest.setDocId(id);
-        mSyncPatientsRequest.setPatientDetails();
+            JSONObject jsonObject = null;
+            try {
+                String jsonString = gson.toJson(mSyncPatientsRequest);
+                CommonMethods.Log(LOG_TAG, "jsonRequest:--" + jsonString);
+                if (!jsonString.equals("null"))
+                    jsonObject = new JSONObject(jsonString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
+            }
 
-        final Gson gson = new Gson();
-        JSONObject jsonObject = null;
-        try {
-            String jsonString = gson.toJson(mRequestSearchPatients);
-            CommonMethods.Log(LOG_TAG, "jsonRequest:--" + jsonString);
-            if (!jsonString.equals("null"))
-                jsonObject = new JSONObject(jsonString);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(POST, BASE_URL + GET_MY_PATIENTS_LIST, jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        MyPatientBaseModel myPatientBaseModel = gson.fromJson(response.toString(), MyPatientBaseModel.class);
-                        if (myPatientBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {
-                            ArrayList<PatientList> patientList = myPatientBaseModel.getPatientDataModel().getPatientList();
-                            if (patientList.isEmpty()) {
-                                isFailed = true;
-                                synced();
-                            } else {
-                                // add in database
-                                for (PatientList patientL : patientList) {
-                                    patientL.setOfflinePatientCreatedTimeStamp(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss));
-                                    patientL.setOfflinePatientSynced(true);
-                                    patientL.setOfflineReferenceID("");
-                                    appDBHelper.addNewPatient(patientL);
-                                }
-
-                                if (patientList.size() < RECORD_COUNT) {
-                                    // after add database
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(POST, BASE_URL + ADD_PATIENTS_SYNC, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            SyncPatientsModel mSyncPatientsModel = gson.fromJson(response.toString(), SyncPatientsModel.class);
+                            if (mSyncPatientsModel.getCommon().getStatusCode().equals(SUCCESS)) {
+                                if (!mSyncPatientsModel.getData().getPatientUpdateDetails().isEmpty()) {
+                                    appDBHelper.updateOfflinePatient(mSyncPatientsModel.getData().getPatientUpdateDetails());
                                     isFailed = false;
                                     synced();
                                 } else {
-                                    request();
-                                    pageCount += 1;
+                                    isFailed = true;
+                                    synced();
                                 }
+                            } else {
+                                isFailed = true;
+                                synced();
                             }
                         }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                isFailed = true;
-                synced();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Device device = Device.getInstance(context);
-                Map<String, String> headerParams = new HashMap<>();
-                String authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, context);
-                headerParams.put(RescribeConstants.CONTENT_TYPE, RescribeConstants.APPLICATION_JSON);
-                headerParams.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
-                headerParams.put(RescribeConstants.DEVICEID, device.getDeviceId());
-                headerParams.put(RescribeConstants.OS, device.getOS());
-                headerParams.put(RescribeConstants.OSVERSION, device.getOSVersion());
-                headerParams.put(RescribeConstants.DEVICE_TYPE, device.getDeviceType());
-                CommonMethods.Log(LOG_TAG, "setHeaderParams:" + headerParams.toString());
-                return headerParams;
-            }
-        };
-        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(1000 * 60, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        jsonRequest.setTag("SyncingPatientsRequest");
-        RequestPool.getInstance(context).addToRequestQueue(jsonRequest);
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    isFailed = true;
+                    synced();
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Device device = Device.getInstance(context);
+                    Map<String, String> headerParams = new HashMap<>();
+                    String authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, context);
+                    headerParams.put(RescribeConstants.CONTENT_TYPE, RescribeConstants.APPLICATION_JSON);
+                    headerParams.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
+                    headerParams.put(RescribeConstants.DEVICEID, device.getDeviceId());
+                    headerParams.put(RescribeConstants.OS, device.getOS());
+                    headerParams.put(RescribeConstants.OSVERSION, device.getOSVersion());
+                    headerParams.put(RescribeConstants.DEVICE_TYPE, device.getDeviceType());
+                    CommonMethods.Log(LOG_TAG, "setHeaderParams:" + headerParams.toString());
+                    return headerParams;
+                }
+            };
+            jsonRequest.setRetryPolicy(new DefaultRetryPolicy(1000 * 60, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            jsonRequest.setTag("SyncingPatientsRequest");
+            RequestPool.getInstance(context).addToRequestQueue(jsonRequest);
+        }
     }
 
     private void synced() {
-        mBuilder.setContentText("Sync patients completed")
+
+        Intent intent = new Intent(PATIENT_SYNC);
+        intent.putExtra(STATUS, isFailed);
+        context.sendBroadcast(intent);
+
+        mBuilder.setContentText(isFailed? "Sync patients failed" : "Sync patients completed")
                 // Removes the progress bar
                 .setProgress(0, 100, false);
         mNotifyManager.notify(SYNC_NOTIFICATION_ID, mBuilder.build());
