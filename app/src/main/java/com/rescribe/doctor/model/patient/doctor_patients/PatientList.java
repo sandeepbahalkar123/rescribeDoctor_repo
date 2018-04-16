@@ -50,6 +50,11 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     @SerializedName("hospitalPatId")
     @Expose
     private Integer hospitalPatId;
+
+    @SerializedName("patientCityId")
+    @Expose
+    private int patientCityId;
+
     @SerializedName("patientCity")
     @Expose
     private String patientCity = "";
@@ -98,6 +103,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.clinicId = ((int) in.readValue((int.class.getClassLoader())));
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.patientCityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
         this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
@@ -234,6 +240,14 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.hospitalPatId = hospitalPatId;
     }
 
+    public int getPatientCityId() {
+        return patientCityId;
+    }
+
+    public void setPatientCityId(int patientCityId) {
+        this.patientCityId = patientCityId;
+    }
+
     public String getPatientCity() {
         return patientCity;
     }
@@ -258,6 +272,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         dest.writeValue(clinicName);
         dest.writeValue(hospitalPatId);
         dest.writeValue(patientCity);
+        dest.writeValue(patientCityId);
         dest.writeValue(aptId);
     }
 

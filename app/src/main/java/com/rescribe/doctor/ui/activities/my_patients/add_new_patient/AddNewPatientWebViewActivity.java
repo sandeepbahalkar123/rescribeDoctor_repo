@@ -73,7 +73,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
     private int hospitalId;
     private boolean isCalled = false;
     private String locationID;
-    private String cityID;
+    private int cityID;
     private int docID;
     private String cityName;
     private Context mContext;
@@ -90,7 +90,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
         Bundle extras = getIntent().getBundleExtra(RescribeConstants.PATIENT_DETAILS);
         hospitalId = extras.getInt(RescribeConstants.CLINIC_ID);
         locationID = extras.getString(RescribeConstants.LOCATION_ID);
-        cityID = extras.getString(RescribeConstants.CITY_ID);
+        cityID = extras.getInt(RescribeConstants.CITY_ID);
         cityName = extras.getString(RescribeConstants.CITY_NAME);
         docID = Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this));
 
@@ -296,6 +296,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
             patientList.setClinicId(hospitalId);
             patientList.setHospitalPatId(hospitalId);
             patientList.setPatientCity(cityName);
+            patientList.setPatientCityId(cityID);
             patientList.setOfflinePatientCreatedTimeStamp(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss));
         }
         return patientList;

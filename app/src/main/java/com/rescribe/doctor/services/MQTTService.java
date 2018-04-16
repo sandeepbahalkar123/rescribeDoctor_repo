@@ -169,6 +169,10 @@ public class MQTTService extends Service {
         MQTTService.currentChatUser = currentChatUser;
     }
 
+    public void checkPendingRecords() {
+        syncOfflineRecords.check();
+    }
+
     public class LocalBinder extends Binder {
         public MQTTService getServerInstance() {
             return MQTTService.this;

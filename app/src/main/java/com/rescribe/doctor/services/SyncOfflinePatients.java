@@ -114,7 +114,7 @@ public class SyncOfflinePatients {
                             SyncPatientsModel mSyncPatientsModel = gson.fromJson(response.toString(), SyncPatientsModel.class);
                             if (mSyncPatientsModel.getCommon().getStatusCode().equals(SUCCESS)) {
                                 if (!mSyncPatientsModel.getData().getPatientUpdateDetails().isEmpty()) {
-                                    appDBHelper.updateOfflinePatient(mSyncPatientsModel.getData().getPatientUpdateDetails());
+                                    appDBHelper.updateOfflinePatientANDRecords(mSyncPatientsModel.getData().getPatientUpdateDetails());
                                     isFailed = false;
                                     synced();
                                 } else {
@@ -160,10 +160,13 @@ public class SyncOfflinePatients {
         intent.putExtra(STATUS, isFailed);
         context.sendBroadcast(intent);
 
-        mBuilder.setContentText(isFailed? "Sync patients failed" : "Sync patients completed")
+        mBuilder.setContentText(isFailed ? "Sync patients failed" : "Sync patients completed")
                 // Removes the progress bar
                 .setProgress(0, 100, false);
         mNotifyManager.notify(SYNC_NOTIFICATION_ID, mBuilder.build());
+
+        if (context instanceof MQTTService)
+            ((MQTTService) context).checkPendingRecords();
     }
 
     void onDestroy() {
