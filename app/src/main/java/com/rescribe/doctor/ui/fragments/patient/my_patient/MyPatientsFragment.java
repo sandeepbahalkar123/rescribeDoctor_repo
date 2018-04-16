@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,6 +57,7 @@ import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHist
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
+import com.rescribe.doctor.ui.fragments.book_appointment.CoachFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -133,6 +136,15 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         View mRootView = inflater.inflate(R.layout.my_appointments_layout, container, false);
         //  hideSoftKeyboard();
         unbinder = ButterKnife.bind(this, mRootView);
+
+        String coachMarkStatus = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_ALL_PATIENT_DOWNLOAD, getActivity());
+        if (!coachMarkStatus.equals(RescribeConstants.YES)) {
+            FragmentManager supportFragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.coachmarkContainer, CoachFragment.newInstance());
+            fragmentTransaction.addToBackStack("Coach");
+            fragmentTransaction.commit();
+        }
         init();
         return mRootView;
 
