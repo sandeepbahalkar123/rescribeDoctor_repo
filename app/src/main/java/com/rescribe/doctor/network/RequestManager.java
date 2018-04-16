@@ -52,7 +52,9 @@ import com.rescribe.doctor.model.patient.patient_connect.ChatPatientConnectModel
 import com.rescribe.doctor.model.patient.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
+import com.rescribe.doctor.model.request_appointment_confirmation.ResponseAppointmentConfirmationModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
+import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotListBaseModel;
 import com.rescribe.doctor.model.waiting_list.WaitingListBaseModel;
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -583,6 +585,15 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         CommonBaseModelContainer commonModel = new Gson().fromJson(data, CommonBaseModelContainer.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, commonModel, mOldDataTag);
                         break;
+                    case RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT: //This is for delete attachments
+                        TimeSlotListBaseModel mTimeSlotListBaseModel = new Gson().fromJson(data, TimeSlotListBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mTimeSlotListBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_CONFIRM_APPOINTMENT: //This is for delete attachments
+                        ResponseAppointmentConfirmationModel mResponseAppointmentConfirmationModel = new Gson().fromJson(data, ResponseAppointmentConfirmationModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mResponseAppointmentConfirmationModel, mOldDataTag);
+                        break;
+
 
                     default:
 

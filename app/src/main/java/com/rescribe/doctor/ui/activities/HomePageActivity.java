@@ -30,6 +30,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.dashboard.DashBoardAppointmentListAdapter;
@@ -37,7 +38,6 @@ import com.rescribe.doctor.adapters.dashboard.DashBoardWaitingList;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.helpers.dashboard.DashboardHelper;
-import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -142,12 +142,15 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private DashboardDetails mDashboardDetails;
     private ColorGenerator mColorGenerator;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page_layout);
         ButterKnife.bind(this);
         mContext = HomePageActivity.this;
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+        logUser();
         mColorGenerator = ColorGenerator.MATERIAL;
         HomePageActivityPermissionsDispatcher.getPermissionWithCheck(HomePageActivity.this);
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
@@ -157,6 +160,15 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
         //drawerConfiguration();
     }
+
+    private void logUser() {
+        // TODO: Use the current user's information
+        // You can call any combination of these three methods
+        Crashlytics.setUserIdentifier(String.valueOf(docId));
+        Crashlytics.setUserEmail(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.EMAIL, mContext));
+        Crashlytics.setUserName(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext));
+    }
+
 
     private void initialize() {
 
@@ -175,12 +187,12 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         doctorNameTextView.setText(doctorNameToDisplay);
         aboutDoctorTextView.setText(docDetail.getDocDegree());
         setUpImage();
-
     }
 
     @Override
     protected void onResume() {
         mDashboardHelper.doGetDashboardResponse();
+        setUpImage();
         super.onResume();
     }
 
@@ -194,7 +206,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         dashboardArrowImageView = (ImageView) inflaterMyPatientsLayout.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflaterMyPatientsLayout.findViewById(R.id.radioSwitch);
         menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patient));
-        menuNameTextView.setText("My Patients");
+        menuNameTextView.setText(getString(R.string.my_patients));
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,7 +228,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         dashboardArrowImageView = (ImageView) inflaterPatientConnectLayout.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflaterPatientConnectLayout.findViewById(R.id.radioSwitch);
         menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patientconnect));
-        menuNameTextView.setText("Patient Connect");
+        menuNameTextView.setText(getString(R.string.patient_connect));
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,7 +251,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         dashboardArrowImageView = (ImageView) inflatedLayoutWaitingList.findViewById(R.id.dashboardArrowImageView);
         radioSwitch = (SwitchButton) inflatedLayoutWaitingList.findViewById(R.id.radioSwitch);
         menuImageWaitingList.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.patientwaitinglist));
-        menuNameTextView.setText("Waiting List - " + waitingListCount);
+        menuNameTextView.setText(getString(R.string.waiting_list) + " - " + waitingListCount);
         dashboardArrowImageView.setVisibility(View.VISIBLE);
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,7 +274,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         appointmentTextView.setText("Today's Appointments");
         viewTextView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
-        viewTextView.setText("VIEW");
+        viewTextView.setText(getString(R.string.view));
         recyclerView.setNestedScrollingEnabled(false);
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearlayoutManager);
@@ -297,10 +309,10 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         appointmentTextView = (CustomTextView) inflatedLayout.findViewById(R.id.appointmentTextView);
         viewTextView = (CustomTextView) inflatedLayout.findViewById(R.id.viewTextView);
         menuImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.appointment));
-        appointmentTextView.setText("Waiting List");
+        appointmentTextView.setText(getString(R.string.waiting_list));
         viewTextView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
-        viewTextView.setText("VIEW");
+        viewTextView.setText(getString(R.string.view));
         recyclerView.setNestedScrollingEnabled(false);
         DashBoardWaitingList mDashBoardWaitingList = new DashBoardWaitingList(mContext, mDashboardDetails.getDashboardWaitingList().getWaitingClinicList());
         viewTextView.setOnClickListener(new View.OnClickListener() {
@@ -377,7 +389,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -408,7 +419,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
                         hostViewsLayout.removeAllViews();
-
                         setLayoutForAppointment(true);
                         // inflate waiting list layout
                         setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
@@ -416,8 +426,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         setLayoutForPatientConnect();
                         // inflate MyPatientsActivity layout
                         setLayoutForMyPatients();
-
-
                     } else if (mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size() > 0) {
                         todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
                         todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
@@ -425,15 +433,12 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
-
                         hostViewsLayout.removeAllViews();
                         setLayoutForWaitingListIfAppointmentListEmpty();
                         // inflate patientConnect layout
                         setLayoutForPatientConnect();
                         // inflate MyPatientsActivity layout
                         setLayoutForMyPatients();
-
-
                     } else {
                         hostViewsLayout.removeAllViews();
                         todayFollowAppointmentCount.setText("0");
@@ -442,8 +447,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
-
-
                         setLayoutForAppointment(false);
                         // inflate waiting list layout
                         setLayoutForWaitingList("0");
@@ -460,7 +463,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     @SuppressLint("CheckResult")
     private void setUpImage() {
-
         String mDoctorName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
         if (mDoctorName.contains("Dr. ")) {
             mDoctorName = mDoctorName.replace("Dr. ", "");
@@ -474,17 +476,15 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 .buildRound(("" + mDoctorName.charAt(0)).toUpperCase(), color2);
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
-        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-        requestOptions.skipMemoryCache(true);
         requestOptions.placeholder(drawable);
         requestOptions.error(drawable);
+        requestOptions.skipMemoryCache(true);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
 
         Glide.with(mContext)
                 .load(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext))
                 .apply(requestOptions).thumbnail(0.5f)
                 .into(doctorDashboardImage);
-
-
     }
 
     @Override
@@ -528,7 +528,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     }
 
-    @OnClick({R.id.todayCompletedOpd, R.id.viewPagerDoctorItem, R.id.todayAppointmentsOrWaitingList, R.id.todayNewPatient})
+    @OnClick({R.id.todayCompletedOpd, R.id.viewPagerDoctorItem, R.id.todayAppointmentsOrWaitingList, R.id.todayNewPatient, R.id.doctorDashboardImage})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.todayCompletedOpd:
@@ -558,6 +558,10 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     startActivity(todayNewPatient);
                 }
                 break;
+            case R.id.doctorDashboardImage:
+
+                break;
+
         }
     }
 
@@ -605,4 +609,11 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             startActivity(intent);
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
 }

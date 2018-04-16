@@ -57,7 +57,9 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     @SerializedName("patientArea")
     @Expose
     private String patientArea = "";
-
+    @SerializedName("aptId")
+    @Expose
+    private Integer aptId;
     private String spannableString;
     private boolean selected;
 
@@ -65,7 +67,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     private String offlineReferenceID;
     private boolean isOfflinePatientSynced;
     private String offlinePatientCreatedTimeStamp;
-    //--------
+
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
 
@@ -97,6 +99,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
+        this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -194,8 +197,17 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         return spannableString;
     }
 
+
     public void setSpannableString(String spannableString) {
+
         this.spannableString = spannableString;
+    }
+    public Integer getAptId() {
+        return aptId;
+    }
+
+    public void setAptId(Integer aptId) {
+        this.aptId = aptId;
     }
 
     public int getClinicId() {
@@ -246,6 +258,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         dest.writeValue(clinicName);
         dest.writeValue(hospitalPatId);
         dest.writeValue(patientCity);
+        dest.writeValue(aptId);
     }
 
     public int describeContents() {

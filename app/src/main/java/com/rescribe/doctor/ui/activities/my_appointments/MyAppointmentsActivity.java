@@ -77,6 +77,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private String mYear;
     private MyAppointmentsBaseModel myAppointmentsBaseMainModel;
     private String phoneNo;
+    public static final int CLOSE_APPOINTMENT_ACTIVITY_AFTER_BOOK_APPOINTMENT = 666;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

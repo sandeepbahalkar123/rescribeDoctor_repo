@@ -140,7 +140,9 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/dp4"
+                android:layout_marginBottom="@dimen/dp4"
+                android:layout_marginEnd="@dimen/dp4"
+                android:layout_marginStart="@dimen/dp4"
                 android:background="@drawable/result_white_box_copy"
                 android:orientation="vertical">
 
@@ -150,10 +152,10 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:background="@color/transparent"
-                    android:text="@string/appointment_completed_button"
+                    android:text="@string/capitalcompleted"
                     android:textAllCaps="false"
                     android:textColor="@color/tagColor"
-                    android:textSize="@dimen/sp14" />
+                    android:textSize="@dimen/sp12" />
 
                 <View
                     android:layout_width="match_parent"
@@ -168,10 +170,28 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:background="@color/transparent"
-                    android:text="@string/appointment_cancelled_button"
+                    android:text="@string/cancel"
                     android:textAllCaps="false"
                     android:textColor="@color/Red"
-                    android:textSize="@dimen/sp14" />
+                    android:textSize="@dimen/sp12" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:background="@color/tagColor" />
+
+                <Button
+                    android:id="@+id/appointmentReschedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:text="@string/Reschedule"
+                    android:textAllCaps="false"
+                    android:textColor="@color/tagColor"
+                    android:textSize="@dimen/sp12" />
+
 
             </LinearLayout>
         </FrameLayout>
@@ -302,8 +322,12 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
                             android:textSize="@dimen/sp15"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:paddingEnd="@dimen/dp8"
                             app:customFont="@string/roboto_bold"
-                            tools:text="Mr. Uren Chhadva" />
+                            tools:text="Mr. Uren Chhadva"
+                            android:paddingRight="@dimen/dp8" />
 
                         <LinearLayout
                             android:id="@+id/patientDetailsLinearLayout"
@@ -365,7 +389,9 @@
                     android:background="@color/tagColor" />
 
                 <LinearLayout
+                    android:id="@+id/patientInfoDetailLayout"
                     android:layout_width="match_parent"
+                    android:gravity="center_vertical"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp8"
                     android:layout_marginTop="@dimen/dp3">
@@ -388,7 +414,6 @@
                             app:customFont="@string/roboto_medium"
                             tools:ignore="RtlHardcoded"
                             tools:text="987678999" />
-
                     </LinearLayout>
 
                     <View
@@ -400,15 +425,12 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
                         android:layout_marginEnd="@dimen/dp10"
                         android:layout_marginLeft="@dimen/dp20"
                         android:layout_marginRight="@dimen/dp10"
                         android:layout_marginStart="@dimen/dp20"
-                        android:layout_toEndOf="@id/separatorView"
-                        android:layout_toRightOf="@id/separatorView"
                         android:layout_weight=".6"
-                        android:gravity="center"
+                        android:gravity="center|center_vertical"
                         android:orientation="horizontal">
 
                         <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -430,7 +452,6 @@
                             android:textSize="@dimen/sp12"
                             app:customFont="@string/roboto_bold"
                             tools:text=" Rs.450/-" />
-
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

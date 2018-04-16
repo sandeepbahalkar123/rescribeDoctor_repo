@@ -1,6 +1,8 @@
 package com.rescribe.doctor.adapters.my_patients;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +49,8 @@ public class SmsRecepientPatientListAdapter extends RecyclerView.Adapter<SmsRece
         final PatientInfoList mPatientInfoListObject = mPatientInfoList.get(position);
 
         holder.patientNameTextView.setText(mPatientInfoListObject.getPatientName());
+        Drawable leftDrawable = AppCompatResources.getDrawable(mContext, R.drawable.ic_highlight_off);
+        holder.patientNameTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, leftDrawable, null);
 
         holder.recepientLayout.setOnClickListener(new View.OnClickListener() {
             @Override

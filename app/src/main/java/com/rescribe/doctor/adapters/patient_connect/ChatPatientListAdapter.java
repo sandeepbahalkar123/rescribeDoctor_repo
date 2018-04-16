@@ -49,7 +49,7 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
 
-    public ChatPatientListAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked) {
+    public ChatPatientListAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean fromMyAppointmentOrfromPatientConnect) {
         this.mDataList = new ArrayList<>(dataList);
         this.mOriginalPatientList = new ArrayList<>(dataList);
         this.mContext = mContext;

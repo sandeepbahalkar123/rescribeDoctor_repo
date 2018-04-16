@@ -91,11 +91,11 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     @BindView(R.id.addRecordButton)
     Button mAddRecordButton;
     //----------
-    private ArrayList<String> mYearList = new ArrayList<>();
-    private ArrayList<Year> mTimePeriodList = new ArrayList<>();
+    private ArrayList<String> mYearList;
+    private ArrayList<Year> mTimePeriodList;
     private Year mCurrentSelectedTimePeriodTab;
     private PatientDetailHelper mPatientDetailHelper;
-    private ViewPagerAdapter mViewPagerAdapter = null;
+    private ViewPagerAdapter mViewPagerAdapter;
     private HashSet<String> mGeneratedRequestForYearList;
     private Context mContext;
 
@@ -123,6 +123,10 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     }
 
     public void initialize() {
+
+        mYearList = new ArrayList<>();
+        mTimePeriodList = new ArrayList<>();
+
         mPatientId = getArguments().getString(RescribeConstants.PATIENT_ID);
         mHospitalId = getArguments().getInt(RescribeConstants.CLINIC_ID);
 
@@ -147,12 +151,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
         mGeneratedRequestForYearList = new HashSet<>();
 
-        Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedMyRecordInfoAndReports = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
-        if (yearWiseSortedMyRecordInfoAndReports.get(mCurrentSelectedTimePeriodTab.getYear()) == null) {
-            mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null);
-            mGeneratedRequestForYearList.add(mCurrentSelectedTimePeriodTab.getYear());
-        }
-
+        mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null);
     }
 
     @OnClick({R.id.backImageView, R.id.addRecordButton})
@@ -479,20 +478,21 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
 
             mTimePeriodList = dataModel.getFormattedYearList();
-            if (mViewPagerAdapter == null) {
-                mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
-                mTabLayout.setupWithViewPager(mViewpager);
-                mYearList = dataModel.getUniqueYears();
-                YearSpinnerAdapter mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
-                mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
-            }
+
+            mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
+            mTabLayout.setupWithViewPager(mViewpager);
+            mYearList = dataModel.getUniqueYears();
+            YearSpinnerAdapter mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
+            mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
 
             if (dataModel.getYearsMonthsData().isEmpty()) {
                 noRecords.setVisibility(View.VISIBLE);
                 mYearSpinnerView.setVisibility(View.GONE);
                 mTabLayout.setVisibility(View.GONE);
+                mViewpager.setVisibility(View.GONE);
             } else {
                 mYearList = dataModel.getUniqueYears();
+                mViewpager.setVisibility(View.VISIBLE);
                 noRecords.setVisibility(View.GONE);
                 mTabLayout.setVisibility(View.VISIBLE);
                 if (mYearList.size() > 0) {

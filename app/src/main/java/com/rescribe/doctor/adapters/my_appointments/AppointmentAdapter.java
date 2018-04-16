@@ -98,7 +98,9 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
 
         final PatientList patientObject = mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition);
-        bind(patientObject, groupPosition, childPosition, viewHolder);
+        final String cityName = mAppointmentListTemp.get(groupPosition).getCity();
+        final String areaName = mAppointmentListTemp.get(groupPosition).getArea();
+        bind(patientObject, groupPosition, childPosition, viewHolder,cityName,areaName);
 
         if (openedChildGroupPos.equals(childPosition + "_" + groupPosition))
             viewHolder.swipe_layout.open(true);
@@ -136,7 +138,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     }
 
     @SuppressLint("CheckResult")
-    private void bind(final PatientList patientList, final int groupPosition, final int childPosition, final ChildViewHolder viewHolder) {
+    private void bind(final PatientList patientList, final int groupPosition, final int childPosition, final ChildViewHolder viewHolder, final String cityName, final String areaName) {
 
         String patientName = "";
 
@@ -303,6 +305,16 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 mOnDownArrowClicked.onAppointmentClicked(patientList.getAptId(), patientList.getPatientId(), COMPLETED, "complete", childPosition, groupPosition);
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
+
+            }
+        });
+        viewHolder.appointmentReschedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnDownArrowClicked.onAppointmentReshedule(patientList,viewHolder.patientAgeTextView.getText().toString(),cityName,areaName);
+                openedChildGroupPos = "";
+                notifyDataSetChanged();
+
             }
         });
         viewHolder.appointmentCancel.setOnClickListener(new View.OnClickListener() {
@@ -371,6 +383,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     @Override
     public View getGroupView(final int groupPosition, final boolean isExpanded,
                              View convertView, final ViewGroup parent) {
+
 
         final GroupViewHolder groupViewHolder;
 
@@ -597,6 +610,16 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 mOnDownArrowClicked.onGroupAppointmentCancelled(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 3, "complete", groupPosition);
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
+
+            }
+        });
+        groupViewHolder.mAppointmentReschedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnDownArrowClicked.onAppointmentReshedule(appointmentListObject.getPatientHeader(),groupViewHolder.mPatientAgeTextView.getText().toString(),appointmentListObject.getCity(),appointmentListObject.getArea());
+                openedChildGroupPos = "";
+                notifyDataSetChanged();
+
             }
         });
         groupViewHolder.mAppointmentCancel.setOnClickListener(new View.OnClickListener() {
@@ -605,6 +628,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 mOnDownArrowClicked.onGroupAppointmentCancelled(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 4, "cancel", groupPosition);
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
+
             }
         });
         groupViewHolder.mPatientPhoneNumber.setOnClickListener(new View.OnClickListener() {
@@ -628,6 +652,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 groupViewHolder.delete_layout.setLayoutParams(layoutParams);
             }
         });
+
     }
 
     @Override
@@ -754,13 +779,13 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         private CustomTextView patientPhoneNumber;
         private CustomTextView outstandingAmountTextView;
         private CustomTextView payableAmountTextView;
-
+        private Button appointmentReschedule;
         private Button appointmentCancel;
         private Button appointmentComplete;
 
         ChildViewHolder(View convertView) {
             super(convertView);
-
+            appointmentReschedule = (Button) convertView.findViewById(R.id.appointmentReschedule);
             front_layout = (FrameLayout) convertView.findViewById(R.id.front_layout);
             delete_layout = (FrameLayout) convertView.findViewById(R.id.delete_layout);
             waitingIcon = (ImageView) convertView.findViewById(R.id.waitingIcon);
@@ -809,7 +834,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         private CustomTextView mOutstandingAmountTextView;
         private CustomTextView mPayableAmountTextView;
         private CustomTextView mAppointmentTime;
-
+        private Button mAppointmentReschedule;
         private Button mAppointmentCancel;
         private Button mAppointmentComplete;
 
@@ -818,6 +843,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
             front_layout = (FrameLayout) convertView.findViewById(R.id.front_layout);
             delete_layout = (FrameLayout) convertView.findViewById(R.id.delete_layout);
+            mAppointmentReschedule = (Button) convertView.findViewById(R.id.appointmentReschedule);
 
             waitingIcon = (ImageView) convertView.findViewById(R.id.waitingIcon);
             mAppointmentCancel = (Button) convertView.findViewById(R.id.appointmentCancelled);
@@ -864,6 +890,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         void onGroupAppointmentClicked(Integer aptId, Integer patientId, int status, String type, int groupPosition);
 
         void onGroupAppointmentCancelled(Integer aptId, Integer patientId, int status, String type, int groupPosition);
+        void onAppointmentReshedule(PatientList patientList,String text,String cityName, String areaName);
 
         void expandAll();
 

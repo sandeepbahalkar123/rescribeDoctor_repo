@@ -12,7 +12,7 @@
     <dimen name="dp16">16dp</dimen>
     <dimen name="dp20">20dp</dimen>
     <dimen name="dp30">30dp</dimen>
-    <dimen name="dp56">56dp</dimen>
+    <dimen name="dp56">66dp</dimen>
     <dimen name="dp40">40dp</dimen>
     <dimen name="dp50">50dp</dimen>
     <dimen name="sp11">11sp</dimen>
@@ -60,4 +60,6 @@
     <dimen name="dialog_waitinglist_bullet_width_height">14dp</dimen>
     <dimen name="dialog_waitinglist_textsize">18sp</dimen>
     <dimen name="dialog_waitinglist_okbtn_width">110dp</dimen>
+    <dimen name="sp22">22sp</dimen>
+    <dimen name="dp62">92dp</dimen>
 </resources>

@@ -13,6 +13,8 @@ import com.rescribe.doctor.model.my_appointments.request_cancel_or_complete_appo
 import com.rescribe.doctor.model.my_patient_filter.LocationsRequest;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.RequestSendSmsModel;
+import com.rescribe.doctor.model.request_appointment_confirmation.RequestAppointmentConfirmationModel;
+import com.rescribe.doctor.model.request_appointment_confirmation.Reschedule;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
 import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
@@ -25,6 +27,9 @@ import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.Date;
+
+import static com.rescribe.doctor.util.RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
 
 /**
  * Created by jeetal on 31/1/18.
@@ -89,9 +94,9 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_APPOINTMENT_DATA);
     }
 
-    public void doGetSearchResult(RequestSearchPatients mRequestSearchPatients) {
 
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT, Request.Method.POST, true);
+    public void doGetSearchResult(RequestSearchPatients mRequestSearchPatients, boolean isProgressShow) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, isProgressShow, RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT, Request.Method.POST, true);
         mConnectionFactory.setPostParams(mRequestSearchPatients);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_MY_PATIENTS_LIST);
@@ -197,6 +202,39 @@ public class AppointmentHelper implements ConnectionListener {
     public void addNewPatient(PatientList obj) {
 
     }
+
+    public void getTimeSlotToBookAppointmentWithDoctor(String docId, int locationID, String date, boolean isReqDoctorData,int patientID) {
+
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT, Request.Method.GET, true);
+        mConnectionFactory.setHeaderParams();
+
+        String currentTimeStamp = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm);
+
+        String url = Config.TIME_SLOT_TO_BOOK_APPOINTMENT + "docId=" + docId + "&locationId=" + locationID + "&date=" + date + "&time=" + currentTimeStamp + "&patientId=" + patientID + "&docDetailReq=" + isReqDoctorData;
+
+        mConnectionFactory.setUrl(url);
+        mConnectionFactory.createConnection(TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT);//RescribeConstants.TASK_TIME_SLOT_TO_BOOK_APPOINTMENT
+
+    }
+    public void doConfirmAppointmentRequest(int docId, int locationID, String date, String fromTime, String toTime, int slotId, Reschedule reschedule,int patientID) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_CONFIRM_APPOINTMENT, Request.Method.POST, false);
+        mConnectionFactory.setHeaderParams();
+
+        RequestAppointmentConfirmationModel mRequestAppointmentConfirmationModel = new RequestAppointmentConfirmationModel();
+        mRequestAppointmentConfirmationModel.setDocId(docId);
+        mRequestAppointmentConfirmationModel.setFromTime(fromTime);
+        mRequestAppointmentConfirmationModel.setLocationId(locationID);
+        mRequestAppointmentConfirmationModel.setToTime(toTime);
+        mRequestAppointmentConfirmationModel.setDate(date);
+        mRequestAppointmentConfirmationModel.setSlotId(slotId);
+        mRequestAppointmentConfirmationModel.setReschedule(reschedule);
+        mRequestAppointmentConfirmationModel.setPatientId(patientID);
+        mConnectionFactory.setPostParams(mRequestAppointmentConfirmationModel);
+        mConnectionFactory.setUrl(Config.CONFIRM_APPOINTMENT);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_CONFIRM_APPOINTMENT);
+
+    }
+
 }
 
 

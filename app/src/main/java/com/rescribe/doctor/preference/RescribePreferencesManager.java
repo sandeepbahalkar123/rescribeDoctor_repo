@@ -250,5 +250,6 @@ public class RescribePreferencesManager {
         String SELECTED_LOCATION_ID = "selected_location_id";
         String BACK_UP = "back_up";
         String PATIENT_DOWNLOAD = "patient_download";
+        String COACHMARK_GET_TOKEN = "coachmark_get_token" ;
     }
 }

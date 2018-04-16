@@ -119,6 +119,8 @@
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/layer_12"
                 app:border="true"
+                app:border_width="@dimen/dp1"
+                app:border_color="@color/white"
                 app:shadow="true" />
 
             <LinearLayout

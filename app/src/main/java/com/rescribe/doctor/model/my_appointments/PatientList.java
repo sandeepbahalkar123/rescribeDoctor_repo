@@ -70,6 +70,11 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     @SerializedName("addedToWaiting")
     @Expose
     private Integer addedToWaiting;
+
+    @SerializedName("patientCity")
+    @Expose
+    private String patientCity = "";
+
     private String spannableString;
     private boolean selected;
     private String patientEmail;
@@ -110,6 +115,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         this.appointmentEndTime = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentStatusId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.addedToWaiting = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -288,6 +294,14 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         this.spannableString = spannableString;
     }
 
+    public String getPatientCity() {
+        return patientCity;
+    }
+
+    public void setPatientCity(String patientCity) {
+        this.patientCity = patientCity;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
         dest.writeValue(docId);
@@ -308,6 +322,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         dest.writeValue(appointmentEndTime);
         dest.writeValue(appointmentStatusId);
         dest.writeValue(addedToWaiting);
+        dest.writeValue(patientCity);
 
     }
 

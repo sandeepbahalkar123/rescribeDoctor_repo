@@ -109,6 +109,7 @@ public class DrawerForMyAppointment extends Fragment implements HelperResponse, 
             unbinder.unbind();
     }
 
+
     public static DrawerForMyAppointment newInstance(Bundle b) {
         DrawerForMyAppointment fragment = new DrawerForMyAppointment();
         fragment.setArguments(b);

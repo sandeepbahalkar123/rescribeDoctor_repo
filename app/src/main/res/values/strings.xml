@@ -9,6 +9,8 @@
     <string name="break_fast">BREAKFAST</string>
     <string name="mlunch">LUNCH</string>
     <string name="msnacks">SNACKS</string>
+    <string name="time_select_err">Please select time slot.</string>
+    <string name="token_select_time_err_msg">Please select future time slot for the day.</string>
     <string name="mdinner">DINNER</string>
     <string name="consultation_details">Consultation Details</string>
     <string name="resend_in_text">Resend in</string>
@@ -236,8 +238,23 @@
     <string name="last_name">Last Name</string>
     <string name="reference_id">Reference ID.</string>
     <string name="add_patient_offline">No internet connection found, still you can add patient offline.</string>
+
+    <string name="book_appointment">Book Appointment</string>
+    <string name="appointment_booked_message">Appointment has already been taken with this doctor.</string>
+    <string name="no_time_slot_message">No time slots available.</string>
+    <string name="no_clinic_data_found">No clinic data found.</string>
+    <string name="morning">Morning</string>
+    <string name="afternoon">Afternoon</string>
+    <string name="evening">Evening</string>
+    <string name="night">Night</string>
+    <string name="book_time_slot_err">Slot must be greater than current time.</string>
+    <string name="booking_appointment">Booking Appointment for :-</string>
+    <string name="Reschedule">Reschedule</string>
+    <string name="view">VIEW</string>
+    <string name="add_profile_image">Add Profile Image</string>
     <string name="select_this_location">Select this Location</string>
     <string name="detect_location">Detect my location</string>
+
 
 
 </resources>

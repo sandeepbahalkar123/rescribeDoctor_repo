@@ -21,15 +21,16 @@ import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_connect.ChatPatientListAdapter;
-import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
-import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.ChatActivity;
+import com.rescribe.doctor.ui.activities.book_appointment.SelectSlotToBookAppointmentBaseActivity;
 import com.rescribe.doctor.ui.activities.my_patients.ShowMyPatientsListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
@@ -74,6 +75,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     private String searchText = "";
     private boolean isFiltered = false;
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
+    private String mFromWhichActivity;
 
     @Override
     public void onDestroy() {
@@ -94,8 +96,10 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     }
 
     private void init() {
-        mAppointmentHelper = new AppointmentHelper(getActivity(), this);
 
+        mFromWhichActivity = getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
+
+        mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         recyclerView.setClipToPadding(false);
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearlayoutManager);
@@ -107,7 +111,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
         ArrayList<PatientList> patientLists = new ArrayList<>();
-        mMyPatientsAdapter = new ChatPatientListAdapter(getActivity(), patientLists, this);
+        mMyPatientsAdapter = new ChatPatientListAdapter(getActivity(), patientLists, this, mFromWhichActivity.equals(RescribeConstants.MY_APPOINTMENTS));
         recyclerView.setAdapter(mMyPatientsAdapter);
 
         nextPage(0);
@@ -156,24 +160,32 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
             emptyListView.setVisibility(View.GONE);
     }
 
-
     @Override
     public void onClickOfPatientDetails(PatientList patientListObject, String text) {
+        if (mFromWhichActivity.equals(RescribeConstants.MY_APPOINTMENTS)) {
+            Intent intent = new Intent(getActivity(), SelectSlotToBookAppointmentBaseActivity.class);
+            intent.putExtra(RescribeConstants.PATIENT_INFO, patientListObject);
+            intent.putExtra(RescribeConstants.PATIENT_DETAILS, text);
+            intent.putExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
+            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            getActivity().startActivity(intent);
 
-        Intent intent = new Intent(getActivity(), ChatActivity.class);
-        PatientData doctorConnectChatModel = new PatientData();
-        doctorConnectChatModel.setId(patientListObject.getPatientId());
-        doctorConnectChatModel.setImageUrl(patientListObject.getPatientImageUrl());
-        doctorConnectChatModel.setPatientName(patientListObject.getPatientName());
-        doctorConnectChatModel.setSalutation(patientListObject.getSalutation());
-        intent.putExtra(RescribeConstants.PATIENT_DETAILS, text);
-        intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
-        intent.putExtra(RescribeConstants.CLINIC_ID, patientListObject.getClinicId());
-        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, patientListObject.getHospitalPatId());
-        intent.putExtra(RescribeConstants.IS_CALL_FROM_MY_PATIENTS, true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        getActivity().startActivityForResult(intent, Activity.RESULT_OK);
-        getActivity().finish();
+        } else {
+            Intent intent = new Intent(getActivity(), ChatActivity.class);
+            PatientData doctorConnectChatModel = new PatientData();
+            doctorConnectChatModel.setId(patientListObject.getPatientId());
+            doctorConnectChatModel.setImageUrl(patientListObject.getPatientImageUrl());
+            doctorConnectChatModel.setPatientName(patientListObject.getPatientName());
+            doctorConnectChatModel.setSalutation(patientListObject.getSalutation());
+            intent.putExtra(RescribeConstants.PATIENT_DETAILS, text);
+            intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
+            intent.putExtra(RescribeConstants.CLINIC_ID, patientListObject.getClinicId());
+            intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, patientListObject.getHospitalPatId());
+            intent.putExtra(RescribeConstants.IS_CALL_FROM_MY_PATIENTS, true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            getActivity().startActivityForResult(intent, Activity.RESULT_OK);
+            getActivity().finish();
+        }
 
     }
 
@@ -203,7 +215,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
         mRequestSearchPatients.setSearchText(searchText);
         mRequestSearchPatients.setPageNo(pageNo);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, true);
     }
 
     public void searchPatients() {
@@ -212,7 +224,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         mAppointmentHelper = new AppointmentHelper(getContext(), this);
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
         mRequestSearchPatients.setSearchText(searchText);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, false);
     }
 
     public void apply(RequestSearchPatients mRequestSearchPatients, boolean isReset) {
@@ -262,4 +274,6 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
 
     }
+
+
 }
