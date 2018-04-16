@@ -193,17 +193,20 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             public void afterTextChanged(Editable s) {
                 searchText = s.toString();
 
-                if (searchText.length() >= 3) {
-                    searchPatients();
-                    isFiltered = true;
-                } else if (isFiltered) {
-                    isFiltered = false;
-                    searchText = "";
-                    searchPatients();
-                }
+                if (NetworkUtil.getConnectivityStatusBoolean(getContext())) {
+                    if (searchText.length() >= 3) {
+                        searchPatients();
+                        isFiltered = true;
+                    } else if (isFiltered) {
+                        isFiltered = false;
+                        searchText = "";
+                        searchPatients();
+                    }
 
-                if (s.toString().length() < 3)
-                    mMyPatientsAdapter.getFilter().filter(s.toString());
+                    if (s.toString().length() < 3)
+                        mMyPatientsAdapter.getFilter().filter(s.toString());
+                } else
+                    searchPatients();
             }
         });
         if (fromActivityLaunched.equals(RescribeConstants.HOME_PAGE)) {
@@ -482,7 +485,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
                 if (doctorLocationModel.getLocationId().equals(mLocationId)) {
                     b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
-                    b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
+                    b.putInt(RescribeConstants.CITY_ID, doctorLocationModel.getCityId());
                     b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
                     break;
                 }
@@ -525,8 +528,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                         for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
                             if (doctorLocationModel.getLocationId().equals(mLocationId)) {
                                 b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
-                                b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
-                                b.putString(RescribeConstants.CITY_NAME, String.valueOf(doctorLocationModel.getCity()));
+                                b.putInt(RescribeConstants.CITY_ID, doctorLocationModel.getCityId());
+                                b.putString(RescribeConstants.CITY_NAME, doctorLocationModel.getCity());
                                 b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
                                 break;
                             }
@@ -622,7 +625,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
 
                 //-----Get Offline added patient if any, to show in list-----
-                ArrayList<PatientList> offlineAddedPatients = AppDBHelper.getInstance(getActivity()).getOfflineAddedPatients(false, 0, searchEditText.getText().toString());
+                ArrayList<PatientList> offlineAddedPatients = AppDBHelper.getInstance(getActivity()).getOfflineAddedPatients();
                 offlineAddedPatients.addAll(mLoadedPatientList);
                 //----------
 
@@ -711,7 +714,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             mRequestSearchPatients.setPageNo(pageNo);
             mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchEditText.getText().toString().isEmpty());
         } else {
-            ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients(true, pageNo, searchEditText.getText().toString());
+            ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients(mRequestSearchPatients, pageNo, searchEditText.getText().toString());
             if (!offlineAddedPatients.isEmpty()) {
                 recyclerView.setVisibility(View.VISIBLE);
                 emptyListView.setVisibility(View.GONE);
@@ -728,11 +731,24 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     public void searchPatients() {
         mMyPatientsAdapter.clear();
-        mRequestSearchPatients.setPageNo(0);
-        mAppointmentHelper = new AppointmentHelper(getContext(), this);
-        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
-        mRequestSearchPatients.setSearchText(searchText);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchEditText.getText().toString().isEmpty());
+        if (NetworkUtil.getConnectivityStatusBoolean(getContext())) {
+            mRequestSearchPatients.setPageNo(0);
+            mAppointmentHelper = new AppointmentHelper(getContext(), this);
+            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
+            mRequestSearchPatients.setSearchText(searchText);
+            mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchEditText.getText().toString().isEmpty());
+        } else {
+            ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients(mRequestSearchPatients, 0, searchEditText.getText().toString());
+            if (!offlineAddedPatients.isEmpty()) {
+                recyclerView.setVisibility(View.VISIBLE);
+                emptyListView.setVisibility(View.GONE);
+                mMyPatientsAdapter.addAll(offlineAddedPatients, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchEditText.getText().toString());
+                mMyPatientsAdapter.notifyDataSetChanged();
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                emptyListView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     public void apply(RequestSearchPatients mRequestSearchPatients, boolean isReset) {
