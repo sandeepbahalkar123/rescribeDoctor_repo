@@ -57,8 +57,9 @@ public class SyncOfflineRecords {
                 while (!cursor.isAfterLast()) {
 
                     int uploadStatus = cursor.getInt(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.UPLOAD_STATUS));
+                    String patientId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.PATIENT_ID));
 
-                    if (uploadStatus == FAILED) {
+                    if (uploadStatus == FAILED && appDBHelper.isPatientSynced(patientId)) {
 
                         UploadNotificationConfig uploadConfig = getUploadConfig(context);
 
@@ -69,8 +70,6 @@ public class SyncOfflineRecords {
                         String mOpdtime = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.OPD_TIME));
                         String visitDate = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.VISIT_DATE));
 
-                        // TODO, NEED TO CHECK THIS PATIENT ID EXISTS IN ADD_NEW_PATINET TABLE OR NOT, IF EXISTS THEN DON'T UPLOAD.
-                        String patientId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.PATIENT_ID));
                         int docId = cursor.getInt(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.DOC_ID));
                         String opdId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.OPD_ID));
                         String mHospitalId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.HOSPITAL_ID));

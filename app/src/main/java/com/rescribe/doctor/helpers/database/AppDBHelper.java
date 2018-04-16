@@ -7,10 +7,10 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
 import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.util.CommonMethods;
 
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.PATIENT;
@@ -603,7 +602,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<PatientList> getOfflineAddedPatients(boolean isOffline, int pageNumber) {
+    public ArrayList<PatientList> getOfflineAddedPatients(boolean isOffline, int pageNumber, String searchText) {
         SQLiteDatabase db = getReadableDatabase();
         int numberOfRows = 30;
 
@@ -676,9 +675,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 patient.setPatientFname(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.FIRST_NAME)));
                 patient.setPatientMname(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MIDDLE_NAME)));
                 patient.setPatientLname(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.LAST_NAME)));
-
-//                cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.SALUTATION));
-
                 patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));
                 patient.setPatientAge(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.AGE)));
                 patient.setPatientGender(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.GENDER)));
@@ -686,15 +682,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 //                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID));
 
                 patient.setClinicId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.CLINIC_ID)));
-
-//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CITY_NAME));
                 patient.setPatientDob(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.DOB)));
-//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.OUTSTANDING_AMT));
-//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.IMAGE_URL));
-//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.EMAIL));
-//                cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.IS_SYNC));
-//                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CREATED_TIME_STAMP));
-//                cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.HOSPITALPATID));
 
                 list.add(patient);
                 cursor.moveToNext();
@@ -704,6 +692,16 @@ public class AppDBHelper extends SQLiteOpenHelper {
         db.close();
 
         return list;
+    }
+
+    public boolean isPatientSynced(String patientId) {
+        SQLiteDatabase db = getReadableDatabase();
+        String countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " where " + ADD_NEW_PATIENT.PATIENT_ID + " = " + patientId + " AND " + ADD_NEW_PATIENT.IS_SYNC + " = " + ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        boolean isPatientSynced = cursor.getCount() > 0;
+        cursor.close();
+        db.close();
+        return isPatientSynced;
     }
 
     //-----store patient in db : end----

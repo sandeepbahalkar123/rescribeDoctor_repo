@@ -622,7 +622,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
 
                 //-----Get Offline added patient if any, to show in list-----
-                ArrayList<PatientList> offlineAddedPatients = AppDBHelper.getInstance(getActivity()).getOfflineAddedPatients(false, 0);
+                ArrayList<PatientList> offlineAddedPatients = AppDBHelper.getInstance(getActivity()).getOfflineAddedPatients(false, 0, searchEditText.getText().toString());
                 offlineAddedPatients.addAll(mLoadedPatientList);
                 //----------
 
@@ -711,11 +711,11 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             mRequestSearchPatients.setPageNo(pageNo);
             mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchEditText.getText().toString().isEmpty());
         } else {
-            ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients(true, pageNo);
+            ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients(true, pageNo, searchEditText.getText().toString());
             if (!offlineAddedPatients.isEmpty()) {
                 recyclerView.setVisibility(View.VISIBLE);
                 emptyListView.setVisibility(View.GONE);
-                mMyPatientsAdapter.addAll(offlineAddedPatients, ((MyPatientsActivity) getActivity()).selectedDoctorId, "");
+                mMyPatientsAdapter.addAll(offlineAddedPatients, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchEditText.getText().toString());
                 mMyPatientsAdapter.notifyDataSetChanged();
             } else {
                 if (pageNo == 0) {
