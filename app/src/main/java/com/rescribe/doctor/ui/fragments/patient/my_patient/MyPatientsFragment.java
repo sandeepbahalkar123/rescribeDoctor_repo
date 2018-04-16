@@ -634,16 +634,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
             if (myAppointmentsBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {
                 ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
-
-                //-----Get Offline added patient if any, to show in list-----
-                ArrayList<PatientList> offlineAddedPatients = AppDBHelper.getInstance(getActivity()).getOfflineAddedPatients();
-                offlineAddedPatients.addAll(mLoadedPatientList);
-
-                for (PatientList patientL : offlineAddedPatients)
-                    appDBHelper.addNewPatient(patientL);
-                //----------
-
-                mMyPatientsAdapter.addAll(offlineAddedPatients, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchText);
+                mMyPatientsAdapter.addAll(mLoadedPatientList, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchText);
 
                 if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
                     emptyListView.setVisibility(View.GONE);
@@ -652,6 +643,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     recyclerView.setVisibility(View.GONE);
                     emptyListView.setVisibility(View.VISIBLE);
                 }
+
             }
 
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_ADD_TO_WAITING_LIST)) {

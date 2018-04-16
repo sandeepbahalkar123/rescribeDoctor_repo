@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
@@ -45,9 +47,6 @@ import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 import static com.rescribe.doctor.util.RescribeConstants.CLINIC_ID;
 import static com.rescribe.doctor.util.RescribeConstants.PATIENT_HOS_PAT_ID;
 
-import android.widget.Filter;
-import android.widget.Filterable;
-
 /**
  * Created by jeetal on 31/1/18.
  */
@@ -60,11 +59,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     private OnDownArrowClicked mOnDownArrowClicked;
     private boolean isClickOnPatientDetailsRequired;
     private ArrayList<PatientList> mListToShowAfterFilter;
+    private AppDBHelper appDBHelper;
 
     public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
         this.mListToShowAfterFilter = dataList;
         mDataList.addAll(dataList);
         this.mContext = mContext;
+        appDBHelper = new AppDBHelper(mContext);
         this.mOnDownArrowClicked = mOnDownArrowClicked;
         this.isClickOnPatientDetailsRequired = isClickOnPatientDetailsRequired;
     }
@@ -330,6 +331,10 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             mc.setSpannableString(searchText);
             mc.setSelected(selectedDoctorId.contains(mc.getHospitalPatId()));
             add(mc);
+            // add patient in sqlite while pagination.
+            mc.setOfflinePatientSynced(true);
+            mc.setOfflineReferenceID("");
+            appDBHelper.addNewPatient(mc);
         }
 
         notifyDataSetChanged();
