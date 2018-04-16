@@ -17,6 +17,7 @@ import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
@@ -29,6 +30,17 @@ public class RescribeApplication extends MultiDexApplication {
     public  final String TAG = this.getClass().getName();
     private static final Hashtable<String, Typeface> cache = new Hashtable<String, Typeface>();
     private static ArrayList<DoctorLocationModel> doctorLocationModels = new ArrayList<>();
+    private static String SHOW_UPDATE_DIALOG_ON_SKIPPED = "";
+
+    public static String getShowUpdateDialogOnSkipped() {
+        return SHOW_UPDATE_DIALOG_ON_SKIPPED;
+    }
+
+    public static void setShowUpdateDialogOnSkipped(String showUpdateDialogOnSkipped) {
+        SHOW_UPDATE_DIALOG_ON_SKIPPED = showUpdateDialogOnSkipped;
+    }
+
+
 
     public static Typeface get(Context c, String name) {
         synchronized (cache) {

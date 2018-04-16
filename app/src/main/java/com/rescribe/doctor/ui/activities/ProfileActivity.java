@@ -391,6 +391,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                 startActivity(intentObjectMap);
                 break;
             case R.id.profileImage:
+                //onclick of profile image imagepicker dialog called.
                 imageutils.imagepicker(1);
                 break;
         }
@@ -505,6 +506,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     @Override
     public void image_attachment(int from, Bitmap file, Uri uri) {
         this.bitmap = file;
+        //file path is given below to generate new image as required i.e jpg format
         String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
         imageutils.createImage(file, path, false);
         mCustomProgressDialog = new CustomProgressDialog(this);
@@ -545,8 +547,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
                 @Override
                 public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-                    // your code here
-                    // if you have mapped your server response to a POJO, you can easily get it:
+                 //On Profile Image Upload on Server is completed that event is captured in this function.
                     TemplateBaseModel obj = new Gson().fromJson(serverResponse.getBodyAsString(), TemplateBaseModel.class);
                     if(obj.getCommon().isSuccess()) {
                         Toast.makeText(context, obj.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
@@ -593,6 +594,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
+                //get image URI and set to create image of jpg format.
                 Uri resultUri = result.getUri();
                 String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
                 imageutils.callImageCropMethod(resultUri );
@@ -601,7 +603,6 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             }
         }else{
             imageutils.onActivityResult(requestCode, resultCode, data);
-
         }
 
     }
@@ -609,5 +610,4 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         imageutils.request_permission_result(requestCode, permissions, grantResults);
     }
-
 }

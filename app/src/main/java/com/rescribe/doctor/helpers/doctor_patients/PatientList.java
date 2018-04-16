@@ -11,12 +11,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.util.CommonMethods;
 
-public class PatientList implements Parcelable , Comparable<PatientList>
-{
+public class PatientList implements Parcelable, Comparable<PatientList> {
 
     @SerializedName("salutation")
     @Expose
-    private Integer salutation ;
+    private Integer salutation;
     @SerializedName("patientName")
     @Expose
     private String patientName;
@@ -70,7 +69,7 @@ public class PatientList implements Parcelable , Comparable<PatientList>
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public PatientList createFromParcel(Parcel in) {
             return new PatientList(in);
@@ -98,6 +97,7 @@ public class PatientList implements Parcelable , Comparable<PatientList>
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
         this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -200,6 +200,7 @@ public class PatientList implements Parcelable , Comparable<PatientList>
 
         this.spannableString = spannableString;
     }
+
     public Integer getAptId() {
         return aptId;
     }
@@ -240,6 +241,13 @@ public class PatientList implements Parcelable , Comparable<PatientList>
         this.patientCity = patientCity;
     }
 
+    public void setPatientArea(String patientArea) {
+        this.patientArea = patientArea;
+    }
+
+    public String getPatientArea() {
+        return patientArea;
+    }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
@@ -257,10 +265,11 @@ public class PatientList implements Parcelable , Comparable<PatientList>
         dest.writeValue(hospitalPatId);
         dest.writeValue(patientCity);
         dest.writeValue(aptId);
+        dest.writeValue(patientArea);
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
     @Override
@@ -268,7 +277,5 @@ public class PatientList implements Parcelable , Comparable<PatientList>
         return 0;
     }
 
-    public String getPatientArea() {
-        return patientArea;
-    }
+
 }

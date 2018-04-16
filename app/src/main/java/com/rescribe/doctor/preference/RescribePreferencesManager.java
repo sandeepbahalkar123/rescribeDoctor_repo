@@ -250,5 +250,11 @@ public class RescribePreferencesManager {
         String SELECTED_LOCATION_ID = "selected_location_id";
         String BACK_UP = "back_up";
         String COACHMARK_GET_TOKEN = "coachmark_get_token" ;
+        String isSkippedClicked = "is_skipped";
+        String isUpdatedClicked = "is_updated_clicked";
+        String isLaterClicked = "is_later_clicked";
+        String VERSION_CODE_FROM_SERVER = "version_code_from_server";
+        String SHOW_UPDATE_DIALOG = "show_update_dialog";
+        String SHOW_UPDATE_DIALOG_ON_SKIPPED = "show_update_dialog_on_skipped";
     }
 }

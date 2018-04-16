@@ -115,6 +115,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
     private String fromActivityLaunched = "";
     private boolean isFiltered = false;
+    private String mLocalSearchText;
 
     @Override
     public void onDestroy() {
@@ -195,6 +196,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     searchText = "";
                     searchPatients();
                 }
+
+                if (s.toString().length() < 3)
+                    mMyPatientsAdapter.getFilter().filter(s.toString());
             }
         });
         if (fromActivityLaunched.equals(RescribeConstants.HOME_PAGE)) {
@@ -284,6 +288,14 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     public void onPhoneNoClick(String patientPhone) {
         MyPatientsActivity activity = (MyPatientsActivity) getActivity();
         activity.callPatient(patientPhone);
+    }
+
+    @Override
+    public void onRecordFound(boolean isListEmpty) {
+        if (isListEmpty)
+            emptyListView.setVisibility(View.VISIBLE);
+        else
+            emptyListView.setVisibility(View.GONE);
     }
 
 

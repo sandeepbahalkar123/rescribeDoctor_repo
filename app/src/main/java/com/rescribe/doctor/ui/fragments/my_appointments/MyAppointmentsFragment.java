@@ -88,8 +88,6 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
 
     public static boolean isLongPressed;
-
-
     @BindView(R.id.searchEditText)
     EditTextWithDeleteButton searchEditText;
     @BindView(R.id.whiteUnderLine)
@@ -354,11 +352,13 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     }
 
     @Override
-    public void onAppointmentReshedule(PatientList patientList,String text) {
+    public void onAppointmentReshedule(PatientList patientList,String text,String cityName, String areaName) {
         Intent intent = new Intent(getActivity(), SelectSlotToBookAppointmentBaseActivity.class);
         com.rescribe.doctor.helpers.doctor_patients.PatientList patientListforBookAppointment = new com.rescribe.doctor.helpers.doctor_patients.PatientList();
         patientListforBookAppointment.setPatientName(patientList.getPatientName());
         patientListforBookAppointment.setPatientId(patientList.getPatientId());
+        patientListforBookAppointment.setPatientCity(cityName);
+        patientListforBookAppointment.setPatientArea(areaName);
         patientListforBookAppointment.setSalutation(patientList.getSalutation());
         patientListforBookAppointment.setPatientImageUrl(patientList.getPatientImageUrl());
         patientListforBookAppointment.setAptId(patientList.getAptId());

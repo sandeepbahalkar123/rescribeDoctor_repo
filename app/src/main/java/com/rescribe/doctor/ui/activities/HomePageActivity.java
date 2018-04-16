@@ -4,28 +4,24 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,8 +33,6 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-
-import com.bumptech.glide.signature.ObjectKey;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -59,9 +53,7 @@ import com.rescribe.doctor.model.doctor_location.DoctorLocationBaseModel;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.singleton.RescribeApplication;
-import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.ui.activities.completed_opd.CompletedOpdActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SettingsActivity;
 import com.rescribe.doctor.ui.activities.dashboard.SupportActivity;
@@ -73,20 +65,7 @@ import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.SwitchButton;
 import com.rescribe.doctor.util.CommonMethods;
-import com.rescribe.doctor.util.Config;
-import com.rescribe.doctor.util.Imageutils;
 import com.rescribe.doctor.util.RescribeConstants;
-
-import net.gotev.uploadservice.MultipartUploadRequest;
-import net.gotev.uploadservice.ServerResponse;
-import net.gotev.uploadservice.UploadInfo;
-import net.gotev.uploadservice.UploadNotificationConfig;
-import net.gotev.uploadservice.UploadServiceSingleBroadcastReceiver;
-import net.gotev.uploadservice.UploadStatusDelegate;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,17 +73,14 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.rescribe.doctor.services.CheckPendingUploads.getUploadConfig;
-import static com.rescribe.doctor.util.Imageutils.FILEPATH;
 import static com.rescribe.doctor.util.RescribeConstants.ACTIVE_STATUS;
-import static net.gotev.uploadservice.UploadServiceSingleBroadcastReceiver.*;
 
 /**
  * Created by jeetal on 28/6/17.
  */
 
 @RuntimePermissions
-public class HomePageActivity extends BottomMenuActivity implements HelperResponse{
+public class HomePageActivity extends BottomMenuActivity implements HelperResponse {
 
     private static final String TAG = "Home";
 
@@ -224,9 +200,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         doctorNameTextView.setText(doctorNameToDisplay);
         aboutDoctorTextView.setText(docDetail.getDocDegree());
         setUpImage();
-
-        //setWaitingOrAppointmentLayoutHere
-
     }
 
     @Override
@@ -400,6 +373,9 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, mContext)) {
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG_ON_SKIPPED, RescribeConstants.YES, mContext);
+                }
                 finishAffinity();
             }
         });
@@ -429,54 +405,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-/*
-
-//        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-
-        }
-*/
-
         return super.onOptionsItemSelected(item);
     }
-
-    /*private void logout() {
-        String mobileNoGmail = "";
-        String passwordGmail = "";
-        String mobileNoFacebook = "";
-        String passwordFacebook = "";
-        String gmailLogin = "";
-        String facebookLogin = "";
-
-        //Logout functionality
-        if (RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_gmail))) {
-            gmailLogin = RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext);
-            mobileNoGmail = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL, mContext);
-            passwordGmail = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL, mContext);
-
-        }
-        if (RescribePreferencesManager.getString(RescribeConstants.FACEBOOK_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_facebook))) {
-            facebookLogin = RescribePreferencesManager.getString(RescribeConstants.FACEBOOK_LOGIN, mContext);
-            mobileNoFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_FACEBOOK, mContext);
-            passwordFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, mContext);
-
-        }
-
-        RescribePreferencesManager.clearSharedPref(mContext);
-        RescribePreferencesManager.putString(RescribeConstants.GMAIL_LOGIN, gmailLogin, mContext);
-        RescribePreferencesManager.putString(RescribeConstants.FACEBOOK_LOGIN, facebookLogin, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL, mobileNoGmail, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL, passwordGmail, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_FACEBOOK, mobileNoFacebook, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, passwordFacebook, mContext);
-        RescribePreferencesManager.putString(getString(R.string.logout), "" + 1, mContext);
-
-        appDBHelper.deleteDatabase();
-
-        Intent intent = new Intent(mContext, LoginSignUpActivity.class);
-        startActivity(intent);
-        finishAffinity();
-    }*/
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
@@ -505,7 +435,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
                         hostViewsLayout.removeAllViews();
-
                         setLayoutForAppointment(true);
                         // inflate waiting list layout
                         setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
@@ -513,8 +442,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         setLayoutForPatientConnect();
                         // inflate MyPatientsActivity layout
                         setLayoutForMyPatients();
-
-
                     } else if (mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size() > 0) {
                         todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
                         todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
@@ -522,15 +449,12 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
-
                         hostViewsLayout.removeAllViews();
                         setLayoutForWaitingListIfAppointmentListEmpty();
                         // inflate patientConnect layout
                         setLayoutForPatientConnect();
                         // inflate MyPatientsActivity layout
                         setLayoutForMyPatients();
-
-
                     } else {
                         hostViewsLayout.removeAllViews();
                         todayFollowAppointmentCount.setText("0");
@@ -539,8 +463,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
-
-
                         setLayoutForAppointment(false);
                         // inflate waiting list layout
                         setLayoutForWaitingList("0");
@@ -549,14 +471,102 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         // inflate MyPatientsActivity layout
                         setLayoutForMyPatients();
                     }
+
+                    if (mDashboardDetails.getVersionCode() < CommonMethods.getVersionCode(mContext) && CommonMethods.getVersionCode(mContext) != -1) {
+                        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, mContext).equals(RescribeConstants.YES)) {
+                            showUpdateDialog(mDashboardDetails.getVersionCode(), mDashboardDetails.getAppURL());
+                            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, RescribeConstants.YES, mContext);
+                        } else {
+                            if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, mContext)) {
+                                if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG_ON_SKIPPED, mContext).equalsIgnoreCase(RescribeConstants.YES)) {
+                                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG_ON_SKIPPED, RescribeConstants.NO, mContext);
+                                    showUpdateDialog(mDashboardDetails.getVersionCode(), mDashboardDetails.getAppURL());
+                                }
+                            } else if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, mContext)) {
+                                if (isVersionCodeIncrementedByOne(mDashboardDetails.getVersionCode())) {
+                                    RescribePreferencesManager.putInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, mDashboardDetails.getVersionCode(), mContext);
+                                    showUpdateDialog(mDashboardDetails.getVersionCode(), mDashboardDetails.getAppURL());
+                                }
+
+                            }
+                        }
+                    }
                 }
+                break;
         }
+
+    }
+
+    private boolean isVersionCodeIncrementedByOne(Integer versionCode) {
+        if (RescribePreferencesManager.getInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, mContext) + 1 == versionCode) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void showUpdateDialog(final int versionCode, final String appURL) {
+
+        final Dialog dialog = new Dialog(this);
+        final Bundle b = new Bundle();
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_update_app_layout);
+        AppCompatButton skipButton = (AppCompatButton) dialog.findViewById(R.id.skipButton);
+        AppCompatButton updateButton = (AppCompatButton) dialog.findViewById(R.id.updateButton);
+        AppCompatButton laterButton = (AppCompatButton) dialog.findViewById(R.id.laterButton);
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG_ON_SKIPPED, RescribeConstants.NO, mContext);
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, true, mContext);
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isUpdatedClicked, false, mContext);
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, false, mContext);
+                dialog.dismiss();
+            }
+        });
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, false, mContext);
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isUpdatedClicked, true, mContext);
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, false, mContext);
+                Intent viewIntent = new Intent();
+                viewIntent.setAction(Intent.ACTION_VIEW);
+                viewIntent.setData(Uri.parse(appURL));
+                viewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(viewIntent);
+
+            }
+        });
+        laterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                RescribePreferencesManager.putInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, versionCode, mContext);
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, false, mContext);
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isUpdatedClicked, false, mContext);
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, true, mContext);
+            }
+        });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
 
     }
 
     private void setUpImage() {
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext) != null) {
-
             mDoctorName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
             if (mDoctorName.contains("Dr. ")) {
                 mDoctorName = mDoctorName.replace("Dr. ", "");
@@ -579,10 +589,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     .load(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext))
                     .apply(requestOptions).thumbnail(0.5f)
                     .into(doctorDashboardImage);
-
         }
-
-
     }
 
     @Override
@@ -601,6 +608,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         setLayoutForPatientConnect();
         setLayoutForMyPatients();
 
+
     }
 
     @Override
@@ -618,6 +626,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         setLayoutForWaitingList("0");
         setLayoutForPatientConnect();
         setLayoutForMyPatients();
+
     }
 
     @Override
@@ -714,4 +723,9 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     }
 
 
+    @Override
+    protected void onDestroy() {
+        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG_ON_SKIPPED, RescribeConstants.YES, mContext);
+        super.onDestroy();
+    }
 }

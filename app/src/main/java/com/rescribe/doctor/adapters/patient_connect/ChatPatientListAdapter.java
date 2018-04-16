@@ -31,6 +31,7 @@ import com.rescribe.doctor.util.RescribeConstants;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,14 +45,15 @@ import butterknife.ButterKnife;
 public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientListAdapter.ListViewHolder> implements Filterable {
 
     private Context mContext;
-    private ArrayList<PatientList> mDataList;
+    private ArrayList<PatientList> mDataList = new ArrayList<>();
     private ArrayList<PatientList> mOriginalPatientList;
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
+    private ArrayList<PatientList> mListToShowAfterFilter;
 
     public ChatPatientListAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean fromMyAppointmentOrfromPatientConnect) {
-        this.mDataList = new ArrayList<>(dataList);
-        this.mOriginalPatientList = new ArrayList<>(dataList);
+        this.mListToShowAfterFilter = dataList;
+        mDataList.addAll(dataList);
         this.mContext = mContext;
         this.mOnDownArrowClicked = mOnDownArrowClicked;
     }
@@ -69,11 +71,9 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
         final PatientList patientObject = mDataList.get(position);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(0, mContext.getResources().getDimensionPixelSize(R.dimen.dp14), 0, 0);
+        lp.setMargins(0, mContext.getResources().getDimensionPixelSize(R.dimen.dp14), 0, mContext.getResources().getDimensionPixelSize(R.dimen.dp14));
         holder.patientDetailsClickLinearLayout.setLayoutParams(lp);
         holder.opdTypeTextView.setVisibility(View.GONE);
-        holder.blueLineDivider.setVisibility(View.GONE);
-        holder.patientInfoDetailLayout.setVisibility(View.GONE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
 
         String area = patientObject.getPatientArea().isEmpty() ? "" : (patientObject.getPatientCity().isEmpty() ? patientObject.getPatientArea() : patientObject.getPatientArea() + ", ");
@@ -183,10 +183,16 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
                 .into(holder.patientImageView);
 
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString());
+            }
+        });
+        holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnDownArrowClicked.onPhoneNoClick(patientObject.getPatientPhone());
             }
         });
 
@@ -259,46 +265,39 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
-                String charString = charSequence.toString();
-
-                ArrayList<PatientList> mListToShowAfterFilter;
-                ArrayList<PatientList> mTempPatientListToIterate = new ArrayList<>(mOriginalPatientList);
+                String charString = charSequence.toString().toLowerCase();
+                mDataList.clear();
 
                 if (charString.isEmpty()) {
-                    mListToShowAfterFilter = new ArrayList<>();
-                    for (PatientList patientListObject : mTempPatientListToIterate) {
-                        //--------
-                        patientListObject.setSpannableString(null);
-                        mListToShowAfterFilter.add(patientListObject);
-
+                    for (PatientList patList : mListToShowAfterFilter) {
+                        patList.setSpannableString("");
+                        mDataList.add(patList);
                     }
                 } else {
-                    mListToShowAfterFilter = new ArrayList<>();
-                    for (PatientList patientListObject : mTempPatientListToIterate) {
-
-                        if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
+                    for (PatientList patientListObject : mListToShowAfterFilter) {
+                        if (patientListObject.getPatientName().toLowerCase().contains(charString)
                                 || patientListObject.getPatientPhone().contains(charString)
                                 || String.valueOf(patientListObject.getPatientId()).contains(charString)) {
-                            //--------
+
                             patientListObject.setSpannableString(charString);
-                            mListToShowAfterFilter.add(patientListObject);
+                            mDataList.add(patientListObject);
                         }
                     }
                 }
 
                 FilterResults filterResults = new FilterResults();
-                filterResults.values = mListToShowAfterFilter;
+                filterResults.values = mDataList;
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                mDataList.clear();
-                mDataList.addAll((ArrayList<PatientList>) filterResults.values);
-
-                if (mDataList.isEmpty()) {
+                mDataList = (ArrayList<PatientList>) filterResults.values;
+                if (mDataList.isEmpty())
                     mOnDownArrowClicked.onRecordFound(true);
-                } else mOnDownArrowClicked.onRecordFound(false);
+                else
+                    mOnDownArrowClicked.onRecordFound(false);
+
                 notifyDataSetChanged();
             }
         };
@@ -307,24 +306,26 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
     public interface OnDownArrowClicked {
         void onRecordFound(boolean isListEmpty);
         void onClickOfPatientDetails(PatientList patientListObject, String text);
+        void onPhoneNoClick(String patientPhone);
     }
 
-    public void addAll(ArrayList<PatientList> mcList, String searchText) {
+    public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
+
         for (PatientList mc : mcList) {
             mc.setSpannableString(searchText);
-            mDataList.add(mc);
+            add(mc);
         }
+
         notifyDataSetChanged();
     }
+    public void add(PatientList mc) {
+        mDataList.add(mc);
+        mListToShowAfterFilter.add(mc);
+        notifyItemInserted(mDataList.size() - 1);
+    }
+
 
     public void clear() {
-        final int size = mDataList.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                mDataList.remove(0);
-            }
-
-            notifyItemRangeRemoved(0, size);
-        }
+        mDataList.clear();
     }
 }

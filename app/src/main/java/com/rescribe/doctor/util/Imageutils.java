@@ -639,6 +639,7 @@ public class Imageutils {
                     try {
                         selected_path = null;
                         selected_path = getPath(imageUri);
+                        //Crop function of image
                         callCropActivity(imageUri);
                         // Log.i("file","name"+file_name);
 
@@ -666,20 +667,6 @@ public class Imageutils {
 
                 }
                 break;
-              default:
-                    if (resultCode == CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-
-                            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                            if (resultCode == RESULT_OK) {
-                                Uri resultUri = result.getUri();
-
-                            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                                Exception error = result.getError();
-                            }
-
-
-                    }
-                    break;
         }
 
 
@@ -688,6 +675,7 @@ public class Imageutils {
     private void callCropActivity(Uri uri) {
         CropImage.activity(uri)
                 .start((Activity) context);
+        //OnActivity result of Profile Activity the call is captured.
     }
 
     public void callImageCropMethod(Uri imageUri) {
@@ -799,7 +787,7 @@ public class Imageutils {
 
 
     public void createImage(Bitmap bitmap, String filepath, boolean file_replace) {
-
+     //Function for creating Jpg image .
         path = new File(filepath);
 
         if (!path.exists()) {

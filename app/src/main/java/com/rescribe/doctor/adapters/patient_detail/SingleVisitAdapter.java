@@ -266,15 +266,15 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             });
 
             if (mListDataHeader.get(groupPosition).getVitals().get(mPosition).getUnitName().equals(mContext.getString(R.string.bp))) {
-                String category = mListDataHeader.get(groupPosition).getVitals().get(mPosition).getCategory();
+               String category = mListDataHeader.get(groupPosition).getVitals().get(mPosition).getCategory();
                 String[] categoryForBp = category.split(":");
-                categoryForBpMax = categoryForBp[0];
+                categoryForBpMax = categoryForBp.length >= 1 ? categoryForBp[0] : "";
                 categoryForBpMin = categoryForBp.length == 2 ? categoryForBp[1] : "";
 
                 String unit = mListDataHeader.get(groupPosition).getVitals().get(mPosition).getUnitValue();
                 String[] unitForBp = unit.split("/");
-                String unitForBpMax = unitForBp[0];
-                String unitForBpMin = unitForBp.length > 1 ? unitForBp[1] : "";
+                String unitForBpMax = unitForBp.length >= 1 ? unitForBp[0] : "";
+                String unitForBpMin = unitForBp.length == 2 ? unitForBp[1] : "";
                 vitalImage.setImageResource(CommonMethods.getVitalIcons(mListDataHeader.get(groupPosition).getVitals().get(mPosition).getIcon()));
 
                 // Find Unit
@@ -597,8 +597,8 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                             String bpValue = mVisitDetailList.get(0).getVitalValue();
 
                             String[] unitDataObject = bpValue.split("/");
-                            String unitBpMax = unitDataObject[0];
-                            String unitBpMin = unitDataObject.length > 1 ? unitDataObject[1] : "";
+                            String unitBpMax = unitDataObject.length >= 1 ? unitDataObject[0] : "";
+                            String unitBpMin = unitDataObject.length == 2 ? unitDataObject[1] : "";
 
                             // Find Unit
                             String unitString = "";
@@ -847,15 +847,15 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         }
         if (unitName.equals(context.getString(R.string.bp))) {
             String[] unitDataObject = unitValue.split("/");
-            String unitBpMax = unitDataObject[0];
-            String unitBpMin = unitDataObject.length == 2 ? unitDataObject[1] : "";
+            String unitBpMax = unitDataObject.length >= 1 ? unitDataObject[0] : "";
+            String unitBpMin = unitDataObject.length == 2? unitDataObject[1] : "";
             showVitalNameLayout.setVisibility(View.VISIBLE);
             showVitalRangeLayout.setVisibility(View.VISIBLE);
             vitalName.setText(context.getString(R.string.systolic_pressure));
             if (!category.equals(":")) {
                 String[] categoryForBp = category.split(":");
-                categoryForBpMax = categoryForBp[0];
-                categoryBpMin = categoryForBp.length == 2 ? categoryForBp[1] : "";
+                categoryForBpMax = categoryForBp.length >= 1 ? categoryForBp[0] : "";
+                categoryBpMin = categoryForBp.length == 2? categoryForBp[1] : "";
             }
             if (categoryForBpMax.equalsIgnoreCase(context.getString(R.string.severeRange))) {
                 noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.Red));

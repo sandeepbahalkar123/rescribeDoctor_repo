@@ -276,6 +276,16 @@ public class CommonMethods {
                 .endConfig()
                 .buildRound(("" + name.charAt(0)).toUpperCase(), color2);
     }
+    public static int getVersionCode(Context mContext) {
+        int versionCode = -1;
+        try {
+            PackageInfo pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+            versionCode = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
 
 
     public static String getCurrentDateTime() // for enrollmentId

@@ -36,7 +36,7 @@ import butterknife.OnClick;
  * Created by jeetal on 9/2/18.
  */
 
-public class SettingsActivity extends BottomMenuActivity implements BottomMenuAdapter.OnBottomMenuClickListener,HelperResponse {
+public class SettingsActivity extends BottomMenuActivity implements BottomMenuAdapter.OnBottomMenuClickListener, HelperResponse {
     private static final String TAG = "SettingsActivity";
     @BindView(R.id.backImageView)
     ImageView backImageView;
@@ -72,7 +72,7 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         mContext = SettingsActivity.this;
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
         appDBHelper = new AppDBHelper(mContext);
-        loginHelper = new LoginHelper(mContext,this);
+        loginHelper = new LoginHelper(mContext, this);
         titleTextView.setText(getString(R.string.settings));
         backImageView.setVisibility(View.GONE);
     }
@@ -87,7 +87,7 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
             finish();
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.home))) {
             finish();
-        }else  if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.profile))) {
+        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.profile))) {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
             finish();
@@ -119,7 +119,7 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_exit);
-        TextView textView = (TextView)dialog.findViewById(R.id.textview_sucess);
+        TextView textView = (TextView) dialog.findViewById(R.id.textview_sucess);
         textView.setText(getString(R.string.do_you_logout));
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
@@ -156,6 +156,9 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         String passwordFacebook = "";
         String gmailLogin = "";
         String facebookLogin = "";
+        int version_code;
+        boolean isLaterClicked;
+        boolean isSkippedClicked;
 
         //Logout functionality
         if (RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_gmail))) {
@@ -170,9 +173,21 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
             passwordFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, mContext);
 
         }
-
+        version_code = RescribePreferencesManager.getInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, mContext);
+        isLaterClicked = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, mContext);
+        isSkippedClicked = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, mContext);
         RescribePreferencesManager.clearSharedPref(mContext);
+
+        RescribePreferencesManager.putInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, version_code, mContext);
         RescribePreferencesManager.putString(RescribeConstants.GMAIL_LOGIN, gmailLogin, mContext);
+        if (isLaterClicked) {
+            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, RescribeConstants.YES, mContext);
+        }
+        if(isSkippedClicked){
+            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, RescribeConstants.NO, mContext);
+        }
+        RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, isSkippedClicked, mContext);
+        RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, isLaterClicked, mContext);
         RescribePreferencesManager.putString(RescribeConstants.FACEBOOK_LOGIN, facebookLogin, mContext);
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL, mobileNoGmail, mContext);
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL, passwordGmail, mContext);

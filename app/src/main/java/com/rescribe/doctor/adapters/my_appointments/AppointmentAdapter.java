@@ -98,7 +98,9 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
 
         final PatientList patientObject = mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition);
-        bind(patientObject, groupPosition, childPosition, viewHolder);
+        final String cityName = mAppointmentListTemp.get(groupPosition).getCity();
+        final String areaName = mAppointmentListTemp.get(groupPosition).getArea();
+        bind(patientObject, groupPosition, childPosition, viewHolder,cityName,areaName);
 
         if (openedChildGroupPos.equals(childPosition + "_" + groupPosition))
             viewHolder.swipe_layout.open(true);
@@ -136,7 +138,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     }
 
     @SuppressLint("CheckResult")
-    private void bind(final PatientList patientList, final int groupPosition, final int childPosition, final ChildViewHolder viewHolder) {
+    private void bind(final PatientList patientList, final int groupPosition, final int childPosition, final ChildViewHolder viewHolder, final String cityName, final String areaName) {
 
         String patientName = "";
 
@@ -309,7 +311,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.appointmentReschedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnDownArrowClicked.onAppointmentReshedule(patientList,viewHolder.patientAgeTextView.getText().toString()+viewHolder.patientGenderTextView.getText().toString());
+
+                mOnDownArrowClicked.onAppointmentReshedule(patientList,viewHolder.patientAgeTextView.getText().toString()+viewHolder.patientGenderTextView.getText().toString(),cityName,areaName);
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
 
@@ -614,7 +617,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.mAppointmentReschedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnDownArrowClicked.onAppointmentReshedule(appointmentListObject.getPatientHeader(),groupViewHolder.mPatientAgeTextView.getText().toString()+groupViewHolder.mPatientGenderTextView.getText().toString());
+
+                mOnDownArrowClicked.onAppointmentReshedule(appointmentListObject.getPatientHeader(),groupViewHolder.mPatientAgeTextView.getText().toString()+groupViewHolder.mPatientGenderTextView.getText().toString(),appointmentListObject.getCity(),appointmentListObject.getArea());
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
 
@@ -888,7 +892,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         void onGroupAppointmentClicked(Integer aptId, Integer patientId, int status, String type, int groupPosition);
 
         void onGroupAppointmentCancelled(Integer aptId, Integer patientId, int status, String type, int groupPosition);
-        void onAppointmentReshedule(PatientList patientList,String text);
+        void onAppointmentReshedule(PatientList patientList,String text,String cityName, String areaName);
 
         void expandAll();
 
