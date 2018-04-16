@@ -65,13 +65,17 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     @SerializedName("aptId")
     @Expose
     private Integer aptId;
+
+    @SerializedName("creationDate")
+    @Expose
+    private String creationDate;
+
     private String spannableString;
     private boolean selected;
 
     //--Added for offline adding patient.
     private String offlineReferenceID;
     private boolean isOfflinePatientSynced;
-    private String offlinePatientCreatedTimeStamp;
 
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
@@ -106,6 +110,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientCityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
         this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.creationDate = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -256,6 +261,13 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientCity = patientCity;
     }
 
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
@@ -274,6 +286,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         dest.writeValue(patientCity);
         dest.writeValue(patientCityId);
         dest.writeValue(aptId);
+        dest.writeValue(creationDate);
     }
 
     public int describeContents() {
@@ -302,13 +315,5 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
 
     public void setOfflinePatientSynced(boolean offlinePatientSynced) {
         isOfflinePatientSynced = offlinePatientSynced;
-    }
-
-    public String getOfflinePatientCreatedTimeStamp() {
-        return offlinePatientCreatedTimeStamp;
-    }
-
-    public void setOfflinePatientCreatedTimeStamp(String offlinePatientCreatedTimeStamp) {
-        this.offlinePatientCreatedTimeStamp = offlinePatientCreatedTimeStamp;
     }
 }

@@ -149,7 +149,6 @@ public class LoadAllPatientsService extends Service {
                             } else {
                                 // add in database
                                 for (PatientList patientL : patientList) {
-                                    patientL.setOfflinePatientCreatedTimeStamp(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss));
                                     patientL.setOfflinePatientSynced(true);
                                     patientL.setOfflineReferenceID("");
                                     appDBHelper.addNewPatient(patientL);

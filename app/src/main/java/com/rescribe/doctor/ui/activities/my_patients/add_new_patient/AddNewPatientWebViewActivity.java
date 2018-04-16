@@ -73,8 +73,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
     private int hospitalId;
     private boolean isCalled = false;
     private String locationID;
-    private int cityID;
     private int docID;
+    private int cityID;
     private String cityName;
     private Context mContext;
 
@@ -251,7 +251,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
     }
 
     private PatientList validate() {
-        String message = null;
+        String message;
         PatientList patientList = null;
         String enter = getString(R.string.enter);
         String firstName = mFirstName.getText().toString();
@@ -294,10 +294,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
             patientList.setOfflineReferenceID(refID);
             patientList.setOfflinePatientSynced(false);
             patientList.setClinicId(hospitalId);
-            patientList.setHospitalPatId(hospitalId);
+//            patientList.setHospitalPatId();
             patientList.setPatientCity(cityName);
             patientList.setPatientCityId(cityID);
-            patientList.setOfflinePatientCreatedTimeStamp(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss));
+            patientList.setCreationDate(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN));
         }
         return patientList;
     }

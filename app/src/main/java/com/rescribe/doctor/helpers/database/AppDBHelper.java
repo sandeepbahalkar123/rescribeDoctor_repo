@@ -356,7 +356,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
     }
 
     public interface ADD_NEW_PATIENT {
-        String PATIENT_ID = "dataId";
+        String _ID = "dataId";
+        String PATIENT_ID = "patientId";
         String TABLE_NAME = "addNewPatient";
         String SALUTATION = "salutation";
         String FIRST_NAME = "firstName";
@@ -374,9 +375,9 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String CREATED_TIME_STAMP = "createdTimeStamp";
         String HOSPITALPATID = "hospitalPatId";
         String CLINIC_ID = "clinicID";
+        String CITY_ID = "cityId";
         String CITY_NAME = "city";
         String LOCATION_ID = "locationID";
-        String CITY_ID = "cityID";
         String DOC_ID = "docID";
         Integer IS_SYNC_WITH_SERVER = 1;
         Integer IS_NOT_SYNC_WITH_SERVER = 0;
@@ -576,7 +577,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(ADD_NEW_PATIENT.IMAGE_URL, newPatient.getPatientImageUrl());
         contentValues.put(ADD_NEW_PATIENT.EMAIL, newPatient.getPatientEmail());
         contentValues.put(ADD_NEW_PATIENT.IS_SYNC, newPatient.isOfflinePatientSynced() ? ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER : ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER);
-        contentValues.put(ADD_NEW_PATIENT.CREATED_TIME_STAMP, newPatient.getOfflinePatientCreatedTimeStamp());
+        contentValues.put(ADD_NEW_PATIENT.CREATED_TIME_STAMP, newPatient.getCreationDate());
         contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, newPatient.getHospitalPatId());
 
         if (checkIsPatientExist(newPatient.getPatientId()) > 0)
@@ -610,31 +611,60 @@ public class AppDBHelper extends SQLiteOpenHelper {
         int numberOfRows = 30;
 
         searchText = searchText.trim();
-
         FilterParams filterParams = mRequestSearchPatients.getFilterParams();
-        if (filterParams.getAge() != null) {
+
+        String ageLimitQuery = "";
+        String cityQuery = "";
+        String genderQuery = "";
+        String where = "";
+        String and = "";
+
+        boolean isFiltered = false;
+
+        if (filterParams != null) {
+
+            if (!filterParams.getGender().isEmpty()) {
+                String gender = filterParams.getGender();
+                genderQuery = " " + ADD_NEW_PATIENT.GENDER + " = '" + gender + "' " + ((filterParams.getCityIds().isEmpty() && filterParams.getAge().isEmpty()) ? "" : " AND ");
+                isFiltered = true;
+            }
+
+            if (!filterParams.getCityIds().isEmpty()) {
+                ArrayList<Integer> city = filterParams.getCityIds();
+                StringBuilder cities = new StringBuilder();
+                for (int c : city) {
+                    if (city.indexOf(c) == (city.size() - 1))
+                        cities.append(String.valueOf(c));
+                    else cities.append(String.valueOf(c)).append(", ");
+                }
+                cityQuery = " " + ADD_NEW_PATIENT.CITY_ID + " IN (" + cities + ") " + (filterParams.getAge().isEmpty() ? "" : " AND ");
+                isFiltered = true;
+            }
+
             if (!filterParams.getAge().isEmpty()) {
                 String[] split = filterParams.getAge().split("-");
                 String fromAge = split[0];
                 String toAge = split[1];
+                ageLimitQuery = " " + ADD_NEW_PATIENT.AGE + " >= " + fromAge + " AND " + ADD_NEW_PATIENT.AGE + " <= " + toAge + " ";
+                isFiltered = true;
             }
+
         }
 
-        if (!filterParams.getCityIds().isEmpty()){
-            ArrayList<Integer> city = filterParams.getCityIds();
-        }
-
-        if (!filterParams.getGender().isEmpty()){
-            String gender = filterParams.getGender();
+        if (isFiltered) {
+            where = " where ";
+            and = " AND ";
         }
 
         String countQuery;
         if (searchText.isEmpty()) {
 //          countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + "ORDER BY " + ADD_NEW_PATIENT.CREATED_TIME_STAMP + " DESC LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows) + " ";
-            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
+            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + where + genderQuery + cityQuery + ageLimitQuery + " LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
         } else {
-            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " WHERE (" + ADD_NEW_PATIENT.FIRST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MIDDLE_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.LAST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.HOSPITALPATID + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MOBILE_NO + " LIKE '%" + searchText + "%' ) LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
+            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " WHERE (" + ADD_NEW_PATIENT.FIRST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MIDDLE_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.LAST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.HOSPITALPATID + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MOBILE_NO + " LIKE '%" + searchText + "%' ) " + and + genderQuery + cityQuery + ageLimitQuery + " LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
         }
+
+        CommonMethods.Log(TAG + " PATIENT", cityQuery);
 
         Cursor cursor = db.rawQuery(countQuery, null);
         ArrayList<PatientList> list = new ArrayList<>();
@@ -672,7 +702,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 int anInt = cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.IS_SYNC));
                 patient.setOfflinePatientSynced(anInt == ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER);
                 //----------
-                patient.setOfflinePatientCreatedTimeStamp(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
+                patient.setCreationDate(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
                 patient.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.HOSPITALPATID)));
 
                 list.add(patient);
@@ -725,7 +755,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 int anInt = cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.IS_SYNC));
                 patient.setOfflinePatientSynced(anInt == ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER);
                 //----------
-                patient.setOfflinePatientCreatedTimeStamp(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
+                patient.setCreationDate(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
                 patient.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.HOSPITALPATID)));
 
                 list.add(patient);
