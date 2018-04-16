@@ -550,7 +550,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         setLayoutForMyPatients();
                     }
                 }
-                break;
         }
 
     }
