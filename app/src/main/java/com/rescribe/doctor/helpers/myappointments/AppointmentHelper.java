@@ -91,6 +91,7 @@ public class AppointmentHelper implements ConnectionListener {
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mRequestAppointmentData.setDate(userSelectedDate);
+        mRequestAppointmentData.setAppName(RescribeConstants.DOCTOR);
         mConnectionFactory.setPostParams(mRequestAppointmentData);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_MY_APPOINTMENTS_LIST);

@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class DashboardDetails implements Parcelable
 {
     @SerializedName("versionCode")
@@ -15,6 +17,9 @@ public class DashboardDetails implements Parcelable
     @SerializedName("appURL")
     @Expose
     private String appURL;
+    @SerializedName("calendarTypeList")
+    @Expose
+    private ArrayList<CalendarTypeList> calendarTypeList = new ArrayList<CalendarTypeList>();
     @SerializedName("appointmentList")
     @Expose
     private DashboardAppointmentClinicList dashboardAppointmentClinicList;
@@ -41,6 +46,7 @@ public class DashboardDetails implements Parcelable
     protected DashboardDetails(Parcel in) {
         this.versionCode = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.appURL = ((String) in.readValue((String.class.getClassLoader())));
+        in.readList(this.calendarTypeList, (CalendarTypeList.class.getClassLoader()));
         this.dashboardAppointmentClinicList = ((DashboardAppointmentClinicList) in.readValue((DashboardAppointmentClinicList.class.getClassLoader())));
         this.dashboardWaitingList = ((DashboardWaitingList) in.readValue((DashboardWaitingList.class.getClassLoader())));
     }
@@ -66,6 +72,13 @@ public class DashboardDetails implements Parcelable
     public DashboardAppointmentClinicList getDashboardAppointmentClinicList() {
         return dashboardAppointmentClinicList;
     }
+    public ArrayList<CalendarTypeList> getCalendarTypeList() {
+        return calendarTypeList;
+    }
+
+    public void setCalendarTypeList(ArrayList<CalendarTypeList> calendarTypeList) {
+        this.calendarTypeList = calendarTypeList;
+    }
 
     public void setDashboardAppointmentClinicList(DashboardAppointmentClinicList dashboardAppointmentClinicList) {
         this.dashboardAppointmentClinicList = dashboardAppointmentClinicList;
@@ -82,6 +95,7 @@ public class DashboardDetails implements Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(versionCode);
         dest.writeValue(appURL);
+        dest.writeList(calendarTypeList);
         dest.writeValue(dashboardAppointmentClinicList);
         dest.writeValue(dashboardWaitingList);
     }

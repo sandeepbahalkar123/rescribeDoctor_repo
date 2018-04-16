@@ -47,6 +47,7 @@ import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.dashboard.CalendarTypeList;
 import com.rescribe.doctor.model.dashboard.DashboardBaseModel;
 import com.rescribe.doctor.model.dashboard.DashboardDetails;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationBaseModel;
@@ -66,6 +67,8 @@ import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.SwitchButton;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -152,6 +155,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private String doctorNameToDisplay;
     private String mDoctorName;
     private ColorGenerator mColorGenerator;
+    private int OPD_ID_SEVER = 1;
+    private int OT_ID_SEVER = 2;
 
 
     @Override
@@ -275,7 +280,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         });
     }
 
-    private void setLayoutForAppointment(boolean isRecyclerViewRequired) {
+    private void setLayoutForAppointment(boolean isRecyclerViewRequired, ArrayList<CalendarTypeList> calendarTypeList) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View inflatedLayout = inflater.inflate(R.layout.waiting_todays_appointment_common_layout, null, false);
         hostViewsLayout.addView(inflatedLayout);
@@ -293,15 +298,31 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         recyclerView.setLayoutManager(linearlayoutManager);
         recyclerView.setNestedScrollingEnabled(false);
         // off recyclerView Animation
-        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-        if (animator instanceof SimpleItemAnimator)
-            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
-        if (isRecyclerViewRequired) {
-            mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList());
-            recyclerView.setAdapter(mDashBoardAppointmentListAdapter);
-        } else {
-            CommonMethods.Log(TAG, "Dont show recyclerView");
+        if(calendarTypeList!=null){
+            if(calendarTypeList.size()>0) {
+                String optOrOTRequired = getOtAndOpdRequiredString(calendarTypeList);
+                RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+                if (animator instanceof SimpleItemAnimator)
+                    ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+                if (isRecyclerViewRequired) {
+                    mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList(),optOrOTRequired);
+                    recyclerView.setAdapter(mDashBoardAppointmentListAdapter);
+                } else {
+                    CommonMethods.Log(TAG, "Dont show recyclerView");
+                }
+            }
+        }else{
+            RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+            if (animator instanceof SimpleItemAnimator)
+                ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+            if (isRecyclerViewRequired) {
+                mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList(), "");
+                recyclerView.setAdapter(mDashBoardAppointmentListAdapter);
+            } else {
+                CommonMethods.Log(TAG, "Dont show recyclerView");
+            }
         }
+
         viewTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -311,6 +332,28 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         });
 
 
+    }
+
+    private String getOtAndOpdRequiredString(ArrayList<CalendarTypeList> calendarTypeList) {
+        String otOrOpdRequiredString = "";
+        boolean isOpdRequired = false;
+        boolean isOtRequired = false;
+        for(CalendarTypeList calendarTypeListObject : calendarTypeList){
+            if(calendarTypeListObject.getId().equals(OPD_ID_SEVER)){
+              isOpdRequired =true;
+            }
+            if(calendarTypeListObject.getId().equals(OT_ID_SEVER)){
+                isOtRequired =true;
+            }
+        }
+        if(isOpdRequired&&isOtRequired){
+            otOrOpdRequiredString = RescribeConstants.OT_AND_OPD;
+        }else if(isOpdRequired){
+           otOrOpdRequiredString = RescribeConstants.OPD;
+        }else if(isOtRequired){
+            otOrOpdRequiredString = RescribeConstants.OT;
+        }
+       return otOrOpdRequiredString;
     }
 
     private void setLayoutForWaitingListIfAppointmentListEmpty() {
@@ -435,13 +478,14 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
                         hostViewsLayout.removeAllViews();
-                        setLayoutForAppointment(true);
+                        setLayoutForAppointment(true,mDashboardDetails.getCalendarTypeList());
                         // inflate waiting list layout
                         setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
                         // inflate patientConnect layout
                         setLayoutForPatientConnect();
                         // inflate MyPatientsActivity layout
                         setLayoutForMyPatients();
+
                     } else if (mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size() > 0) {
                         todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
                         todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
@@ -463,7 +507,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
-                        setLayoutForAppointment(false);
+                        setLayoutForAppointment(false, mDashboardDetails.getCalendarTypeList());
                         // inflate waiting list layout
                         setLayoutForWaitingList("0");
                         // inflate patientConnect layout
@@ -603,7 +647,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
 
         Toast.makeText(mContext, errorMessage + "", Toast.LENGTH_SHORT).show();
-        setLayoutForAppointment(false);
+        setLayoutForAppointment(false, null);
         setLayoutForWaitingList("0");
         setLayoutForPatientConnect();
         setLayoutForMyPatients();
@@ -622,7 +666,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
 
         Toast.makeText(mContext, serverErrorMessage + "", Toast.LENGTH_SHORT).show();
-        setLayoutForAppointment(false);
+        setLayoutForAppointment(false,null);
         setLayoutForWaitingList("0");
         setLayoutForPatientConnect();
         setLayoutForMyPatients();

@@ -32,10 +32,12 @@ public class DashBoardAppointmentListAdapter extends RecyclerView.Adapter<DashBo
     private ArrayList<AppointmentClinicList> mAppointmentClinicLists = new ArrayList<>();
     private String startTimeToShow;
     private String stringFrom;
+    private String mRequiredOpdOrOtString;
 
-    public DashBoardAppointmentListAdapter(Context mContext, ArrayList<AppointmentClinicList> appointmentClinicList) {
+    public DashBoardAppointmentListAdapter(Context mContext, ArrayList<AppointmentClinicList> appointmentClinicList, String optOrOTRequired) {
         this.mContext = mContext;
         this.mAppointmentClinicLists = appointmentClinicList;
+        this.mRequiredOpdOrOtString = optOrOTRequired;
     }
 
     @Override
@@ -50,22 +52,79 @@ public class DashBoardAppointmentListAdapter extends RecyclerView.Adapter<DashBo
     public void onBindViewHolder(final ListViewHolder holder, int position) {
 
         //TODO : NEED TO IMPLEMENT
-        final AppointmentClinicList appointmentClinicList = mAppointmentClinicLists.get(position);
-        if (appointmentClinicList.getAppointmentStartTime().equals("")) {
-            stringFrom = "";
-            startTimeToShow = "";
-        } else {
-            stringFrom = " From ";
-            startTimeToShow = CommonMethods.formatDateTime(appointmentClinicList.getAppointmentStartTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME);
-        }
-        String otCount = appointmentClinicList.getAppointmentOTCount() + " OT";
-        String opdCount = appointmentClinicList.getAppointmentOpdCount() + " OPD, ";
-        String clinicInfo = appointmentClinicList.getClinicName() + ", " + appointmentClinicList.getAreaName() + ", " + appointmentClinicList.getCityName();
+        if(mRequiredOpdOrOtString.equals(RescribeConstants.OT_AND_OPD)){
+            final AppointmentClinicList appointmentClinicList = mAppointmentClinicLists.get(position);
+            if (appointmentClinicList.getAppointmentStartTime().equals("")) {
+                stringFrom = "";
+                startTimeToShow = "";
+            } else {
+                stringFrom = " From ";
+                startTimeToShow = CommonMethods.formatDateTime(appointmentClinicList.getAppointmentStartTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME);
+            }
+            String otCount = appointmentClinicList.getAppointmentOTCount() + " OT";
+            String opdCount = appointmentClinicList.getAppointmentOpdCount() + " OPD, ";
+            String clinicInfo = appointmentClinicList.getClinicName() + ", " + appointmentClinicList.getAreaName() + ", " + appointmentClinicList.getCityName();
 
-        Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/roboto_bold.ttf");
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(clinicInfo + stringFrom + startTimeToShow.toLowerCase() + " - " + opdCount + otCount);
-        spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), clinicInfo.length() + +stringFrom.length() + startTimeToShow.length() + 3, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-        holder.textViewName.setText(spannableStringBuilder);
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/roboto_bold.ttf");
+            SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(clinicInfo + stringFrom + startTimeToShow.toLowerCase() + " - " + opdCount + otCount);
+            spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), clinicInfo.length() + +stringFrom.length() + startTimeToShow.length() + 3, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.textViewName.setText(spannableStringBuilder);
+
+
+        }else if(mRequiredOpdOrOtString.equals(RescribeConstants.OPD)){
+            final AppointmentClinicList appointmentClinicList = mAppointmentClinicLists.get(position);
+            if (appointmentClinicList.getAppointmentStartTime().equals("")) {
+                stringFrom = "";
+                startTimeToShow = "";
+            } else {
+                stringFrom = " From ";
+                startTimeToShow = CommonMethods.formatDateTime(appointmentClinicList.getAppointmentStartTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME);
+            }
+            String opdCount = appointmentClinicList.getAppointmentOpdCount() + " OPD";
+            String clinicInfo = appointmentClinicList.getClinicName() + ", " + appointmentClinicList.getAreaName() + ", " + appointmentClinicList.getCityName();
+
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/roboto_bold.ttf");
+            SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(clinicInfo + stringFrom + startTimeToShow.toLowerCase() + " - " + opdCount);
+            spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), clinicInfo.length() + +stringFrom.length() + startTimeToShow.length() + 3, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.textViewName.setText(spannableStringBuilder);
+
+
+        }else if(mRequiredOpdOrOtString.equals(RescribeConstants.OT)){
+            final AppointmentClinicList appointmentClinicList = mAppointmentClinicLists.get(position);
+            if (appointmentClinicList.getAppointmentStartTime().equals("")) {
+                stringFrom = "";
+                startTimeToShow = "";
+            } else {
+                stringFrom = " From ";
+                startTimeToShow = CommonMethods.formatDateTime(appointmentClinicList.getAppointmentStartTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME);
+            }
+            String otCount = appointmentClinicList.getAppointmentOTCount() + " OT";
+            String clinicInfo = appointmentClinicList.getClinicName() + ", " + appointmentClinicList.getAreaName() + ", " + appointmentClinicList.getCityName();
+
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/roboto_bold.ttf");
+            SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(clinicInfo + stringFrom + startTimeToShow.toLowerCase() + " - " + otCount);
+            spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), clinicInfo.length() + +stringFrom.length() + startTimeToShow.length() + 3, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.textViewName.setText(spannableStringBuilder);
+
+        }else{
+            final AppointmentClinicList appointmentClinicList = mAppointmentClinicLists.get(position);
+            if (appointmentClinicList.getAppointmentStartTime().equals("")) {
+                stringFrom = "";
+                startTimeToShow = "";
+            } else {
+                stringFrom = " From ";
+                startTimeToShow = CommonMethods.formatDateTime(appointmentClinicList.getAppointmentStartTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME);
+            }
+            String otCount = appointmentClinicList.getAppointmentOTCount() + " OT";
+            String opdCount = appointmentClinicList.getAppointmentOpdCount() + " OPD, ";
+            String clinicInfo = appointmentClinicList.getClinicName() + ", " + appointmentClinicList.getAreaName() + ", " + appointmentClinicList.getCityName();
+
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/roboto_bold.ttf");
+            SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(clinicInfo + stringFrom + startTimeToShow.toLowerCase() + " - " + opdCount + otCount);
+            spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), clinicInfo.length() + +stringFrom.length() + startTimeToShow.length() + 3, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.textViewName.setText(spannableStringBuilder);
+
+        }
 
 
     }

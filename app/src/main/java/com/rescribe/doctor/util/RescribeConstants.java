@@ -194,6 +194,9 @@ public class RescribeConstants {
 
     public static final String[] SALUTATION = {"Mr. ", "Mrs. ", "Miss ", ""};
     public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};
+    public static String OT_AND_OPD = "ot_and_opd";
+    public static String OPD = "opd";
+    public static String OT = "ot";
 
     public interface APPOINTMENT_STATUS {
         int BOOKED = 1;
