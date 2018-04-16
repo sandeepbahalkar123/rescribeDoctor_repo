@@ -181,15 +181,14 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, fromActivityLaunched.equals(RescribeConstants.HOME_PAGE));
         recyclerView.setAdapter(mMyPatientsAdapter);
 
-        nextPage(0);
+        nextPage(0, NetworkUtil.getConnectivityStatusBoolean(getContext()));
 
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                nextPage(page);
+                nextPage(page, NetworkUtil.getConnectivityStatusBoolean(getContext()));
             }
         });
-
 
         searchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
@@ -207,18 +206,18 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
                 if (NetworkUtil.getConnectivityStatusBoolean(getContext())) {
                     if (searchText.length() >= 3) {
-                        searchPatients();
+                        searchPatients(true);
                         isFiltered = true;
                     } else if (isFiltered) {
                         isFiltered = false;
                         searchText = "";
-                        searchPatients();
+                        searchPatients(true);
                     }
 
                     if (s.toString().length() < 3)
                         mMyPatientsAdapter.getFilter().filter(s.toString());
                 } else
-                    searchPatients();
+                    searchPatients(false);
             }
         });
         if (fromActivityLaunched.equals(RescribeConstants.HOME_PAGE)) {
@@ -721,8 +720,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     }
 
-    public void nextPage(int pageNo) {
-        if (NetworkUtil.getConnectivityStatusBoolean(getContext())) {
+    public void nextPage(int pageNo, boolean isInternetAvailable) {
+        if (isInternetAvailable) {
             mAppointmentHelper = new AppointmentHelper(getContext(), this);
             mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
             mRequestSearchPatients.setSearchText(searchText);
@@ -744,9 +743,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         }
     }
 
-    public void searchPatients() {
+    public void searchPatients(boolean isInternetAvailable) {
         mMyPatientsAdapter.clear();
-        if (NetworkUtil.getConnectivityStatusBoolean(getContext())) {
+        if (isInternetAvailable) {
             mRequestSearchPatients.setPageNo(0);
             mAppointmentHelper = new AppointmentHelper(getContext(), this);
             mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
@@ -772,7 +771,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         this.mRequestSearchPatients.setSortOrder(mRequestSearchPatients.getSortOrder());
 
         if (!isReset)
-            searchPatients();
+            searchPatients(NetworkUtil.getConnectivityStatusBoolean(getContext()));
     }
 
 }

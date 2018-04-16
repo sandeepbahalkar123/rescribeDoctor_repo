@@ -116,21 +116,21 @@ public class SyncOfflinePatients {
                                 if (!mSyncPatientsModel.getData().getPatientUpdateDetails().isEmpty()) {
                                     appDBHelper.updateOfflinePatientANDRecords(mSyncPatientsModel.getData().getPatientUpdateDetails());
                                     isFailed = false;
-                                    synced();
+                                    synced(false);
                                 } else {
                                     isFailed = true;
-                                    synced();
+                                    synced(true);
                                 }
                             } else {
                                 isFailed = true;
-                                synced();
+                                synced(true);
                             }
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     isFailed = true;
-                    synced();
+                    synced(true);
                 }
             }) {
                 @Override
@@ -154,16 +154,19 @@ public class SyncOfflinePatients {
         }
     }
 
-    private void synced() {
+    private void synced(boolean isEmpty) {
 
         Intent intent = new Intent(PATIENT_SYNC);
         intent.putExtra(STATUS, isFailed);
         context.sendBroadcast(intent);
 
-        mBuilder.setContentText(isFailed ? "Sync patients failed" : "Sync patients completed")
-                // Removes the progress bar
-                .setProgress(0, 100, false);
-        mNotifyManager.notify(SYNC_NOTIFICATION_ID, mBuilder.build());
+        if (!isEmpty) {
+            mBuilder.setContentText(isFailed ? "Sync patients failed" : "Sync patients completed")
+                    // Removes the progress bar
+                    .setProgress(0, 100, false);
+            mNotifyManager.notify(SYNC_NOTIFICATION_ID, mBuilder.build());
+        } else
+            mNotifyManager.cancel(SYNC_NOTIFICATION_ID);
 
         if (context instanceof MQTTService)
             ((MQTTService) context).checkPendingRecords();

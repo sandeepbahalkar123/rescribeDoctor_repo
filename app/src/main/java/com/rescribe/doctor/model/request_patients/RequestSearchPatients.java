@@ -31,7 +31,7 @@ public class RequestSearchPatients implements Parcelable, CustomResponse {
     private String searchText;
     @SerializedName("paginationSize")
     @Expose
-    private int paginationSize;
+    private int paginationSize = 18; // default size keep 18 because added records in sqlite while pagination
     @SerializedName("date")
     @Expose
     private String date;

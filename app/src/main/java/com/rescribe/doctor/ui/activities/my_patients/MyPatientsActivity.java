@@ -105,9 +105,9 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
         if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
             if (isPatientDownloaded) {
                 downloadPatients.setVisibility(View.GONE);
-                    Intent startIntentUpload = new Intent(mContext, LoadAllPatientsService.class);
-                    startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
-                    startService(startIntentUpload);
+                Intent startIntentUpload = new Intent(mContext, LoadAllPatientsService.class);
+                startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
+                startService(startIntentUpload);
             } else {
                 downloadPatients.setVisibility(View.VISIBLE);
                 downloadPatients.setOnClickListener(new View.OnClickListener() {
