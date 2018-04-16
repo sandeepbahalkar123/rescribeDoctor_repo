@@ -22,7 +22,7 @@ public class RequestSearchPatients implements Parcelable, CustomResponse {
     private FilterParams filterParams;
     @SerializedName("sortOrder")
     @Expose
-    private String sortOrder;
+    private String sortOrder = "";
     @SerializedName("sortField")
     @Expose
     private String sortField;

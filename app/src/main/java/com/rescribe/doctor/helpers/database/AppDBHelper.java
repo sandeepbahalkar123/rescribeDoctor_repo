@@ -612,6 +612,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
         searchText = searchText.trim();
         FilterParams filterParams = mRequestSearchPatients.getFilterParams();
+        String sortOrder = mRequestSearchPatients.getSortOrder();
 
         String ageLimitQuery = "";
         String cityQuery = "";
@@ -625,7 +626,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
             if (!filterParams.getGender().isEmpty()) {
                 String gender = filterParams.getGender();
-                genderQuery = " " + ADD_NEW_PATIENT.GENDER + " = '" + gender + "' " + ((filterParams.getCityIds().isEmpty() && filterParams.getAge().isEmpty()) ? "" : " AND ");
+                genderQuery = " " + ADD_NEW_PATIENT.GENDER + " like '%" + gender + "%' " + ((filterParams.getCityIds().isEmpty() && filterParams.getAge().isEmpty()) ? "" : " AND ");
                 isFiltered = true;
             }
 
@@ -648,7 +649,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 ageLimitQuery = " " + ADD_NEW_PATIENT.AGE + " >= " + fromAge + " AND " + ADD_NEW_PATIENT.AGE + " <= " + toAge + " ";
                 isFiltered = true;
             }
-
         }
 
         if (isFiltered) {
@@ -656,15 +656,20 @@ public class AppDBHelper extends SQLiteOpenHelper {
             and = " AND ";
         }
 
-        String countQuery;
-        if (searchText.isEmpty()) {
-//          countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + "ORDER BY " + ADD_NEW_PATIENT.CREATED_TIME_STAMP + " DESC LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows) + " ";
-            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + where + genderQuery + cityQuery + ageLimitQuery + " LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
-        } else {
-            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " WHERE (" + ADD_NEW_PATIENT.FIRST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MIDDLE_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.LAST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.HOSPITALPATID + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MOBILE_NO + " LIKE '%" + searchText + "%' ) " + and + genderQuery + cityQuery + ageLimitQuery + " LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
-        }
+        String sortOrderQuery;
+        if (!sortOrder.isEmpty())
+            sortOrderQuery = " ORDER BY " + ADD_NEW_PATIENT.OUTSTANDING_AMT + " " + sortOrder + " ";
+        else
+            sortOrderQuery = " ORDER BY " + ADD_NEW_PATIENT.CREATED_TIME_STAMP + " DESC ";
 
-        CommonMethods.Log(TAG + " PATIENT", cityQuery);
+        String countQuery;
+        if (searchText.isEmpty())
+            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + where + genderQuery + cityQuery + ageLimitQuery + sortOrderQuery + " LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
+        else
+            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " WHERE (" + ADD_NEW_PATIENT.FIRST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MIDDLE_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.LAST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.HOSPITALPATID + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MOBILE_NO + " LIKE '%" + searchText + "%' ) " + and + genderQuery + cityQuery + ageLimitQuery + sortOrderQuery + " LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
+
+
+        CommonMethods.Log(TAG + " PATIENT", countQuery);
 
         Cursor cursor = db.rawQuery(countQuery, null);
         ArrayList<PatientList> list = new ArrayList<>();
