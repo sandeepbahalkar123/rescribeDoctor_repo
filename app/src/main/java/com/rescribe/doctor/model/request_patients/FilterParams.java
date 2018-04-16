@@ -13,13 +13,13 @@ public class FilterParams implements Parcelable {
 
     @SerializedName("gender")
     @Expose
-    private String gender;
+    private String gender = "";
     @SerializedName("age")
     @Expose
-    private String age;
+    private String age = "";
     @SerializedName("city")
     @Expose
-    private ArrayList<Integer> cityIDs = null;
+    private ArrayList<Integer> cityIDs = new ArrayList<>();
     public final static Parcelable.Creator<FilterParams> CREATOR = new Creator<FilterParams>() {
 
 
