@@ -309,16 +309,20 @@ public class DraggableSwipeableViewAllWaitingListAdapter
 
             holder.mContainer.setBackgroundResource(bgResId);
         }
+     if(getAllItems().size()==1){
+         holder.mDragHandle.setVisibility(View.GONE);
+     }else {
+         if (item.getViewAll().getWaitingStatusId().equals(IN_QUEUE) || item.getViewAll().getWaitingStatusId().equals(CONFIRMED)) {
+             holder.mDragHandle.setVisibility(View.VISIBLE);
+             holder.setMaxLeftSwipeAmount(-0.4f);
+             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
+         } else {
+             holder.mDragHandle.setVisibility(View.GONE);
+             holder.setMaxLeftSwipeAmount(0);
+             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
+         }
+     }
 
-        if (item.getViewAll().getWaitingStatusId().equals(IN_QUEUE) || item.getViewAll().getWaitingStatusId().equals(CONFIRMED)) {
-            holder.mDragHandle.setVisibility(View.VISIBLE);
-            holder.setMaxLeftSwipeAmount(-0.4f);
-            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
-        } else {
-            holder.mDragHandle.setVisibility(View.GONE);
-            holder.setMaxLeftSwipeAmount(0);
-            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
-        }
 
         holder.setMaxRightSwipeAmount(0);
 

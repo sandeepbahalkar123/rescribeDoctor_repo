@@ -15,6 +15,9 @@ public class RequestAppointmentData implements CustomResponse {
     @SerializedName("date")
     @Expose
     private String date;
+    @SerializedName("appName")
+    @Expose
+    private String appName;
 
     public Integer getDocId() {
         return docId;
@@ -32,4 +35,11 @@ public class RequestAppointmentData implements CustomResponse {
         this.date = date;
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 }

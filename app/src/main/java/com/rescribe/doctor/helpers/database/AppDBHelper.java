@@ -604,9 +604,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
             ContentValues contentValuesMyRecords = new ContentValues();
             contentValuesMyRecords.put(MY_RECORDS.PATIENT_ID, patientUpdate.getPatientId());
+            contentValuesMyRecords.put(MY_RECORDS.HOSPITAL_PAT_ID, patientUpdate.getHospitalPatId());
             db.update(MY_RECORDS.MY_RECORDS_TABLE, contentValuesMyRecords, MY_RECORDS.PATIENT_ID + " = ?", new String[]{patientUpdate.getMobilePatientId()});
-
-
         }
 
         db.close();
@@ -632,7 +631,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
             if (!filterParams.getGender().isEmpty()) {
                 String gender = filterParams.getGender();
-                genderQuery = " " + ADD_NEW_PATIENT.GENDER + " like '%" + gender + "%' " + ((filterParams.getCityIds().isEmpty() && filterParams.getAge().isEmpty()) ? "" : " AND ");
+                genderQuery = " " + ADD_NEW_PATIENT.GENDER + " like '%" + gender + "' " + ((filterParams.getCityIds().isEmpty() && filterParams.getAge().isEmpty()) ? "" : " AND ");
                 isFiltered = true;
             }
 

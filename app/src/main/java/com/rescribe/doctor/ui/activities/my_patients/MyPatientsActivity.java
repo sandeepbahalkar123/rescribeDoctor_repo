@@ -1,8 +1,10 @@
 package com.rescribe.doctor.ui.activities.my_patients;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,9 +19,7 @@ import android.widget.RelativeLayout;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.services.ChatBackUpService;
 import com.rescribe.doctor.services.LoadAllPatientsService;
-import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
@@ -35,6 +35,8 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.services.LoadAllPatientsService.LOAD_ALL_PATIENTS;
+import static com.rescribe.doctor.services.LoadAllPatientsService.STATUS;
 import static com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity.ADD_PATIENT_REQUEST;
 
 /**
@@ -98,18 +100,28 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
         mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
 
+        boolean isPatientDownloaded = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, this);
+
         if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
-            downloadPatients.setVisibility(View.VISIBLE);
-            downloadPatients.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
-                        Intent startIntentUpload = new Intent(mContext, LoadAllPatientsService.class);
-                        startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
-                        startService(startIntentUpload);
-                    } else CommonMethods.showToast(mContext, getString(R.string.internet));
-                }
-            });
+            if (isPatientDownloaded) {
+                downloadPatients.setVisibility(View.GONE);
+                    Intent startIntentUpload = new Intent(mContext, LoadAllPatientsService.class);
+                    startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
+                    startService(startIntentUpload);
+            } else {
+                downloadPatients.setVisibility(View.VISIBLE);
+                downloadPatients.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
+                            Intent startIntentUpload = new Intent(mContext, LoadAllPatientsService.class);
+                            startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
+                            startService(startIntentUpload);
+                            downloadPatients.setVisibility(View.GONE);
+                        } else CommonMethods.showToast(mContext, getString(R.string.internet));
+                    }
+                });
+            }
         } else
             downloadPatients.setVisibility(View.GONE);
     }
@@ -179,4 +191,31 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         MyPatientsActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(LOAD_ALL_PATIENTS);
+        registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(LOAD_ALL_PATIENTS)) {
+                    boolean isFailed = intent.getBooleanExtra(STATUS, false);
+                    if (isFailed)
+                        downloadPatients.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    };
 }

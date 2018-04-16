@@ -145,7 +145,7 @@ public class LoadAllPatientsService extends Service {
                             ArrayList<PatientList> patientList = myPatientBaseModel.getPatientDataModel().getPatientList();
                             if (patientList.isEmpty()) {
                                 isFailed = false;
-                                restored();
+                                restored(patientList.size());
                             } else {
                                 // add in database
                                 for (PatientList patientL : patientList) {
@@ -157,7 +157,7 @@ public class LoadAllPatientsService extends Service {
                                 if (patientList.size() < RECORD_COUNT) {
                                     // after add database
                                     isFailed = false;
-                                    restored();
+                                    restored(patientList.size());
                                 } else {
                                     request(isDownloaded);
                                     pageCount += 1;
@@ -169,7 +169,7 @@ public class LoadAllPatientsService extends Service {
             @Override
             public void onErrorResponse(VolleyError error) {
                 isFailed = true;
-                restored();
+                restored(0);
             }
         }) {
             @Override
@@ -192,10 +192,11 @@ public class LoadAllPatientsService extends Service {
         RequestPool.getInstance(this).addToRequestQueue(jsonRequest);
     }
 
-    private void restored() {
+    private void restored(int size) {
 
         Log.i(LOG_TAG, "Patients downloaded " + isFailed);
-        CommonMethods.showToast(LoadAllPatientsService.this, !isFailed ? "Downloaded all patients" : "Patients download failed");
+        if (size > 0)
+            CommonMethods.showToast(LoadAllPatientsService.this, !isFailed ? "Downloaded all patients" : "Patients download failed");
 
         pageCount = 0;
         RUNNING = false;

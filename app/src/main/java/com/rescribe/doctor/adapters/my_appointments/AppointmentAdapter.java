@@ -311,7 +311,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.appointmentReschedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnDownArrowClicked.onAppointmentReshedule(patientList,viewHolder.patientAgeTextView.getText().toString(),cityName,areaName);
+
+                mOnDownArrowClicked.onAppointmentReshedule(patientList,viewHolder.patientAgeTextView.getText().toString()+viewHolder.patientGenderTextView.getText().toString(),cityName,areaName);
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
 
@@ -616,7 +617,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.mAppointmentReschedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnDownArrowClicked.onAppointmentReshedule(appointmentListObject.getPatientHeader(),groupViewHolder.mPatientAgeTextView.getText().toString(),appointmentListObject.getCity(),appointmentListObject.getArea());
+
+                mOnDownArrowClicked.onAppointmentReshedule(appointmentListObject.getPatientHeader(),groupViewHolder.mPatientAgeTextView.getText().toString()+groupViewHolder.mPatientGenderTextView.getText().toString(),appointmentListObject.getCity(),appointmentListObject.getArea());
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
 

@@ -126,7 +126,7 @@ public class PatientDetailHelper implements ConnectionListener {
 
     public void doGetPatientHistory(String patientID, String year, boolean getPatientInfo) {
 
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_PATIENT_HISTORY, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_PATIENT_HISTORY, Request.Method.POST, false);
         RequestForPatientHistory mRequestForPatientHistory = new RequestForPatientHistory();
         mRequestForPatientHistory.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
@@ -141,7 +141,7 @@ public class PatientDetailHelper implements ConnectionListener {
 
     //get case study list
     public void deleteSelectedAttachments(HashSet<VisitCommonData> list, String patientID) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_PATIENT_OPD_ATTCHMENTS, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_PATIENT_OPD_ATTCHMENTS, Request.Method.POST, false);
 
         ArrayList<DeleteAttachmentReqModel.AttachmentData> deleteAttList = new ArrayList<>();
         DeleteAttachmentReqModel delete = new DeleteAttachmentReqModel();

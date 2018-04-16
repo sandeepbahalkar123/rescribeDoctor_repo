@@ -111,6 +111,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
         this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.creationDate = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -208,11 +209,10 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         return spannableString;
     }
 
-
     public void setSpannableString(String spannableString) {
-
         this.spannableString = spannableString;
     }
+
     public Integer getAptId() {
         return aptId;
     }
@@ -261,6 +261,10 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientCity = patientCity;
     }
 
+    public void setPatientArea(String patientArea) {
+        this.patientArea = patientArea;
+    }
+
     public String getCreationDate() {
         return creationDate;
     }
@@ -287,6 +291,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         dest.writeValue(patientCityId);
         dest.writeValue(aptId);
         dest.writeValue(creationDate);
+        dest.writeValue(patientArea);
     }
 
     public int describeContents() {

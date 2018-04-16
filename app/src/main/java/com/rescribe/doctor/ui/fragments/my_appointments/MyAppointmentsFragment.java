@@ -84,8 +84,6 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
 
     public static boolean isLongPressed;
-
-
     @BindView(R.id.searchEditText)
     EditTextWithDeleteButton searchEditText;
     @BindView(R.id.whiteUnderLine)
@@ -356,6 +354,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         patientListforBookAppointment.setPatientName(patientList.getPatientName());
         patientListforBookAppointment.setPatientId(patientList.getPatientId());
         patientListforBookAppointment.setPatientCity(cityName);
+        patientListforBookAppointment.setPatientArea(areaName);
         patientListforBookAppointment.setSalutation(patientList.getSalutation());
         patientListforBookAppointment.setPatientImageUrl(patientList.getPatientImageUrl());
         patientListforBookAppointment.setAptId(patientList.getAptId());

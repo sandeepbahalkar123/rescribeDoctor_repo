@@ -23,6 +23,7 @@ public class RescribeConstants {
     public static final String OS = "OS";
     public static final String OSVERSION = "OsVersion";
     public static final String DEVICE_TYPE = "DeviceType";
+    public static final String APP_NAME ="appName";
     public static final String ACCESS_TOKEN = "accessToken";
     public static final String TOKEN_TYPE = "token_type";
     public static final String REFRESH_TOKEN = "refresh_token";
@@ -187,12 +188,16 @@ public class RescribeConstants {
     public static final String MY_APPOINTMENTS = "my_appointments";
     public static final String PATIENT_CONNECT = "patient_connect";
     public static final String IS_APPOINTMENT_TYPE_RESHEDULE = "appointment_type_reschedule";
+    public static final String DOCTOR = "doctor";
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
 
     public static final String[] SALUTATION = {"Mr. ", "Mrs. ", "Miss ", ""};
     public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};
+    public static String OT_AND_OPD = "ot_and_opd";
+    public static String OPD = "opd";
+    public static String OT = "ot";
 
     public interface APPOINTMENT_STATUS {
         int BOOKED = 1;

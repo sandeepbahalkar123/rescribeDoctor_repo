@@ -264,6 +264,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
             salutation = SALUTATION[item.getActiveAll().getSalutation() - 1];
         else salutation = "";
 
+
         holder.mPatientNameTextView.setText(salutation + CommonMethods.toCamelCase(item.getActiveAll().getPatientName()));
         holder.mTypeStatus.setText(" " + item.getActiveAll().getWaitingStatus());
         TextDrawable textDrawable = CommonMethods.getTextDrawable(holder.mPatientImageView.getContext(), item.getActiveAll().getPatientName());
@@ -306,16 +307,19 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
             holder.mContainer.setBackgroundResource(bgResId);
         }
-
-        if (item.getActiveAll().getWaitingStatusId().equals(IN_QUEUE) || item.getActiveAll().getWaitingStatusId().equals(CONFIRMED)) {
-            holder.mDragHandle.setVisibility(View.VISIBLE);
-            holder.setMaxLeftSwipeAmount(-0.4f);
-            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
-        } else {
-            holder.mDragHandle.setVisibility(View.GONE);
-            holder.setMaxLeftSwipeAmount(0);
-            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
-        }
+      if(getAllItems().size()==1){
+          holder.mDragHandle.setVisibility(View.GONE);
+      }else {
+          if (item.getActiveAll().getWaitingStatusId().equals(IN_QUEUE) || item.getActiveAll().getWaitingStatusId().equals(CONFIRMED)) {
+              holder.mDragHandle.setVisibility(View.VISIBLE);
+              holder.setMaxLeftSwipeAmount(-0.4f);
+              holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
+          } else {
+              holder.mDragHandle.setVisibility(View.GONE);
+              holder.setMaxLeftSwipeAmount(0);
+              holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
+          }
+      }
 
         holder.setMaxRightSwipeAmount(0);
 

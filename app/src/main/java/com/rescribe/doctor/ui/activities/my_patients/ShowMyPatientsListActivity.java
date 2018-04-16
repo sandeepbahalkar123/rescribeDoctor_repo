@@ -1,9 +1,12 @@
 package com.rescribe.doctor.ui.activities.my_patients;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -19,14 +22,18 @@ import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
 import com.rescribe.doctor.ui.fragments.patient.patient_connect.ChatPatientListFragment;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import java.util.HashSet;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by jeetal on 5/3/18.
  */
-
+@RuntimePermissions
 public class ShowMyPatientsListActivity extends AppCompatActivity implements DrawerForMyPatients.OnDrawerInteractionListener {
 
     @BindView(R.id.backImageView)
@@ -47,6 +54,8 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Dra
     Intent mIntent;
     private String mActivityCalledFrom = "";
     private ChatPatientListFragment mMyPatientsFragment;
+    private String phoneNo;
+    public HashSet<Integer> selectedDoctorId = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,5 +124,27 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Dra
         if (resultCode == Activity.RESULT_OK) {
             finish();
         }
+    }
+
+    public void callPatient(String patientPhone) {
+        phoneNo = patientPhone;
+        ShowMyPatientsListActivityPermissionsDispatcher.doCallSupportWithCheck(this);
+    }
+
+    @NeedsPermission(Manifest.permission.CALL_PHONE)
+    void doCallSupport() {
+        callSupport(phoneNo);
+    }
+
+    private void callSupport(String phoneNo) {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + phoneNo));
+        startActivity(callIntent);
+    }
+
+
+    public void onRequestPermssionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ShowMyPatientsListActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 }

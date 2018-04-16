@@ -217,7 +217,6 @@
                     android:textColor="@color/rating_color"
                     android:textSize="@dimen/sp12"
                     app:customFont="@string/roboto_medium"
-                    tools:ignore="RtlHardcoded"
                     tools:text="987678999" />
 
             </LinearLayout>

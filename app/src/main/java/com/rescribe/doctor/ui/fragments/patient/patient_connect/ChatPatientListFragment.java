@@ -124,7 +124,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         });
 
 
-        searchEditText.setHint(getString(R.string.search_hint_patientconnect_to_mypatient));
+        searchEditText.setHint(getString(R.string.search_hint));
         searchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -147,7 +147,11 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
                     searchText = "";
                     searchPatients();
                 }
+                if (s.toString().length() < 3) {
+                    mMyPatientsAdapter.getFilter().filter(s.toString());
+                }
             }
+
         });
 
     }
@@ -187,6 +191,12 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
             getActivity().finish();
         }
 
+    }
+
+    @Override
+    public void onPhoneNoClick(String patientPhone) {
+        ShowMyPatientsListActivity activity = (ShowMyPatientsListActivity) getActivity();
+        activity.callPatient(patientPhone);
     }
 
 
@@ -246,7 +256,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
 
                 ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
 
-                mMyPatientsAdapter.addAll(mLoadedPatientList, searchText);
+                mMyPatientsAdapter.addAll(mLoadedPatientList, ((ShowMyPatientsListActivity) getActivity()).selectedDoctorId ,searchText);
 
                 if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
                     recyclerView.setVisibility(View.VISIBLE);

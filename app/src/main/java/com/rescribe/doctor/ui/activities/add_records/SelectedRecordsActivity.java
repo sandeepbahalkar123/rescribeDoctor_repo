@@ -428,7 +428,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                             CommonMethods.showToast(this, getString(R.string.records_will_upload_when_internet_available));
                         appDBHelper.insertRecordUploads(System.currentTimeMillis() + "_" + parentIndex + "_" + patientId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath());
                     }
-                    CommonMethods.showToast(this, getString(R.string.uploading));
+//                    CommonMethods.showToast(this, getString(R.string.uploading));
 
                     onBackPressed();
                 }
