@@ -600,9 +600,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
             contentValues.put(ADD_NEW_PATIENT.PATIENT_ID, patientUpdate.getPatientId());
             contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, patientUpdate.getHospitalPatId());
 
-            int update = db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?  AND " + ADD_NEW_PATIENT.IS_SYNC + " = " + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER, new String[]{patientUpdate.getMobilePatientId()});
-
-            //--
+            db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?  AND " + ADD_NEW_PATIENT.IS_SYNC + " = " + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER, new String[]{patientUpdate.getMobilePatientId()});
 
             ContentValues contentValuesMyRecords = new ContentValues();
             contentValuesMyRecords.put(MY_RECORDS.PATIENT_ID, patientUpdate.getPatientId());
