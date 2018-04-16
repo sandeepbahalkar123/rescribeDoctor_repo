@@ -599,7 +599,15 @@ public class AppDBHelper extends SQLiteOpenHelper {
             contentValues.put(ADD_NEW_PATIENT.PATIENT_ID, patientUpdate.getPatientId());
             contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, patientUpdate.getHospitalPatId());
 
-            db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?  AND " + ADD_NEW_PATIENT.IS_SYNC + " = " + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER, new String[]{patientUpdate.getMobilePatientId()});
+            int update = db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?  AND " + ADD_NEW_PATIENT.IS_SYNC + " = " + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER, new String[]{patientUpdate.getMobilePatientId()});
+
+            //--
+
+            ContentValues contentValuesMyRecords = new ContentValues();
+            contentValuesMyRecords.put(MY_RECORDS.PATIENT_ID, patientUpdate.getPatientId());
+            db.update(MY_RECORDS.MY_RECORDS_TABLE, contentValuesMyRecords, MY_RECORDS.PATIENT_ID + " = ?", new String[]{patientUpdate.getMobilePatientId()});
+
+
         }
 
         db.close();
@@ -620,11 +628,11 @@ public class AppDBHelper extends SQLiteOpenHelper {
             }
         }
 
-        if (!filterParams.getCityIds().isEmpty()){
+        if (!filterParams.getCityIds().isEmpty()) {
             ArrayList<Integer> city = filterParams.getCityIds();
         }
 
-        if (!filterParams.getGender().isEmpty()){
+        if (!filterParams.getGender().isEmpty()) {
             String gender = filterParams.getGender();
         }
 
