@@ -287,8 +287,8 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         dest.writeValue(clinicId);
         dest.writeValue(clinicName);
         dest.writeValue(hospitalPatId);
-        dest.writeValue(patientCity);
         dest.writeValue(patientCityId);
+        dest.writeValue(patientCity);
         dest.writeValue(aptId);
         dest.writeValue(creationDate);
         dest.writeValue(patientArea);

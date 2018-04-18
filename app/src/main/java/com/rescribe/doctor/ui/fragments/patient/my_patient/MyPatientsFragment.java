@@ -122,6 +122,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private boolean isFiltered = false;
     private AppDBHelper appDBHelper;
     private String mLocalSearchText;
+    private boolean isFirstTimeLocalSearch = false;
 
     @Override
     public void onDestroy() {
@@ -212,9 +213,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                         isFiltered = false;
                         searchText = "";
                         searchPatients(true);
-                    }
-
-                    if (s.toString().length() < 3)
+                    } else if (s.toString().length() < 3)
                         mMyPatientsAdapter.getFilter().filter(s.toString());
                 } else
                     searchPatients(false);
@@ -298,7 +297,16 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             }
 
             if (!patientsListAddToWaitingLists.isEmpty()) {
-                showDialogToSelectLocation(mDoctorLocationModel, null);
+                //if only one location then dont display dialog.
+                if (mDoctorLocationModel.size() == 1) {
+                    mLocationId = mDoctorLocationModel.get(0).getLocationId();
+                    mClinicName = mDoctorLocationModel.get(0).getClinicName();
+                    mClinicArea = mDoctorLocationModel.get(0).getArea();
+                    mClinicCity = mDoctorLocationModel.get(0).getCity();
+                    callWaitingListApi();
+                } else {
+                    showDialogToSelectLocation(mDoctorLocationModel, null);
+                }
             }
         }
     }
@@ -362,7 +370,15 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
 
             if (!patientInfoLists.isEmpty()) {
-                showDialogForSmsLocationSelection(mDoctorLocationModel);
+                if (mDoctorLocationModel.size() == 1) {
+                    mLocationId = mDoctorLocationModel.get(0).getLocationId();
+                    mClinicName = mDoctorLocationModel.get(0).getClinicName();
+                    mClinicArea = mDoctorLocationModel.get(0).getArea();
+                    mClinicCity = mDoctorLocationModel.get(0).getCity();
+                    mAppointmentHelper.doGetDoctorTemplate();
+                } else {
+                    showDialogForSmsLocationSelection(mDoctorLocationModel);
+                }
 
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                     if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
@@ -395,7 +411,16 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             }
 
             if (!patientsListAddToWaitingLists.isEmpty()) {
-                showDialogToSelectLocation(mDoctorLocationModel, null);
+                //if only one location is assigned to
+                if (mDoctorLocationModel.size() == 1) {
+                    mLocationId = mDoctorLocationModel.get(0).getLocationId();
+                    mClinicName = mDoctorLocationModel.get(0).getClinicName();
+                    mClinicArea = mDoctorLocationModel.get(0).getArea();
+                    mClinicCity = mDoctorLocationModel.get(0).getCity();
+                    callWaitingListApi();
+                } else {
+                    showDialogToSelectLocation(mDoctorLocationModel, null);
+                }
 
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                     if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
@@ -622,7 +647,19 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 activity.openDrawer();
                 break;
             case R.id.leftFab:
-                showDialogToSelectLocation(mDoctorLocationModel, getString(R.string.new_patients));
+                if (mDoctorLocationModel.size() == 1) {
+                    final Bundle b = new Bundle();
+                    b.putInt(RescribeConstants.CLINIC_ID, mDoctorLocationModel.get(0).getClinicId());
+                    b.putInt(RescribeConstants.CITY_ID, mDoctorLocationModel.get(0).getCityId());
+                    b.putString(RescribeConstants.CITY_NAME, mDoctorLocationModel.get(0).getCity());
+                    b.putString(RescribeConstants.LOCATION_ID, String.valueOf(mDoctorLocationModel.get(0).getLocationId()));
+                    Intent i = new Intent(getActivity(), AddNewPatientWebViewActivity.class);
+                    i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
+                    getActivity().startActivityForResult(i, ADD_PATIENT_REQUEST);
+                    CommonMethods.Log("DOC_ID", "" + Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                } else {
+                    showDialogToSelectLocation(mDoctorLocationModel, getString(R.string.new_patients));
+                }
                 break;
         }
     }
@@ -645,7 +682,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 }
 
             }
-
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_ADD_TO_WAITING_LIST)) {
             AddToWaitingListBaseModel addToWaitingListBaseModel = (AddToWaitingListBaseModel) customResponse;
             if (addToWaitingListBaseModel.getCommon().isSuccess()) {

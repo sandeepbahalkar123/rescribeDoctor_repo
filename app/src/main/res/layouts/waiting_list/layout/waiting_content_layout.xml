@@ -27,6 +27,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            android:layout_marginLeft="@dimen/dp8"
+            android:padding="@dimen/dp12"
             tools:visibility="visible">
 
             <com.rescribe.doctor.ui.customesViews.CircularImageView

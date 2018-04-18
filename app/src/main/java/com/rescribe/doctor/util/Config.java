@@ -35,13 +35,13 @@ public class Config {
     public static final String BROKER = "tcp://52.66.154.249:1883"; // Dr Rescribe IP
 
     // http://172.16.100.219:3003/";
-    public static String BASE_URL = "http://drrescribe.com:3003/";
+   public static String BASE_URL = "http://drrescribe.com:3003/";
     public static final String FORGOT_PASSWORD_URL = "https://drrescribe.com/app.html#/access/forgotPassword";
     public static final String ADD_NEW_PATIENT_WEB_URL = "https://drrescribe.com/app.html#/addpatientmobile/";
-//    public static String BASE_URL = "http://rescribe.in:3003/";
-//    public static final String FORGOT_PASSWORD_URL = "https://rescribe.in/app.html#/access/forgotPassword";
-//    public static final String ADD_NEW_PATIENT_WEB_URL = "https://rescribe.in/app.html#/addpatientmobile/";
-
+   /* public static String BASE_URL = "http://rescribe.in:3003/";
+    public static final String FORGOT_PASSWORD_URL = "https://rescribe.in/app.html#/access/forgotPassword";
+    public static final String ADD_NEW_PATIENT_WEB_URL = "https://rescribe.in/app.html#/addpatientmobile/";
+*/
 
     public static final String MY_RECORDS_DOCTOR_LIST = "api/doctors/getDoctorsWithPatientVisits";
     public static final String MY_RECORDS_ADD_DOCTOR = "api/doctors/addDoctor";

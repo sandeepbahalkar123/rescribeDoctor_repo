@@ -97,7 +97,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
         String urlData = Config.ADD_NEW_PATIENT_WEB_URL + docID + "/" +
                 hospitalId + "/" + locationID + "/" + cityID;
 
-        mWebViewTitle.setText(getString(R.string.new_patients));
+        mWebViewTitle.setText(getString(R.string.patient_registration));
 
         if (NetworkUtil.isInternetAvailable(this)) {
             mWebViewObject.setVisibility(View.VISIBLE);

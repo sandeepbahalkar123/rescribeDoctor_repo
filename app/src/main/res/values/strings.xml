@@ -257,6 +257,7 @@
     <string name="do_you_want_to_update">Do you want to update application?</string>
     <string name="update">Update</string>
     <string name="later">Later</string>
+    <string name="patient_registration">Patient Registration</string>
 
 
 </resources>
