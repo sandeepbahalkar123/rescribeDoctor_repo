@@ -332,7 +332,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             mc.setSelected(selectedDoctorId.contains(mc.getHospitalPatId()));
             add(mc);
             // add patient in sqlite while pagination.
-            mc.setOfflinePatientSynced(true);
+
+            if (mc.isOfflinePatientSynced()) {
+                mc.setOfflinePatientSynced(true);
+            } else {
+                mc.setOfflinePatientSynced(false);
+            }
+
             mc.setOfflineReferenceID("");
             appDBHelper.addNewPatient(mc);
         }

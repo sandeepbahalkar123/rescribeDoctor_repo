@@ -75,7 +75,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
 
     //--Added for offline adding patient.
     private String offlineReferenceID;
-    private boolean isOfflinePatientSynced;
+    private boolean isOfflinePatientSynced = true; //considered always sync with server.
 
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
@@ -314,6 +314,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     public void setOfflineReferenceID(String offlineReferenceID) {
         this.offlineReferenceID = offlineReferenceID;
     }
+
     public boolean isOfflinePatientSynced() {
         return isOfflinePatientSynced;
     }

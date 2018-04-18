@@ -713,7 +713,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     }
 
     public void nextPage(int pageNo, boolean isInternetAvailable) {
-        if (isInternetAvailable) {
+        boolean isAllPatientDownloaded = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, getActivity());
+
+        if (isInternetAvailable && !isAllPatientDownloaded) {
             mAppointmentHelper = new AppointmentHelper(getContext(), this);
             mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
             mRequestSearchPatients.setSearchText(searchText);

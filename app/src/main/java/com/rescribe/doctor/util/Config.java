@@ -32,7 +32,8 @@ public class Config {
     public static final String UPLOAD_PROFILE_PHOTO = "api/upload/uploadDoctorImage";
 
     //  public static final String BROKER = "tcp://ec2-13-126-175-156.ap-south-1.compute.amazonaws.com:1883";
-    public static final String BROKER = "tcp://52.66.154.249:1883"; // Dr Rescribe IP
+    public static final String BROKER = "tcp://drrescribe.com:1883";//"tcp://52.66.154.249:1883"; // Dr Rescribe.com IP QA
+//    public static final String BROKER = "tcp://rescribe.in:1883";  // Rescribe.in IP LIVE
 
     // http://172.16.100.219:3003/";
     public static String BASE_URL = "http://drrescribe.com:3003/";

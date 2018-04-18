@@ -114,16 +114,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
     public void back(View view) {
         switch (view.getId()) {
             case R.id.backButton:
-                if (mMainParentScrollViewLayout.getVisibility() == View.VISIBLE) {
-                    finish();
-                } else {
-                    if (mWebViewObject.canGoBack()) {
-                        mWebViewObject.goBack();
-                    } else {
-                        super.onBackPressed();
-                    }
-                }
-
+                onBackPressed();
                 break;
             case R.id.btnAddPatientSubmit:
                 PatientList validate = validate();
@@ -149,6 +140,15 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (mMainParentScrollViewLayout.getVisibility() == View.VISIBLE) {
+            finish();
+        } else {
+            if (mWebViewObject.canGoBack()) {
+                mWebViewObject.goBack();
+            } else {
+                super.onBackPressed();
+            }
+        }
 
     }
 
@@ -272,11 +272,11 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
         } else if (mob.isEmpty() || mob.length() < 10) {
             message = enter + getString(R.string.enter_mobile_no);
             CommonMethods.showToast(this, message);
-        } else if ((mob.trim().length() < 10) || !(mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9"))) {
+        } else if ((mob.trim().length() < 10) || !(mob.trim().startsWith("6") || mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9"))) {
             message = getString(R.string.err_invalid_mobile_no);
             CommonMethods.showToast(this, message);
-        } else if (age.isEmpty()) {
-            message = enter + getString(R.string.age);
+        } else if (age.isEmpty() ) {
+            message = enter + " valid " + getString(R.string.age);
             CommonMethods.showToast(this, message);
         } else {
             patientList = new PatientList();
