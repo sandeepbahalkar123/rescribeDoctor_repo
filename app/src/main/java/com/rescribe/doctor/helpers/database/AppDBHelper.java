@@ -614,8 +614,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
         if (!patientName.isEmpty()) {
             String[] split = patientName.split(" ");
             contentValues.put(ADD_NEW_PATIENT.FIRST_NAME, split[0]);
-            if (split.length > 1)
-                contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, split[1]);
+            if (split.length > 1) {
+                if (split[1].equalsIgnoreCase("|"))
+                    contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, "");
+                else
+                    contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, split[1]);
+            }
             if (split.length > 2)
                 contentValues.put(ADD_NEW_PATIENT.LAST_NAME, split[2]);
         }

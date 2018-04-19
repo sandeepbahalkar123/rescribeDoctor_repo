@@ -75,11 +75,8 @@ public class RescribeConstants {
     //Click codes
 
     public static final String TASK_LOGIN = RescribeConstants.BLANK + 1;
-
     public static final String TASK_SIGN_UP = RescribeConstants.BLANK + 2;
     public static final String TASK_VERIFY_SIGN_UP_OTP = RescribeConstants.BLANK + 3;
-
-
     public static final String TASK_LOGIN_WITH_PASSWORD = RescribeConstants.BLANK + 4;
     public static final String TASK_LOGIN_WITH_OTP = RescribeConstants.BLANK + 5;
     public static final String TASK_DOCTOR_CONNECT_CHAT = RescribeConstants.BLANK + 6;

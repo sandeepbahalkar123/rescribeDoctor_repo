@@ -196,7 +196,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             childViewHolder.itemsLayout.setVisibility(View.VISIBLE);
 
             String textToShow = "";
-            if (headerName.contains(CHILD_TYPE_ALLERGIES)) {
+            if (headerName.toLowerCase().contains(CHILD_TYPE_ALLERGIES)) {
                 textToShow = childObject.get(childPosition).getName();
                 if (!childObject.get(childPosition).getMedicinename().isEmpty())
                     textToShow += "-" + childObject.get(childPosition).getMedicinename();
@@ -632,7 +632,11 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                     }
                     //--------
 
-                } else if (mVisitDetailList.size() > 1) {
+                }  else if (mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ALLERGIES)) {
+                    String text = stripExtension(mVisitDetailList.get(0).getName()+" - "+mVisitDetailList.get(0).getMedicinename()+" - "+mVisitDetailList.get(0).getRemarks());
+                    groupViewHolder.mDetailFirstPoint.setText(text);
+
+                }else if (mVisitDetailList.size() > 1) {
                     int length = mVisitDetailList.get(0).getName().length();
                     String text = mVisitDetailList.get(0).getName().substring(0, length < TEXT_LIMIT ? length - 1 : TEXT_LIMIT - 1) + "...";
                     groupViewHolder.mDetailFirstPoint.setText(text);

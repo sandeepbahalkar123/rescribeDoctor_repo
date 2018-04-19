@@ -186,18 +186,24 @@
                     android:orientation="horizontal">
 
                     <RadioButton
+                        android:padding="@dimen/dp3"
+                        android:button="@drawable/radio_button_selector"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/male" />
 
                     <RadioButton
+                        android:padding="@dimen/dp3"
+                        android:button="@drawable/radio_button_selector"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/female" />
 
                     <RadioButton
+                        android:padding="@dimen/dp3"
+                        android:button="@drawable/radio_button_selector"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -234,7 +240,7 @@
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="@dimen/dp30"
                     android:layout_marginTop="@dimen/dp10"
-                    android:background="@color/login_bg_color"
+                    android:background="@color/tagColor"
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="center"
                     android:text="@string/submit"

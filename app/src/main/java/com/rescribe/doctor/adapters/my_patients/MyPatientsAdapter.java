@@ -148,22 +148,30 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
             holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
         }
-
-        if (patientObject.getAge().equals("") && !patientObject.getDateOfBirth().equals("")) {
+        //------------
+        String gender = CommonMethods.toCamelCase(patientObject.getGender());
+        holder.patientGenderTextView.setText(gender);
+        //------------
+        //-- DOnt show - when gender is empty
+        String yearsString = mContext.getString(R.string.years);
+        if (gender != null && RescribeConstants.BLANK.equalsIgnoreCase(gender)) {
+            yearsString = yearsString.substring(0, (yearsString.length() - 2));
+        }
+        if (patientObject.getAge() != null && !RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getAge())) {
+            holder.patientAgeTextView.setVisibility(View.VISIBLE);
+            holder.patientAgeTextView.setText(patientObject.getAge() + " " + yearsString);
+        } else if (patientObject.getDateOfBirth() != null && !RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getDateOfBirth())) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = patientObject.getDateOfBirth();
             DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-            holder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
-        } else if (!patientObject.getAge().equals("")) {
-            holder.patientAgeTextView.setVisibility(View.VISIBLE);
-            holder.patientAgeTextView.setText(patientObject.getAge() + " " + mContext.getString(R.string.years));
+            holder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + yearsString);
         } else {
             holder.patientAgeTextView.setVisibility(View.GONE);
         }
+        //------------
 
-        holder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientObject.getGender()));
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (patientObject.getOutStandingAmount().equals("0.00") || patientObject.getOutStandingAmount().equals("0.0") || patientObject.getOutStandingAmount().equals("0")) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));

@@ -72,7 +72,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
 
     private String spannableString;
     private boolean selected;
-
+    private boolean isAddedMiddleName;
     //--Added for offline adding patient.
     private String offlineReferenceID;
     private boolean isOfflinePatientSynced = true; //considered always sync with server.
@@ -287,8 +287,8 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         dest.writeValue(clinicId);
         dest.writeValue(clinicName);
         dest.writeValue(hospitalPatId);
-        dest.writeValue(patientCity);
         dest.writeValue(patientCityId);
+        dest.writeValue(patientCity);
         dest.writeValue(aptId);
         dest.writeValue(creationDate);
         dest.writeValue(patientArea);
@@ -322,4 +322,6 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     public void setOfflinePatientSynced(boolean offlinePatientSynced) {
         isOfflinePatientSynced = offlinePatientSynced;
     }
+
+
 }

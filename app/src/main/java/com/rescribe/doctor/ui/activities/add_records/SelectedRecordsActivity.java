@@ -30,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
@@ -44,11 +43,9 @@ import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.KeyboardEvent;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
-
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
 import net.gotev.uploadservice.UploadService;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -56,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -64,7 +60,6 @@ import droidninja.filepicker.FilePickerBuilder;
 import droidninja.filepicker.FilePickerConst;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
-
 import static com.rescribe.doctor.services.SyncOfflineRecords.getUploadConfig;
 
 @RuntimePermissions
@@ -89,10 +84,8 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     ImageView addImageView;
     @BindView(R.id.addImageViewRightFab)
     FloatingActionButton mAddImageViewRightFab;
-
     @BindView(R.id.mainRelativeLayout)
     RelativeLayout mainRelativeLayout;
-
     private Context mContext;
     private ArrayList<Image> imagePaths = new ArrayList<>();
     private Dialog dialog;
