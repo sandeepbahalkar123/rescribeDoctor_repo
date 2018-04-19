@@ -195,7 +195,8 @@
     <string name="just_now">Just Now</string>
     <string name="services"><u>Services</u></string>
     <string name="about_doctor"><u>About Doctor :</u></string>
-    <string name="template_list">Template List</string>
+    <!--<string name="template_list">Template List</string>-->
+    <string name="template_list">SMS Templates</string>
     <string name="active">ACTIVE</string>
     <string name="view_all">VIEW ALL</string>
     <string name="in_time">In Time</string>

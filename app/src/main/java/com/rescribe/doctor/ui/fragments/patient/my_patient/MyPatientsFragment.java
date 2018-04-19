@@ -213,7 +213,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                         isFiltered = false;
                         searchText = "";
                         searchPatients(true);
-                    } else if (s.toString().length() < 3)
+                    }
+
+                    if (s.toString().length() < 3)
                         mMyPatientsAdapter.getFilter().filter(s.toString());
                 } else
                     searchPatients(false);

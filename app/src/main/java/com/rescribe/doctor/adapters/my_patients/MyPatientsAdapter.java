@@ -37,6 +37,8 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,6 +66,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
         this.mListToShowAfterFilter = dataList;
         mDataList.addAll(dataList);
+        removeDuplicateElements();
         this.mContext = mContext;
         appDBHelper = new AppDBHelper(mContext);
         this.mOnDownArrowClicked = mOnDownArrowClicked;
@@ -330,7 +333,22 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     public void add(PatientList mc) {
         mDataList.add(mc);
         mListToShowAfterFilter.add(mc);
+        removeDuplicateElements();
         notifyItemInserted(mDataList.size() - 1);
+    }
+
+
+    // this is added to remove duplicate patients from list based on patientID.
+    private void removeDuplicateElements() {
+        Map<Integer, PatientList> map = new LinkedHashMap<>();
+        for (PatientList ays : mDataList) {
+            map.put(ays.getHospitalPatId(), ays);
+        }
+
+        mDataList.clear();
+        mDataList.addAll(map.values());
+        mListToShowAfterFilter.clear();
+        mListToShowAfterFilter.addAll(map.values());
     }
 
     public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
