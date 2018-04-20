@@ -98,7 +98,6 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private ViewPagerAdapter mViewPagerAdapter;
     private HashSet<String> mGeneratedRequestForYearList;
     private Context mContext;
-
     private PatientHistoryActivity mParentActivity;
     private String mLocationId;
     private int mHospitalId;
@@ -151,7 +150,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
         mGeneratedRequestForYearList = new HashSet<>();
 
-        mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null);
+        mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null,getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
     }
 
     @OnClick({R.id.backImageView, R.id.addRecordButton})
@@ -229,7 +228,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                     Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedPatientHistoryInfo = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
                     if (yearWiseSortedPatientHistoryInfo.get(year) == null) {
                         mGeneratedRequestForYearList.add(year);
-                        mPatientDetailHelper.doGetPatientHistory(mPatientId, year, getArguments().getString(RescribeConstants.PATIENT_NAME) == null);
+                        mPatientDetailHelper.doGetPatientHistory(mPatientId, year, getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
                     }
                 }
                 //---------
