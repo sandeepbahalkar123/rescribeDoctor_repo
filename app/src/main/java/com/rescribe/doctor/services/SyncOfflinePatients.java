@@ -59,7 +59,8 @@ public class SyncOfflinePatients {
         this.context = mContext;
         appDBHelper = new AppDBHelper(context);
         gson = new Gson();
-        check();
+        if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, mContext).equals(RescribeConstants.YES))
+            check();
     }
 
     public void check() {
