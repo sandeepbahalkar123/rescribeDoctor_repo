@@ -182,6 +182,8 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     private void initialize() {
 
+        setAddPatientOfflineSettingSwitchStatus();
+
         String doctorDetails = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, this);
         final DocDetail docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
 
@@ -732,6 +734,14 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             radioSwitch.setChecked(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.CHAT_IS_CHECKED, mContext));
         } else {
             radioSwitch.setChecked(true);
+        }
+    }
+
+    //This sets that, offline adding patinet is always true
+    private void setAddPatientOfflineSettingSwitchStatus() {
+        boolean isExists = RescribePreferencesManager.getSharedPreference(mContext).contains(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS);
+        if (!isExists) {
+            RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, true, mContext);
         }
     }
 

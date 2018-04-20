@@ -22,7 +22,12 @@ import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
+import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.SyncPatientsModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
@@ -32,12 +37,16 @@ import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AddNewPatientWebViewActivity extends AppCompatActivity {
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
+
+public class AddNewPatientWebViewActivity extends AppCompatActivity implements HelperResponse {
 
     private static final String TAG = "AddPatient";
     public static final int ADD_PATIENT_REQUEST = 121;
@@ -77,6 +86,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
     private int cityID;
     private String cityName;
     private Context mContext;
+    private boolean mAddPatientOfflineSetting;
+    private PatientList mAddedPatientListData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +110,16 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
 
         mWebViewTitle.setText(getString(R.string.patient_registration));
 
-        if (NetworkUtil.isInternetAvailable(this)) {
+        mAddPatientOfflineSetting = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, this);
+
+        boolean internetAvailable = NetworkUtil.isInternetAvailable(this);
+        if (internetAvailable && !mAddPatientOfflineSetting) {
             mWebViewObject.setVisibility(View.VISIBLE);
             mMainParentScrollViewLayout.setVisibility(View.GONE);
             loadWebViewData(urlData);
         } else {
-            CommonMethods.showToast(this, getString(R.string.add_patient_offline));
+            if (!internetAvailable)
+                CommonMethods.showToast(this, getString(R.string.add_patient_offline_msg));
             mWebViewObject.setVisibility(View.GONE);
             mMainParentScrollViewLayout.setVisibility(View.VISIBLE);
         }
@@ -117,21 +132,27 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
                 onBackPressed();
                 break;
             case R.id.btnAddPatientSubmit:
-                PatientList validate = validate();
-                if (validate != null) {
-                    if (AppDBHelper.getInstance(mContext).addNewPatient(validate) != -1) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(RescribeConstants.PATIENT_NAME, validate.getPatientName());
-                        bundle.putString(RescribeConstants.PATIENT_INFO, "" + validate.getAge());
-                        bundle.putInt(RescribeConstants.CLINIC_ID, validate.getClinicId());
-                        bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(validate.getPatientId()));
-                        bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(validate.getHospitalPatId()));
-                        Intent intent = new Intent(this, PatientHistoryActivity.class);
-                        intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
-                        startActivity(intent);
-                        finish();
-                    } else
-                        CommonMethods.showToast(mContext, "Failed to store");
+                mAddedPatientListData = validate();
+                if (mAddedPatientListData != null) {
+                    if (mAddPatientOfflineSetting) {
+                        AppointmentHelper m = new AppointmentHelper(this, this);
+                        m.addNewPatient(mAddedPatientListData);
+                    } else {
+                        if (AppDBHelper.getInstance(mContext).addNewPatient(mAddedPatientListData) != -1) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(RescribeConstants.PATIENT_NAME, mAddedPatientListData.getPatientName());
+                            bundle.putString(RescribeConstants.PATIENT_INFO, "" + mAddedPatientListData.getAge());
+                            bundle.putInt(RescribeConstants.CLINIC_ID, mAddedPatientListData.getClinicId());
+                            bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(mAddedPatientListData.getPatientId()));
+                            bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mAddedPatientListData.getHospitalPatId()));
+                            Intent intent = new Intent(this, PatientHistoryActivity.class);
+                            intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
+                            startActivity(intent);
+                            finish();
+                        } else
+                            CommonMethods.showToast(mContext, "Failed to store");
+                    }
+
                 }
                 break;
         }
@@ -253,12 +274,15 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
         String message;
         PatientList patientList = null;
         String enter = getString(R.string.enter);
-        String firstName = mFirstName.getText().toString();
-        String middleName = mMiddleName.getText().toString();
-        String lastName = mLastName.getText().toString();
-        String mob = mMobNo.getText().toString();
-        String age = mAge.getText().toString();
-        String refID = mReferenceID.getText().toString();
+        String firstName = mFirstName.getText().toString().trim();
+        String middleName = mMiddleName.getText().toString().trim();
+        String lastName = mLastName.getText().toString().trim();
+        String mob = mMobNo.getText().toString().trim();
+        String age = mAge.getText().toString().trim();
+        String refID = mReferenceID.getText().toString().trim();
+
+        boolean enteredRefIDIsValid = isEnteredRefIDIsValid(refID);
+
         if (firstName.isEmpty()) {
             message = enter + getString(R.string.first_name).toLowerCase(Locale.US);
             CommonMethods.showToast(this, message);
@@ -270,6 +294,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
             CommonMethods.showToast(this, message);
         } else if ((mob.trim().length() < 10) || !(mob.trim().startsWith("6") || mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9"))) {
             message = getString(R.string.err_invalid_mobile_no);
+            CommonMethods.showToast(this, message);
+        } else if (!enteredRefIDIsValid) {
+            message = getString(R.string.reference_id_input_err_msg);
             CommonMethods.showToast(this, message);
         } else {
             patientList = new PatientList();
@@ -311,4 +338,62 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
         return patientList;
     }
 
+    public static boolean isEnteredRefIDIsValid(String str) {
+        boolean isValid = false;
+        if (str.isEmpty()) {
+            return true;
+        } else {
+            String expression = "^[a-z_A-Z0-9]*$";
+            CharSequence inputStr = str;
+            Pattern pattern = Pattern.compile(expression);
+            Matcher matcher = pattern.matcher(inputStr);
+            if (matcher.matches()) {
+                isValid = true;
+            }
+        }
+        return isValid;
+    }
+
+    @Override
+    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        switch (mOldDataTag) {
+            case RescribeConstants.TASK_ADD_NEW_PATIENT:
+                SyncPatientsModel mSyncPatientsModel = (SyncPatientsModel) customResponse;
+                Common common = mSyncPatientsModel.getCommon();
+                if (common != null) {
+                    CommonMethods.showToast(this, common.getStatusMessage());
+                    if (common.getStatusCode().equals(SUCCESS)) {
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString(RescribeConstants.PATIENT_NAME, mAddedPatientListData.getPatientName());
+                        bundle.putString(RescribeConstants.PATIENT_INFO, "" + mAddedPatientListData.getAge());
+                        bundle.putInt(RescribeConstants.CLINIC_ID, mAddedPatientListData.getClinicId());
+                        bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(mAddedPatientListData.getPatientId()));
+                        bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mAddedPatientListData.getHospitalPatId()));
+                        Intent intent = new Intent(this, PatientHistoryActivity.class);
+                        intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
+
+                break;
+        }
+    }
+
+    @Override
+    public void onParseError(String mOldDataTag, String errorMessage) {
+
+    }
+
+    @Override
+    public void onServerError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @Override
+    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
+
+    }
 }

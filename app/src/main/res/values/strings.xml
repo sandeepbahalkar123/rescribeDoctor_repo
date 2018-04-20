@@ -238,7 +238,9 @@
     <string name="middle_name">Middle Name</string>
     <string name="last_name">Last Name</string>
     <string name="reference_id">Reference ID.</string>
-    <string name="add_patient_offline">No internet connection found, still you can add patient offline.</string>
+    <string name="reference_id_input_err_msg">Reference ID should be alphanumeric, no special characters and no white spaces.</string>
+    <string name="add_patient_offline_msg">No internet connection found, still you can add patient offline.</string>
+    <string name="setting_add_patient_header">Add patient offline</string>
 
     <string name="book_appointment">Book Appointment</string>
     <string name="appointment_booked_message">Appointment has already been taken with this doctor.</string>

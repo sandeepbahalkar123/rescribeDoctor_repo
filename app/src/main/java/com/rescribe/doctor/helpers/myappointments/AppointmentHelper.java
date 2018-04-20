@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.android.volley.Request;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
+import com.rescribe.doctor.model.patient.add_new_patient.SyncPatientsRequest;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -199,7 +201,7 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_DOCTOR_PATIENT_CITY);
     }
 
-    public void getTimeSlotToBookAppointmentWithDoctor(String docId, int locationID, String date, boolean isReqDoctorData,int patientID) {
+    public void getTimeSlotToBookAppointmentWithDoctor(String docId, int locationID, String date, boolean isReqDoctorData, int patientID) {
 
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT, Request.Method.GET, true);
         mConnectionFactory.setHeaderParams();
@@ -212,7 +214,8 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT);//RescribeConstants.TASK_TIME_SLOT_TO_BOOK_APPOINTMENT
 
     }
-    public void doConfirmAppointmentRequest(int docId, int locationID, String date, String fromTime, String toTime, int slotId, Reschedule reschedule,int patientID) {
+
+    public void doConfirmAppointmentRequest(int docId, int locationID, String date, String fromTime, String toTime, int slotId, Reschedule reschedule, int patientID) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_CONFIRM_APPOINTMENT, Request.Method.POST, false);
         mConnectionFactory.setHeaderParams();
 
@@ -229,6 +232,45 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setUrl(Config.CONFIRM_APPOINTMENT);
         mConnectionFactory.createConnection(RescribeConstants.TASK_CONFIRM_APPOINTMENT);
 
+    }
+
+    public void addNewPatient(PatientList dataToAdd) {
+
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ADD_NEW_PATIENT, Request.Method.POST, false);
+        PatientDetail patient = new PatientDetail();
+        patient.setMobilePatientId(dataToAdd.getPatientId());
+
+        //---------
+        String[] split = dataToAdd.getPatientName().split(" ");
+        patient.setPatientFname(split[0]);
+        if (split.length > 1) {
+            if (split[1].equalsIgnoreCase("|"))
+                patient.setPatientMname("");
+            else
+                patient.setPatientMname(split[1]);
+        }
+        if (split.length > 2)
+            patient.setPatientLname(split[2]);
+        //---------
+        patient.setPatientPhone(dataToAdd.getPatientPhone());
+        patient.setPatientAge(dataToAdd.getAge());
+        patient.setPatientGender(dataToAdd.getGender());
+        patient.setClinicId(dataToAdd.getClinicId());
+        patient.setPatientDob(dataToAdd.getDateOfBirth());
+       // patient.setOfflineReferenceID(dataToAdd.getOfflineReferenceID());
+
+        SyncPatientsRequest mSyncPatientsRequest = new SyncPatientsRequest();
+        String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
+        mSyncPatientsRequest.setDocId(id);
+
+        ArrayList<PatientDetail> add = new ArrayList<PatientDetail>();
+        add.add(patient);
+        mSyncPatientsRequest.setPatientDetails(add);
+
+        mConnectionFactory.setPostParams(mSyncPatientsRequest);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.ADD_PATIENTS_SYNC);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_ADD_NEW_PATIENT);
     }
 
 }
