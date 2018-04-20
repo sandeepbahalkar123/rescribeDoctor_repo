@@ -7,7 +7,6 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.case_details.CaseDetailsModel;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.patient.delete_attachment_req_model.DeleteAttachmentReqModel;
@@ -124,13 +123,13 @@ public class PatientDetailHelper implements ConnectionListener {
         }*/
     }
 
-    public void doGetPatientHistory(String patientID, String year, boolean getPatientInfo) {
-
+    public void doGetPatientHistory(String patientID, String year, boolean getPatientInfo, String hospitalPatid) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_PATIENT_HISTORY, Request.Method.POST, false);
         RequestForPatientHistory mRequestForPatientHistory = new RequestForPatientHistory();
         mRequestForPatientHistory.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         mRequestForPatientHistory.setPatientId(Integer.valueOf(patientID));
+        mRequestForPatientHistory.setHospitalPatId(Integer.valueOf(hospitalPatid));
         mRequestForPatientHistory.setYear(year);
         mRequestForPatientHistory.setGetPatientInfo(getPatientInfo);
         mConnectionFactory.setPostParams(mRequestForPatientHistory);
