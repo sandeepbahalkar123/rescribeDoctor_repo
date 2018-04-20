@@ -321,7 +321,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             patientList.setReferenceID(refID);
             patientList.setOfflinePatientSynced(false);
             patientList.setClinicId(hospitalId);
-//            patientList.setHospitalPatId();
+            patientList.setHospitalPatId(hospitalId);
             patientList.setPatientCity(cityName);
             patientList.setPatientCityId(cityID);
             patientList.setCreationDate(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN));
