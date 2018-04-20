@@ -150,7 +150,7 @@ public class LoadAllPatientsService extends Service {
                                 // add in database
                                 for (PatientList patientL : patientList) {
                                     patientL.setOfflinePatientSynced(true);
-                                    patientL.setOfflineReferenceID("");
+                                    patientL.setReferenceID("");
                                     appDBHelper.addNewPatient(patientL);
                                 }
 

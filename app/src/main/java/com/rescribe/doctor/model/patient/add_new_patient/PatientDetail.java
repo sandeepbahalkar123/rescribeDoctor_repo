@@ -2,8 +2,9 @@ package com.rescribe.doctor.model.patient.add_new_patient;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.rescribe.doctor.interfaces.CustomResponse;
 
-public class PatientDetail {
+public class PatientDetail implements CustomResponse {
 
     @SerializedName("mobilePatientId")
     @Expose
@@ -32,9 +33,10 @@ public class PatientDetail {
     @SerializedName("patientGender")
     @Expose
     private String patientGender;
+    @SerializedName("referenceId")
+    @Expose
+    private String offlineReferenceID;
 
-
-    public int isSync;
 
     public int getMobilePatientId() {
         return mobilePatientId;
@@ -108,4 +110,11 @@ public class PatientDetail {
         this.patientGender = patientGender;
     }
 
+    public String getOfflineReferenceID() {
+        return offlineReferenceID;
+    }
+
+    public void setOfflineReferenceID(String offlineReferenceID) {
+        this.offlineReferenceID = offlineReferenceID;
+    }
 }

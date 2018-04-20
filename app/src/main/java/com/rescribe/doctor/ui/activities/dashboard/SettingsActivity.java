@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
 import com.rescribe.doctor.ui.activities.ProfileActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.customesViews.SwitchButton;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import net.gotev.uploadservice.UploadService;
@@ -55,6 +57,8 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
     ImageView dashboardArrowIcon;
     @BindView(R.id.selectMenuLayout)
     RelativeLayout selectMenuLayout;
+    @BindView(R.id.addPatientRadioSwitch)
+    SwitchButton mAddPatientRadioSwitch;
     private AppDBHelper appDBHelper;
     private Context mContext;
     private LoginHelper loginHelper;
@@ -76,6 +80,16 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         loginHelper = new LoginHelper(mContext, this);
         titleTextView.setText(getString(R.string.settings));
         backImageView.setVisibility(View.GONE);
+
+        mAddPatientRadioSwitch.setCheckedNoEvent(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, mContext));
+
+        mAddPatientRadioSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, isChecked, mContext);
+                mAddPatientRadioSwitch.setChecked(isChecked);
+            }
+        });
     }
 
 
@@ -188,7 +202,7 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         if (isLaterClicked) {
             RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, RescribeConstants.YES, mContext);
         }
-        if(isSkippedClicked){
+        if (isSkippedClicked) {
             RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, RescribeConstants.NO, mContext);
         }
         RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, isSkippedClicked, mContext);

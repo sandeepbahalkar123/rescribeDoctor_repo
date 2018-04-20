@@ -5,8 +5,9 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.rescribe.doctor.interfaces.CustomResponse;
 
-public class SyncPatientsRequest {
+public class SyncPatientsRequest implements CustomResponse {
 
     @SerializedName("docId")
     @Expose
