@@ -350,7 +350,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     @Override
     public void onAppointmentReshedule(PatientList patientList, String text, String cityName, String areaName) {
         Intent intent = new Intent(getActivity(), SelectSlotToBookAppointmentBaseActivity.class);
-        PatientList patientListforBookAppointment = new PatientList();
+        com.rescribe.doctor.model.patient.doctor_patients.PatientList patientListforBookAppointment = new com.rescribe.doctor.model.patient.doctor_patients.PatientList ();
         patientListforBookAppointment.setPatientName(patientList.getPatientName());
         patientListforBookAppointment.setPatientId(patientList.getPatientId());
         patientListforBookAppointment.setPatientCity(cityName);

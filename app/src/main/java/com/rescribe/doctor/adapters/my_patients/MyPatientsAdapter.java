@@ -37,6 +37,8 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,6 +66,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
         this.mListToShowAfterFilter = dataList;
         mDataList.addAll(dataList);
+        removeDuplicateElements();
         this.mContext = mContext;
         appDBHelper = new AppDBHelper(mContext);
         this.mOnDownArrowClicked = mOnDownArrowClicked;
@@ -148,22 +151,30 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
             holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
         }
-
-        if (patientObject.getAge().equals("") && !patientObject.getDateOfBirth().equals("")) {
+        //------------
+        String gender = CommonMethods.toCamelCase(patientObject.getGender());
+        holder.patientGenderTextView.setText(gender);
+        //------------
+        //-- DOnt show - when gender is empty
+        String yearsString = mContext.getString(R.string.years);
+        if (gender != null && RescribeConstants.BLANK.equalsIgnoreCase(gender)) {
+            yearsString = yearsString.substring(0, (yearsString.length() - 2));
+        }
+        if (patientObject.getAge() != null && !RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getAge())) {
+            holder.patientAgeTextView.setVisibility(View.VISIBLE);
+            holder.patientAgeTextView.setText(patientObject.getAge() + " " + yearsString);
+        } else if (patientObject.getDateOfBirth() != null && !RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getDateOfBirth())) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = patientObject.getDateOfBirth();
             DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-            holder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
-        } else if (!patientObject.getAge().equals("")) {
-            holder.patientAgeTextView.setVisibility(View.VISIBLE);
-            holder.patientAgeTextView.setText(patientObject.getAge() + " " + mContext.getString(R.string.years));
+            holder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + yearsString);
         } else {
             holder.patientAgeTextView.setVisibility(View.GONE);
         }
+        //------------
 
-        holder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientObject.getGender()));
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (patientObject.getOutStandingAmount().equals("0.00") || patientObject.getOutStandingAmount().equals("0.0") || patientObject.getOutStandingAmount().equals("0")) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
@@ -322,7 +333,22 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     public void add(PatientList mc) {
         mDataList.add(mc);
         mListToShowAfterFilter.add(mc);
+        removeDuplicateElements();
         notifyItemInserted(mDataList.size() - 1);
+    }
+
+
+    // this is added to remove duplicate patients from list based on patientID.
+    private void removeDuplicateElements() {
+        Map<Integer, PatientList> map = new LinkedHashMap<>();
+        for (PatientList ays : mDataList) {
+            map.put(ays.getHospitalPatId(), ays);
+        }
+
+        mDataList.clear();
+        mDataList.addAll(map.values());
+        mListToShowAfterFilter.clear();
+        mListToShowAfterFilter.addAll(map.values());
     }
 
     public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
@@ -332,7 +358,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             mc.setSelected(selectedDoctorId.contains(mc.getHospitalPatId()));
             add(mc);
             // add patient in sqlite while pagination.
-            mc.setOfflinePatientSynced(true);
+
+            if (mc.isOfflinePatientSynced()) {
+                mc.setOfflinePatientSynced(true);
+            } else {
+                mc.setOfflinePatientSynced(false);
+            }
+
             mc.setOfflineReferenceID("");
             appDBHelper.addNewPatient(mc);
         }

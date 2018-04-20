@@ -97,7 +97,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
         String urlData = Config.ADD_NEW_PATIENT_WEB_URL + docID + "/" +
                 hospitalId + "/" + locationID + "/" + cityID;
 
-        mWebViewTitle.setText(getString(R.string.new_patients));
+        mWebViewTitle.setText(getString(R.string.patient_registration));
 
         if (NetworkUtil.isInternetAvailable(this)) {
             mWebViewObject.setVisibility(View.VISIBLE);
@@ -114,22 +114,12 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
     public void back(View view) {
         switch (view.getId()) {
             case R.id.backButton:
-                if (mMainParentScrollViewLayout.getVisibility() == View.VISIBLE) {
-                    finish();
-                } else {
-                    if (mWebViewObject.canGoBack()) {
-                        mWebViewObject.goBack();
-                    } else {
-                        super.onBackPressed();
-                    }
-                }
-
+                onBackPressed();
                 break;
             case R.id.btnAddPatientSubmit:
                 PatientList validate = validate();
                 if (validate != null) {
-                    AppDBHelper appDBHelper = new AppDBHelper(mContext);
-                    if (appDBHelper.addNewPatient(validate) != -1) {
+                    if (AppDBHelper.getInstance(mContext).addNewPatient(validate) != -1) {
                         Bundle bundle = new Bundle();
                         bundle.putString(RescribeConstants.PATIENT_NAME, validate.getPatientName());
                         bundle.putString(RescribeConstants.PATIENT_INFO, "" + validate.getAge());
@@ -149,6 +139,15 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (mMainParentScrollViewLayout.getVisibility() == View.VISIBLE) {
+            finish();
+        } else {
+            if (mWebViewObject.canGoBack()) {
+                mWebViewObject.goBack();
+            } else {
+                super.onBackPressed();
+            }
+        }
 
     }
 
@@ -263,25 +262,22 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
         if (firstName.isEmpty()) {
             message = enter + getString(R.string.first_name).toLowerCase(Locale.US);
             CommonMethods.showToast(this, message);
-        } else if (middleName.isEmpty()) {
-            message = enter + getString(R.string.middle_name).toLowerCase(Locale.US);
-            CommonMethods.showToast(this, message);
         } else if (lastName.isEmpty()) {
             message = enter + getString(R.string.last_name);
             CommonMethods.showToast(this, message);
         } else if (mob.isEmpty() || mob.length() < 10) {
             message = enter + getString(R.string.enter_mobile_no);
             CommonMethods.showToast(this, message);
-        } else if ((mob.trim().length() < 10) || !(mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9"))) {
+        } else if ((mob.trim().length() < 10) || !(mob.trim().startsWith("6") || mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9"))) {
             message = getString(R.string.err_invalid_mobile_no);
-            CommonMethods.showToast(this, message);
-        } else if (age.isEmpty()) {
-            message = enter + getString(R.string.age);
             CommonMethods.showToast(this, message);
         } else {
             patientList = new PatientList();
             int id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
             patientList.setPatientId(id);
+            if (middleName.trim().length() == 0) {
+                middleName = "|";
+            }
             patientList.setPatientName(firstName + " " + middleName + " " + lastName);
             patientList.setSalutation(0);
             patientList.setOutStandingAmount("0.00");
@@ -290,7 +286,11 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
             patientList.setPatientPhone(mob);
             patientList.setAge(age);
             RadioButton viewById = (RadioButton) findViewById(mGenderRadioGroup.getCheckedRadioButtonId());
-            patientList.setGender(viewById.getText().toString());
+            if (viewById != null)
+                patientList.setGender(viewById.getText().toString());
+            else
+                patientList.setGender("");
+
             patientList.setOfflineReferenceID(refID);
             patientList.setOfflinePatientSynced(false);
             patientList.setClinicId(hospitalId);
@@ -299,6 +299,15 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity {
             patientList.setPatientCityId(cityID);
             patientList.setCreationDate(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN));
         }
+
+         /*else if (middleName.isEmpty()) {
+            message = enter + getString(R.string.middle_name).toLowerCase(Locale.US);
+            CommonMethods.showToast(this, message);
+        }
+         else if (age.isEmpty() ) {
+            message = enter + " valid " + getString(R.string.age);
+            CommonMethods.showToast(this, message);
+        }*/
         return patientList;
     }
 

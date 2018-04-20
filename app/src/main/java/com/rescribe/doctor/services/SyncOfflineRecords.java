@@ -65,7 +65,7 @@ public class SyncOfflineRecords {
 
                         String uploadId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.UPLOAD_ID));
 
-                        appDBHelper.updateRecordUploads(uploadId, UPLOADING);
+                        appDBHelper.updateRecordUploads(uploadId, uploadStatus);
 
                         String mOpdtime = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.OPD_TIME));
                         String visitDate = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.VISIT_DATE));
@@ -185,21 +185,26 @@ public class SyncOfflineRecords {
         @Override
         public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
             // your implementation
-            appDBHelper.updateRecordUploads(uploadInfo.getUploadId(), FAILED);
-            Intent intent = new Intent(DOC_UPLOAD);
-            intent.putExtra(UPLOAD_INFO, uploadInfo);
-            intent.putExtra(STATUS, FAILED);
-            context.sendBroadcast(intent);
+            if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, context).equals(RescribeConstants.YES)) {
+                appDBHelper.updateRecordUploads(uploadInfo.getUploadId(), FAILED);
+                Intent intent = new Intent(DOC_UPLOAD);
+                intent.putExtra(UPLOAD_INFO, uploadInfo);
+                intent.putExtra(STATUS, FAILED);
+                context.sendBroadcast(intent);
+            }
         }
 
         @Override
         public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
             // your implementation
-            appDBHelper.updateRecordUploads(uploadInfo.getUploadId(), COMPLETED);
-            Intent intent = new Intent(DOC_UPLOAD);
-            intent.putExtra(UPLOAD_INFO, uploadInfo);
-            intent.putExtra(STATUS, COMPLETED);
-            context.sendBroadcast(intent);
+
+            if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, context).equals(RescribeConstants.YES)) {
+                appDBHelper.updateRecordUploads(uploadInfo.getUploadId(), COMPLETED);
+                Intent intent = new Intent(DOC_UPLOAD);
+                intent.putExtra(UPLOAD_INFO, uploadInfo);
+                intent.putExtra(STATUS, COMPLETED);
+                context.sendBroadcast(intent);
+            }
         }
 
         @Override

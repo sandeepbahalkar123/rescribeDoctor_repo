@@ -65,7 +65,7 @@ public class SyncOfflinePatients {
 
     public void check() {
         ArrayList<PatientDetail> offlineAddedPatients = appDBHelper.getOfflinePatientsToUpload();
-        Log.i(LOG_TAG, "Checking offline patients " + offlineAddedPatients.size());
+        Log.e(LOG_TAG, "Checking offline patients " + offlineAddedPatients.size());
 
         if (!offlineAddedPatients.isEmpty()) {
 

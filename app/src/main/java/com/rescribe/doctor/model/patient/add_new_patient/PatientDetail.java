@@ -33,6 +33,9 @@ public class PatientDetail {
     @Expose
     private String patientGender;
 
+
+    public int isSync;
+
     public int getMobilePatientId() {
         return mobilePatientId;
     }

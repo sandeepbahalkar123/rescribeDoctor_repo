@@ -2,10 +2,13 @@ package com.rescribe.doctor.helpers.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
@@ -16,10 +19,12 @@ import com.rescribe.doctor.model.request_patients.FilterParams;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.util.CommonMethods;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
@@ -38,7 +43,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "MyRescribe.sqlite";
     private static final String DB_PATH_SUFFIX = "/data/data/com.rescribe.doctor/databases/"; // Change
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     public static final String APP_DATA_TABLE = "PrescriptionData";
     public static final String COLUMN_ID = "dataId";
     public static final String COLUMN_DATA = "data";
@@ -61,9 +66,63 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // db.execSQL("DROP TABLE IF EXISTS " + APP_DATA_TABLE);
-        // *Please write alter table code here carefully.
+
+        Log.e(TAG, "Updating table from " + oldVersion + " to " + newVersion);
+        // You will not need to modify this unless you need to do some android specific things.
+        // When upgrading the database, all you need to do is add a file to the assets folder and name it:
+        // from_1_to_2.sql with the version that you are upgrading to as the last version.
+        for (int i = oldVersion; i < newVersion; ++i) {
+            String migrationName = String.format("from_%d_to_%d.sql", i, (i + 1));
+            Log.e(TAG, "Looking for migration file: " + migrationName);
+            readAndExecuteSQLScript(db, mContext, migrationName);
+        }
     }
+
+    //-----------
+    private void readAndExecuteSQLScript(SQLiteDatabase db, Context ctx, String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            Log.e(TAG, "SQL script file name is empty");
+            return;
+        }
+
+        Log.e(TAG, "Script found. Executing...");
+        AssetManager assetManager = ctx.getAssets();
+        BufferedReader reader = null;
+
+        try {
+            InputStream is = assetManager.open(fileName);
+            InputStreamReader isr = new InputStreamReader(is);
+            reader = new BufferedReader(isr);
+            executeSQLScript(db, reader);
+        } catch (IOException e) {
+            Log.e(TAG, "IOException:", e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException:", e);
+                }
+            }
+        }
+
+    }
+
+    private void executeSQLScript(SQLiteDatabase db, BufferedReader reader) throws IOException {
+        String line;
+        StringBuilder statement = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+            statement.append(line);
+            statement.append("\n");
+            if (line.endsWith(";")) {
+                String s = statement.toString();
+                CommonMethods.Log(TAG, s);
+                db.execSQL(s);
+                statement = new StringBuilder();
+            }
+        }
+    }
+    //-----------
 
     public static synchronized AppDBHelper getInstance(Context context) {
         if (instance == null) {
@@ -114,8 +173,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     }
 
     private void copyDataBase() {
-        CommonMethods.Log(TAG,
-                "New database is being copied to device!");
+
         byte[] buffer = new byte[1024];
         OutputStream myOutput = null;
         int length;
@@ -136,8 +194,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
             myOutput = new FileOutputStream(path);
 
-            CommonMethods.Log(TAG,
-                    "New database is being copied to device!" + path);
             while ((length = myInput.read(buffer)) > 0) {
                 myOutput.write(buffer, 0, length);
             }
@@ -147,6 +203,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
             CommonMethods.Log(TAG,
                     "New database has been copied to device!");
         } catch (IOException e) {
+            CommonMethods.Log(TAG,
+                    "Failed to copy database");
             e.printStackTrace();
         }
     }
@@ -274,10 +332,10 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public Cursor getRecordUploads() {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM " + MY_RECORDS.MY_RECORDS_TABLE + " WHERE " + MY_RECORDS.UPLOAD_STATUS + " = " + FAILED;
-        return db.rawQuery(sql, null);
+        return  db.rawQuery(sql, null);
     }
 
-    public long insertRecordUploads(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath) {
+    public void insertRecordUploads(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -295,16 +353,19 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(MY_RECORDS.IMAGE_PATH, imagePath);
         contentValues.put(MY_RECORDS.UPLOAD_STATUS, FAILED);
 
-        return db.insert(MY_RECORDS.MY_RECORDS_TABLE, null, contentValues);
+        db.insert(MY_RECORDS.MY_RECORDS_TABLE, null, contentValues);
+
+        db.close();
     }
 
-    public long updateRecordUploads(String uploadId, int uploadStatus) {
+    public void updateRecordUploads(String uploadId, int uploadStatus) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(MY_RECORDS.UPLOAD_STATUS, uploadStatus);
 
-        return db.update(MY_RECORDS.MY_RECORDS_TABLE, contentValues, MY_RECORDS.UPLOAD_ID + " = ?", new String[]{uploadId});
+        db.update(MY_RECORDS.MY_RECORDS_TABLE, contentValues, MY_RECORDS.UPLOAD_ID + " = ?", new String[]{uploadId});
+        db.close();
     }
 
     public interface MY_RECORDS {
@@ -379,23 +440,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
         Integer IS_NOT_SYNC_WITH_SERVER = 0;
     }
 
-    // New
-
-    public boolean deleteChatMessageByMsgId(int messageId) {
-        SQLiteDatabase db = getWritableDatabase();
-        return db.delete(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.MSG_ID + "=" + messageId, null) > 0;
-    }
-
-    public boolean deleteChatMessageByDoctorId(int doctorId) {
-        SQLiteDatabase db = getWritableDatabase();
-        return db.delete(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.USER1ID + "=" + doctorId, null) > 0;
-    }
-
-    public boolean deleteChatMessageByPatientId(int patientId) {
-        SQLiteDatabase db = getWritableDatabase();
-        return db.delete(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.USER2ID + "=" + patientId, null) > 0;
-    }
-
     public ArrayList<MQTTMessage> insertChatMessage(MQTTMessage mqttMessage) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -434,11 +478,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return DatabaseUtils.queryNumEntries(db, CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.MSG_ID + " = '" + msgId + "'");
     }
 
-    public int markAsAReadChatMessageByPatientId(int patientId) {
+    public void markAsAReadChatMessageByPatientId(int patientId) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CHAT_MESSAGES.READ_STATUS, READ);
-        return db.update(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, contentValues, CHAT_MESSAGES.USER2ID + " = ? AND " + CHAT_MESSAGES.READ_STATUS + " = ? AND " + CHAT_MESSAGES.SENDER + " = ?", new String[]{String.valueOf(patientId), String.valueOf(UNREAD), PATIENT});
+        db.update(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, contentValues, CHAT_MESSAGES.USER2ID + " = ? AND " + CHAT_MESSAGES.READ_STATUS + " = ? AND " + CHAT_MESSAGES.SENDER + " = ?", new String[]{String.valueOf(patientId), String.valueOf(UNREAD), PATIENT});
+        db.close();
     }
 
     public long unreadChatMessageCountByPatientId(int patientId) {
@@ -555,8 +600,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
         if (!patientName.isEmpty()) {
             String[] split = patientName.split(" ");
             contentValues.put(ADD_NEW_PATIENT.FIRST_NAME, split[0]);
-            if (split.length > 1)
-                contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, split[1]);
+            if (split.length > 1) {
+                if (split[1].equalsIgnoreCase("|"))
+                    contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, "");
+                else
+                    contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, split[1]);
+            }
             if (split.length > 2)
                 contentValues.put(ADD_NEW_PATIENT.LAST_NAME, split[2]);
         }
@@ -592,7 +641,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
         for (PatientUpdateDetail patientUpdate : patientUpdateDetail) {
 
             ContentValues contentValues = new ContentValues();
-            contentValues.put(ADD_NEW_PATIENT.IS_SYNC, true);
+            // contentValues.put(ADD_NEW_PATIENT.IS_SYNC, true);
+            contentValues.put(ADD_NEW_PATIENT.IS_SYNC, ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER);
             contentValues.put(ADD_NEW_PATIENT.PATIENT_ID, patientUpdate.getPatientId());
             contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, patientUpdate.getHospitalPatId());
 
@@ -776,8 +826,9 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     public ArrayList<PatientDetail> getOfflinePatientsToUpload() {
         SQLiteDatabase db = getReadableDatabase();
-        String countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " where " + ADD_NEW_PATIENT.IS_SYNC + " = " + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER;
+        String countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " where " + ADD_NEW_PATIENT.IS_SYNC + " like '%" + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER + "%'";
         Cursor cursor = db.rawQuery(countQuery, null);
+        CommonMethods.Log(TAG, "getOfflinePatientsToUpload" + countQuery);
         ArrayList<PatientDetail> list = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
@@ -792,6 +843,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));
                 patient.setPatientAge(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.AGE)));
                 patient.setPatientGender(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.GENDER)));
+                patient.isSync = cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.IS_SYNC));
 
 //                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID));
 

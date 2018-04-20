@@ -3,17 +3,14 @@ package com.rescribe.doctor.ui.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.SpannableString;
@@ -181,7 +178,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_base_layout);
         ButterKnife.bind(this);
-        setCurrentActivtyTab(getString(R.string.profile));
+        setCurrentActivityTab(getString(R.string.profile));
         initialize();
     }
 

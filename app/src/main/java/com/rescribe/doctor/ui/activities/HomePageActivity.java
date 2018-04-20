@@ -152,7 +152,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private int OT_ID_SEVER = 2;
     private DashBoardAppointmentListAdapter mDashBoardAppointmentListAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,8 +165,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
         loginHelper = new LoginHelper(mContext, HomePageActivity.this);
         initialize();
-        setCurrentActivtyTab(getString(R.string.home));
-
+        setCurrentActivityTab(getString(R.string.home));
         //drawerConfiguration();
     }
 

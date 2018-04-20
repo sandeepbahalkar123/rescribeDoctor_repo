@@ -49,7 +49,7 @@ public class BottomMenuActivity extends AppCompatActivity implements BottomMenuA
 
     }
 
-    public void setCurrentActivtyTab(String nameOfActivity){
+    public void setCurrentActivityTab(String nameOfActivity){
         mBottomMenuList = new ArrayList<>();
       if(nameOfActivity.equals(getString(R.string.home))){
           for (String mMenuName : mMenuNames) {
