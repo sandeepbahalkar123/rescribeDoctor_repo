@@ -354,7 +354,7 @@ public class MQTTService extends Service {
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(1);
             message.setRetained(true);
-            if (mqttClient.isConnected()) {
+            if (mqttClient.isConnected() && RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, mContext).equals(RescribeConstants.YES)) {
                 mqttClient.publish(TOPIC[INTERNET_TOPIC], message);
                 ArrayList<MQTTMessage> chatMessageByMessageStatus = appDBHelper.getChatMessageByMessageStatus(PENDING);
                 for (MQTTMessage mqttMessage : chatMessageByMessageStatus)
