@@ -22,11 +22,12 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.ui.activities.HomePageActivity;
 import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
 import com.rescribe.doctor.ui.activities.ProfileActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
+
+import net.gotev.uploadservice.UploadService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +66,7 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         setContentView(R.layout.settings_base_layout);
         ButterKnife.bind(this);
         initialize();
-        setCurrentActivtyTab(getString(R.string.settings));
+        setCurrentActivityTab(getString(R.string.settings));
     }
 
     private void initialize() {
@@ -150,6 +151,10 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
 
 
     private void logout() {
+
+        // cancel all uploadings.
+        UploadService.stopAllUploads();
+
         String mobileNoGmail = "";
         String passwordGmail = "";
         String mobileNoFacebook = "";
@@ -165,14 +170,14 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
             gmailLogin = RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext);
             mobileNoGmail = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL, mContext);
             passwordGmail = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL, mContext);
-
         }
+
         if (RescribePreferencesManager.getString(RescribeConstants.FACEBOOK_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_facebook))) {
             facebookLogin = RescribePreferencesManager.getString(RescribeConstants.FACEBOOK_LOGIN, mContext);
             mobileNoFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_FACEBOOK, mContext);
             passwordFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, mContext);
-
         }
+
         version_code = RescribePreferencesManager.getInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, mContext);
         isLaterClicked = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, mContext);
         isSkippedClicked = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, mContext);

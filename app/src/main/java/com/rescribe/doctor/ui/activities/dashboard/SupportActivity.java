@@ -15,7 +15,6 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.bottom_menus.BottomMenuAdapter;
-import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.ui.activities.ProfileActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 
@@ -54,7 +53,7 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
         setContentView(R.layout.support_base_layout);
         ButterKnife.bind(this);
         initialize();
-        setCurrentActivtyTab(getString(R.string.support));
+        setCurrentActivityTab(getString(R.string.support));
     }
 
     private void initialize() {

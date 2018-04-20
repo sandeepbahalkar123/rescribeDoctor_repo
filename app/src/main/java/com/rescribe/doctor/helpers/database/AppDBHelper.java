@@ -173,8 +173,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     }
 
     private void copyDataBase() {
-        CommonMethods.Log(TAG,
-                "New database is being copied to device!");
+
         byte[] buffer = new byte[1024];
         OutputStream myOutput = null;
         int length;
@@ -195,8 +194,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
             myOutput = new FileOutputStream(path);
 
-            CommonMethods.Log(TAG,
-                    "New database is being copied to device!" + path);
             while ((length = myInput.read(buffer)) > 0) {
                 myOutput.write(buffer, 0, length);
             }
@@ -206,6 +203,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
             CommonMethods.Log(TAG,
                     "New database has been copied to device!");
         } catch (IOException e) {
+            CommonMethods.Log(TAG,
+                    "Failed to copy database");
             e.printStackTrace();
         }
     }
@@ -333,10 +332,10 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public Cursor getRecordUploads() {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM " + MY_RECORDS.MY_RECORDS_TABLE + " WHERE " + MY_RECORDS.UPLOAD_STATUS + " = " + FAILED;
-        return db.rawQuery(sql, null);
+        return  db.rawQuery(sql, null);
     }
 
-    public long insertRecordUploads(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath) {
+    public void insertRecordUploads(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -354,16 +353,19 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(MY_RECORDS.IMAGE_PATH, imagePath);
         contentValues.put(MY_RECORDS.UPLOAD_STATUS, FAILED);
 
-        return db.insert(MY_RECORDS.MY_RECORDS_TABLE, null, contentValues);
+        db.insert(MY_RECORDS.MY_RECORDS_TABLE, null, contentValues);
+
+        db.close();
     }
 
-    public long updateRecordUploads(String uploadId, int uploadStatus) {
+    public void updateRecordUploads(String uploadId, int uploadStatus) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(MY_RECORDS.UPLOAD_STATUS, uploadStatus);
 
-        return db.update(MY_RECORDS.MY_RECORDS_TABLE, contentValues, MY_RECORDS.UPLOAD_ID + " = ?", new String[]{uploadId});
+        db.update(MY_RECORDS.MY_RECORDS_TABLE, contentValues, MY_RECORDS.UPLOAD_ID + " = ?", new String[]{uploadId});
+        db.close();
     }
 
     public interface MY_RECORDS {
@@ -438,23 +440,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
         Integer IS_NOT_SYNC_WITH_SERVER = 0;
     }
 
-    // New
-
-    public boolean deleteChatMessageByMsgId(int messageId) {
-        SQLiteDatabase db = getWritableDatabase();
-        return db.delete(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.MSG_ID + "=" + messageId, null) > 0;
-    }
-
-    public boolean deleteChatMessageByDoctorId(int doctorId) {
-        SQLiteDatabase db = getWritableDatabase();
-        return db.delete(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.USER1ID + "=" + doctorId, null) > 0;
-    }
-
-    public boolean deleteChatMessageByPatientId(int patientId) {
-        SQLiteDatabase db = getWritableDatabase();
-        return db.delete(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.USER2ID + "=" + patientId, null) > 0;
-    }
-
     public ArrayList<MQTTMessage> insertChatMessage(MQTTMessage mqttMessage) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -493,11 +478,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return DatabaseUtils.queryNumEntries(db, CHAT_MESSAGES.CHAT_MESSAGES_TABLE, CHAT_MESSAGES.MSG_ID + " = '" + msgId + "'");
     }
 
-    public int markAsAReadChatMessageByPatientId(int patientId) {
+    public void markAsAReadChatMessageByPatientId(int patientId) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CHAT_MESSAGES.READ_STATUS, READ);
-        return db.update(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, contentValues, CHAT_MESSAGES.USER2ID + " = ? AND " + CHAT_MESSAGES.READ_STATUS + " = ? AND " + CHAT_MESSAGES.SENDER + " = ?", new String[]{String.valueOf(patientId), String.valueOf(UNREAD), PATIENT});
+        db.update(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, contentValues, CHAT_MESSAGES.USER2ID + " = ? AND " + CHAT_MESSAGES.READ_STATUS + " = ? AND " + CHAT_MESSAGES.SENDER + " = ?", new String[]{String.valueOf(patientId), String.valueOf(UNREAD), PATIENT});
+        db.close();
     }
 
     public long unreadChatMessageCountByPatientId(int patientId) {

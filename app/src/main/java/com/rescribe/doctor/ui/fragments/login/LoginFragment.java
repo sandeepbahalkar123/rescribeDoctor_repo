@@ -211,6 +211,7 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                new AppDBHelper(getContext());
                 getActivity().finish();
 
             } else {

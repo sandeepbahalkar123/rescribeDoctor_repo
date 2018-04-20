@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.broadcast_receivers.OtpReader;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -229,6 +230,7 @@ public class OTPConfirmationForSignUp extends Fragment implements HelperResponse
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                new AppDBHelper(getContext());
                 getActivity().finish();
             } else {
                 CommonMethods.showToast(getActivity(), receivedModel.getCommon().getStatusMessage());
