@@ -33,7 +33,7 @@ public class PatientDetail implements CustomResponse {
     @SerializedName("patientGender")
     @Expose
     private String patientGender;
-    @SerializedName("offline_reference_id")
+    @SerializedName("referenceId")
     @Expose
     private String offlineReferenceID;
 

@@ -318,7 +318,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             else
                 patientList.setGender("");
 
-            patientList.setOfflineReferenceID(refID);
+            patientList.setReferenceID(refID);
             patientList.setOfflinePatientSynced(false);
             patientList.setClinicId(hospitalId);
 //            patientList.setHospitalPatId();

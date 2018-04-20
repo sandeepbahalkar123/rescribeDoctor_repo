@@ -257,7 +257,7 @@ public class AppointmentHelper implements ConnectionListener {
         patient.setPatientGender(dataToAdd.getGender());
         patient.setClinicId(dataToAdd.getClinicId());
         patient.setPatientDob(dataToAdd.getDateOfBirth());
-       // patient.setOfflineReferenceID(dataToAdd.getOfflineReferenceID());
+        patient.setOfflineReferenceID(dataToAdd.getReferenceID());
 
         SyncPatientsRequest mSyncPatientsRequest = new SyncPatientsRequest();
         String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
