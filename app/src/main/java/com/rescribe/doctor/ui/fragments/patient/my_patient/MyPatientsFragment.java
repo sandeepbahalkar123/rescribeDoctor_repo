@@ -121,8 +121,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private String fromActivityLaunched = "";
     private boolean isFiltered = false;
     private AppDBHelper appDBHelper;
-    private String mLocalSearchText;
-    private boolean isFirstTimeLocalSearch = false;
 
     @Override
     public void onDestroy() {

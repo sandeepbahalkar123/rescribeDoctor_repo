@@ -44,15 +44,10 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
     CustomTextView dateTextview;
     @BindView(R.id.viewContainer)
     FrameLayout viewContainer;
-    @BindView(R.id.nav_view)
-    FrameLayout navView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
     @BindView(R.id.emptyListView)
     RelativeLayout emptyListView;
     private Context mContext;
     private NewPatientFragment mNewPatientFragment;
-    private boolean isLongPressed;
     Intent mIntent;
     public HashSet<Integer> selectedDoctorId = new HashSet<>();
     private String phoneNo;
@@ -60,7 +55,7 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_patients_base_layout);
+        setContentView(R.layout.complete_opd_base_layout);
         ButterKnife.bind(this);
         initialize();
     }
@@ -120,18 +115,7 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-            drawerLayout.closeDrawer(GravityCompat.END);
-        } else {
-            if (mNewPatientFragment != null)
-                isLongPressed = mNewPatientFragment.callOnBackPressed();
-            if (isLongPressed) {
-                mNewPatientFragment.removeCheckBox();
-            } else {
-                super.onBackPressed();
-            }
-
-        }
+        super.onBackPressed();
     }
 
     public void callPatient(String patientPhone) {

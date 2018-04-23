@@ -132,7 +132,6 @@ public class NewPatientFragment extends Fragment implements NewPatientAdapter.On
         recyclerView.setClipToPadding(false);
         // off recyclerView Animation
         RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-        recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
         recyclerView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.divider));
         if (animator instanceof SimpleItemAnimator)
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);

@@ -77,6 +77,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private String mYear;
     private MyAppointmentsBaseModel myAppointmentsBaseMainModel;
     private String phoneNo;
+    private String mDateSelectedByUser = "";
     public static final int CLOSE_APPOINTMENT_ACTIVITY_AFTER_BOOK_APPOINTMENT = 666;
 
     @Override
@@ -108,7 +109,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         month = CommonMethods.getCurrentDate("MM");
         mYear = CommonMethods.getCurrentDate("yyyy");
         String day = CommonMethods.getCurrentDate("dd");
-
+        mDateSelectedByUser = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.d_M_YYYY);
         String toDisplay = day + "<sup>" + CommonMethods.getSuffixForNumber(Integer.parseInt(day)) + "</sup> " + CommonMethods.getCurrentDate("MMM'' yy");
 
         Spanned dateToDisplay;
@@ -132,7 +133,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                     MyAppointmentsDataModel myAppointmentsDM = new MyAppointmentsDataModel();
                     myAppointmentsDM.setAppointmentList(getBookedAndConfirmed(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentList()));
 
-                    mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(myAppointmentsDM);
+                    mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(myAppointmentsDM,mDateSelectedByUser);
                     getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
 
                     Bundle bundle = new Bundle();
@@ -320,8 +321,9 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
 
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
-        int monthOfYearToShow = monthOfYear + 1;
 
+        int monthOfYearToShow = monthOfYear + 1;
+        mDateSelectedByUser = dayOfMonth+"-"+monthOfYearToShow+"-"+year;
         dateTextview.setVisibility(View.VISIBLE);
         String timeToShow = CommonMethods.formatDateTime(dayOfMonth + "-" + monthOfYearToShow + "-" + year, RescribeConstants.DATE_PATTERN.MMM_YY,
                 RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE).toLowerCase();
@@ -340,6 +342,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
             dateTextview.setText(Html.fromHtml(toDisplay));
 
         mAppointmentHelper = new AppointmentHelper(this, this);
+        isLongPressed = false;
         mAppointmentHelper.doGetAppointmentData(year + "-" + monthOfYearToShow + "-" + dayOfMonth);
     }
 }
