@@ -48,6 +48,7 @@ import com.rescribe.doctor.model.login.SignUpModel;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
 import com.rescribe.doctor.model.my_patient_filter.LocationsModel;
 import com.rescribe.doctor.model.new_patient.NewPatientBaseModel;
+import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.SyncPatientsModel;
 import com.rescribe.doctor.model.patient.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient.patient_connect.PatientConnectBaseModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel;
@@ -592,6 +593,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_CONFIRM_APPOINTMENT: //This is for delete attachments
                         ResponseAppointmentConfirmationModel mResponseAppointmentConfirmationModel = new Gson().fromJson(data, ResponseAppointmentConfirmationModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, mResponseAppointmentConfirmationModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_ADD_NEW_PATIENT: //This is for delete attachments
+                        SyncPatientsModel model = new Gson().fromJson(data, SyncPatientsModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, model, mOldDataTag);
                         break;
 
 

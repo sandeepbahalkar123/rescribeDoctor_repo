@@ -365,7 +365,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 mc.setOfflinePatientSynced(false);
             }
 
-            mc.setOfflineReferenceID("");
+            mc.setReferenceID("");
             appDBHelper.addNewPatient(mc);
         }
 

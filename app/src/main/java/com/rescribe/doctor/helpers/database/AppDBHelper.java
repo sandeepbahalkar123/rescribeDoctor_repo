@@ -613,7 +613,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(ADD_NEW_PATIENT.MOBILE_NO, newPatient.getPatientPhone());
         contentValues.put(ADD_NEW_PATIENT.AGE, newPatient.getAge());
         contentValues.put(ADD_NEW_PATIENT.GENDER, newPatient.getGender());
-        contentValues.put(ADD_NEW_PATIENT.REFERENCE_ID, newPatient.getOfflineReferenceID());
+        contentValues.put(ADD_NEW_PATIENT.REFERENCE_ID, newPatient.getReferenceID());
         contentValues.put(ADD_NEW_PATIENT.CLINIC_ID, newPatient.getClinicId());
         contentValues.put(ADD_NEW_PATIENT.CITY_ID, newPatient.getPatientCityId());
         contentValues.put(ADD_NEW_PATIENT.CITY_NAME, newPatient.getPatientCity());
@@ -716,7 +716,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         if (searchText.isEmpty())
             countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + where + genderQuery + cityQuery + ageLimitQuery + sortOrderQuery + " LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
         else
-            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " WHERE (" + ADD_NEW_PATIENT.FIRST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MIDDLE_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.LAST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.HOSPITALPATID + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MOBILE_NO + " LIKE '%" + searchText + "%' ) " + and + genderQuery + cityQuery + ageLimitQuery + sortOrderQuery + " LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
+            countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " WHERE (" + ADD_NEW_PATIENT.FIRST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MIDDLE_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.LAST_NAME + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.HOSPITALPATID + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.MOBILE_NO + " LIKE '%" + searchText + "%' OR " + ADD_NEW_PATIENT.REFERENCE_ID + " LIKE '%" + searchText + "%'  ) " + and + genderQuery + cityQuery + ageLimitQuery + sortOrderQuery + " LIMIT " + numberOfRows + " OFFSET " + (pageNumber * numberOfRows);
 
 
         CommonMethods.Log(TAG + " PATIENT", countQuery);
@@ -744,7 +744,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));
                 patient.setAge(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.AGE)));
                 patient.setGender(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.GENDER)));
-                patient.setOfflineReferenceID(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID)));
+                patient.setReferenceID(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID)));
                 patient.setClinicId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.CLINIC_ID)));
                 patient.setPatientCity(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CITY_NAME)));
                 patient.setPatientCityId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.CITY_ID)));
@@ -842,7 +842,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));
                 patient.setPatientAge(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.AGE)));
                 patient.setPatientGender(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.GENDER)));
-                patient.isSync = cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.IS_SYNC));
+                patient.setOfflineReferenceID(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID)));
 
 //                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID));
 

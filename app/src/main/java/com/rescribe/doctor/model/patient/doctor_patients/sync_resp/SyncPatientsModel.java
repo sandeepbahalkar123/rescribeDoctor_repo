@@ -2,9 +2,10 @@ package com.rescribe.doctor.model.patient.doctor_patients.sync_resp;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
 
-public class SyncPatientsModel {
+public class SyncPatientsModel implements CustomResponse{
 
     @SerializedName("common")
     @Expose

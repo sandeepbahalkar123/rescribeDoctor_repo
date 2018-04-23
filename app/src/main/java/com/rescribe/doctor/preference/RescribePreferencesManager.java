@@ -260,5 +260,7 @@ public class RescribePreferencesManager {
         String VERSION_CODE_FROM_SERVER = "version_code_from_server";
         String SHOW_UPDATE_DIALOG = "show_update_dialog";
         String SHOW_UPDATE_DIALOG_ON_SKIPPED = "show_update_dialog_on_skipped";
+        String ADD_PATIENT_OFFLINE_SETTINGS = "isAddPatientOfflineSetting";
+
     }
 }

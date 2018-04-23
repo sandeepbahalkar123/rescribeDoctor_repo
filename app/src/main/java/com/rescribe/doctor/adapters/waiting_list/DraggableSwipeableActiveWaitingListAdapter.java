@@ -47,8 +47,6 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
 import com.rescribe.doctor.model.waiting_list.Active;
 import com.rescribe.doctor.model.waiting_list.PatientDataActiveWaitingListProvider;
-import com.rescribe.doctor.model.waiting_list.PatientDataProvider;
-import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 import com.rescribe.doctor.util.dragable_swipable.DrawableUtils;
@@ -307,19 +305,20 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
             holder.mContainer.setBackgroundResource(bgResId);
         }
-      if(getAllItems().size()==1){
-          holder.mDragHandle.setVisibility(View.GONE);
-      }else {
-          if (item.getActiveAll().getWaitingStatusId().equals(IN_QUEUE) || item.getActiveAll().getWaitingStatusId().equals(CONFIRMED)) {
-              holder.mDragHandle.setVisibility(View.VISIBLE);
-              holder.setMaxLeftSwipeAmount(-0.4f);
-              holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
-          } else {
-              holder.mDragHandle.setVisibility(View.GONE);
-              holder.setMaxLeftSwipeAmount(0);
-              holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
-          }
-      }
+
+        if (item.getActiveAll().getWaitingStatusId().equals(IN_QUEUE) || item.getActiveAll().getWaitingStatusId().equals(CONFIRMED)) {
+            if (getAllItems().size() == 1)
+                holder.mDragHandle.setVisibility(View.GONE);
+            else holder.mDragHandle.setVisibility(View.VISIBLE);
+
+            holder.setMaxLeftSwipeAmount(-0.4f);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
+        } else {
+            holder.mDragHandle.setVisibility(View.GONE);
+            holder.setMaxLeftSwipeAmount(0);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
+        }
+
 
         holder.setMaxRightSwipeAmount(0);
 
