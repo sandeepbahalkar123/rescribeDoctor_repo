@@ -262,6 +262,8 @@
     <string name="update">Update</string>
     <string name="later">Later</string>
     <string name="patient_registration">Patient Registration</string>
+    <string name="cannot_completed_appointment">You cannot complete appointment for future dates.</string>
+    <string name="you_cannot_add_waiting_list">You cannot add in waiting list for future dates</string>
 
 
 </resources>

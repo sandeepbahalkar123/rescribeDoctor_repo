@@ -195,7 +195,7 @@ public class CommonMethods {
     public static int getCaseStudyIcons(String caseStudyName) {
 
         // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
-       caseStudyName=caseStudyName.toLowerCase();
+        caseStudyName = caseStudyName.toLowerCase();
         int abbreviation = R.drawable.commonicon;
         if (caseStudyName.contains("complaint"))
             abbreviation = R.drawable.complaints;
@@ -223,7 +223,7 @@ public class CommonMethods {
             abbreviation = R.drawable.preoperativeprecautions;
         else if (caseStudyName.contains("post-operative care"))
             abbreviation = R.drawable.postoperativecare;
-        else if (caseStudyName.contains("pain score")|| caseStudyName.contains("pain scale"))
+        else if (caseStudyName.contains("pain score") || caseStudyName.contains("pain scale"))
             abbreviation = R.drawable.painscore;
         else if (caseStudyName.contains("exercise"))
             abbreviation = R.drawable.exercise;
@@ -235,7 +235,7 @@ public class CommonMethods {
             abbreviation = R.drawable.attachment;
         else if (caseStudyName.contains("systemic examination") || caseStudyName.contains("examination"))
             abbreviation = R.drawable.examination;
-        else if (caseStudyName.contains("operative procedure")  || caseStudyName.contains("procedure"))
+        else if (caseStudyName.contains("operative procedure") || caseStudyName.contains("procedure"))
             abbreviation = R.drawable.procedure;
 
         return abbreviation;
@@ -276,6 +276,7 @@ public class CommonMethods {
                 .endConfig()
                 .buildRound(("" + name.charAt(0)).toUpperCase(), color2);
     }
+
     public static int getVersionCode(Context mContext) {
         int versionCode = -1;
         try {
