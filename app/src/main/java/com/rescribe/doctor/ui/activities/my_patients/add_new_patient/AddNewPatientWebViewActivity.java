@@ -133,29 +133,37 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 break;
             case R.id.btnAddPatientSubmit:
                 mAddedPatientListData = validate();
+                boolean internetAvailable = NetworkUtil.isInternetAvailable(this);
                 if (mAddedPatientListData != null) {
-                    if (mAddPatientOfflineSetting) {
+                    if (internetAvailable && mAddPatientOfflineSetting) {
                         AppointmentHelper m = new AppointmentHelper(this, this);
                         m.addNewPatient(mAddedPatientListData);
                     } else {
-                        if (AppDBHelper.getInstance(mContext).addNewPatient(mAddedPatientListData) != -1) {
-                            Bundle bundle = new Bundle();
-                            bundle.putString(RescribeConstants.PATIENT_NAME, mAddedPatientListData.getPatientName());
-                            bundle.putString(RescribeConstants.PATIENT_INFO, "" + mAddedPatientListData.getAge());
-                            bundle.putInt(RescribeConstants.CLINIC_ID, mAddedPatientListData.getClinicId());
-                            bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(mAddedPatientListData.getPatientId()));
-                            bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mAddedPatientListData.getHospitalPatId()));
-                            Intent intent = new Intent(this, PatientHistoryActivity.class);
-                            intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
-                            startActivity(intent);
-                            finish();
-                        } else
-                            CommonMethods.showToast(mContext, "Failed to store");
-                    }
 
+                        addOfflinePatient();
+                    }
                 }
                 break;
         }
+    }
+
+    private void addOfflinePatient() {
+
+        if (AppDBHelper.getInstance(mContext).addNewPatient(mAddedPatientListData) != -1) {
+            Bundle bundle = new Bundle();
+            // this is done to replzce | with space, | used in case blank middle name.
+            String replace = mAddedPatientListData.getPatientName().replace("|", "");
+            bundle.putString(RescribeConstants.PATIENT_NAME, replace);
+            bundle.putString(RescribeConstants.PATIENT_INFO, "" + mAddedPatientListData.getAge());
+            bundle.putInt(RescribeConstants.CLINIC_ID, mAddedPatientListData.getClinicId());
+            bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(mAddedPatientListData.getPatientId()));
+            bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mAddedPatientListData.getHospitalPatId()));
+            Intent intent = new Intent(this, PatientHistoryActivity.class);
+            intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
+            startActivity(intent);
+            finish();
+        } else
+            CommonMethods.showToast(mContext, "Failed to store");
     }
 
     @Override
@@ -295,6 +303,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         } else if ((mob.trim().length() < 10) || !(mob.trim().startsWith("6") || mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9"))) {
             message = getString(R.string.err_invalid_mobile_no);
             CommonMethods.showToast(this, message);
+        } else if ((!age.isEmpty()) && Integer.parseInt(age) > 101) {
+            message = getString(R.string.age_err_msg);
+            CommonMethods.showToast(this, message);
         } else if (!enteredRefIDIsValid) {
             message = getString(R.string.reference_id_input_err_msg);
             CommonMethods.showToast(this, message);
@@ -321,7 +332,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             patientList.setReferenceID(refID);
             patientList.setOfflinePatientSynced(false);
             patientList.setClinicId(hospitalId);
-            patientList.setHospitalPatId(hospitalId);
+            patientList.setHospitalPatId(id + 1);
             patientList.setPatientCity(cityName);
             patientList.setPatientCityId(cityID);
             patientList.setCreationDate(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN));

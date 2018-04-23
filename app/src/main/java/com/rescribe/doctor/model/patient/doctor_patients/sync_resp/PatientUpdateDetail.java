@@ -3,7 +3,9 @@ package com.rescribe.doctor.model.patient.doctor_patients.sync_resp;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PatientUpdateDetail {
+import java.io.Serializable;
+
+public class PatientUpdateDetail implements Serializable {
 
     @SerializedName("mobilePatientId")
     @Expose

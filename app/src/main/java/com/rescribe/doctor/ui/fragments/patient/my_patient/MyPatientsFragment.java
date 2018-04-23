@@ -1,7 +1,10 @@
 package com.rescribe.doctor.ui.fragments.patient.my_patient;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -42,6 +45,7 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateList;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
@@ -51,6 +55,7 @@ import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.Pa
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.services.LoadAllPatientsService;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
@@ -69,6 +74,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.rescribe.doctor.services.SyncOfflineRecords.DOC_UPLOAD;
 import static com.rescribe.doctor.singleton.RescribeApplication.getDoctorLocationModels;
 import static com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity.ADD_PATIENT_REQUEST;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
@@ -806,4 +812,24 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             searchPatients(NetworkUtil.getConnectivityStatusBoolean(getContext()));
     }
 
+    public void updateList(ArrayList<PatientUpdateDetail> syncList) {
+        if (mMyPatientsAdapter != null) {
+            ArrayList<PatientList> groupList = mMyPatientsAdapter.getGroupList();
+            int syncPatientCounter = 0;
+            for (int i = 0; i < groupList.size(); i++) {
+                PatientList orgGroupList = groupList.get(i);
+                for (PatientUpdateDetail syncObj :
+                        syncList) {
+                    if (Integer.parseInt(syncObj.getMobilePatientId()) == orgGroupList.getPatientId()) {
+                        orgGroupList.setPatientId(syncObj.getPatientId());
+                        orgGroupList.setHospitalPatId(syncObj.getHospitalPatId());
+                        mMyPatientsAdapter.notifyItemChanged(i);
+                        syncPatientCounter++;
+                    }
+                }
+                if (syncPatientCounter == syncList.size())
+                    break;
+            }
+        }
+    }
 }

@@ -17,9 +17,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.LoadAllPatientsService;
+import com.rescribe.doctor.services.SyncOfflinePatients;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
@@ -27,6 +29,8 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import butterknife.BindView;
@@ -197,6 +201,8 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(LOAD_ALL_PATIENTS);
+        intentFilter.addAction(SyncOfflinePatients.PATIENT_SYNC);
+
         registerReceiver(receiver, intentFilter);
     }
 
@@ -214,6 +220,11 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
                     boolean isFailed = intent.getBooleanExtra(STATUS, false);
                     if (isFailed)
                         downloadPatients.setVisibility(View.VISIBLE);
+                } else if (intent.getAction().equals(SyncOfflinePatients.PATIENT_SYNC)) {
+
+                    ArrayList<PatientUpdateDetail> serializableExtra = (ArrayList<PatientUpdateDetail>) intent.getSerializableExtra(SyncOfflinePatients.PATIENT_SYNC_LIST);
+                    if (serializableExtra != null)
+                        mMyPatientsFragment.updateList(serializableExtra);
                 }
             }
         }

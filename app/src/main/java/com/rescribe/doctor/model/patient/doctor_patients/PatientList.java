@@ -69,7 +69,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     @SerializedName("creationDate")
     @Expose
     private String creationDate;
-    @SerializedName("referenceID")
+    @SerializedName("referenceId")
     @Expose
     private String referenceID;
 

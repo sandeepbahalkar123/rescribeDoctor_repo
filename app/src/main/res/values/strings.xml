@@ -132,6 +132,7 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="age">Age</string>
+    <string name="age_err_msg">Age should not be grater than 100.</string>
     <string name="less">less</string>
     <string name="equal">equal</string>
     <string name="greater">greater</string>

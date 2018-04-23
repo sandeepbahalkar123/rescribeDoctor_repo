@@ -1,5 +1,6 @@
 package com.rescribe.doctor.model.patient.doctor_patients.sync_resp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

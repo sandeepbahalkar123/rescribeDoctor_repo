@@ -19,6 +19,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
 import com.rescribe.doctor.model.patient.add_new_patient.SyncPatientsRequest;
+import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.SyncPatientsModel;
 import com.rescribe.doctor.network.RequestPool;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -42,6 +43,7 @@ import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 public class SyncOfflinePatients {
 
     public static final String PATIENT_SYNC = "com.rescribe.doctor.PATIENT_SYNC";
+    public static final String PATIENT_SYNC_LIST = "SyncList";
     private static final String LOG_TAG = "SyncOfflinePatients";
     private static final int SYNC_NOTIFICATION_ID = 122;
 
@@ -114,24 +116,25 @@ public class SyncOfflinePatients {
                         public void onResponse(JSONObject response) {
                             SyncPatientsModel mSyncPatientsModel = gson.fromJson(response.toString(), SyncPatientsModel.class);
                             if (mSyncPatientsModel.getCommon().getStatusCode().equals(SUCCESS)) {
-                                if (!mSyncPatientsModel.getData().getPatientUpdateDetails().isEmpty()) {
+                                ArrayList<PatientUpdateDetail> patientUpdateDetails = mSyncPatientsModel.getData().getPatientUpdateDetails();
+                                if (!patientUpdateDetails.isEmpty()) {
                                     appDBHelper.updateOfflinePatientANDRecords(mSyncPatientsModel.getData().getPatientUpdateDetails());
                                     isFailed = false;
-                                    synced(false);
+                                    synced(patientUpdateDetails);
                                 } else {
                                     isFailed = true;
-                                    synced(true);
+                                    synced(null);
                                 }
                             } else {
                                 isFailed = true;
-                                synced(true);
+                                synced(null);
                             }
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     isFailed = true;
-                    synced(true);
+                    synced(null);
                 }
             }) {
                 @Override
@@ -155,13 +158,15 @@ public class SyncOfflinePatients {
         }
     }
 
-    private void synced(boolean isEmpty) {
+    private void synced(ArrayList<PatientUpdateDetail> list) {
 
         Intent intent = new Intent(PATIENT_SYNC);
         intent.putExtra(STATUS, isFailed);
+        if (list != null)
+            intent.putExtra(PATIENT_SYNC_LIST, list);
         context.sendBroadcast(intent);
 
-        if (!isEmpty) {
+        if (list != null) {
             mBuilder.setContentText(isFailed ? "Sync patients failed" : "Sync patients completed")
                     // Removes the progress bar
                     .setProgress(0, 100, false);
