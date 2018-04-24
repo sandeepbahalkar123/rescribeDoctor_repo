@@ -37,7 +37,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-
 /**
  * Created by jeetal on 17/3/18.
  */
@@ -81,6 +80,15 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
             patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + CommonMethods.toCamelCase(patientObject.getPatientName());
         else patientName = CommonMethods.toCamelCase(patientObject.getPatientName());
         holder.chatImageView.setVisibility(View.GONE);
+
+        //---- START: Setting of hospitalID or referecne ID, reference is IS high priority than hospitalID.-----
+        String dataToShowInPatientID = String.valueOf(patientObject.getReferenceId());
+
+        if (dataToShowInPatientID == null || RescribeConstants.BLANK.equalsIgnoreCase(dataToShowInPatientID)) {
+            dataToShowInPatientID = String.valueOf(patientObject.getHospitalPatId());
+        }
+        //---- END------
+
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName
             if (patientObject.getPatientName().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
@@ -115,11 +123,11 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
             }
             //TODO:
             //Spannable condition for PatientId
-            if (String.valueOf(patientObject.getHospitalPatId()).contains(patientObject.getSpannableString())) {
+            if (dataToShowInPatientID.toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
 
-                SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+                SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
                 Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+                Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
 
                 while (matcher.find()) {
                     spannableIdString.setSpan(new ForegroundColorSpan(
@@ -130,12 +138,12 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
                 holder.patientIdTextView.setText(spannableIdString);
             } else {
 
-                holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+                holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
             }
         } else {
             holder.patientNameTextView.setText(patientName);
             holder.patientPhoneNumber.setText(patientObject.getPatientPhon());
-            holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+            holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
         }
 
         if (patientObject.getAge().equals("") && !patientObject.getPatientDob().equals("")) {
@@ -154,7 +162,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
 
         holder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientObject.getPatientGender()));
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
-        if (patientObject.getOutstandingAmount().equals("0.00")||patientObject.getOutstandingAmount().equals("0.0")||patientObject.getOutstandingAmount().equals("0")) {
+        if (patientObject.getOutstandingAmount().equals("0.00") || patientObject.getOutstandingAmount().equals("0.0") || patientObject.getOutstandingAmount().equals("0")) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
 
@@ -299,7 +307,8 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
 
                         if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
                                 || patientListObject.getPatientPhon().contains(charString)
-                                || String.valueOf(patientListObject.getHospitalPatId()).contains(charString)) {
+                                || String.valueOf(patientListObject.getHospitalPatId()).contains(charString)
+                                || String.valueOf(patientListObject.getReferenceId()).contains(charString)) {
                             //--------
                             patientListObject.setSpannableString(charString);
                             mListToShowAfterFilter.add(patientListObject);

@@ -84,6 +84,8 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
             patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + CommonMethods.toCamelCase(patientObject.getPatientName());
         else patientName = CommonMethods.toCamelCase(patientObject.getPatientName());
 
+
+
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName
             if (patientObject.getPatientName().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
