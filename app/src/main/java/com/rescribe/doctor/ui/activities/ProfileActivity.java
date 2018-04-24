@@ -204,8 +204,12 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
         String doctorDetails = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, this);
         final DocDetail docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
-
-        aboutDoctorDescription.setText(docDetail.getDocInfo());
+        if(docDetail.getDocInfo().isEmpty()){
+            aboutLayout.setVisibility(View.INVISIBLE);
+        }else {
+            aboutLayout.setVisibility(View.VISIBLE);
+            aboutDoctorDescription.setText(docDetail.getDocInfo());
+        }
 
         countDoctorExperience.setText(docDetail.getDocExperience());
         doctorExperience.setText(docDetail.getDocExperience() + " years of experience");
