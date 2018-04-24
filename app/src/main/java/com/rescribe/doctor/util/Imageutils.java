@@ -58,22 +58,18 @@ import static com.theartofdev.edmodo.cropper.CropImage.CROP_IMAGE_ACTIVITY_REQUE
 public class Imageutils {
 
 
-    Context context;
+    private Context context;
     private Activity current_activity;
     private Fragment current_fragment;
 
     private ImageAttachmentListener imageAttachment_callBack;
 
-    private String selected_path = "";
     private Uri imageUri;
-    private File path = null;
 
     private int from = 0;
     private boolean isFragment = false;
     public static String FILEPATH;
     private Dialog dialog;
-    private int imageSize;
-    private Bitmap  bitmap;
 
 
     public Imageutils(Activity act) {
@@ -94,88 +90,6 @@ public class Imageutils {
         }
 
     }
-
-    /**
-     * Get file name from path
-     *
-     * @param path
-     * @return
-     */
-
-    public String getfilename_from_path(String path) {
-        return path.substring(path.lastIndexOf('/') + 1, path.length());
-
-    }
-
-    /**
-     * Get Image URI from Bitmap
-     *
-     * @param context
-     * @param photo
-     * @return
-     */
-
-    public Uri getImageUri(Context context, Bitmap photo) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        photo.compress(Bitmap.CompressFormat.PNG, 80, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), photo, "Title", null);
-        return Uri.parse(path);
-    }
-
-    /**
-     * Get Path from Image URI
-     *
-     * @param uri
-     * @return
-     */
-
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = this.context.getContentResolver().query(uri, projection, null, null, null);
-        int column_index = 0;
-        if (cursor != null) {
-            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(column_index);
-            cursor.close();
-            return path;
-        } else
-            return uri.getPath();
-    }
-
-    /**
-     * Bitmap from String
-     *
-     * @param encodedString
-     * @return
-     */
-    public Bitmap StringToBitMap(String encodedString) {
-        try {
-            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch (Exception e) {
-            e.getMessage();
-            return null;
-        }
-    }
-
-
-    /**
-     * Get String from Bitmap
-     *
-     * @param bitmap
-     * @return
-     */
-
-    public String BitMapToString(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 80, baos);
-        byte[] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
 
     /**
      * Check Camera Availability
@@ -223,25 +137,23 @@ public class Imageutils {
 
         // max Height and width values of the compressed image is taken as 816x612
 
-        float maxHeight = height;
-        float maxWidth = width;
         float imgRatio = actualWidth / actualHeight;
-        float maxRatio = maxWidth / maxHeight;
+        float maxRatio = width / height;
 
         // width and height values are set maintaining the aspect ratio of the image
 
-        if (actualHeight > maxHeight || actualWidth > maxWidth) {
+        if (actualHeight > height || actualWidth > width) {
             if (imgRatio < maxRatio) {
-                imgRatio = maxHeight / actualHeight;
+                imgRatio = height / actualHeight;
                 actualWidth = (int) (imgRatio * actualWidth);
-                actualHeight = (int) maxHeight;
+                actualHeight = (int) height;
             } else if (imgRatio > maxRatio) {
-                imgRatio = maxWidth / actualWidth;
+                imgRatio = width / actualWidth;
                 actualHeight = (int) (imgRatio * actualHeight);
-                actualWidth = (int) maxWidth;
+                actualWidth = (int) width;
             } else {
-                actualHeight = (int) maxHeight;
-                actualWidth = (int) maxWidth;
+                actualHeight = (int) height;
+                actualWidth = (int) width;
 
             }
         }
@@ -423,12 +335,6 @@ public class Imageutils {
             items = new CharSequence[1];
             items[0] = "Gallery";
         }
-
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics metrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(metrics);
-        int widthPixels = metrics.widthPixels;
-        imageSize = (widthPixels / 2) - context.getResources().getDimensionPixelSize(R.dimen.dp10);
 
         // Show two options for user
 
@@ -627,7 +533,6 @@ public class Imageutils {
      * @param data
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String file_name;
 
         switch (requestCode) {
             case 0:
@@ -637,8 +542,6 @@ public class Imageutils {
                     Log.i("Camera Selected", "Photo");
 
                     try {
-                        selected_path = null;
-                        selected_path = getPath(imageUri);
                         //Crop function of image
                         callCropActivity(imageUri);
                         // Log.i("file","name"+file_name);
@@ -656,15 +559,10 @@ public class Imageutils {
                     Uri selectedImage = data.getData();
 
                     try {
-                        selected_path = null;
-                        selected_path = getPath(selectedImage);
-                        file_name = selected_path.substring(selected_path.lastIndexOf("/") + 1);
                         callCropActivity(selectedImage);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
                 }
                 break;
         }
@@ -679,116 +577,14 @@ public class Imageutils {
     }
 
     public void callImageCropMethod(Uri imageUri) {
-        bitmap = compressImage(imageUri.toString(), 816, 612);
+        Bitmap bitmap = compressImage(imageUri.toString(), 816, 612);
         imageAttachment_callBack.image_attachment(from, bitmap, imageUri);
     }
-
-    /**
-     * Get image from Uri
-     *
-     * @param uri
-     * @param height
-     * @param width
-     * @return
-     */
-    public Bitmap getImage_FromUri(Uri uri, float height, float width) {
-        Bitmap bitmap = null;
-
-        try {
-            bitmap = compressImage(uri.toString(), height, width);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
-    }
-
-    /**
-     * Get filename from URI
-     *
-     * @param uri
-     * @return
-     */
-    public String getFileName_from_Uri(Uri uri) {
-        String path = null, file_name = null;
-
-        try {
-
-            path = getRealPathFromURI(uri.getPath());
-            file_name = path.substring(path.lastIndexOf("/") + 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return file_name;
-
-    }
-
-
-    /**
-     * Check Image Exist (or) Not
-     *
-     * @param file_name
-     * @param file_path
-     * @return
-     */
-
-    public boolean checkimage(String file_name, String file_path) {
-        boolean flag;
-        path = new File(file_path);
-
-        File file = new File(path, file_name);
-        if (file.exists()) {
-            Log.i("file", "exists");
-            flag = true;
-        } else {
-            Log.i("file", "not exist");
-            flag = false;
-        }
-
-        return flag;
-    }
-
-
-    /**
-     * Get Image from the given path
-     *
-     * @param file_name
-     * @param file_path
-     * @return
-     */
-
-    public Bitmap getImage(String file_name, String file_path) {
-
-        path = new File(file_path);
-        File file = new File(path, file_name);
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        options.inSampleSize = 2;
-        options.inTempStorage = new byte[16 * 1024];
-
-        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-
-        if (bitmap != null)
-            return bitmap;
-        else
-            return null;
-    }
-
-    /**
-     * Create an image
-     *
-     * @param bitmap
-     * @param filepath
-     * @param file_replace
-     */
 
 
     public void createImage(Bitmap bitmap, String filepath, boolean file_replace) {
      //Function for creating Jpg image .
-        path = new File(filepath);
+        File path = new File(filepath);
 
         if (!path.exists()) {
             path.mkdirs();
@@ -811,11 +607,6 @@ public class Imageutils {
 
     }
 
-
-    /**
-     * @param file
-     * @param bmp
-     */
     public void store_image(File file, Bitmap bmp) {
         try {
             FileOutputStream out = new FileOutputStream(file);
