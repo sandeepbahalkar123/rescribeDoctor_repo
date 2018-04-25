@@ -214,6 +214,12 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
                 mOnDownArrowClicked.onPhoneNoClick(patientObject.getPatientPhon());
             }
         });
+        holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnDownArrowClicked.onClickOfPatientDetails(patientObject,holder.patientAgeTextView.getText().toString()+holder.patientGenderTextView.getText().toString());
+            }
+        });
 
 
     }
@@ -332,6 +338,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
                 notifyDataSetChanged();
             }
         };
+
     }
 
     public interface OnDownArrowClicked {
