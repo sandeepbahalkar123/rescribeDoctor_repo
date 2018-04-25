@@ -231,8 +231,11 @@ public class CompletedOpdFragment extends Fragment implements CompletedOpdAdapte
 
     @Override
     public void onClickOfPatientDetails(CompletedOpd patientListObject, String text) {
+        String patientName;
+        if (patientListObject.getSalutation() != 0)
+            patientName = RescribeConstants.SALUTATION[patientListObject.getSalutation() - 1] + toCamelCase(patientListObject.getPatientName());
+        else patientName = toCamelCase(patientListObject.getPatientName());
 
-        String patientName = toCamelCase(patientListObject.getPatientName());
         Bundle b = new Bundle();
         b.putString(RescribeConstants.PATIENT_NAME, patientName);
         b.putString(RescribeConstants.PATIENT_INFO, text);
@@ -241,6 +244,17 @@ public class CompletedOpdFragment extends Fragment implements CompletedOpdAdapte
         Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
         intent.putExtra(RescribeConstants.PATIENT_INFO, b);
         startActivity(intent);
+
+
+     /*   Bundle b = new Bundle();
+        b.putString(RescribeConstants.PATIENT_NAME, patientName);
+        b.putString(RescribeConstants.PATIENT_INFO, text);
+        b.putInt(RescribeConstants.CLINIC_ID, patientListObject.getClinicId());
+        b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
+        b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
+        Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
+        intent.putExtra(RescribeConstants.PATIENT_INFO, b);
+        startActivity(intent);*/
 
     }
 
