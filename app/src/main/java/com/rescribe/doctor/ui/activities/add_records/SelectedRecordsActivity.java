@@ -109,6 +109,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     private boolean openCameraDirect;
     private int imageSize;
     private int dimension20PixelSize;
+    private int mAptId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,7 +239,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
         mHospitalPatId = getIntent().getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
         mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);
         patientId = getIntent().getStringExtra(RescribeConstants.PATIENT_ID);
-
+        mAptId = getIntent().getIntExtra(RescribeConstants.APPOINTMENT_ID,0);
         mHospitalId = getIntent().getIntExtra(RescribeConstants.CLINIC_ID, 0);
         addImageView.setVisibility(View.GONE);
         mAddImageViewRightFab.setVisibility(View.VISIBLE);
@@ -421,7 +422,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                         else
                             CommonMethods.showToast(this, getString(R.string.records_will_upload_when_internet_available));
 
-                        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath());
+                        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath(),mAptId);
                     }
 //                    CommonMethods.showToast(this, getString(R.string.uploading));
 
@@ -466,6 +467,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                     .addHeader("hospitalid", String.valueOf(mHospitalId))
                     .addHeader("hospitalpatid", mHospitalPatId)
                     .addHeader("locationid", mLocationId)
+                    .addHeader("aptid", String.valueOf(mAptId))
                     .addFileToUpload(image.getImagePath(), "attachment");
 
             String docCaption;

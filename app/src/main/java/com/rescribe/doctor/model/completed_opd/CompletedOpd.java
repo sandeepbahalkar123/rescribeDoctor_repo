@@ -61,6 +61,10 @@ public class CompletedOpd implements Parcelable {
     @SerializedName("referenceId")
     @Expose
     private String referenceId;
+    @SerializedName("clinicId")
+    @Expose
+    private Integer clinicId;
+
     private String spannableString;
     private boolean selected;
     public final static Creator<CompletedOpd> CREATOR = new Creator<CompletedOpd>() {
@@ -80,6 +84,7 @@ public class CompletedOpd implements Parcelable {
     };
 
     protected CompletedOpd(Parcel in) {
+        this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientID = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientName = ((String) in.readValue((String.class.getClassLoader())));
@@ -118,6 +123,21 @@ public class CompletedOpd implements Parcelable {
         this.selected = selected;
     }
 
+    public Integer getPatientID() {
+        return patientID;
+    }
+
+    public void setPatientID(Integer patientID) {
+        this.patientID = patientID;
+    }
+
+    public Integer getClinicId() {
+        return clinicId;
+    }
+
+    public void setClinicId(Integer clinicId) {
+        this.clinicId = clinicId;
+    }
 
     public Integer getSalutation() {
         return salutation;
@@ -256,6 +276,7 @@ public class CompletedOpd implements Parcelable {
     }
 
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(clinicId);
         dest.writeValue(salutation);
         dest.writeValue(patientID);
         dest.writeValue(patientName);

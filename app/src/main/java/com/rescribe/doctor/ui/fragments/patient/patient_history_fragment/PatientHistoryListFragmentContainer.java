@@ -103,6 +103,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private int mHospitalId;
     private String mPatientId;
     private String mHospitalPatId;
+    private int mAptId;
 
     public PatientHistoryListFragmentContainer() {
         // Required empty public constructor
@@ -134,6 +135,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             userInfoTextView.setVisibility(View.VISIBLE);
             userInfoTextView.setText(getArguments().getString(RescribeConstants.PATIENT_INFO));
             mHospitalPatId = getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID);
+            mAptId = getArguments().getInt(RescribeConstants.APPOINTMENT_ID);
         }
 
         YearSpinnerInteractionListener listener = new YearSpinnerInteractionListener();
@@ -357,6 +359,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         intent.putExtra(RescribeConstants.OPD_ID, "0");
         intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
         intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+        intent.putExtra(RescribeConstants.APPOINTMENT_ID,mAptId);
         intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
         intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
         intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
@@ -473,6 +476,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 userInfoTextView.setText(getArguments().getString(RescribeConstants.PATIENT_INFO));
                 mHospitalId = getArguments().getInt(RescribeConstants.CLINIC_ID);
                 mHospitalPatId = getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID);
+                mAptId = getArguments().getInt(RescribeConstants.APPOINTMENT_ID);
+
             }
 
 
