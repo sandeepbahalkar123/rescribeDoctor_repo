@@ -15,7 +15,6 @@ public class AddToList implements Parcelable
     @Expose
     private Integer locationId;
 
-
     @SerializedName("locationDetails")
     @Expose
     private String locationDetails;
