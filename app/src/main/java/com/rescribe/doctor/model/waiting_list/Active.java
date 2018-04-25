@@ -4,11 +4,11 @@ package com.rescribe.doctor.model.waiting_list;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Active implements Parcelable
-{
+public class Active implements Parcelable {
 
     @SerializedName("waitingId")
     @Expose
@@ -54,11 +54,15 @@ public class Active implements Parcelable
     @Expose
     private Integer salutation = 0;
 
+    @SerializedName("referenceId")
+    @Expose
+    private String referenceID;
+
     public final static Creator<Active> CREATOR = new Creator<Active>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Active createFromParcel(Parcel in) {
             return new Active(in);
@@ -85,6 +89,7 @@ public class Active implements Parcelable
         this.appointmentTime = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentStatusId = ((String) in.readValue((String.class.getClassLoader())));
         this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.referenceID = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public Active() {
@@ -202,6 +207,14 @@ public class Active implements Parcelable
         this.salutation = salutation;
     }
 
+    public String getReferenceID() {
+        return referenceID;
+    }
+
+    public void setReferenceID(String referenceID) {
+        this.referenceID = referenceID;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(waitingId);
         dest.writeValue(hospitalPatId);
@@ -217,10 +230,12 @@ public class Active implements Parcelable
         dest.writeValue(appointmentTime);
         dest.writeValue(appointmentStatusId);
         dest.writeValue(salutation);
+        dest.writeValue(referenceID);
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
+
 
 }
