@@ -469,6 +469,8 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                             if (!patientList.getAppointmentStatusId().equals(COMPLETED) && !patientList.getAppointmentStatusId().equals(CANCEL)) {
                                 PatientAddToWaitingList patientsAddToWaitingListObject = new PatientAddToWaitingList();
                                 patientsAddToWaitingListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
+                                patientsAddToWaitingListObject.setAppointmentId(patientList.getAptId());
+                                patientsAddToWaitingListObject.setAppointmentStatusId(patientList.getAppointmentStatusId());
                                 patientsAddToWaitingListObject.setPatientId(String.valueOf(patientList.getPatientId()));
                                 patientsAddToWaitingListObject.setPatientName(patientList.getPatientName());
                                 mPatientAddToWaitingList.add(patientsAddToWaitingListObject);
@@ -476,6 +478,8 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                             //two different list are created to manage selected patients and patients which cannot be added in waiting list
                             //Note : Patients of completed and cancelled cannot be added to waiting list
                             PatientAddToWaitingList patientsAddToWaitingListObject = new PatientAddToWaitingList();
+                            patientsAddToWaitingListObject.setAppointmentId(patientList.getAptId());
+                            patientsAddToWaitingListObject.setAppointmentStatusId(patientList.getAppointmentStatusId());
                             patientsAddToWaitingListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
                             patientsAddToWaitingListObject.setPatientId(String.valueOf(patientList.getPatientId()));
                             patientsAddToWaitingListObject.setPatientName(patientList.getPatientName());

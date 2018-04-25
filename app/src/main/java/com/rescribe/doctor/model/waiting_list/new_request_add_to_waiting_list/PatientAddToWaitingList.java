@@ -19,6 +19,12 @@ public class PatientAddToWaitingList implements Parcelable
     @SerializedName("patientName")
     @Expose
     private String patientName;
+    @SerializedName("appointmentId")
+    @Expose
+    private Integer appointmentId;
+    @SerializedName("appointmentStatusId")
+    @Expose
+    private Integer appointmentStatusId;
     public final static Creator<PatientAddToWaitingList> CREATOR = new Creator<PatientAddToWaitingList>() {
 
 
@@ -37,12 +43,29 @@ public class PatientAddToWaitingList implements Parcelable
     ;
 
     protected PatientAddToWaitingList(Parcel in) {
+        this.appointmentStatusId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.appointmentId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientId = ((String) in.readValue((String.class.getClassLoader())));
         this.hospitalPatId = ((String) in.readValue((String.class.getClassLoader())));
         this.patientName = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientAddToWaitingList() {
+    }
+    public Integer getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(Integer appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public Integer getAppointmentStatusId() {
+        return appointmentStatusId;
+    }
+
+    public void setAppointmentStatusId(Integer appointmentStatusId) {
+        this.appointmentStatusId = appointmentStatusId;
     }
 
     public String getPatientId() {
@@ -70,6 +93,8 @@ public class PatientAddToWaitingList implements Parcelable
     }
 
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(appointmentStatusId);
+        dest.writeValue(appointmentId);
         dest.writeValue(patientId);
         dest.writeValue(hospitalPatId);
         dest.writeValue(patientName);
