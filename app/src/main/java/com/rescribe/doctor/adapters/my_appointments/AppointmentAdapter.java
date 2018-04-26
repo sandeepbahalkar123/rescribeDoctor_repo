@@ -740,7 +740,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                             if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
                                     || patientListObject.getPatientPhone().contains(charString)
                                     || String.valueOf(patientListObject.getHospitalPatId()).contains(charString)
-                                    || String.valueOf(patientListObject.getReferenceId()).contains(charString)) {
+                                    || String.valueOf(patientListObject.getReferenceId().toLowerCase()).contains(charString.toLowerCase())) {
                                 //--------
                                 patientListObject.setSpannableString(charString);
                                 sortedPatientLists.add(patientListObject);

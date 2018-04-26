@@ -303,7 +303,7 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
                         if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
                                 || patientListObject.getPatientPhon().contains(charString)
                                 || String.valueOf(patientListObject.getHospitalPatId()).contains(charString)
-                                || String.valueOf(patientListObject.getReferenceId()).contains(charString)) {
+                                || String.valueOf(patientListObject.getReferenceId().toLowerCase()).contains(charString.toLowerCase())) {
                             //--------
                             patientListObject.setSpannableString(charString);
                             mListToShowAfterFilter.add(patientListObject);
