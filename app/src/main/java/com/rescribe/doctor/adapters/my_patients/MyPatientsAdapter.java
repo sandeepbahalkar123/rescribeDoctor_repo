@@ -24,7 +24,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
@@ -36,6 +37,8 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,11 +61,14 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     private OnDownArrowClicked mOnDownArrowClicked;
     private boolean isClickOnPatientDetailsRequired;
     private ArrayList<PatientList> mListToShowAfterFilter;
+    private AppDBHelper appDBHelper;
 
     public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
         this.mListToShowAfterFilter = dataList;
         mDataList.addAll(dataList);
+        removeDuplicateElements();
         this.mContext = mContext;
+        appDBHelper = new AppDBHelper(mContext);
         this.mOnDownArrowClicked = mOnDownArrowClicked;
         this.isClickOnPatientDetailsRequired = isClickOnPatientDetailsRequired;
     }
@@ -88,6 +94,15 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         if (patientObject.getSalutation() != 0)
             patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
         else patientName = toCamelCase(patientObject.getPatientName());
+
+
+        //---- START: Setting of hospitalID or referecne ID, reference is IS high priority than hospitalID.-----
+        String dataToShowInPatientID = String.valueOf(patientObject.getReferenceID());
+
+        if (dataToShowInPatientID == null || RescribeConstants.BLANK.equalsIgnoreCase(dataToShowInPatientID)) {
+            dataToShowInPatientID = String.valueOf(patientObject.getHospitalPatId());
+        }
+        //---- END------
 
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName
@@ -121,13 +136,14 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             } else {
                 holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
             }
-            //TODO:
             //Spannable condition for PatientId
-            if (String.valueOf(patientObject.getHospitalPatId()).contains(patientObject.getSpannableString())) {
 
-                SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+
+            if (dataToShowInPatientID.toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
+
+                SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
                 Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+                Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
 
                 while (matcher.find()) {
                     spannableIdString.setSpan(new ForegroundColorSpan(
@@ -137,30 +153,38 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 }
                 holder.patientIdTextView.setText(spannableIdString);
             } else {
-
-                holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+                holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
             }
+            //--- END: -------------------------------
         } else {
             holder.patientNameTextView.setText(patientName);
             holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
-            holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+            holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
         }
-
-        if (patientObject.getAge().equals("") && !patientObject.getDateOfBirth().equals("")) {
+        //------------
+        String gender = CommonMethods.toCamelCase(patientObject.getGender());
+        holder.patientGenderTextView.setText(gender);
+        //------------
+        //-- DOnt show - when gender is empty
+        String yearsString = mContext.getString(R.string.years);
+        if (gender != null && RescribeConstants.BLANK.equalsIgnoreCase(gender)) {
+            yearsString = yearsString.substring(0, (yearsString.length() - 2));
+        }
+        if (patientObject.getAge() != null && !RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getAge())) {
+            holder.patientAgeTextView.setVisibility(View.VISIBLE);
+            holder.patientAgeTextView.setText(patientObject.getAge() + " " + yearsString);
+        } else if (patientObject.getDateOfBirth() != null && !RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getDateOfBirth())) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = patientObject.getDateOfBirth();
             DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-            holder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + mContext.getString(R.string.years));
-        } else if (!patientObject.getAge().equals("")) {
-            holder.patientAgeTextView.setVisibility(View.VISIBLE);
-            holder.patientAgeTextView.setText(patientObject.getAge() + " " + mContext.getString(R.string.years));
+            holder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + yearsString);
         } else {
             holder.patientAgeTextView.setVisibility(View.GONE);
         }
+        //------------
 
-        holder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientObject.getGender()));
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (patientObject.getOutStandingAmount().equals("0.00") || patientObject.getOutStandingAmount().equals("0.0") || patientObject.getOutStandingAmount().equals("0")) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
@@ -319,7 +343,22 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     public void add(PatientList mc) {
         mDataList.add(mc);
         mListToShowAfterFilter.add(mc);
+        removeDuplicateElements();
         notifyItemInserted(mDataList.size() - 1);
+    }
+
+
+    // this is added to remove duplicate patients from list based on patientID.
+    private void removeDuplicateElements() {
+        Map<Integer, PatientList> map = new LinkedHashMap<>();
+        for (PatientList ays : mDataList) {
+            map.put(ays.getHospitalPatId(), ays);
+        }
+
+        mDataList.clear();
+        mDataList.addAll(map.values());
+        mListToShowAfterFilter.clear();
+        mListToShowAfterFilter.addAll(map.values());
     }
 
     public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
@@ -328,6 +367,16 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             mc.setSpannableString(searchText);
             mc.setSelected(selectedDoctorId.contains(mc.getHospitalPatId()));
             add(mc);
+            // add patient in sqlite while pagination.
+
+            if (mc.isOfflinePatientSynced()) {
+                mc.setOfflinePatientSynced(true);
+            } else {
+                mc.setOfflinePatientSynced(false);
+            }
+
+           // mc.setReferenceID("");
+            appDBHelper.addNewPatient(mc);
         }
 
         notifyDataSetChanged();

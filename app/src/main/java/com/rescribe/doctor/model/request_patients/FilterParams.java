@@ -13,13 +13,13 @@ public class FilterParams implements Parcelable {
 
     @SerializedName("gender")
     @Expose
-    private String gender;
+    private String gender = "";
     @SerializedName("age")
     @Expose
-    private String age;
+    private String age = "";
     @SerializedName("city")
     @Expose
-    private ArrayList<String> city = null;
+    private ArrayList<Integer> cityIDs = new ArrayList<>();
     public final static Parcelable.Creator<FilterParams> CREATOR = new Creator<FilterParams>() {
 
 
@@ -39,7 +39,7 @@ public class FilterParams implements Parcelable {
     protected FilterParams(Parcel in) {
         this.gender = ((String) in.readValue((String.class.getClassLoader())));
         this.age = ((String) in.readValue((String.class.getClassLoader())));
-        in.readList(this.city, (java.lang.String.class.getClassLoader()));
+        in.readList(this.cityIDs, (java.lang.Integer.class.getClassLoader()));
     }
 
     public FilterParams() {
@@ -61,18 +61,18 @@ public class FilterParams implements Parcelable {
         this.age = age;
     }
 
-    public ArrayList<String> getCity() {
-        return city;
+    public ArrayList<Integer> getCityIds() {
+        return cityIDs;
     }
 
-    public void setCity(ArrayList<String> city) {
-        this.city = city;
+    public void setCityIds(ArrayList<Integer> city) {
+        this.cityIDs = city;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(gender);
         dest.writeValue(age);
-        dest.writeList(city);
+        dest.writeList(cityIDs);
     }
 
     public int describeContents() {

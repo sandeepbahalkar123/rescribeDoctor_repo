@@ -7,7 +7,7 @@ public class CityList {
 
     @SerializedName("cityId")
     @Expose
-    private String cityId;
+    private int cityId;
     @SerializedName("cityName")
     @Expose
     private String cityName;
@@ -17,11 +17,11 @@ public class CityList {
     public CityList() {
     }
 
-    public String getCityId() {
+    public int getCityId() {
         return cityId;
     }
 
-    public void setCityId(String cityId) {
+    public void setCityId(int cityId) {
         this.cityId = cityId;
     }
 

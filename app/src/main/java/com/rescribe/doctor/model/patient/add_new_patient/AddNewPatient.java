@@ -8,12 +8,18 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 
 public class AddNewPatient implements CustomResponse {
     private String id;
+    private Integer salutation;
     private String firstName;
     private String middleName;
     private String lastName;
     private long contactNo;
     private int age;
     private String gender;
+    private String dateOfBirth;
+    private String outStandingAmount;
+    private String patientImageUrl;
+    private String patientEmail;
+
     private String referenceID;
     private String patientOfflineID;
     private String createdTimeStamp;
@@ -141,5 +147,45 @@ public class AddNewPatient implements CustomResponse {
 
     public void setHospitalPatientID(String hospitalPatientID) {
         this.hospitalPatientID = hospitalPatientID;
+    }
+
+    public Integer getSalutation() {
+        return salutation;
+    }
+
+    public void setSalutation(Integer salutation) {
+        this.salutation = salutation;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getOutStandingAmount() {
+        return outStandingAmount;
+    }
+
+    public void setOutStandingAmount(String outStandingAmount) {
+        this.outStandingAmount = outStandingAmount;
+    }
+
+    public String getPatientImageUrl() {
+        return patientImageUrl;
+    }
+
+    public void setPatientImageUrl(String patientImageUrl) {
+        this.patientImageUrl = patientImageUrl;
+    }
+
+    public String getPatientEmail() {
+        return patientEmail;
+    }
+
+    public void setPatientEmail(String patientEmail) {
+        this.patientEmail = patientEmail;
     }
 }

@@ -98,12 +98,12 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private ViewPagerAdapter mViewPagerAdapter;
     private HashSet<String> mGeneratedRequestForYearList;
     private Context mContext;
-
     private PatientHistoryActivity mParentActivity;
     private String mLocationId;
     private int mHospitalId;
     private String mPatientId;
     private String mHospitalPatId;
+    private int mAptId;
 
     public PatientHistoryListFragmentContainer() {
         // Required empty public constructor
@@ -135,6 +135,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             userInfoTextView.setVisibility(View.VISIBLE);
             userInfoTextView.setText(getArguments().getString(RescribeConstants.PATIENT_INFO));
             mHospitalPatId = getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID);
+            mAptId = getArguments().getInt(RescribeConstants.APPOINTMENT_ID);
         }
 
         YearSpinnerInteractionListener listener = new YearSpinnerInteractionListener();
@@ -151,7 +152,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
         mGeneratedRequestForYearList = new HashSet<>();
 
-        mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null);
+        mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null,getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
     }
 
     @OnClick({R.id.backImageView, R.id.addRecordButton})
@@ -229,7 +230,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                     Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedPatientHistoryInfo = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
                     if (yearWiseSortedPatientHistoryInfo.get(year) == null) {
                         mGeneratedRequestForYearList.add(year);
-                        mPatientDetailHelper.doGetPatientHistory(mPatientId, year, getArguments().getString(RescribeConstants.PATIENT_NAME) == null);
+                        mPatientDetailHelper.doGetPatientHistory(mPatientId, year, getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
                     }
                 }
                 //---------
@@ -358,6 +359,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         intent.putExtra(RescribeConstants.OPD_ID, "0");
         intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
         intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+        intent.putExtra(RescribeConstants.APPOINTMENT_ID,mAptId);
         intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
         intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
         intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
@@ -474,6 +476,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 userInfoTextView.setText(getArguments().getString(RescribeConstants.PATIENT_INFO));
                 mHospitalId = getArguments().getInt(RescribeConstants.CLINIC_ID);
                 mHospitalPatId = getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID);
+                mAptId = getArguments().getInt(RescribeConstants.APPOINTMENT_ID);
+
             }
 
 
@@ -533,7 +537,13 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
 
-        setupViewPager();
+        if (mViewPagerAdapter != null) {
+            setupViewPager();
+        } else {
+            noRecords.setVisibility(View.VISIBLE);
+            mYearSpinnerView.setVisibility(View.GONE);
+            mTabLayout.setVisibility(View.GONE);
+        }
 
     }
     //---------------

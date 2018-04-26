@@ -195,7 +195,7 @@ public class CommonMethods {
     public static int getCaseStudyIcons(String caseStudyName) {
 
         // Drawable abbreviation = ContextCompat.getDrawable(context, R.drawable.ellipse_2);
-       caseStudyName=caseStudyName.toLowerCase();
+        caseStudyName = caseStudyName.toLowerCase();
         int abbreviation = R.drawable.commonicon;
         if (caseStudyName.contains("complaint"))
             abbreviation = R.drawable.complaints;
@@ -223,7 +223,7 @@ public class CommonMethods {
             abbreviation = R.drawable.preoperativeprecautions;
         else if (caseStudyName.contains("post-operative care"))
             abbreviation = R.drawable.postoperativecare;
-        else if (caseStudyName.contains("pain score")|| caseStudyName.contains("pain scale"))
+        else if (caseStudyName.contains("pain score") || caseStudyName.contains("pain scale"))
             abbreviation = R.drawable.painscore;
         else if (caseStudyName.contains("exercise"))
             abbreviation = R.drawable.exercise;
@@ -235,7 +235,7 @@ public class CommonMethods {
             abbreviation = R.drawable.attachment;
         else if (caseStudyName.contains("systemic examination") || caseStudyName.contains("examination"))
             abbreviation = R.drawable.examination;
-        else if (caseStudyName.contains("operative procedure")  || caseStudyName.contains("procedure"))
+        else if (caseStudyName.contains("operative procedure") || caseStudyName.contains("procedure"))
             abbreviation = R.drawable.procedure;
 
         return abbreviation;
@@ -268,14 +268,27 @@ public class CommonMethods {
 
     public static TextDrawable getTextDrawable(Context context, String name) {
         ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
-        int color2 = mColorGenerator.getColor(name);
-        return TextDrawable.builder()
-                .beginConfig()
-                .width(Math.round(context.getResources().getDimension(R.dimen.dp67))) // width in px
-                .height(Math.round(context.getResources().getDimension(R.dimen.dp67))) // height in px
-                .endConfig()
-                .buildRound(("" + name.charAt(0)).toUpperCase(), color2);
+
+        if (RescribeConstants.BLANK.equalsIgnoreCase(name)) {
+            int color2 = mColorGenerator.getColor(name);
+            return TextDrawable.builder()
+                    .beginConfig()
+                    .width(Math.round(context.getResources().getDimension(R.dimen.dp67))) // width in px
+                    .height(Math.round(context.getResources().getDimension(R.dimen.dp67))) // height in px
+                    .endConfig()
+                    .buildRound(("" + name).toUpperCase(), color2);
+        } else {
+            int color2 = mColorGenerator.getColor(name);
+            return TextDrawable.builder()
+                    .beginConfig()
+                    .width(Math.round(context.getResources().getDimension(R.dimen.dp67))) // width in px
+                    .height(Math.round(context.getResources().getDimension(R.dimen.dp67))) // height in px
+                    .endConfig()
+                    .buildRound(("" + name.charAt(0)).toUpperCase(), color2);
+        }
+
     }
+
     public static int getVersionCode(Context mContext) {
         int versionCode = -1;
         try {

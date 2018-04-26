@@ -103,7 +103,7 @@ public class SearchedMessagesAdapter extends RecyclerView.Adapter<SearchedMessag
 
         String patientName = mqttMessage.getSenderName();
 
-        String salutation;
+        String salutation = "";
         if (mqttMessage.getSalutation() != 0)
             salutation = SALUTATION[mqttMessage.getSalutation() - 1];
         else salutation = "";

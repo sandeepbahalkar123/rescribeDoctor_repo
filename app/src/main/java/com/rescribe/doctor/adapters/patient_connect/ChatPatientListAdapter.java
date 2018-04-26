@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -46,7 +46,6 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
 
     private Context mContext;
     private ArrayList<PatientList> mDataList = new ArrayList<>();
-    private ArrayList<PatientList> mOriginalPatientList;
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
     private ArrayList<PatientList> mListToShowAfterFilter;
@@ -85,6 +84,15 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
             patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + CommonMethods.toCamelCase(patientObject.getPatientName());
         else patientName = CommonMethods.toCamelCase(patientObject.getPatientName());
 
+
+        //---- START: Setting of hospitalID or referecne ID, reference is IS high priority than hospitalID.-----
+        String dataToShowInPatientID = String.valueOf(patientObject.getReferenceID());
+
+        if (dataToShowInPatientID == null || RescribeConstants.BLANK.equalsIgnoreCase(dataToShowInPatientID)) {
+            dataToShowInPatientID = String.valueOf(patientObject.getHospitalPatId());
+        }
+        //---- END------
+
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName
             if (patientObject.getPatientName().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
@@ -119,11 +127,11 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
             }
             //TODO:
             //Spannable condition for PatientId
-            if (String.valueOf(patientObject.getHospitalPatId()).contains(patientObject.getSpannableString())) {
+            if (dataToShowInPatientID.toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
 
-                SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+                SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
                 Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+                Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
 
                 while (matcher.find()) {
                     spannableIdString.setSpan(new ForegroundColorSpan(
@@ -134,12 +142,12 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
                 holder.patientIdTextView.setText(spannableIdString);
             } else {
 
-                holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+                holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
             }
         } else {
             holder.patientNameTextView.setText(patientName);
             holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
-            holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientObject.getHospitalPatId()));
+            holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
         }
 
         if (patientObject.getAge().equals("") && !patientObject.getDateOfBirth().equals("")) {
@@ -169,18 +177,26 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
 
         }
         holder.chatImageView.setVisibility(View.GONE);
-        TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, patientObject.getPatientName());
+
+
+        //----------
+        TextDrawable textDrawable;
         RequestOptions requestOptions = new RequestOptions();
+        if (!RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getPatientName())) {
+            textDrawable = CommonMethods.getTextDrawable(mContext, patientObject.getPatientName());
+            requestOptions.placeholder(textDrawable);
+            requestOptions.error(textDrawable);
+        }
+        //---------
         requestOptions.dontAnimate();
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
         requestOptions.skipMemoryCache(true);
-        requestOptions.placeholder(textDrawable);
-        requestOptions.error(textDrawable);
 
         Glide.with(mContext)
                 .load(patientObject.getPatientImageUrl())
                 .apply(requestOptions).thumbnail(0.5f)
                 .into(holder.patientImageView);
+        //--------------
 
 
         holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -305,7 +321,9 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
 
     public interface OnDownArrowClicked {
         void onRecordFound(boolean isListEmpty);
+
         void onClickOfPatientDetails(PatientList patientListObject, String text);
+
         void onPhoneNoClick(String patientPhone);
     }
 
@@ -318,6 +336,7 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
 
         notifyDataSetChanged();
     }
+
     public void add(PatientList mc) {
         mDataList.add(mc);
         mListToShowAfterFilter.add(mc);

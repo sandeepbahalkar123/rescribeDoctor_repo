@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="@dimen/dp10"
-                    android:visibility="visible">
+                    tools:visibility="visible">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/aboutDoctor"

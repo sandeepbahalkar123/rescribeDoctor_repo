@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +37,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.investigation.Image;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -66,7 +66,7 @@ import droidninja.filepicker.FilePickerConst;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.rescribe.doctor.services.CheckPendingUploads.getUploadConfig;
+import static com.rescribe.doctor.services.SyncOfflineRecords.getUploadConfig;
 
 @RuntimePermissions
 public class SelectedRecordsActivity extends AppCompatActivity {
@@ -90,10 +90,8 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     ImageView addImageView;
     @BindView(R.id.addImageViewRightFab)
     FloatingActionButton mAddImageViewRightFab;
-
     @BindView(R.id.mainRelativeLayout)
     RelativeLayout mainRelativeLayout;
-
     private Context mContext;
     private ArrayList<Image> imagePaths = new ArrayList<>();
     private Dialog dialog;
@@ -117,6 +115,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     private boolean openCameraDirect;
     private int imageSize;
     private int dimension20PixelSize;
+    private int mAptId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,7 +245,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
         mHospitalPatId = getIntent().getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
         mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);
         patientId = getIntent().getStringExtra(RescribeConstants.PATIENT_ID);
-
+        mAptId = getIntent().getIntExtra(RescribeConstants.APPOINTMENT_ID, 0);
         mHospitalId = getIntent().getIntExtra(RescribeConstants.CLINIC_ID, 0);
         addImageView.setVisibility(View.GONE);
         mAddImageViewRightFab.setVisibility(View.VISIBLE);
@@ -423,14 +422,18 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                 } else {
 
                     for (int parentIndex = 0; parentIndex < imagePaths.size(); parentIndex++) {
+                        String uploadId = System.currentTimeMillis() + "_" + parentIndex + "_" + patientId;
                         if (NetworkUtil.isInternetAvailable(SelectedRecordsActivity.this))
-                            uploadImage(System.currentTimeMillis() + "_" + parentIndex + "_" + patientId, imagePaths.get(parentIndex));
+                            uploadImage(uploadId, imagePaths.get(parentIndex));
                         else
                             CommonMethods.showToast(this, getString(R.string.records_will_upload_when_internet_available));
-                        appDBHelper.insertRecordUploads(System.currentTimeMillis() + "_" + parentIndex + "_" + patientId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath());
-                    }
-                    CommonMethods.showToast(this, getString(R.string.uploading));
 
+                        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath(), mAptId);
+                    }
+//                    CommonMethods.showToast(this, getString(R.string.uploading));
+
+//                    Intent i = new Intent(this, MQTTService.class);
+//                    startService(i);
                     onBackPressed();
                 }
                 break;
@@ -472,6 +475,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                     .addHeader("hospitalid", String.valueOf(mHospitalId))
                     .addHeader("hospitalpatid", mHospitalPatId)
                     .addHeader("locationid", mLocationId)
+                    .addHeader("aptid", String.valueOf(mAptId))
                     .addFileToUpload(image.getImagePath(), "attachment");
 
             String docCaption;

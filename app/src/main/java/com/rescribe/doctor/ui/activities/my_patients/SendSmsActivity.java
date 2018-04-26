@@ -71,13 +71,9 @@ public class SendSmsActivity extends AppCompatActivity implements SmsRecepientLi
     @BindView(R.id.sendSmsButton)
     ImageView sendSmsButton;
     private Context mContext;
-    private Intent intent;
     private ArrayList<ClinicListForSms> clinicSmsInfoList = new ArrayList<>();
-    private RecyclerView.LayoutManager mLayoutManager;
     private SmsRecepientListAdapter mSmsRecepientListAdapter;
     private ArrayList<PatientList> patientLists = new ArrayList<>();
-    ArrayList<ClinicListForSms> clinicListForSmsFinalList = new ArrayList<>();
-    private AppointmentHelper mAppointmentHelper;
     private boolean isSendEnabled;
 
     @Override
@@ -90,7 +86,7 @@ public class SendSmsActivity extends AppCompatActivity implements SmsRecepientLi
 
     private void initialize() {
         mContext = SendSmsActivity.this;
-        intent = getIntent();
+        Intent intent = getIntent();
         titleTextView.setText(getString(R.string.send_sms));
         if (intent.getExtras() != null) {
             clinicSmsInfoList = intent.getParcelableArrayListExtra(RescribeConstants.SMS_DETAIL_LIST);
@@ -110,9 +106,9 @@ public class SendSmsActivity extends AppCompatActivity implements SmsRecepientLi
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 10);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(1, 10);
         recyclerView.setAdapter(mSmsRecepientListAdapter);
-        if(clinicSmsInfoList.get(0).getTemplateContent().equals("")){
-           editTextSmsContent.setHint(getString(R.string.enter_sms_text_here));
-        }else{
+        if (clinicSmsInfoList.get(0).getTemplateContent().equals("")) {
+            editTextSmsContent.setHint(getString(R.string.enter_sms_text_here));
+        } else {
             editTextSmsContent.setText(clinicSmsInfoList.get(0).getTemplateContent());
         }
 
@@ -139,25 +135,22 @@ public class SendSmsActivity extends AppCompatActivity implements SmsRecepientLi
                 } else {
                     setSendEnabled(false);
                     sendSmsButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.sendbutton_grey));
-
                 }
             }
         });
 
     }
 
-    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.sendSmsButton})
+    @OnClick({R.id.backImageView, R.id.sendSmsButton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
                 finish();
                 break;
-            case R.id.titleTextView:
-                break;
             case R.id.sendSmsButton:
                 if (!editTextSmsContent.getText().toString().equals("") && mSmsRecepientListAdapter.getSmsReciptentList().size() > 0) {
                     setSendEnabled(false);
-                    mAppointmentHelper = new AppointmentHelper(mContext, this);
+                    AppointmentHelper mAppointmentHelper = new AppointmentHelper(mContext, this);
                     for (ClinicListForSms listForSms : clinicSmsInfoList) {
                         if (editTextSmsContent.getText().toString().contains("hospitalName")) {
                             String originalMsgContent = editTextSmsContent.getText().toString();

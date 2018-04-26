@@ -4,11 +4,11 @@ package com.rescribe.doctor.model.completed_opd;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class CompletedOpd implements Parcelable
-{
+public class CompletedOpd implements Parcelable {
 
     @SerializedName("salutation")
     @Expose
@@ -58,13 +58,20 @@ public class CompletedOpd implements Parcelable
     @SerializedName("opdFollowUpStatus")
     @Expose
     private Integer opdFollowUpStatus;
+    @SerializedName("referenceId")
+    @Expose
+    private String referenceId;
+    @SerializedName("clinicId")
+    @Expose
+    private Integer clinicId;
+
     private String spannableString;
     private boolean selected;
     public final static Creator<CompletedOpd> CREATOR = new Creator<CompletedOpd>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public CompletedOpd createFromParcel(Parcel in) {
             return new CompletedOpd(in);
@@ -74,10 +81,10 @@ public class CompletedOpd implements Parcelable
             return (new CompletedOpd[size]);
         }
 
-    }
-    ;
+    };
 
     protected CompletedOpd(Parcel in) {
+        this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientID = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientName = ((String) in.readValue((String.class.getClassLoader())));
@@ -94,6 +101,7 @@ public class CompletedOpd implements Parcelable
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.opdid = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.opdFollowUpStatus = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.referenceId = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public CompletedOpd() {
@@ -115,6 +123,21 @@ public class CompletedOpd implements Parcelable
         this.selected = selected;
     }
 
+    public Integer getPatientID() {
+        return patientID;
+    }
+
+    public void setPatientID(Integer patientID) {
+        this.patientID = patientID;
+    }
+
+    public Integer getClinicId() {
+        return clinicId;
+    }
+
+    public void setClinicId(Integer clinicId) {
+        this.clinicId = clinicId;
+    }
 
     public Integer getSalutation() {
         return salutation;
@@ -244,7 +267,16 @@ public class CompletedOpd implements Parcelable
         this.opdFollowUpStatus = opdFollowUpStatus;
     }
 
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(clinicId);
         dest.writeValue(salutation);
         dest.writeValue(patientID);
         dest.writeValue(patientName);
@@ -261,10 +293,11 @@ public class CompletedOpd implements Parcelable
         dest.writeValue(hospitalPatId);
         dest.writeValue(opdid);
         dest.writeValue(opdFollowUpStatus);
+        dest.writeValue(referenceId);
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

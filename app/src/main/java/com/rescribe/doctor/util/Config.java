@@ -31,28 +31,40 @@ public class Config {
     public static final String CONFIRM_APPOINTMENT = "api/patient/bookAppointment";
     public static final String UPLOAD_PROFILE_PHOTO = "api/upload/uploadDoctorImage";
 
-    public static final String BROKER = "tcp://drrescribe.com:1883";//"tcp://52.66.154.249:1883"; // Dr Rescribe.com IP QA
-//    public static final String BROKER = "tcp://rescribe.in:1883";  // Rescribe.in IP LIVE
 
-    // http://172.16.100.219:3003/";
+    //---------------LOCAL SERVER URL START-----------------------
+    /*public static String BASE_URL = "http://172.16.100.219:3003/";
+    public static final String FORGOT_PASSWORD_URL = "http://172.16.100.219:3003/app.html#/access/forgotPassword";
+    public static final String ADD_NEW_PATIENT_WEB_URL = "http://172.16.100.219:3003/app.html#/addpatientmobile/";
+    public static final String BROKER = "tcp://172.16.100.219:1883";//"tcp://52.66.154.249:1883"; // Dr Rescribe.com IP QA
+    */
+    //---------------LOCAL SERVER URL END-----------------------
+
+
+    //---------------QA SERVER URL START-----------------------
+
     public static String BASE_URL = "http://drrescribe.com:3003/";
     public static final String FORGOT_PASSWORD_URL = "https://drrescribe.com/app.html#/access/forgotPassword";
     public static final String ADD_NEW_PATIENT_WEB_URL = "https://drrescribe.com/app.html#/addpatientmobile/";
-    /*public static String BASE_URL = "http://rescribe.in:3003/";
+    public static final String BROKER = "tcp://drrescribe.com:1883";//"tcp://52.66.154.249:1883"; // Dr Rescribe.com IP QA
+
+    //---------------QA SERVER URL END-----------------------
+
+    //---------------LIVE URL START-----------------------
+   /* public static String BASE_URL = "http://rescribe.in:3003/";
     public static final String FORGOT_PASSWORD_URL = "https://rescribe.in/app.html#/access/forgotPassword";
     public static final String ADD_NEW_PATIENT_WEB_URL = "https://rescribe.in/app.html#/addpatientmobile/";
-*/
+    public static final String BROKER = "tcp://rescribe.in:1883";// "tcp://52.66.154.249:1883"; // Rescribe.in IP LIVE
+   */ //---------------LIVE URL ENDS-----------------------
 
     public static final String MY_RECORDS_DOCTOR_LIST = "api/doctors/getDoctorsWithPatientVisits";
     public static final String MY_RECORDS_ADD_DOCTOR = "api/doctors/addDoctor";
     public static final String REQUEST_SEND_SMS = "doctor/api/appointment/sendSmsToPatients";
-//            public static String BASE_URL = "http://192.168.0.182:3003/";
 
     public Context mContext;
-    //Declared all URL used in app here
+    //  Declared all URL used in app here
     public static final String LOGIN_WITH_OTP_URL = "authApi/authenticate/otpLogin";
     public static final String GET_PATIENT_LIST = "api/patient/getChatPatientList?docId=";
-    public static final String DOCTOR_LIST_FILTER_URL = "api/patient/searchDoctors";
 
     public static final String SEND_MSG_TO_PATIENT = "api/chat/sendMsgToPatient";
     public static final String CHAT_HISTORY = "api/chat/getChatHistory?";
@@ -66,8 +78,9 @@ public class Config {
     public static final String ADD_NEW_PATIENT_WEB_URL_SUCCESS = "addpatientmobilesuccess";
 
     public static final String GET_DOCTOR_PATIENT_CITY = "doctor/api/patient/getDoctorPatientCity";
+    public static final String GET_PATIENTS_SYNC = "doctor/api/patient/getPatientSyncList";
+    public static final String ADD_PATIENTS_SYNC = "doctor/api/patient/addPatients";
 
 }
-
 
 

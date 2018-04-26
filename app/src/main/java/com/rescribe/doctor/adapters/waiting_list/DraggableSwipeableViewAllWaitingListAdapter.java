@@ -239,8 +239,15 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             }
         });
 
+        //---- START: Setting of hospitalID or referecne ID, reference is IS high priority than hospitalID.-----
+        String dataToShowInPatientID = String.valueOf(item.getViewAll().getReferenceID());
 
-        holder.mPatientIdTextView.setText(holder.mPatientIdTextView.getResources().getString(R.string.id) + " " + item.getViewAll().getHospitalPatId());
+        if (dataToShowInPatientID == null || RescribeConstants.BLANK.equalsIgnoreCase(dataToShowInPatientID)) {
+            dataToShowInPatientID = String.valueOf(item.getViewAll().getHospitalPatId());
+        }
+        //---- END------
+
+        holder.mPatientIdTextView.setText(holder.mPatientIdTextView.getResources().getString(R.string.id) + " " + dataToShowInPatientID);
         if (!item.getViewAll().getWaitingInTime().equals("")) {
             holder.mAppointmentTime.setVisibility(View.VISIBLE);
             String waitingTime = CommonMethods.formatDateTime(item.getViewAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
@@ -267,7 +274,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             salutation = SALUTATION[item.getViewAll().getSalutation() - 1];
         else salutation = "";
 
-        holder.mPatientNameTextView.setText(salutation+ CommonMethods.toCamelCase(item.getViewAll().getPatientName()));
+        holder.mPatientNameTextView.setText(salutation + CommonMethods.toCamelCase(item.getViewAll().getPatientName()));
         holder.mTypeStatus.setText(" " + item.getViewAll().getWaitingStatus());
         TextDrawable textDrawable = CommonMethods.getTextDrawable(holder.mPatientImageView.getContext(), item.getViewAll().getPatientName());
         RequestOptions requestOptions = new RequestOptions();
@@ -309,20 +316,19 @@ public class DraggableSwipeableViewAllWaitingListAdapter
 
             holder.mContainer.setBackgroundResource(bgResId);
         }
-     if(getAllItems().size()==1){
-         holder.mDragHandle.setVisibility(View.GONE);
-     }else {
-         if (item.getViewAll().getWaitingStatusId().equals(IN_QUEUE) || item.getViewAll().getWaitingStatusId().equals(CONFIRMED)) {
-             holder.mDragHandle.setVisibility(View.VISIBLE);
-             holder.setMaxLeftSwipeAmount(-0.4f);
-             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
-         } else {
-             holder.mDragHandle.setVisibility(View.GONE);
-             holder.setMaxLeftSwipeAmount(0);
-             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
-         }
-     }
 
+        if (item.getViewAll().getWaitingStatusId().equals(IN_QUEUE) || item.getViewAll().getWaitingStatusId().equals(CONFIRMED)) {
+            if (getAllItems().size() == 1)
+                holder.mDragHandle.setVisibility(View.GONE);
+            else holder.mDragHandle.setVisibility(View.VISIBLE);
+
+            holder.setMaxLeftSwipeAmount(-0.4f);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
+        } else {
+            holder.mDragHandle.setVisibility(View.GONE);
+            holder.setMaxLeftSwipeAmount(0);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? 0 : 0);
+        }
 
         holder.setMaxRightSwipeAmount(0);
 
@@ -351,8 +357,8 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         Log.d(TAG, "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
 
         move(fromPosition, toPosition);
-        if ((toPosition+1) < mProvider.getCount()) {
-            ViewAll viewAll = mProvider.getItem(toPosition+1).getViewAll();
+        if ((toPosition + 1) < mProvider.getCount()) {
+            ViewAll viewAll = mProvider.getItem(toPosition + 1).getViewAll();
             if (viewAll.getWaitingStatusId().equals(IN_QUEUE) || viewAll.getWaitingStatusId().equals(CONFIRMED))
                 mEventListener.onItemMoved(fromPosition, toPosition);
             else

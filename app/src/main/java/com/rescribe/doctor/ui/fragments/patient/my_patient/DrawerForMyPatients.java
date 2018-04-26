@@ -138,7 +138,7 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
     private String[] sortOptions = new String[]{"Outstanding Amt" + lowToHigh,
             "Outstanding Amt" + highToLow};
     private String sortOrder = "";
-    private ArrayList<String> cityList = new ArrayList<>();
+    private ArrayList<Integer> cityList = new ArrayList<>();
     private DrawerPatientsCityNameAdapter mDrawerPatientsCityNameAdapter;
 
     @Override
@@ -290,13 +290,12 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
             case R.id.applyButton:
                 RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
                 FilterParams filterParams = new FilterParams();
-                filterParams.setCity(cityList);
+                filterParams.setCityIds(cityList);
                 filterParams.setGender(mSelectedGender);
                 if (clinicFeesSeekBar.getSelectedMinValue().toString().equals("0") && clinicFeesSeekBar.getSelectedMaxValue().toString().equals("100")) {
                     filterParams.setAge("");
-                } else{
+                } else {
                     filterParams.setAge(String.valueOf(clinicFeesSeekBar.getSelectedMinValue()) + "-" + clinicFeesSeekBar.getSelectedMaxValue());
-
                 }
 
                 mRequestSearchPatients.setFilterParams(filterParams);

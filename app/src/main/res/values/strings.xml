@@ -132,6 +132,7 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="age">Age</string>
+    <string name="age_err_msg">Age should not be grater than 100.</string>
     <string name="less">less</string>
     <string name="equal">equal</string>
     <string name="greater">greater</string>
@@ -195,7 +196,8 @@
     <string name="just_now">Just Now</string>
     <string name="services"><u>Services</u></string>
     <string name="about_doctor"><u>About Doctor :</u></string>
-    <string name="template_list">Template List</string>
+    <!--<string name="template_list">Template List</string>-->
+    <string name="template_list">SMS Templates</string>
     <string name="active">ACTIVE</string>
     <string name="view_all">VIEW ALL</string>
     <string name="in_time">In Time</string>
@@ -237,7 +239,9 @@
     <string name="middle_name">Middle Name</string>
     <string name="last_name">Last Name</string>
     <string name="reference_id">Reference ID.</string>
-    <string name="add_patient_offline">No internet connection found, still you can add patient offline.</string>
+    <string name="reference_id_input_err_msg">Reference ID should be alphanumeric, no special characters and no white spaces.</string>
+    <string name="add_patient_offline_msg">No internet connection found, still you can add patient offline.</string>
+    <string name="setting_add_patient_header">Add Patient Offline</string>
 
     <string name="book_appointment">Book Appointment</string>
     <string name="appointment_booked_message">Appointment has already been taken with this doctor.</string>
@@ -257,6 +261,9 @@
     <string name="do_you_want_to_update">Do you want to update application?</string>
     <string name="update">Update</string>
     <string name="later">Later</string>
+    <string name="patient_registration">Patient Registration</string>
+    <string name="cannot_completed_appointment">You cannot complete appointment for future dates.</string>
+    <string name="you_cannot_add_waiting_list">You cannot add future appointments in waiting list</string>
 
 
 </resources>

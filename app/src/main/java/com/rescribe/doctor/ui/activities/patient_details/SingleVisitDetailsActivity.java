@@ -20,7 +20,6 @@ import com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter;
 import com.rescribe.doctor.helpers.patient_detail.PatientDetailHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.CommonBaseModelContainer;
 import com.rescribe.doctor.model.case_details.PatientHistory;
 import com.rescribe.doctor.model.case_details.Range;
@@ -48,8 +47,8 @@ import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHI
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_VITALS;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.TEXT_LIMIT;
 import static com.rescribe.doctor.services.ChatBackUpService.STATUS;
-import static com.rescribe.doctor.services.CheckPendingUploads.DOC_UPLOAD;
-import static com.rescribe.doctor.services.CheckPendingUploads.UPLOAD_INFO;
+import static com.rescribe.doctor.services.SyncOfflineRecords.DOC_UPLOAD;
+import static com.rescribe.doctor.services.SyncOfflineRecords.UPLOAD_INFO;
 import static com.rescribe.doctor.ui.fragments.patient.patient_history_fragment.PatientHistoryListFragmentContainer.SELECT_REQUEST_CODE;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
@@ -97,6 +96,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String mOpdTime;
     private PatientDetailHelper mSingleVisitDetailHelper;
     private boolean isAllAttachmentDeleted = false;
+    private int mAptId ;
 
 
     @Override
@@ -115,6 +115,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         dateTextview.setVisibility(View.VISIBLE);
         if (intent.getExtras() != null) {
             patientID = intent.getStringExtra(RescribeConstants.PATIENT_ID);
+            mAptId = intent.getIntExtra(RescribeConstants.APPOINTMENT_ID,0);
             opdID = intent.getStringExtra(RescribeConstants.PATIENT_OPDID);
             mOpdTime = intent.getStringExtra(RescribeConstants.OPD_TIME);
             mHospitalPatId = intent.getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
@@ -367,6 +368,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 intent.putExtra(RescribeConstants.LOCATION_ID, "0");
                 intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
                 intent.putExtra(RescribeConstants.CLINIC_ID, "0");
+                intent.putExtra(RescribeConstants.APPOINTMENT_ID,mAptId);
                 intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
                 intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
                 intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));

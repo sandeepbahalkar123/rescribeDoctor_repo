@@ -22,7 +22,9 @@ public class RequestForPatientHistory implements CustomResponse {
     @SerializedName("getPatientInfo")
     @Expose
     private boolean getPatientInfo;
-
+    @SerializedName("hospitalPatId")
+    @Expose
+    private Integer hospitalPatId;
 
     public Integer getPatientId() {
         return patientId;
@@ -34,6 +36,14 @@ public class RequestForPatientHistory implements CustomResponse {
 
     public String getYear() {
         return year;
+    }
+
+    public Integer getHospitalPatId() {
+        return hospitalPatId;
+    }
+
+    public void setHospitalPatId(Integer hospitalPatId) {
+        this.hospitalPatId = hospitalPatId;
     }
 
     public void setYear(String year) {

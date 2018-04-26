@@ -12,9 +12,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.book_appointment.SelectSlotTimeToBookAppointmentFragment;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -30,7 +30,6 @@ public class SelectSlotToBookAppointmentBaseActivity extends AppCompatActivity i
 
     @BindView(R.id.viewContainer)
     FrameLayout viewContainer;
-    HashMap<String, String> userSelectedLocationInfo;
     @BindView(R.id.coachmarkContainer)
     FrameLayout coachmarkContainer;
     @BindView(R.id.backImageView)
@@ -47,7 +46,6 @@ public class SelectSlotToBookAppointmentBaseActivity extends AppCompatActivity i
     ImageView addImageView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-    private PatientList patientListObject;
 
 
     @Override
@@ -68,10 +66,10 @@ public class SelectSlotToBookAppointmentBaseActivity extends AppCompatActivity i
         }
 
         if (intent.getExtras() != null) {
-           patientListObject = intent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
+            PatientList patientListObject = intent.getParcelableExtra(RescribeConstants.PATIENT_INFO);
            String patientDetail = intent.getStringExtra(RescribeConstants.PATIENT_DETAILS);
            boolean isAppointmentTypeReschedule = intent.getBooleanExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE,false);
-           extras.putParcelable(RescribeConstants.PATIENT_INFO,patientListObject);
+           extras.putParcelable(RescribeConstants.PATIENT_INFO, patientListObject);
            extras.putString(RescribeConstants.PATIENT_DETAILS,patientDetail);
            extras.putBoolean(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE,isAppointmentTypeReschedule);
         }

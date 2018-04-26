@@ -44,10 +44,6 @@ public class CompletedOpdActivity extends AppCompatActivity implements HelperRes
     CustomTextView dateTextview;
     @BindView(R.id.viewContainer)
     FrameLayout viewContainer;
-    @BindView(R.id.nav_view)
-    FrameLayout navView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
     @BindView(R.id.emptyListView)
     RelativeLayout emptyListView;
     private Context mContext;
@@ -61,7 +57,7 @@ public class CompletedOpdActivity extends AppCompatActivity implements HelperRes
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_patients_base_layout);
+        setContentView(R.layout.complete_opd_base_layout);
         ButterKnife.bind(this);
         initialize();
     }
@@ -113,7 +109,7 @@ public class CompletedOpdActivity extends AppCompatActivity implements HelperRes
 
     }
 
-    @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
+    @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -125,27 +121,13 @@ public class CompletedOpdActivity extends AppCompatActivity implements HelperRes
                 break;
             case R.id.viewContainer:
                 break;
-            case R.id.nav_view:
-                break;
-            case R.id.drawer_layout:
-                break;
+
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-            drawerLayout.closeDrawer(GravityCompat.END);
-        } else {
-            if (mCompletedOpdfragment != null)
-                isLongPressed = mCompletedOpdfragment.callOnBackPressed();
-            if (isLongPressed) {
-                mCompletedOpdfragment.removeCheckBox();
-            } else {
-                super.onBackPressed();
-            }
-
-        }
+        super.onBackPressed();
     }
 
 

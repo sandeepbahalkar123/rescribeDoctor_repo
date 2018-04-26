@@ -22,13 +22,11 @@ import butterknife.ButterKnife;
 
 public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ListViewHolder> {
 
-    private Context mContext;
     private ArrayList<TemplateList> mTemplateLists;
     private OnCardViewClickListener mOnCardViewClickListener;
 
     public TemplateAdapter(Context mContext, ArrayList<TemplateList> mTemplateLists, OnCardViewClickListener mOnCardViewClickListener) {
         this.mTemplateLists = mTemplateLists;
-        this.mContext = mContext;
         this.mOnCardViewClickListener = mOnCardViewClickListener;
     }
 
@@ -77,9 +75,7 @@ public class TemplateAdapter extends RecyclerView.Adapter<TemplateAdapter.ListVi
     }
 
     public interface OnCardViewClickListener {
-
         void onCardViewClick(TemplateList templateList);
-
     }
 
 }

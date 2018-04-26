@@ -67,7 +67,6 @@ public class LoginFragment extends Fragment implements HelperResponse {
     ImageView loginUpWithGmail;
     private OnFragmentInteractionListener mListener;
     private final String TAG = this.getClass().getName();
-    private SignUpFragment signupFragment;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -136,7 +135,7 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 break;
             case R.id.signup:
                 //on click of signup , Signup fragment is loaded here.
-                signupFragment = new SignUpFragment();
+                SignUpFragment signupFragment = new SignUpFragment();
                 FragmentManager supportFragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.container, signupFragment);
@@ -211,6 +210,7 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                new AppDBHelper(getContext());
                 getActivity().finish();
 
             } else {

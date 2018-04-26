@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -304,12 +305,12 @@ public class LoginSignUpActivity extends AppCompatActivity implements GoogleApiC
                 if(RescribePreferencesManager.getString(RescribeConstants.TYPE_OF_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_gmail))){
                     RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER,RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL,mContext), mContext);
                     RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL,mContext), mContext);
-
                 }
                 Intent intent = new Intent(this, HomePageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                new AppDBHelper(mContext);
                 finish();
             } else {
                 CommonMethods.showToast(mContext, receivedModel.getCommon().getStatusMessage());

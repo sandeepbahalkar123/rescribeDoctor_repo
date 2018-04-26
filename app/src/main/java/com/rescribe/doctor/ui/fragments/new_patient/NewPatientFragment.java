@@ -132,7 +132,6 @@ public class NewPatientFragment extends Fragment implements NewPatientAdapter.On
         recyclerView.setClipToPadding(false);
         // off recyclerView Animation
         RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
-        recyclerView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
         recyclerView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.divider));
         if (animator instanceof SimpleItemAnimator)
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
@@ -226,11 +225,15 @@ public class NewPatientFragment extends Fragment implements NewPatientAdapter.On
     @Override
     public void onClickOfPatientDetails(NewPatientsDetail patientListObject, String text) {
 
-        String patientName = toCamelCase(patientListObject.getPatientName());
+        String patientName;
+        if (patientListObject.getSalutation() != 0)
+            patientName = RescribeConstants.SALUTATION[patientListObject.getSalutation() - 1] + toCamelCase(patientListObject.getPatientName());
+        else patientName = toCamelCase(patientListObject.getPatientName());
+
         Bundle b = new Bundle();
         b.putString(RescribeConstants.PATIENT_NAME, patientName);
         b.putString(RescribeConstants.PATIENT_INFO, text);
-        b.putString(RescribeConstants.CLINIC_NAME, patientListObject.getCityName());
+        b.putInt(RescribeConstants.CLINIC_ID, patientListObject.getClinicId());
         b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientID()));
         b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
         Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);

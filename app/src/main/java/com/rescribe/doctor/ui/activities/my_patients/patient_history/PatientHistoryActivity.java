@@ -15,8 +15,8 @@ import com.rescribe.doctor.util.RescribeConstants;
 import net.gotev.uploadservice.UploadInfo;
 
 import static com.rescribe.doctor.services.ChatBackUpService.STATUS;
-import static com.rescribe.doctor.services.CheckPendingUploads.DOC_UPLOAD;
-import static com.rescribe.doctor.services.CheckPendingUploads.UPLOAD_INFO;
+import static com.rescribe.doctor.services.SyncOfflineRecords.DOC_UPLOAD;
+import static com.rescribe.doctor.services.SyncOfflineRecords.UPLOAD_INFO;
 import static com.rescribe.doctor.ui.fragments.patient.patient_history_fragment.PatientHistoryListFragmentContainer.SELECT_REQUEST_CODE;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;

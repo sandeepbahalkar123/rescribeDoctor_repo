@@ -1,13 +1,18 @@
 package com.rescribe.doctor.ui.fragments.patient.my_patient;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,12 +38,14 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.my_appointments.BottomMenuAppointmentAdapter;
 import com.rescribe.doctor.adapters.my_patients.MyPatientsAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
-import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
+import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateList;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
@@ -48,13 +55,16 @@ import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.Pa
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity;
+import com.rescribe.doctor.services.LoadAllPatientsService;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
+import com.rescribe.doctor.ui.fragments.book_appointment.CoachFragment;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -64,6 +74,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.rescribe.doctor.services.SyncOfflineRecords.DOC_UPLOAD;
 import static com.rescribe.doctor.singleton.RescribeApplication.getDoctorLocationModels;
 import static com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity.ADD_PATIENT_REQUEST;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
@@ -115,7 +126,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
     private String fromActivityLaunched = "";
     private boolean isFiltered = false;
-    private String mLocalSearchText;
+    private AppDBHelper appDBHelper;
 
     @Override
     public void onDestroy() {
@@ -130,12 +141,23 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         View mRootView = inflater.inflate(R.layout.my_appointments_layout, container, false);
         //  hideSoftKeyboard();
         unbinder = ButterKnife.bind(this, mRootView);
+
+        String coachMarkStatus = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_ALL_PATIENT_DOWNLOAD, getActivity());
+        if (!coachMarkStatus.equals(RescribeConstants.YES)) {
+            FragmentManager supportFragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.coachmarkContainer, CoachFragment.newInstance());
+            fragmentTransaction.addToBackStack("Coach");
+            fragmentTransaction.commit();
+        }
         init();
         return mRootView;
 
     }
 
     private void init() {
+
+        appDBHelper = new AppDBHelper(getContext());
 
         if (getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM) != null)
             fromActivityLaunched = getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
@@ -164,15 +186,14 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, fromActivityLaunched.equals(RescribeConstants.HOME_PAGE));
         recyclerView.setAdapter(mMyPatientsAdapter);
 
-        nextPage(0);
+        nextPage(0, NetworkUtil.getConnectivityStatusBoolean(getContext()));
 
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                nextPage(page);
+                nextPage(page, NetworkUtil.getConnectivityStatusBoolean(getContext()));
             }
         });
-
 
         searchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
@@ -188,17 +209,20 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             public void afterTextChanged(Editable s) {
                 searchText = s.toString();
 
-                if (searchText.length() >= 3) {
-                    searchPatients();
-                    isFiltered = true;
-                } else if (isFiltered) {
-                    isFiltered = false;
-                    searchText = "";
-                    searchPatients();
-                }
+                if (NetworkUtil.getConnectivityStatusBoolean(getContext())) {
+                    if (searchText.length() >= 3) {
+                        searchPatients(true);
+                        isFiltered = true;
+                    } else if (isFiltered) {
+                        isFiltered = false;
+                        searchText = "";
+                        searchPatients(true);
+                    }
 
-                if (s.toString().length() < 3)
-                    mMyPatientsAdapter.getFilter().filter(s.toString());
+                    if (s.toString().length() < 3)
+                        mMyPatientsAdapter.getFilter().filter(s.toString());
+                } else
+                    searchPatients(false);
             }
         });
         if (fromActivityLaunched.equals(RescribeConstants.HOME_PAGE)) {
@@ -279,7 +303,16 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             }
 
             if (!patientsListAddToWaitingLists.isEmpty()) {
-                showDialogToSelectLocation(mDoctorLocationModel, null);
+                //if only one location then dont display dialog.
+                if (mDoctorLocationModel.size() == 1) {
+                    mLocationId = mDoctorLocationModel.get(0).getLocationId();
+                    mClinicName = mDoctorLocationModel.get(0).getClinicName();
+                    mClinicArea = mDoctorLocationModel.get(0).getArea();
+                    mClinicCity = mDoctorLocationModel.get(0).getCity();
+                    callWaitingListApi();
+                } else {
+                    showDialogToSelectLocation(mDoctorLocationModel, null);
+                }
             }
         }
     }
@@ -343,7 +376,15 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
 
             if (!patientInfoLists.isEmpty()) {
-                showDialogForSmsLocationSelection(mDoctorLocationModel);
+                if (mDoctorLocationModel.size() == 1) {
+                    mLocationId = mDoctorLocationModel.get(0).getLocationId();
+                    mClinicName = mDoctorLocationModel.get(0).getClinicName();
+                    mClinicArea = mDoctorLocationModel.get(0).getArea();
+                    mClinicCity = mDoctorLocationModel.get(0).getCity();
+                    mAppointmentHelper.doGetDoctorTemplate();
+                } else {
+                    showDialogForSmsLocationSelection(mDoctorLocationModel);
+                }
 
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                     if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
@@ -376,7 +417,16 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             }
 
             if (!patientsListAddToWaitingLists.isEmpty()) {
-                showDialogToSelectLocation(mDoctorLocationModel, null);
+                //if only one location is assigned to
+                if (mDoctorLocationModel.size() == 1) {
+                    mLocationId = mDoctorLocationModel.get(0).getLocationId();
+                    mClinicName = mDoctorLocationModel.get(0).getClinicName();
+                    mClinicArea = mDoctorLocationModel.get(0).getArea();
+                    mClinicCity = mDoctorLocationModel.get(0).getCity();
+                    callWaitingListApi();
+                } else {
+                    showDialogToSelectLocation(mDoctorLocationModel, null);
+                }
 
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                     if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
@@ -477,7 +527,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
                 if (doctorLocationModel.getLocationId().equals(mLocationId)) {
                     b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
-                    b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
+                    b.putInt(RescribeConstants.CITY_ID, doctorLocationModel.getCityId());
                     b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
                     break;
                 }
@@ -520,7 +570,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                         for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
                             if (doctorLocationModel.getLocationId().equals(mLocationId)) {
                                 b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
-                                b.putString(RescribeConstants.CITY_ID, String.valueOf(doctorLocationModel.getCityId()));
+                                b.putInt(RescribeConstants.CITY_ID, doctorLocationModel.getCityId());
+                                b.putString(RescribeConstants.CITY_NAME, doctorLocationModel.getCity());
                                 b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
                                 break;
                             }
@@ -602,7 +653,19 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 activity.openDrawer();
                 break;
             case R.id.leftFab:
-                showDialogToSelectLocation(mDoctorLocationModel, getString(R.string.new_patients));
+                if (mDoctorLocationModel.size() == 1) {
+                    final Bundle b = new Bundle();
+                    b.putInt(RescribeConstants.CLINIC_ID, mDoctorLocationModel.get(0).getClinicId());
+                    b.putInt(RescribeConstants.CITY_ID, mDoctorLocationModel.get(0).getCityId());
+                    b.putString(RescribeConstants.CITY_NAME, mDoctorLocationModel.get(0).getCity());
+                    b.putString(RescribeConstants.LOCATION_ID, String.valueOf(mDoctorLocationModel.get(0).getLocationId()));
+                    Intent i = new Intent(getActivity(), AddNewPatientWebViewActivity.class);
+                    i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
+                    getActivity().startActivityForResult(i, ADD_PATIENT_REQUEST);
+                    CommonMethods.Log("DOC_ID", "" + Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                } else {
+                    showDialogToSelectLocation(mDoctorLocationModel, getString(R.string.new_patients));
+                }
                 break;
         }
     }
@@ -623,8 +686,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     recyclerView.setVisibility(View.GONE);
                     emptyListView.setVisibility(View.VISIBLE);
                 }
-            }
 
+            }
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_ADD_TO_WAITING_LIST)) {
             AddToWaitingListBaseModel addToWaitingListBaseModel = (AddToWaitingListBaseModel) customResponse;
             if (addToWaitingListBaseModel.getCommon().isSuccess()) {
@@ -691,21 +754,51 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     }
 
-    public void nextPage(int pageNo) {
-        mAppointmentHelper = new AppointmentHelper(getContext(), this);
-        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
-        mRequestSearchPatients.setSearchText(searchText);
-        mRequestSearchPatients.setPageNo(pageNo);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchEditText.getText().toString().isEmpty());
+    public void nextPage(int pageNo, boolean isInternetAvailable) {
+        boolean isAllPatientDownloaded = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, getActivity());
+
+        if (isInternetAvailable && !isAllPatientDownloaded) {
+            mAppointmentHelper = new AppointmentHelper(getContext(), this);
+            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
+            mRequestSearchPatients.setSearchText(searchText);
+            mRequestSearchPatients.setPageNo(pageNo);
+            mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchEditText.getText().toString().isEmpty());
+        } else {
+            ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients(mRequestSearchPatients, pageNo, searchEditText.getText().toString());
+            if (!offlineAddedPatients.isEmpty()) {
+                recyclerView.setVisibility(View.VISIBLE);
+                emptyListView.setVisibility(View.GONE);
+                mMyPatientsAdapter.addAll(offlineAddedPatients, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchEditText.getText().toString());
+                mMyPatientsAdapter.notifyDataSetChanged();
+            } else {
+                if (pageNo == 0) {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyListView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
     }
 
-    public void searchPatients() {
+    public void searchPatients(boolean isInternetAvailable) {
         mMyPatientsAdapter.clear();
-        mRequestSearchPatients.setPageNo(0);
-        mAppointmentHelper = new AppointmentHelper(getContext(), this);
-        mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
-        mRequestSearchPatients.setSearchText(searchText);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchEditText.getText().toString().isEmpty());
+        if (isInternetAvailable) {
+            mRequestSearchPatients.setPageNo(0);
+            mAppointmentHelper = new AppointmentHelper(getContext(), this);
+            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
+            mRequestSearchPatients.setSearchText(searchText);
+            mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchEditText.getText().toString().isEmpty());
+        } else {
+            ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients(mRequestSearchPatients, 0, searchEditText.getText().toString());
+            if (!offlineAddedPatients.isEmpty()) {
+                recyclerView.setVisibility(View.VISIBLE);
+                emptyListView.setVisibility(View.GONE);
+                mMyPatientsAdapter.addAll(offlineAddedPatients, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchEditText.getText().toString());
+                mMyPatientsAdapter.notifyDataSetChanged();
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                emptyListView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     public void apply(RequestSearchPatients mRequestSearchPatients, boolean isReset) {
@@ -714,6 +807,27 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         this.mRequestSearchPatients.setSortOrder(mRequestSearchPatients.getSortOrder());
 
         if (!isReset)
-            searchPatients();
+            searchPatients(NetworkUtil.getConnectivityStatusBoolean(getContext()));
+    }
+
+    public void updateList(ArrayList<PatientUpdateDetail> syncList) {
+        if (mMyPatientsAdapter != null) {
+            ArrayList<PatientList> groupList = mMyPatientsAdapter.getGroupList();
+            int syncPatientCounter = 0;
+            for (int i = 0; i < groupList.size(); i++) {
+                PatientList orgGroupList = groupList.get(i);
+                for (PatientUpdateDetail syncObj :
+                        syncList) {
+                    if (Integer.parseInt(syncObj.getMobilePatientId()) == orgGroupList.getPatientId()) {
+                        orgGroupList.setPatientId(syncObj.getPatientId());
+                        orgGroupList.setHospitalPatId(syncObj.getHospitalPatId());
+                        mMyPatientsAdapter.notifyItemChanged(i);
+                        syncPatientCounter++;
+                    }
+                }
+                if (syncPatientCounter == syncList.size())
+                    break;
+            }
+        }
     }
 }

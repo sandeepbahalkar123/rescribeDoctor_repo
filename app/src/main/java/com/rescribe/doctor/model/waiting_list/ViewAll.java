@@ -56,6 +56,10 @@ public class ViewAll implements Parcelable
     @Expose
     private Integer salutation = 0;
 
+    @SerializedName("referenceId")
+    @Expose
+    private String referenceID;
+
     public final static Creator<ViewAll> CREATOR = new Creator<ViewAll>() {
 
 
@@ -87,6 +91,7 @@ public class ViewAll implements Parcelable
         this.appointmentTime = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentStatusId = ((String) in.readValue((String.class.getClassLoader())));
         this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.referenceID = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public ViewAll() {
@@ -204,6 +209,14 @@ public class ViewAll implements Parcelable
         this.salutation = salutation;
     }
 
+    public String getReferenceID() {
+        return referenceID;
+    }
+
+    public void setReferenceID(String referenceID) {
+        this.referenceID = referenceID;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(waitingId);
         dest.writeValue(hospitalPatId);
@@ -219,6 +232,7 @@ public class ViewAll implements Parcelable
         dest.writeValue(appointmentTime);
         dest.writeValue(appointmentStatusId);
         dest.writeValue(salutation);
+        dest.writeValue(referenceID);
     }
 
     public int describeContents() {

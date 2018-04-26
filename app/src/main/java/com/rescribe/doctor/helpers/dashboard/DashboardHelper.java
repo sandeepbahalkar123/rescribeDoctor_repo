@@ -80,6 +80,7 @@ public class DashboardHelper implements ConnectionListener {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_DASHBOARD_RESPONSE, Request.Method.POST, true);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         //   mRequestAppointmentData.setDocId(2602);
+        mRequestAppointmentData.setAppName(RescribeConstants.DOCTOR);
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         mRequestAppointmentData.setDate(date);

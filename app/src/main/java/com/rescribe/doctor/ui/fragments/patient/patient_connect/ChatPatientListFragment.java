@@ -18,22 +18,19 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_connect.ChatPatientListAdapter;
-import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
-import com.rescribe.doctor.helpers.doctor_patients.PatientList;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.activities.book_appointment.SelectSlotToBookAppointmentBaseActivity;
-import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
-import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.ShowMyPatientsListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
@@ -54,9 +51,6 @@ import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class ChatPatientListFragment extends Fragment implements ChatPatientListAdapter.OnDownArrowClicked, HelperResponse {
 
-    private static Bundle mBundle;
-    @BindView(R.id.leftFabForAppointment)
-    FloatingActionButton leftFabForAppointment;
     private AppointmentHelper mAppointmentHelper;
     @BindView(R.id.whiteUnderLine)
     ImageView whiteUnderLine;
@@ -103,7 +97,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
 
     private void init() {
 
-        mFromWhichActivity = mBundle.getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
+        mFromWhichActivity = getArguments().getString(RescribeConstants.ACTIVITY_LAUNCHED_FROM);
 
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         recyclerView.setClipToPadding(false);
@@ -174,9 +168,9 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     public void onClickOfPatientDetails(PatientList patientListObject, String text) {
         if (mFromWhichActivity.equals(RescribeConstants.MY_APPOINTMENTS)) {
             Intent intent = new Intent(getActivity(), SelectSlotToBookAppointmentBaseActivity.class);
-            intent.putExtra(RescribeConstants.PATIENT_INFO,patientListObject);
+            intent.putExtra(RescribeConstants.PATIENT_INFO, patientListObject);
             intent.putExtra(RescribeConstants.PATIENT_DETAILS, text);
-            intent.putExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE,false);
+            intent.putExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
             intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             getActivity().startActivity(intent);
 
@@ -207,8 +201,6 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
 
 
     public static ChatPatientListFragment newInstance(Bundle b) {
-        mBundle = new Bundle();
-        mBundle = b;
         ChatPatientListFragment fragment = new ChatPatientListFragment();
         fragment.setArguments(b);
         return fragment;
@@ -264,7 +256,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
 
                 ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
 
-                mMyPatientsAdapter.addAll(mLoadedPatientList,((ShowMyPatientsListActivity) getActivity()).selectedDoctorId ,searchText);
+                mMyPatientsAdapter.addAll(mLoadedPatientList, ((ShowMyPatientsListActivity) getActivity()).selectedDoctorId ,searchText);
 
                 if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
                     recyclerView.setVisibility(View.VISIBLE);
@@ -292,7 +284,6 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
 
     }
-
 
 
 }

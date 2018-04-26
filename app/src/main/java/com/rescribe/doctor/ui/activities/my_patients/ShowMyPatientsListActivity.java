@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,18 +15,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.helpers.doctor_patients.MyPatientBaseModel;
-import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
-import com.rescribe.doctor.interfaces.CustomResponse;
-import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
-import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
 import com.rescribe.doctor.ui.fragments.patient.patient_connect.ChatPatientListFragment;
-import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.HashSet;
@@ -43,6 +35,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class ShowMyPatientsListActivity extends AppCompatActivity implements DrawerForMyPatients.OnDrawerInteractionListener {
+
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -98,21 +91,11 @@ public class ShowMyPatientsListActivity extends AppCompatActivity implements Dra
             drawerLayout.openDrawer(GravityCompat.END);
     }
 
-    @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.dateTextview, R.id.viewContainer, R.id.nav_view, R.id.drawer_layout})
+    @OnClick({R.id.backImageView})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
                 onBackPressed();
-                break;
-            case R.id.userInfoTextView:
-                break;
-            case R.id.dateTextview:
-                break;
-            case R.id.viewContainer:
-                break;
-            case R.id.nav_view:
-                break;
-            case R.id.drawer_layout:
                 break;
         }
     }

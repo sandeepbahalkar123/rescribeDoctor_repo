@@ -249,12 +249,18 @@ public class RescribePreferencesManager {
         String DOC_INFO = "doc_info";
         String SELECTED_LOCATION_ID = "selected_location_id";
         String BACK_UP = "back_up";
+        String PATIENT_DOWNLOAD = "patient_download";
         String COACHMARK_GET_TOKEN = "coachmark_get_token" ;
+
+        String COACHMARK_ALL_PATIENT_DOWNLOAD = "COACHMARK_ALL_PATIENT_DOWNLOAD" ;
+
         String isSkippedClicked = "is_skipped";
         String isUpdatedClicked = "is_updated_clicked";
         String isLaterClicked = "is_later_clicked";
         String VERSION_CODE_FROM_SERVER = "version_code_from_server";
         String SHOW_UPDATE_DIALOG = "show_update_dialog";
         String SHOW_UPDATE_DIALOG_ON_SKIPPED = "show_update_dialog_on_skipped";
+        String ADD_PATIENT_OFFLINE_SETTINGS = "isAddPatientOfflineSetting";
+
     }
 }

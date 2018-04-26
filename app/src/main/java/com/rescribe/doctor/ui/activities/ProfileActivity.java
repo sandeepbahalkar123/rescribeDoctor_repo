@@ -3,17 +3,14 @@ package com.rescribe.doctor.ui.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.SpannableString;
@@ -46,6 +43,7 @@ import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
+import com.rescribe.doctor.model.profile_photo.ProfilePhotoResponse;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.singleton.RescribeApplication;
@@ -83,7 +81,7 @@ import static com.rescribe.doctor.util.Imageutils.FILEPATH;
  * Created by jeetal on 16/2/18.
  */
 
-public class ProfileActivity extends BottomMenuActivity implements BottomMenuAdapter.OnBottomMenuClickListener , Imageutils.ImageAttachmentListener {
+public class ProfileActivity extends BottomMenuActivity implements BottomMenuAdapter.OnBottomMenuClickListener, Imageutils.ImageAttachmentListener {
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -161,34 +159,30 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
     private Context mContext;
     private BottomSheetDialog mBottomSheetDialog;
-    private String doctorNameToDisplay;
 
     private ArrayList<DoctorLocationModel> mArrayListDoctorLocationModel = new ArrayList<>();
-    private ColorGenerator mColorGenerator;
-    private String mDoctorName;
     private DoctorLocationModel doctorLocationModel;
     private ArrayList<String> mServices = new ArrayList<>();
     private Imageutils imageutils;
-    private Bitmap bitmap;
-    private String file_name;
     private String Url = Config.BASE_URL + Config.UPLOAD_PROFILE_PHOTO;
     private String authorizationString;
     private Device device;
     private String docId;
     CustomProgressDialog mCustomProgressDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_base_layout);
         ButterKnife.bind(this);
-        setCurrentActivtyTab(getString(R.string.profile));
+        setCurrentActivityTab(getString(R.string.profile));
         initialize();
     }
 
     @SuppressLint("CheckResult")
     private void initialize() {
         mContext = ProfileActivity.this;
-        mColorGenerator = ColorGenerator.MATERIAL;
+        ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
         imageutils = new Imageutils(this);
         device = Device.getInstance(ProfileActivity.this);
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
@@ -198,17 +192,22 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         titleTextView.setText(getString(R.string.profile));
         backImageView.setVisibility(View.GONE);
 
-        if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
+        String doctorNameToDisplay;
+        if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr."))
             doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
-        } else {
+         else
             doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
-        }
+
         doctorName.setText(doctorNameToDisplay);
 
         String doctorDetails = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, this);
         final DocDetail docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
-
-        aboutDoctorDescription.setText(docDetail.getDocInfo());
+        if(docDetail.getDocInfo().isEmpty()){
+            aboutLayout.setVisibility(View.INVISIBLE);
+        }else {
+            aboutLayout.setVisibility(View.VISIBLE);
+            aboutDoctorDescription.setText(docDetail.getDocInfo());
+        }
 
         countDoctorExperience.setText(docDetail.getDocExperience());
         doctorExperience.setText(docDetail.getDocExperience() + " years of experience");
@@ -238,34 +237,31 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             docPracticesLocationCount.setText(contentExp);
         } else {
             allClinicPracticeLocationMainLayout.setVisibility(View.GONE);
-
         }
-        if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext) != null) {
 
-            mDoctorName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
-            if (mDoctorName.contains("Dr. ")) {
-                mDoctorName = mDoctorName.replace("Dr. ", "");
-            }
-            int color2 = mColorGenerator.getColor(mDoctorName);
-            TextDrawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .width(Math.round(getResources().getDimension(R.dimen.dp40))) // width in px
-                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
-                    .endConfig()
-                    .buildRound(("" + mDoctorName.charAt(0)).toUpperCase(), color2);
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.dontAnimate();
-            requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-            requestOptions.skipMemoryCache(true);
-            requestOptions.placeholder(drawable);
-            requestOptions.error(drawable);
-
-            Glide.with(mContext)
-                    .load(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext))
-                    .apply(requestOptions).thumbnail(0.5f)
-                    .into(profileImage);
-
+        String mDoctorName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
+        if (mDoctorName.contains("Dr. ")) {
+            mDoctorName = mDoctorName.replace("Dr. ", "");
         }
+        int color2 = mColorGenerator.getColor(mDoctorName);
+        TextDrawable drawable = TextDrawable.builder()
+                .beginConfig()
+                .width(Math.round(getResources().getDimension(R.dimen.dp40))) // width in px
+                .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                .endConfig()
+                .buildRound(("" + mDoctorName.charAt(0)).toUpperCase(), color2);
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.dontAnimate();
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+        requestOptions.skipMemoryCache(true);
+        requestOptions.placeholder(drawable);
+        requestOptions.error(drawable);
+
+        Glide.with(mContext)
+                .load(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext))
+                .apply(requestOptions).thumbnail(0.5f)
+                .into(profileImage);
+
         if (mArrayListDoctorLocationModel.size() > 0) {
             ArrayList<String> mClinicname = new ArrayList<>();
             for (int i = 0; i < mArrayListDoctorLocationModel.size(); i++) {
@@ -274,13 +270,12 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.clinic_spinner_layout, mClinicname);
             clinicNameSpinner.setAdapter(arrayAdapter);
 
-
             clinicNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     doctorLocationModel = mArrayListDoctorLocationModel.get(position);
 
-                    for (ClinicList clinicList:docDetail.getClinicList()) {
+                    for (ClinicList clinicList : docDetail.getClinicList()) {
                         if (clinicList.getLocationId().equals(doctorLocationModel.getLocationId())) {
                             setServicesInView(clinicList.getServices());
                             break;
@@ -363,7 +358,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         super.onBottomMenuClick(bottomMenu);
     }
 
-    @OnClick({R.id.profileImage,R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices, R.id.viewAllClinicsOnMap})
+    @OnClick({R.id.profileImage, R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices, R.id.viewAllClinicsOnMap})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -384,7 +379,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                 Intent intentObjectMap = new Intent(this, MapActivityShowDoctorLocation.class);
 
                 ArrayList<String> locations = new ArrayList<>();
-                for (DoctorLocationModel doctorLocationM: mArrayListDoctorLocationModel)
+                for (DoctorLocationModel doctorLocationM : mArrayListDoctorLocationModel)
                     locations.add(doctorLocationM.getArea() + ", " + doctorLocationM.getCity());
 
                 intentObjectMap.putExtra(ADDRESS, locations);
@@ -468,7 +463,6 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         Context mContext;
         private ArrayList<String> mDocServiceList;
 
-
         DocServicesListAdapter(Context context, ArrayList<String> items) {
             this.mContext = context;
             mDocServiceList = items;
@@ -503,9 +497,9 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             return view;
         }
     }
+
     @Override
     public void image_attachment(int from, Bitmap file, Uri uri) {
-        this.bitmap = file;
         //file path is given below to generate new image as required i.e jpg format
         String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
         imageutils.createImage(file, path, false);
@@ -545,12 +539,14 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                     Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                 }
 
+                @SuppressLint("CheckResult")
                 @Override
                 public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-                 //On Profile Image Upload on Server is completed that event is captured in this function.
-                    TemplateBaseModel obj = new Gson().fromJson(serverResponse.getBodyAsString(), TemplateBaseModel.class);
-                    if(obj.getCommon().isSuccess()) {
-                        Toast.makeText(context, obj.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                    //On Profile Image Upload on Server is completed that event is captured in this function.
+                    ProfilePhotoResponse profilePhotoResponse = new Gson().fromJson(serverResponse.getBodyAsString(), ProfilePhotoResponse.class);
+                    if (profilePhotoResponse.getCommon().isSuccess()) {
+                        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, profilePhotoResponse.getData().getDocImgUrl(), mContext);
+                        Toast.makeText(context, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
                         RequestOptions requestOptions = new RequestOptions();
                         requestOptions.dontAnimate();
                         requestOptions.skipMemoryCache(true);
@@ -561,9 +557,9 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                                 .apply(requestOptions).thumbnail(0.5f)
                                 .into(profileImage);
                         mCustomProgressDialog.dismiss();
-                    }else{
+                    } else {
                         mCustomProgressDialog.dismiss();
-                        Toast.makeText(context, obj.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -588,24 +584,24 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 //get image URI and set to create image of jpg format.
                 Uri resultUri = result.getUri();
-                String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
-                imageutils.callImageCropMethod(resultUri );
+//                String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
+                imageutils.callImageCropMethod(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
+//                Exception error = result.getError();
             }
-        }else{
+        } else {
             imageutils.onActivityResult(requestCode, resultCode, data);
         }
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         imageutils.request_permission_result(requestCode, permissions, grantResults);

@@ -4,12 +4,12 @@ package com.rescribe.doctor.model.request_patients;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
 
-public class RequestSearchPatients implements Parcelable,CustomResponse
-{
+public class RequestSearchPatients implements Parcelable, CustomResponse {
 
     @SerializedName("docId")
     @Expose
@@ -22,18 +22,25 @@ public class RequestSearchPatients implements Parcelable,CustomResponse
     private FilterParams filterParams;
     @SerializedName("sortOrder")
     @Expose
-    private String sortOrder;
+    private String sortOrder = "";
     @SerializedName("sortField")
     @Expose
     private String sortField;
     @SerializedName("searchText")
     @Expose
     private String searchText;
+    @SerializedName("paginationSize")
+    @Expose
+    private int paginationSize = 18; // default size keep 18 because added records in sqlite while pagination
+    @SerializedName("date")
+    @Expose
+    private String date;
+
     public final static Creator<RequestSearchPatients> CREATOR = new Creator<RequestSearchPatients>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public RequestSearchPatients createFromParcel(Parcel in) {
             return new RequestSearchPatients(in);
@@ -43,8 +50,7 @@ public class RequestSearchPatients implements Parcelable,CustomResponse
             return (new RequestSearchPatients[size]);
         }
 
-    }
-    ;
+    };
 
     protected RequestSearchPatients(Parcel in) {
         this.docId = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -53,6 +59,8 @@ public class RequestSearchPatients implements Parcelable,CustomResponse
         this.sortOrder = ((String) in.readValue((String.class.getClassLoader())));
         this.sortField = ((String) in.readValue((String.class.getClassLoader())));
         this.searchText = ((String) in.readValue((String.class.getClassLoader())));
+        this.paginationSize = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.date = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public RequestSearchPatients() {
@@ -106,6 +114,22 @@ public class RequestSearchPatients implements Parcelable,CustomResponse
         this.searchText = searchText;
     }
 
+    public int getPaginationSize() {
+        return paginationSize;
+    }
+
+    public void setPaginationSize(int paginationSize) {
+        this.paginationSize = paginationSize;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(docId);
         dest.writeValue(pageNo);
@@ -113,10 +137,12 @@ public class RequestSearchPatients implements Parcelable,CustomResponse
         dest.writeValue(sortOrder);
         dest.writeValue(sortField);
         dest.writeValue(searchText);
+        dest.writeValue(paginationSize);
+        dest.writeValue(date);
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

@@ -75,11 +75,8 @@ public class RescribeConstants {
     //Click codes
 
     public static final String TASK_LOGIN = RescribeConstants.BLANK + 1;
-
     public static final String TASK_SIGN_UP = RescribeConstants.BLANK + 2;
     public static final String TASK_VERIFY_SIGN_UP_OTP = RescribeConstants.BLANK + 3;
-
-
     public static final String TASK_LOGIN_WITH_PASSWORD = RescribeConstants.BLANK + 4;
     public static final String TASK_LOGIN_WITH_OTP = RescribeConstants.BLANK + 5;
     public static final String TASK_DOCTOR_CONNECT_CHAT = RescribeConstants.BLANK + 6;
@@ -167,6 +164,7 @@ public class RescribeConstants {
     public static final String PATIENT_LIST = "patient_list";
     public static final String LOCATION_ID = "location_id";
     public static final String CITY_ID = "city_id";
+    public static final String CITY_NAME = "city_name";
     public static final String TEMPLATE_OBJECT = "template_object";
     public static final String CLINIC_ID = "clinic_id";
     public static final String CLINIC_NAME = "clinic_name";
@@ -188,6 +186,7 @@ public class RescribeConstants {
     public static final String PATIENT_CONNECT = "patient_connect";
     public static final String IS_APPOINTMENT_TYPE_RESHEDULE = "appointment_type_reschedule";
     public static final String DOCTOR = "doctor";
+    public static final String APPOINTMENT_ID = "appointment_id";
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
@@ -269,6 +268,7 @@ public class RescribeConstants {
         String DD_MM_YYYY_hh_mm_ss = "dd-MM-yyyy hh:mm:ss";
         String YYYY_MM_DD_hh_mm_ss = "yyyy-MM-dd hh:mm:ss";
         String YYYY_MM_DD_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
+        String d_M_YYYY = "d-M-yyyy";
     }
 
     public interface TIME_STAMPS {
@@ -294,39 +294,11 @@ public class RescribeConstants {
         String LOC_FILE = "📍 Location";
     }
 
-    public interface INVESTIGATION_KEYS {
-        String INVESTIGATION_DATE = "investigation_date";
-        String INVESTIGATION_TIME = "investigation_time";
-        String INVESTIGATION_TEMP_DATA = "investigation_temp_data";
-        String INVESTIGATION_MESSAGE = "investigation_message";
-        String INVESTIGATION_DATA = "investigation_data";
-        String INVESTIGATION_NOTIFICATION_ID = "investigation_notification_id";
-        String IMAGE_ID = "imgId";
-        String INV_ID = "invId";
-    }
-
     public interface PATIENT_OPDS_STATUS {
         String OPD_COMPLETED = "opd completed";
         String OPD_SAVED = "opd saved";
         String ONLY_ATTACHMENTS = "only attachments";
         String NO_SHOW = "no show";
-    }
-
-    public interface ADD_NEW_PATIENT {
-        String TABLE_NAME = "addNewPatient";
-        String FIRST_NAME = "firstName";
-        String MIDDLE_NAME = "middleName";
-        String LAST_NAME = "lastName";
-        String MOBILE_NO = "mobileNo";
-        String AGE = "age";
-        String GENDER = "gender";
-        String REFERENCE_ID = "referenceID";
-        String PATIENT_OFFLINE_ID = "patientOfflineID";
-        String CREATED_TIME_STAMP = "createdTimeStamp";
-        String CLINIC_ID = "clinicID";
-        String LOCATION_ID = "locationID";
-        String CITY_D = "cityID";
-        String DOC_ID = "docID";
     }
 }
 

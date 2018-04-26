@@ -100,7 +100,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         final PatientList patientObject = mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition);
         final String cityName = mAppointmentListTemp.get(groupPosition).getCity();
         final String areaName = mAppointmentListTemp.get(groupPosition).getArea();
-        bind(patientObject, groupPosition, childPosition, viewHolder,cityName,areaName);
+        bind(patientObject, groupPosition, childPosition, viewHolder, cityName, areaName);
 
         if (openedChildGroupPos.equals(childPosition + "_" + groupPosition))
             viewHolder.swipe_layout.open(true);
@@ -146,6 +146,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             patientName = RescribeConstants.SALUTATION[patientList.getSalutation() - 1] + toCamelCase(patientList.getPatientName());
         else patientName = toCamelCase(patientList.getPatientName());
 
+        //---- START: Setting of hospitalID or referecne ID, reference is IS high priority than hospitalID.-----
+        String dataToShowInPatientID = String.valueOf(patientList.getReferenceId());
+
+        if (dataToShowInPatientID == null || RescribeConstants.BLANK.equalsIgnoreCase(dataToShowInPatientID)) {
+            dataToShowInPatientID = String.valueOf(patientList.getHospitalPatId());
+        }
+        //---- END------
+
         if (patientList.getSpannableString() != null) {
             //Spannable condition for PatientName
             if (patientList.getPatientName().toLowerCase().contains(patientList.getSpannableString().toLowerCase())) {
@@ -179,11 +187,11 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 viewHolder.patientPhoneNumber.setText(patientList.getPatientPhone());
             }
             //Spannable condition for PatientId
-            if (String.valueOf(patientList.getHospitalPatId()).toLowerCase().contains(patientList.getSpannableString().toLowerCase())) {
+            if (dataToShowInPatientID.toLowerCase().contains(patientList.getSpannableString().toLowerCase())) {
 
-                SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + String.valueOf(patientList.getHospitalPatId()));
+                SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
                 Pattern pattern = Pattern.compile(patientList.getSpannableString(), Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + String.valueOf(patientList.getHospitalPatId()));
+                Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
 
                 while (matcher.find()) {
                     spannableIdString.setSpan(new ForegroundColorSpan(
@@ -193,12 +201,12 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 }
                 viewHolder.patientIdTextView.setText(spannableIdString);
             } else {
-                viewHolder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientList.getHospitalPatId()));
+                viewHolder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
             }
         } else {
             viewHolder.patientNameTextView.setText(patientName);
             viewHolder.patientPhoneNumber.setText(patientList.getPatientPhone());
-            viewHolder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + String.valueOf(patientList.getHospitalPatId()));
+            viewHolder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
         }
 
         if (patientList.getAge().equals("") && !patientList.getDateOfBirth().equals("")) {
@@ -312,7 +320,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public void onClick(View view) {
 
-                mOnDownArrowClicked.onAppointmentReshedule(patientList,viewHolder.patientAgeTextView.getText().toString()+viewHolder.patientGenderTextView.getText().toString(),cityName,areaName);
+                mOnDownArrowClicked.onAppointmentReshedule(patientList, viewHolder.patientAgeTextView.getText().toString() + viewHolder.patientGenderTextView.getText().toString(), cityName, areaName);
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
 
@@ -408,8 +416,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.swipe_layout.setSwipeListener(new SwipeRevealLayout.SwipeListener() {
             @Override
             public void onClosed(SwipeRevealLayout view) {
-                if (slidingViewHolder != null && ((View)view.getParent()).getTag() != null) {
-                    if (((View)view.getParent()).getTag().equals(slidingViewHolder))
+                if (slidingViewHolder != null && ((View) view.getParent()).getTag() != null) {
+                    if (((View) view.getParent()).getTag().equals(slidingViewHolder))
                         openedChildGroupPos = "";
                 }
             }
@@ -422,8 +430,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
             @Override
             public void onSlide(SwipeRevealLayout view, float slideOffset) {
-                Log.d("SLIDE", String.valueOf(slideOffset) + " " + ((View)view.getParent()).getTag());
-                slidingViewHolder = ((View)view.getParent()).getTag();
+                Log.d("SLIDE", String.valueOf(slideOffset) + " " + ((View) view.getParent()).getTag());
+                slidingViewHolder = ((View) view.getParent()).getTag();
             }
         });
 
@@ -446,8 +454,17 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         else
             groupViewHolder.mClinicPatientCount.setText("" + count);
 
+        //---- START: Setting of hospitalID or referecne ID, reference is IS high priority than hospitalID.-----
 
-        groupViewHolder.mPatientIdTextView.setText(mContext.getString(R.string.id) + " " + appointmentListObject.getPatientHeader().getHospitalPatId() + "");
+        PatientList patientHeader = appointmentListObject.getPatientHeader();
+        String dataToShowInPatientID = String.valueOf(patientHeader.getReferenceId());
+
+        if (dataToShowInPatientID == null || RescribeConstants.BLANK.equalsIgnoreCase(dataToShowInPatientID)) {
+            dataToShowInPatientID = String.valueOf(patientHeader.getHospitalPatId());
+        }
+        //---- END------
+
+        groupViewHolder.mPatientIdTextView.setText(mContext.getString(R.string.id) + " " + dataToShowInPatientID + "");
 
         if (appointmentListObject.getPatientHeader().getSalutation() != 0)
             groupViewHolder.mPatientNameTextView.setText(RescribeConstants.SALUTATION[appointmentListObject.getPatientHeader().getSalutation() - 1] + CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getPatientName()));
@@ -608,7 +625,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.mAppointmentComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnDownArrowClicked.onGroupAppointmentCancelled(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 3, "complete", groupPosition);
+                mOnDownArrowClicked.onGroupAppointmentClicked(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 3, "complete", groupPosition);
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
 
@@ -618,7 +635,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public void onClick(View view) {
 
-                mOnDownArrowClicked.onAppointmentReshedule(appointmentListObject.getPatientHeader(),groupViewHolder.mPatientAgeTextView.getText().toString()+groupViewHolder.mPatientGenderTextView.getText().toString(),appointmentListObject.getCity(),appointmentListObject.getArea());
+                mOnDownArrowClicked.onAppointmentReshedule(appointmentListObject.getPatientHeader(), groupViewHolder.mPatientAgeTextView.getText().toString() + groupViewHolder.mPatientGenderTextView.getText().toString(), appointmentListObject.getCity(), appointmentListObject.getArea());
                 openedChildGroupPos = "";
                 notifyDataSetChanged();
 
@@ -722,7 +739,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                         for (PatientList patientListObject : patientLists) {
                             if (patientListObject.getPatientName().toLowerCase().contains(charString.toLowerCase())
                                     || patientListObject.getPatientPhone().contains(charString)
-                                    || String.valueOf(patientListObject.getHospitalPatId()).contains(charString)) {
+                                    || String.valueOf(patientListObject.getHospitalPatId()).contains(charString)
+                                    || String.valueOf(patientListObject.getReferenceId()).contains(charString)) {
                                 //--------
                                 patientListObject.setSpannableString(charString);
                                 sortedPatientLists.add(patientListObject);
@@ -892,7 +910,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         void onGroupAppointmentClicked(Integer aptId, Integer patientId, int status, String type, int groupPosition);
 
         void onGroupAppointmentCancelled(Integer aptId, Integer patientId, int status, String type, int groupPosition);
-        void onAppointmentReshedule(PatientList patientList,String text,String cityName, String areaName);
+
+        void onAppointmentReshedule(PatientList patientList, String text, String cityName, String areaName);
 
         void expandAll();
 

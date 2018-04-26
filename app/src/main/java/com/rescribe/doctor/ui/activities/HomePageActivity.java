@@ -1,6 +1,7 @@
 package com.rescribe.doctor.ui.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -33,9 +34,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-
 import com.crashlytics.android.Crashlytics;
-
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.dashboard.DashBoardAppointmentListAdapter;
@@ -43,7 +42,6 @@ import com.rescribe.doctor.adapters.dashboard.DashBoardWaitingList;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.helpers.dashboard.DashboardHelper;
-import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
@@ -144,20 +142,15 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     @BindView(R.id.todayNewPatient)
     RelativeLayout todayNewPatient;
     private Context mContext;
-    private AppDBHelper appDBHelper;
     private String docId;
     private LoginHelper loginHelper;
-    private DashBoardAppointmentListAdapter mDashBoardAppointmentListAdapter;
     private LinearLayout menuOptionLinearLayout;
     private DashboardHelper mDashboardHelper;
     private DashboardDetails mDashboardDetails;
-    private DashBoardWaitingList mDashBoardWaitingList;
-    private String doctorNameToDisplay;
-    private String mDoctorName;
     private ColorGenerator mColorGenerator;
     private int OPD_ID_SEVER = 1;
     private int OT_ID_SEVER = 2;
-
+    private DashBoardAppointmentListAdapter mDashBoardAppointmentListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,14 +162,10 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         logUser();
         mColorGenerator = ColorGenerator.MATERIAL;
         HomePageActivityPermissionsDispatcher.getPermissionWithCheck(HomePageActivity.this);
-        appDBHelper = new AppDBHelper(mContext);
+        docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
         loginHelper = new LoginHelper(mContext, HomePageActivity.this);
-//        ActiveRequest activeRequest = new ActiveRequest();
-//        activeRequest.setId(Integer.parseInt(docId));
-//        loginHelper.doActiveStatus(activeRequest);
         initialize();
-        setCurrentActivtyTab(getString(R.string.home));
-
+        setCurrentActivityTab(getString(R.string.home));
         //drawerConfiguration();
     }
 
@@ -191,11 +180,14 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     private void initialize() {
 
+        setAddPatientOfflineSettingSwitchStatus();
+
         String doctorDetails = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, this);
         final DocDetail docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
 
         mDashboardHelper = new DashboardHelper(this, this);
         mDashboardHelper.doDoctorGetLocationList();
+        String doctorNameToDisplay;
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr.")) {
             doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
         } else {
@@ -298,20 +290,21 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         recyclerView.setLayoutManager(linearlayoutManager);
         recyclerView.setNestedScrollingEnabled(false);
         // off recyclerView Animation
-        if(calendarTypeList!=null){
-            if(calendarTypeList.size()>0) {
+
+        if (calendarTypeList != null) {
+            if (calendarTypeList.size() > 0) {
                 String optOrOTRequired = getOtAndOpdRequiredString(calendarTypeList);
                 RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
                 if (animator instanceof SimpleItemAnimator)
                     ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
                 if (isRecyclerViewRequired) {
-                    mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList(),optOrOTRequired);
+                    mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList(), optOrOTRequired);
                     recyclerView.setAdapter(mDashBoardAppointmentListAdapter);
                 } else {
                     CommonMethods.Log(TAG, "Dont show recyclerView");
                 }
             }
-        }else{
+        } else {
             RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
             if (animator instanceof SimpleItemAnimator)
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
@@ -321,6 +314,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             } else {
                 CommonMethods.Log(TAG, "Dont show recyclerView");
             }
+
         }
 
         viewTextView.setOnClickListener(new View.OnClickListener() {
@@ -338,22 +332,22 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         String otOrOpdRequiredString = "";
         boolean isOpdRequired = false;
         boolean isOtRequired = false;
-        for(CalendarTypeList calendarTypeListObject : calendarTypeList){
-            if(calendarTypeListObject.getId().equals(OPD_ID_SEVER)){
-              isOpdRequired =true;
+        for (CalendarTypeList calendarTypeListObject : calendarTypeList) {
+            if (calendarTypeListObject.getId().equals(OPD_ID_SEVER)) {
+                isOpdRequired = true;
             }
-            if(calendarTypeListObject.getId().equals(OT_ID_SEVER)){
-                isOtRequired =true;
+            if (calendarTypeListObject.getId().equals(OT_ID_SEVER)) {
+                isOtRequired = true;
             }
         }
-        if(isOpdRequired&&isOtRequired){
+        if (isOpdRequired && isOtRequired) {
             otOrOpdRequiredString = RescribeConstants.OT_AND_OPD;
-        }else if(isOpdRequired){
-           otOrOpdRequiredString = RescribeConstants.OPD;
-        }else if(isOtRequired){
+        } else if (isOpdRequired) {
+            otOrOpdRequiredString = RescribeConstants.OPD;
+        } else if (isOtRequired) {
             otOrOpdRequiredString = RescribeConstants.OT;
         }
-       return otOrOpdRequiredString;
+        return otOrOpdRequiredString;
     }
 
     private void setLayoutForWaitingListIfAppointmentListEmpty() {
@@ -370,7 +364,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         recyclerView.setVisibility(View.VISIBLE);
         viewTextView.setText(getString(R.string.view));
         recyclerView.setNestedScrollingEnabled(false);
-        mDashBoardWaitingList = new DashBoardWaitingList(mContext, mDashboardDetails.getDashboardWaitingList().getWaitingClinicList());
+        DashBoardWaitingList mDashBoardWaitingList = new DashBoardWaitingList(mContext, mDashboardDetails.getDashboardWaitingList().getWaitingClinicList());
         viewTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -478,7 +472,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
                         hostViewsLayout.removeAllViews();
-                        setLayoutForAppointment(true,mDashboardDetails.getCalendarTypeList());
+                        setLayoutForAppointment(true, mDashboardDetails.getCalendarTypeList());
                         // inflate waiting list layout
                         setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
                         // inflate patientConnect layout
@@ -516,7 +510,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         setLayoutForMyPatients();
                     }
 
-                    if (mDashboardDetails.getVersionCode() < CommonMethods.getVersionCode(mContext) && CommonMethods.getVersionCode(mContext) != -1) {
+                    if (mDashboardDetails.getVersionCode() > CommonMethods.getVersionCode(mContext) && CommonMethods.getVersionCode(mContext) != -1) {
                         if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, mContext).equals(RescribeConstants.YES)) {
                             showUpdateDialog(mDashboardDetails.getVersionCode(), mDashboardDetails.getAppURL());
                             RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, RescribeConstants.YES, mContext);
@@ -541,12 +535,9 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     }
 
+    @SuppressLint("CheckResult")
     private boolean isVersionCodeIncrementedByOne(Integer versionCode) {
-        if (RescribePreferencesManager.getInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, mContext) + 1 == versionCode) {
-            return true;
-        } else {
-            return false;
-        }
+        return RescribePreferencesManager.getInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, mContext) + 1 == versionCode;
     }
 
     private void showUpdateDialog(final int versionCode, final String appURL) {
@@ -610,30 +601,28 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     }
 
     private void setUpImage() {
-        if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext) != null) {
-            mDoctorName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
-            if (mDoctorName.contains("Dr. ")) {
-                mDoctorName = mDoctorName.replace("Dr. ", "");
-            }
-            int color2 = mColorGenerator.getColor(mDoctorName);
-            TextDrawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .width(Math.round(getResources().getDimension(R.dimen.dp40))) // width in px
-                    .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
-                    .endConfig()
-                    .buildRound(("" + mDoctorName.charAt(0)).toUpperCase(), color2);
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.dontAnimate();
-            requestOptions.placeholder(drawable);
-            requestOptions.error(drawable);
-            requestOptions.skipMemoryCache(true);
-            requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-
-            Glide.with(mContext)
-                    .load(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext))
-                    .apply(requestOptions).thumbnail(0.5f)
-                    .into(doctorDashboardImage);
+        String mDoctorName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
+        if (mDoctorName.contains("Dr. ")) {
+            mDoctorName = mDoctorName.replace("Dr. ", "");
         }
+        int color2 = mColorGenerator.getColor(mDoctorName);
+        TextDrawable drawable = TextDrawable.builder()
+                .beginConfig()
+                .width(Math.round(getResources().getDimension(R.dimen.dp40))) // width in px
+                .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                .endConfig()
+                .buildRound(("" + mDoctorName.charAt(0)).toUpperCase(), color2);
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.dontAnimate();
+        requestOptions.placeholder(drawable);
+        requestOptions.error(drawable);
+        requestOptions.skipMemoryCache(true);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+
+        Glide.with(mContext)
+                .load(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, mContext))
+                .apply(requestOptions).thumbnail(0.5f)
+                .into(doctorDashboardImage);
     }
 
     @Override
@@ -666,7 +655,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
 
         Toast.makeText(mContext, serverErrorMessage + "", Toast.LENGTH_SHORT).show();
-        setLayoutForAppointment(false,null);
+        setLayoutForAppointment(false, null);
         setLayoutForWaitingList("0");
         setLayoutForPatientConnect();
         setLayoutForMyPatients();
@@ -743,6 +732,14 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             radioSwitch.setChecked(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.CHAT_IS_CHECKED, mContext));
         } else {
             radioSwitch.setChecked(true);
+        }
+    }
+
+    //This sets that, offline adding patinet is always true
+    private void setAddPatientOfflineSettingSwitchStatus() {
+        boolean isExists = RescribePreferencesManager.getSharedPreference(mContext).contains(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS);
+        if (!isExists) {
+            RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, true, mContext);
         }
     }
 

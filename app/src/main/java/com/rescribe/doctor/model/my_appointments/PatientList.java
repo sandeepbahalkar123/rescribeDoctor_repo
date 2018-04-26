@@ -9,8 +9,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PatientList implements Parcelable ,Comparable<PatientList>
-{
+public class PatientList implements Parcelable, Comparable<PatientList> {
 
     @SerializedName("salutation")
     @Expose
@@ -61,6 +60,9 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     @SerializedName("hospitalPatId")
     @Expose
     private Integer hospitalPatId;
+    @SerializedName("referenceId")
+    @Expose
+    private String referenceId;
     @SerializedName("appointmentEndTime")
     @Expose
     private String appointmentEndTime;
@@ -70,6 +72,15 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     @SerializedName("addedToWaiting")
     @Expose
     private Integer addedToWaiting;
+
+    @SerializedName("patientCity")
+    @Expose
+    private String patientCity = "";
+
+    @SerializedName("patientArea")
+    @Expose
+    private String patientArea = "";
+
     private String spannableString;
     private boolean selected;
     private String patientEmail;
@@ -78,7 +89,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public PatientList createFromParcel(Parcel in) {
             return new PatientList(in);
@@ -110,6 +121,9 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         this.appointmentEndTime = ((String) in.readValue((String.class.getClassLoader())));
         this.appointmentStatusId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.addedToWaiting = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
+        this.referenceId = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -178,6 +192,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     public void setAptId(Integer aptId) {
         this.aptId = aptId;
     }
+
     public Integer getDocId() {
         return docId;
     }
@@ -241,6 +256,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     public void setAppointmentTime(String appointmentTime) {
         this.appointmentTime = appointmentTime;
     }
+
     public String getAppointmentEndTime() {
         return appointmentEndTime;
     }
@@ -264,6 +280,7 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
     public void setAppointmentStatus(String appointmentStatus) {
         this.appointmentStatus = appointmentStatus;
     }
+
     public boolean isSelected() {
         return selected;
     }
@@ -288,6 +305,30 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         this.spannableString = spannableString;
     }
 
+    public String getPatientCity() {
+        return patientCity;
+    }
+
+    public void setPatientCity(String patientCity) {
+        this.patientCity = patientCity;
+    }
+
+    public String getPatientArea() {
+        return patientArea;
+    }
+
+    public void setPatientArea(String patientArea) {
+        this.patientArea = patientArea;
+    }
+
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
         dest.writeValue(docId);
@@ -308,11 +349,14 @@ public class PatientList implements Parcelable ,Comparable<PatientList>
         dest.writeValue(appointmentEndTime);
         dest.writeValue(appointmentStatusId);
         dest.writeValue(addedToWaiting);
+        dest.writeValue(patientCity);
+        dest.writeValue(patientArea);
+        dest.writeValue(referenceId);
 
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
     @Override
