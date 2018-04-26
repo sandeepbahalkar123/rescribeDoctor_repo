@@ -9,10 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.ui.fragments.ForgotPassword;
-import com.rescribe.doctor.ui.fragments.OTPConfirmationForSignUp;
-import com.rescribe.doctor.ui.fragments.OtpConfirmationForLogin;
-import com.rescribe.doctor.ui.fragments.SocialLoginInputMobileForConfirmation;
+import com.rescribe.doctor.ui.fragments.login.ForgotPassword;
+import com.rescribe.doctor.ui.fragments.login.OTPConfirmationForSignUp;
+import com.rescribe.doctor.ui.fragments.login.OtpConfirmationForLogin;
+import com.rescribe.doctor.ui.fragments.login.SocialLoginInputMobileForConfirmation;
 
 import java.io.Serializable;
 import butterknife.BindView;

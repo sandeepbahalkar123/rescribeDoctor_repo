@@ -1,4 +1,4 @@
-package com.rescribe.doctor.ui.fragments;
+package com.rescribe.doctor.ui.fragments.login;
 
 import android.content.Intent;
 import android.os.Bundle;
