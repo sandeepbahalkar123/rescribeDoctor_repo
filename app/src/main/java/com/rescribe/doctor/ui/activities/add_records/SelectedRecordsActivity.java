@@ -77,7 +77,6 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     Button uploadButton;
     @BindView(R.id.coachmark)
     ImageView coachmark;
-    private static final int MAX_ATTACHMENT_COUNT = 10;
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -92,6 +91,9 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     FloatingActionButton mAddImageViewRightFab;
     @BindView(R.id.mainRelativeLayout)
     RelativeLayout mainRelativeLayout;
+
+    private static final int MAX_ATTACHMENT_COUNT = 10;
+
     private Context mContext;
     private ArrayList<Image> imagePaths = new ArrayList<>();
     private Dialog dialog;

@@ -51,7 +51,7 @@ public class Config {
     //---------------QA SERVER URL END-----------------------
 
     //---------------LIVE URL START-----------------------
-   /* public static String BASE_URL = "http://rescribe.in:3003/";
+    /*public static String BASE_URL = "http://rescribe.in:3003/";
     public static final String FORGOT_PASSWORD_URL = "https://rescribe.in/app.html#/access/forgotPassword";
     public static final String ADD_NEW_PATIENT_WEB_URL = "https://rescribe.in/app.html#/addpatientmobile/";
     public static final String BROKER = "tcp://rescribe.in:1883";// "tcp://52.66.154.249:1883"; // Rescribe.in IP LIVE

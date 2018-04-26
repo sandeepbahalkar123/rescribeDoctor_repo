@@ -38,7 +38,6 @@ import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -157,7 +156,19 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             // this is done to replzce | with space, | used in case blank middle name.
             String replace = mAddedPatientListData.getPatientName().replace("|", "");
             bundle.putString(RescribeConstants.PATIENT_NAME, replace);
-            bundle.putString(RescribeConstants.PATIENT_INFO, "" + mAddedPatientListData.getAge());
+
+            //------------
+            String patientInfo = "";
+            if (!mAddedPatientListData.getAge().isEmpty() && !mAddedPatientListData.getGender().isEmpty())
+                patientInfo = mAddedPatientListData.getAge() + " yrs - " + mAddedPatientListData.getGender();
+            else if (!mAddedPatientListData.getAge().isEmpty())
+                patientInfo = mAddedPatientListData.getAge() + " yrs";
+            else if (!mAddedPatientListData.getGender().isEmpty())
+                patientInfo = mAddedPatientListData.getGender();
+
+            bundle.putString(RescribeConstants.PATIENT_INFO, patientInfo);
+            //------------
+
             bundle.putInt(RescribeConstants.CLINIC_ID, mAddedPatientListData.getClinicId());
             bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(mAddedPatientListData.getPatientId()));
             bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mAddedPatientListData.getHospitalPatId()));
@@ -395,7 +406,17 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         String replace = mAddedPatientListData.getPatientName().replace("|", "");
 
                         bundle.putString(RescribeConstants.PATIENT_NAME, replace);
-                        bundle.putString(RescribeConstants.PATIENT_INFO, "" + mAddedPatientListData.getAge());
+                        //------------
+                        String patientInfo = "";
+                        if (!mAddedPatientListData.getAge().isEmpty() && !mAddedPatientListData.getGender().isEmpty())
+                            patientInfo = mAddedPatientListData.getAge() + " yrs - " + mAddedPatientListData.getGender();
+                        else if (!mAddedPatientListData.getAge().isEmpty())
+                            patientInfo = mAddedPatientListData.getAge() + " yrs";
+                        else if (!mAddedPatientListData.getGender().isEmpty())
+                            patientInfo = mAddedPatientListData.getGender();
+
+                        bundle.putString(RescribeConstants.PATIENT_INFO, patientInfo);
+                        //------------
                         bundle.putInt(RescribeConstants.CLINIC_ID, mAddedPatientListData.getClinicId());
                         bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(mAddedPatientListData.getPatientId()));
                         bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mAddedPatientListData.getHospitalPatId()));

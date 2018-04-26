@@ -1,10 +1,5 @@
 apply plugin: 'com.android.library'
 
-def versionMajor = 2
-def versionMinor = 3
-def versionPatch = 3
-def versionBuild = 0 // bump for dogfood builds, public betas, etc.
-
 android {
     compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
     buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
@@ -12,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion Integer.parseInt(project.ANDROID_BUILD_MIN_SDK_VERSION)
         targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
-        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        versionCode 1
+        versionName "1.0"
     }
     lintOptions {
         abortOnError false
