@@ -82,6 +82,7 @@ import static com.rescribe.doctor.util.Imageutils.FILEPATH;
  */
 
 public class ProfileActivity extends BottomMenuActivity implements BottomMenuAdapter.OnBottomMenuClickListener, Imageutils.ImageAttachmentListener {
+    private static final String TAG = "Profile";
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -543,7 +544,11 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                 @Override
                 public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
                     //On Profile Image Upload on Server is completed that event is captured in this function.
-                    ProfilePhotoResponse profilePhotoResponse = new Gson().fromJson(serverResponse.getBodyAsString(), ProfilePhotoResponse.class);
+
+                    String bodyAsString = serverResponse.getBodyAsString();
+                    CommonMethods.Log(TAG, bodyAsString);
+
+                    ProfilePhotoResponse profilePhotoResponse = new Gson().fromJson(bodyAsString, ProfilePhotoResponse.class);
                     if (profilePhotoResponse.getCommon().isSuccess()) {
                         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, profilePhotoResponse.getData().getDocImgUrl(), mContext);
                         Toast.makeText(context, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();

@@ -572,7 +572,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 viewIntent.setData(Uri.parse(appURL));
                 viewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(viewIntent);
-
             }
         });
         laterButton.setOnClickListener(new View.OnClickListener() {
@@ -600,6 +599,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     }
 
+    @SuppressLint("CheckResult")
     private void setUpImage() {
         String mDoctorName = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
         if (mDoctorName.contains("Dr. ")) {

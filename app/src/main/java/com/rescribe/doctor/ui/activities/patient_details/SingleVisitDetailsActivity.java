@@ -82,11 +82,9 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     @BindView(R.id.addRecordButton)
     Button addRecordButton;
     private int mLastExpandedPosition = -1;
-    Intent mIntent;
     private SingleVisitAdapter mSingleVisitAdapter;
     private boolean isBpMin = false;
     private boolean isBpMax = false;
-    private Intent intent;
     private String month;
     private String mYear;
     private String mDateSelected;
@@ -109,7 +107,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     private void getBundleData() {
 
-        intent = getIntent();
+        Intent intent = getIntent();
         userInfoTextView.setVisibility(View.VISIBLE);
         dateTextview.setVisibility(View.VISIBLE);
         if (intent.getExtras() != null) {
@@ -128,7 +126,6 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             Date date = CommonMethods.convertStringToDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN);
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
-            timeToShow = timeToShow.substring(0, 1).toUpperCase() + timeToShow.substring(1);
             String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + month + "'" + mYear;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 dateTextview.setText(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
