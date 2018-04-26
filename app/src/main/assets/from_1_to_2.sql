@@ -1,5 +1,7 @@
 BEGIN TRANSACTION;
 
+ALTER TABLE `my_records` ADD `aptId` TEXT;
+
 ALTER TABLE "addNewPatient" RENAME TO "addNewPatient_OLD";
 
 CREATE TABLE "addNewPatient" (
@@ -34,5 +36,7 @@ INSERT INTO addNewPatient (`dataId`,`salutation`,`firstName`,`middleName`,`lastN
   FROM addNewPatient_OLD;
 
 DROP TABLE addNewPatient_OLD;
+
+
 
 COMMIT;

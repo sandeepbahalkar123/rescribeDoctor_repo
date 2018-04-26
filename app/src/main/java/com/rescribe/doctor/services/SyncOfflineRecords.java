@@ -77,6 +77,7 @@ public class SyncOfflineRecords {
                         String mLocationId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.LOCATION_ID));
                         String imagePath = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.IMAGE_PATH));
                         String caption = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.PARENT_CAPTION));
+                        String aptId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.APT_ID));
 
                         String currentOpdTime;
 
@@ -107,6 +108,7 @@ public class SyncOfflineRecords {
                                     .addHeader("hospitalid", mHospitalId)
                                     .addHeader("hospitalpatid", mHospitalPatId)
                                     .addHeader("locationid", mLocationId)
+                                    .addHeader("aptid", String.valueOf(aptId))
                                     .addFileToUpload(imagePath, "attachment");
 
                             String docCaption;

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -79,7 +80,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     RelativeLayout hospitalDetailsLinearLayout;
 
     @BindView(R.id.noRecords)
-    ImageView noRecords;
+    LinearLayout noRecords;
 
     private Unbinder unbinder;
     private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();

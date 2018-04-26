@@ -11,7 +11,6 @@
       <module fileurl="file://$PROJECT_DIR$/materialdrawer/materialdrawer.iml" filepath="$PROJECT_DIR$/materialdrawer/materialdrawer.iml" />
       <module fileurl="file://$PROJECT_DIR$/rescribeDoctor_repo.iml" filepath="$PROJECT_DIR$/rescribeDoctor_repo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/rescribeDoctor_repo-app.iml" filepath="$PROJECT_DIR$/app/rescribeDoctor_repo-app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/materialdrawer/rescribeDoctor_repo-materialdrawer.iml" filepath="$PROJECT_DIR$/materialdrawer/rescribeDoctor_repo-materialdrawer.iml" />
       <module fileurl="file://$PROJECT_DIR$/slideview/slideview.iml" filepath="$PROJECT_DIR$/slideview/slideview.iml" />
       <module fileurl="file://$PROJECT_DIR$/uploadservice/uploadservice.iml" filepath="$PROJECT_DIR$/uploadservice/uploadservice.iml" />
     </modules>

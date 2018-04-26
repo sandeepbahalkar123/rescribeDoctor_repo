@@ -16,9 +16,9 @@
         <Spinner
             android:id="@+id/clinicListSpinner"
             style="@style/SpinnerTheme"
-            android:spinnerMode="dropdown"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:spinnerMode="dropdown"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -26,9 +26,9 @@
             android:id="@+id/hospitalDetailsLinearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginLeft="@dimen/dp8"
             android:padding="@dimen/dp12"
+            android:visibility="gone"
             tools:visibility="visible">
 
             <com.rescribe.doctor.ui.customesViews.CircularImageView
@@ -36,9 +36,9 @@
                 android:layout_width="@dimen/dp8"
                 android:layout_height="@dimen/dp8"
                 android:layout_centerVertical="true"
+                android:layout_marginBottom="@dimen/dp6"
                 android:layout_marginRight="@dimen/dp8"
                 android:layout_marginTop="@dimen/dp6"
-                android:layout_marginBottom="@dimen/dp6"
                 android:background="@drawable/circular_bullet" />
 
             <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -58,6 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp10"
                 android:layout_toEndOf="@id/clinicNameTextView"
                 android:layout_toRightOf="@id/clinicNameTextView"
                 android:ellipsize="end"
@@ -65,7 +66,6 @@
                 android:textColor="@color/clinic_address_color"
                 android:textSize="@dimen/sp13"
                 app:customFont="@string/roboto_medium"
-                android:layout_marginRight="@dimen/dp10"
                 tools:text="Worli, Mumbaifgfdgfdgfgf" />
         </RelativeLayout>
 
@@ -75,20 +75,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:visibility="visible" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:visibility="visible" />
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/noRecords"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            app:srcCompat="@drawable/no_records_found"
+            android:orientation="vertical"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp32"
+                android:layout_marginStart="@dimen/dp32"
+                android:adjustViewBounds="true"
+                app:srcCompat="@drawable/help_waiting_list" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center"
+                android:paddingTop="@dimen/dp30"
+                android:layout_marginEnd="@dimen/dp32"
+                android:layout_marginStart="@dimen/dp32"
+                android:text="@string/waiting_list_message"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp16" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -30,12 +30,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.investigation.Image;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -43,9 +45,11 @@ import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.KeyboardEvent;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
+
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
 import net.gotev.uploadservice.UploadService;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -53,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -60,6 +65,7 @@ import droidninja.filepicker.FilePickerBuilder;
 import droidninja.filepicker.FilePickerConst;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+
 import static com.rescribe.doctor.services.SyncOfflineRecords.getUploadConfig;
 
 @RuntimePermissions
@@ -111,6 +117,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     private boolean openCameraDirect;
     private int imageSize;
     private int dimension20PixelSize;
+    private int mAptId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,7 +247,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
         mHospitalPatId = getIntent().getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
         mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);
         patientId = getIntent().getStringExtra(RescribeConstants.PATIENT_ID);
-
+        mAptId = getIntent().getIntExtra(RescribeConstants.APPOINTMENT_ID, 0);
         mHospitalId = getIntent().getIntExtra(RescribeConstants.CLINIC_ID, 0);
         addImageView.setVisibility(View.GONE);
         mAddImageViewRightFab.setVisibility(View.VISIBLE);
@@ -423,10 +430,12 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                         else
                             CommonMethods.showToast(this, getString(R.string.records_will_upload_when_internet_available));
 
-                        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath());
+                        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath(), mAptId);
                     }
 //                    CommonMethods.showToast(this, getString(R.string.uploading));
 
+//                    Intent i = new Intent(this, MQTTService.class);
+//                    startService(i);
                     onBackPressed();
                 }
                 break;
@@ -468,6 +477,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                     .addHeader("hospitalid", String.valueOf(mHospitalId))
                     .addHeader("hospitalpatid", mHospitalPatId)
                     .addHeader("locationid", mLocationId)
+                    .addHeader("aptid", String.valueOf(mAptId))
                     .addFileToUpload(image.getImagePath(), "attachment");
 
             String docCaption;

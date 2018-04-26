@@ -92,7 +92,7 @@ public class CompletedOpdFragment extends Fragment implements CompletedOpdAdapte
     EditTextWithDeleteButton searchEditText;
     private Unbinder unbinder;
     private CompletedOpdAdapter mCompletedOpdAdapter;
-    private String[] mMenuNames = {"Select All","Waiting List","Send SMS"};
+    private String[] mMenuNames = {"Select All", "Waiting List", "Send SMS"};
     private BottomMenuForCompleteAppointmentAdapter mBottomMenuForCompleteAppointmentAdapter;
     public static final int PAGE_START = 0;
     private String searchText = "";
@@ -163,7 +163,7 @@ public class CompletedOpdFragment extends Fragment implements CompletedOpdAdapte
             }
         });
 
-        mBottomMenuForCompleteAppointmentAdapter = new BottomMenuForCompleteAppointmentAdapter(getContext(), this, mBottomMenuList, true,RescribeConstants.COMPLETE_OPD);
+        mBottomMenuForCompleteAppointmentAdapter = new BottomMenuForCompleteAppointmentAdapter(getContext(), this, mBottomMenuList, true, RescribeConstants.COMPLETE_OPD);
         recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         recyclerViewBottom.setAdapter(mBottomMenuForCompleteAppointmentAdapter);
 
@@ -231,11 +231,15 @@ public class CompletedOpdFragment extends Fragment implements CompletedOpdAdapte
 
     @Override
     public void onClickOfPatientDetails(CompletedOpd patientListObject, String text) {
+        String patientName;
+        if (patientListObject.getSalutation() != 0)
+            patientName = RescribeConstants.SALUTATION[patientListObject.getSalutation() - 1] + toCamelCase(patientListObject.getPatientName());
+        else patientName = toCamelCase(patientListObject.getPatientName());
 
-        String patientName = toCamelCase(patientListObject.getPatientName());
         Bundle b = new Bundle();
         b.putString(RescribeConstants.PATIENT_NAME, patientName);
         b.putString(RescribeConstants.PATIENT_INFO, text);
+        b.putInt(RescribeConstants.CLINIC_ID, patientListObject.getClinicId());
         b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
         b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
         Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
@@ -328,14 +332,14 @@ public class CompletedOpdFragment extends Fragment implements CompletedOpdAdapte
         dialog.setCancelable(true);
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        if(!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
+        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
             mLocationId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()));
         RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
         for (int index = 0; index < mDoctorLocationModel.size(); index++) {
             final DoctorLocationModel clinicList = mDoctorLocationModel.get(index);
 
             final RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
-            if (mLocationId==clinicList.getLocationId()) {
+            if (mLocationId == clinicList.getLocationId()) {
                 radioButton.setChecked(true);
             } else {
                 radioButton.setChecked(false);

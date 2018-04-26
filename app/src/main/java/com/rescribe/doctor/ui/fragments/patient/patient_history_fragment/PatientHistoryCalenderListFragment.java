@@ -38,6 +38,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
     private static String patientName;
     private static String patientInfo;
     private static String mHospitalPatId;
+    private static int mAptId;
     @BindView(R.id.calenderDays)
     RecyclerView mCalenderDays;
     private Context mContext;
@@ -83,6 +84,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         patientInfo = b.getString(RescribeConstants.PATIENT_INFO);
         patientID = b.getString(RescribeConstants.PATIENT_ID);
         mHospitalPatId = b.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
+        mAptId = b.getInt(RescribeConstants.APPOINTMENT_ID,0);
         fragment.setArguments(args);
         return fragment;
     }
@@ -133,6 +135,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         intent.putExtra(RescribeConstants.PATIENT_NAME, patientName);
         intent.putExtra(RescribeConstants.PATIENT_INFO, patientInfo);
         intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+        intent.putExtra(RescribeConstants.APPOINTMENT_ID,mAptId);
         intent.putExtra(RescribeConstants.DATE, visitDate);
         intent.putExtra(RescribeConstants.OPD_TIME, opdTime);
         getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);

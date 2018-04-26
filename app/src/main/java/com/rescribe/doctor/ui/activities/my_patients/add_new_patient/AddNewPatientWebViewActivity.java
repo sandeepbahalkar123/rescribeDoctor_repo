@@ -27,8 +27,10 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.SyncPatientsModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.util.CommonMethods;
@@ -375,15 +377,40 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     CommonMethods.showToast(this, common.getStatusMessage());
                     if (common.getStatusCode().equals(SUCCESS)) {
 
+                        //-----------
+                        PatientUpdateDetail patientUpdateDetail = mSyncPatientsModel.getData().getPatientUpdateDetails().get(0);
+
+                        mAddedPatientListData.setPatientId(patientUpdateDetail.getPatientId());
+                        mAddedPatientListData.setHospitalPatId(patientUpdateDetail.getHospitalPatId());
+                        mAddedPatientListData.setOfflinePatientSynced(true);
+                        AppDBHelper.getInstance(mContext).addNewPatient(mAddedPatientListData);
+                        //-----------
+
+                        // start service if closed
+                        Intent intentMQTT = new Intent(this, MQTTService.class);
+                        startService(intentMQTT);
+
                         Bundle bundle = new Bundle();
-                        bundle.putString(RescribeConstants.PATIENT_NAME, mAddedPatientListData.getPatientName());
-                        bundle.putString(RescribeConstants.PATIENT_INFO, "" + mAddedPatientListData.getAge());
+                        String replace = mAddedPatientListData.getPatientName().replace("|", "");
+
+                        bundle.putString(RescribeConstants.PATIENT_NAME, replace);
+
+                        String patientInfo = "";
+                        if (!mAddedPatientListData.getAge().isEmpty() && !mAddedPatientListData.getGender().isEmpty())
+                            patientInfo = mAddedPatientListData.getAge() + " yrs - " + mAddedPatientListData.getGender();
+                        else if (!mAddedPatientListData.getAge().isEmpty())
+                            patientInfo = mAddedPatientListData.getAge() + " yrs";
+                        else if (!mAddedPatientListData.getGender().isEmpty())
+                            patientInfo = mAddedPatientListData.getGender();
+
+                        bundle.putString(RescribeConstants.PATIENT_INFO, patientInfo);
                         bundle.putInt(RescribeConstants.CLINIC_ID, mAddedPatientListData.getClinicId());
                         bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(mAddedPatientListData.getPatientId()));
                         bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mAddedPatientListData.getHospitalPatId()));
                         Intent intent = new Intent(this, PatientHistoryActivity.class);
                         intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
                         startActivity(intent);
+
                         finish();
                     }
                 }

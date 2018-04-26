@@ -335,7 +335,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return  db.rawQuery(sql, null);
     }
 
-    public void insertRecordUploads(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath) {
+    public void insertRecordUploads(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath, int mAptId) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -352,6 +352,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(MY_RECORDS.PARENT_CAPTION, parentCaption);
         contentValues.put(MY_RECORDS.IMAGE_PATH, imagePath);
         contentValues.put(MY_RECORDS.UPLOAD_STATUS, FAILED);
+        contentValues.put(MY_RECORDS.APT_ID,mAptId);
 
         db.insert(MY_RECORDS.MY_RECORDS_TABLE, null, contentValues);
 
@@ -383,6 +384,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String PARENT_CAPTION = "parentCaption";
         String IMAGE_PATH = "imagePath";
         String UPLOAD_STATUS = "uploadStatus";
+        String APT_ID = "aptId";
     }
 
     // All About Chat

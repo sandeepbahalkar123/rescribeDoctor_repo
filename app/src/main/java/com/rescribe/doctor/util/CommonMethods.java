@@ -268,13 +268,25 @@ public class CommonMethods {
 
     public static TextDrawable getTextDrawable(Context context, String name) {
         ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
-        int color2 = mColorGenerator.getColor(name);
-        return TextDrawable.builder()
-                .beginConfig()
-                .width(Math.round(context.getResources().getDimension(R.dimen.dp67))) // width in px
-                .height(Math.round(context.getResources().getDimension(R.dimen.dp67))) // height in px
-                .endConfig()
-                .buildRound(("" + name.charAt(0)).toUpperCase(), color2);
+
+        if (RescribeConstants.BLANK.equalsIgnoreCase(name)) {
+            int color2 = mColorGenerator.getColor(name);
+            return TextDrawable.builder()
+                    .beginConfig()
+                    .width(Math.round(context.getResources().getDimension(R.dimen.dp67))) // width in px
+                    .height(Math.round(context.getResources().getDimension(R.dimen.dp67))) // height in px
+                    .endConfig()
+                    .buildRound(("" + name).toUpperCase(), color2);
+        } else {
+            int color2 = mColorGenerator.getColor(name);
+            return TextDrawable.builder()
+                    .beginConfig()
+                    .width(Math.round(context.getResources().getDimension(R.dimen.dp67))) // width in px
+                    .height(Math.round(context.getResources().getDimension(R.dimen.dp67))) // height in px
+                    .endConfig()
+                    .buildRound(("" + name.charAt(0)).toUpperCase(), color2);
+        }
+
     }
 
     public static int getVersionCode(Context mContext) {
