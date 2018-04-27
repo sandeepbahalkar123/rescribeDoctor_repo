@@ -66,4 +66,5 @@
     <color name="yellow">#FFFF33</color>
     <color name="logo_color">#7f5b5b5b</color>
     <color name="clickHere">#3676a3</color>
+    <color name="activity_background">#E4E4E4</color>
 </resources>

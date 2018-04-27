@@ -84,7 +84,6 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
 
     private Unbinder unbinder;
     private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
-    private WaitingListSpinnerAdapter mWaitingListSpinnerAdapter;
     //    private ActiveWaitingListAdapter mActiveWaitingListAdapter;
 //    private ArrayList<Active> activeArrayList = new ArrayList<>();
     private int adapterPos;
@@ -122,22 +121,24 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     private void init() {
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         waitingclinicLists = getArguments().getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
-        if (waitingclinicLists.size() > 1) {
-            clinicListSpinner.setVisibility(View.VISIBLE);
-            hospitalDetailsLinearLayout.setVisibility(View.GONE);
-            mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
-            clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
-        } else {
-            mLocationId = waitingclinicLists.get(0).getLocationId();
-            clinicListSpinner.setVisibility(View.GONE);
-            waitingPatientTempList = waitingclinicLists.get(0).getWaitingPatientList();
-            hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
-            clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
-            clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
-            recyclerView.setVisibility(View.VISIBLE);
-            recyclerView.setClipToPadding(false);
+        if (waitingclinicLists != null) {
+            if (waitingclinicLists.size() > 1) {
+                clinicListSpinner.setVisibility(View.VISIBLE);
+                hospitalDetailsLinearLayout.setVisibility(View.GONE);
+                WaitingListSpinnerAdapter mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
+                clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
+            } else {
+                mLocationId = waitingclinicLists.get(0).getLocationId();
+                clinicListSpinner.setVisibility(View.GONE);
+                waitingPatientTempList = waitingclinicLists.get(0).getWaitingPatientList();
+                hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
+                clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
+                clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
+                recyclerView.setVisibility(View.VISIBLE);
+                recyclerView.setClipToPadding(false);
 
-            setAdapter();
+                setAdapter();
+            }
         }
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
