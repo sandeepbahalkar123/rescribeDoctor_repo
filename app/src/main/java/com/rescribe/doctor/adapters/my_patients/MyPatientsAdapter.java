@@ -167,22 +167,30 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         //------------
         //-- DOnt show - when gender is empty
         String yearsString = mContext.getString(R.string.years);
+        String finalStringForAgeNGender = "";
         if (gender != null && RescribeConstants.BLANK.equalsIgnoreCase(gender)) {
             yearsString = yearsString.substring(0, (yearsString.length() - 2));
         }
         if (patientObject.getAge() != null && !RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getAge())) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);
-            holder.patientAgeTextView.setText(patientObject.getAge() + " " + yearsString);
+
+            finalStringForAgeNGender = patientObject.getAge() + " " + yearsString;
+            holder.patientAgeTextView.setText(finalStringForAgeNGender);
+
         } else if (patientObject.getDateOfBirth() != null && !RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getDateOfBirth())) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = patientObject.getDateOfBirth();
             DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-            holder.patientAgeTextView.setText(CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + yearsString);
+
+            finalStringForAgeNGender = CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + yearsString;
+            holder.patientAgeTextView.setText(finalStringForAgeNGender);
         } else {
             holder.patientAgeTextView.setVisibility(View.GONE);
         }
+
+
         //------------
 
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
@@ -233,7 +241,18 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString(), isClickOnPatientDetailsRequired);
+
+                //THis is done, bcz not getting proper data from age n gender view.
+                String patientInfo = "";
+                if (!patientObject.getAge().isEmpty() && !patientObject.getGender().isEmpty())
+                    patientInfo = patientObject.getAge() + " yrs - " + patientObject.getGender();
+                else if (!patientObject.getAge().isEmpty())
+                    patientInfo = patientObject.getAge() + " yrs";
+                else if (!patientObject.getGender().isEmpty())
+                    patientInfo = patientObject.getGender();
+
+
+                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, patientInfo, isClickOnPatientDetailsRequired);
             }
         });
 
@@ -375,7 +394,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 mc.setOfflinePatientSynced(false);
             }
 
-           // mc.setReferenceID("");
+            // mc.setReferenceID("");
             appDBHelper.addNewPatient(mc);
         }
 
