@@ -393,7 +393,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     public View getGroupView(final int groupPosition, final boolean isExpanded,
                              View convertView, final ViewGroup parent) {
 
-
         final GroupViewHolder groupViewHolder;
 
         if (convertView == null) {
