@@ -265,6 +265,7 @@
     <string name="cannot_completed_appointment">You cannot complete appointment for future dates.</string>
     <string name="you_cannot_add_waiting_list">You cannot add future appointments in waiting list</string>
     <string name="waiting_list_message">Oops !! There are no patients currently in the waiting list.</string>
+    <string name="company_name">SCORG TECHNOLOGIES Pvt.Ltd.</string>
 
 
 </resources>

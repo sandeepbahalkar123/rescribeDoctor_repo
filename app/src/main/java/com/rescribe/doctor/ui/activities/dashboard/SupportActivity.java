@@ -17,6 +17,7 @@ import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.bottom_menus.BottomMenuAdapter;
 import com.rescribe.doctor.ui.activities.ProfileActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.util.CommonMethods;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +46,8 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
     CustomTextView userInfoTextView;
     @BindView(R.id.dateTextview)
     CustomTextView dateTextview;
+    @BindView(R.id.versionText)
+    CustomTextView versionText;
     private Context mContext;
 
     @Override
@@ -60,6 +63,8 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
         mContext = SupportActivity.this;
         titleTextView.setText(getString(R.string.support));
         backImageView.setVisibility(View.GONE);
+        String versionString = "v" + CommonMethods.getVersionName(mContext) + "(" + CommonMethods.getVersionCode(mContext) + ")";
+        versionText.setText(versionString);
     }
 
     @NeedsPermission(Manifest.permission.CALL_PHONE)
@@ -85,12 +90,12 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
     public void onBottomMenuClick(BottomMenu bottomMenu) {
 
         if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.settings))) {
-           Intent intent = new Intent(this, SettingsActivity.class);
+            Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             finish();
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.home))) {
             finish();
-        }else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.profile))) {
+        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.profile))) {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
             finish();
@@ -99,7 +104,7 @@ public class SupportActivity extends BottomMenuActivity implements BottomMenuAda
     }
 
 
-    @OnClick({R.id.callTextView, R.id.emailtextView , R.id.backImageView})
+    @OnClick({R.id.callTextView, R.id.emailtextView, R.id.backImageView})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.callTextView:
