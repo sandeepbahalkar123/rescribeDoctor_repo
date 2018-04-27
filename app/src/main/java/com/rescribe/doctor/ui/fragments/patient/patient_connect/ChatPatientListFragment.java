@@ -225,7 +225,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
         mRequestSearchPatients.setSearchText(searchText);
         mRequestSearchPatients.setPageNo(pageNo);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, true);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, false);
     }
 
     public void searchPatients() {
@@ -256,7 +256,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
 
                 ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
 
-                mMyPatientsAdapter.addAll(mLoadedPatientList, ((ShowMyPatientsListActivity) getActivity()).selectedDoctorId ,searchText);
+                mMyPatientsAdapter.addAll(mLoadedPatientList, ((ShowMyPatientsListActivity) getActivity()).selectedDoctorId, searchText);
 
                 if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
                     recyclerView.setVisibility(View.VISIBLE);

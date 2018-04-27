@@ -41,7 +41,7 @@ public class Config {
 
     //---------------QA SERVER URL START-----------------------
 
-     public static String BASE_URL = "http://drrescribe.com:3003/";
+    public static String BASE_URL = "http://drrescribe.com:3003/";
     public static final String FORGOT_PASSWORD_URL = "https://drrescribe.com/app.html#/access/forgotPassword";
     public static final String ADD_NEW_PATIENT_WEB_URL = "https://drrescribe.com/app.html#/addpatientmobile/";
     public static final String BROKER = "tcp://drrescribe.com:1883";//"tcp://52.66.154.249:1883"; // Dr Rescribe.com IP QA
