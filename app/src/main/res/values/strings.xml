@@ -268,4 +268,116 @@
     <string name="company_name">SCORG TECHNOLOGIES Pvt.Ltd.</string>
 
 
+    <!--/////////////////////DMS/////////////////////-->
+
+    <string name="wrong_server_path">Re-enter correct server path</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <dimen name="padding_very_tiny">3dp</dimen>
+    <string name="login">LOG IN</string>
+    <string name="user_name">User Name</string>
+    <string name="password">Password</string>
+    <string name="sign_up_hospital_name">Sign up for hospital name</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="searchbyPatient">Search By Patient Name</string>
+    <string name="enterAnnotation">Enter Annotation</string>
+    <string name="searchAnnotation">Search Documents</string>
+    <string name="scrollingBoth">Scrolling Both</string>
+    <string name="patientInformation">Patient Information</string>
+    <string name="refId">REF ID</string>
+    <string name="change_ip_address">Change IP Address</string>
+    <string name="for_example_server_path">e.g. 172.16.100.211:84</string>
+    <string name="server_path">Enter the server path</string>
+    <string name="doctor">Doctor</string>
+    <string name="admission">Admission</string>
+    <string name="discharge">Discharge</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+
+    <!-- Strings related to login -->
+    <string name="error_empty_fields">Please enter username/password</string>
+
+    <string name="visit_date">Visit Date:\u0020</string>
+    <string name="error_enter_opd">Enter OPD</string>
+    <string name="error_enter_ipd">Enter IPD</string>
+    <string name="error_enter_uhid">Enter UHID</string>
+    <string name="Select">Select</string>
+    <string name="admission_date">Admission Date:\u0020</string>
+    <string name="discharge_date">Discharge Date:\u0020</string>
+    <string name="more">More</string>
+    <string name="opd">OPD</string>
+    <string name="ipd">IPD</string>
+    <string name="uhid">UHID</string>
+    <string name="patient_list">Patient List</string>
+    <string name="compare">Compare</string>
+    <string name="from_date">From:</string>
+    <string name="to_date">To:</string>
+    <string name="patient_name">Patient Name:</string>
+    <string name="change_ip">Do you want to change IP address?</string>
+    <string name="date_type">DType:</string>
+    <string name="documenttype">DT:</string>
+    <string name="enter_annotation">Annotation:</string>
+    <string name="error_compare_patient">Please select same patient record to compare</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="error_max_two_reports">You can not select more than two reports to compare</string>
+    <string name="run_only_on_tablet">Oops…, it seems you are running on phone, DMS is only supported to tablets.</string>
+
+    <string-array name="select_id">
+        <item>Select</item>
+        <item>IPD</item>
+        <item>OPD</item>
+        <item>UHID</item>
+    </string-array>
+
+    <string-array name="admission_date">
+        <item>Select</item>
+        <item>Admission Date</item>
+        <item>Discharge Date</item>
+        <item>Visit Date</item>
+    </string-array>
+
+    <string-array name="ipd_array">
+        <item>Select</item>
+        <item>Admission Date</item>
+        <item>Discharge Date</item>
+    </string-array>
+    <string-array name="opd_array">
+        <item>Select</item>
+        <item>Visit Date</item>
+    </string-array>
+    <string-array name="ids">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+    </string-array>
+
+    <!--********Tree view holder icon codes****************-->
+    <string name="ic_keyboard_arrow_down">&#xe0c5;</string>
+    <string name="ic_keyboard_arrow_right">&#xe0c7;</string>
+    <string name="ic_shopping_cart">&#xe14f;</string>
+    <string name="filenotfound">File not found</string>
+    <string name="error_in_ip">Please enter valid IP address</string>
+    <string name="comparedocument">Compare Document</string>
+    <string name="adddocument">Add Document</string>
+    <string name="denied_permission_read_document">Denied permission read Document.</string>
+    <string name="userimage">User Image</string>
+    <string name="username">Username</string>
+    <string name="file_one">FileType-1</string>
+    <string name="file_two">FileType-2</string>
+    <string name="address">Address</string>
+
 </resources>

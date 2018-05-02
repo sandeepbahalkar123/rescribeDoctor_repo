@@ -206,4 +206,11 @@
         <item name="android:textSize">@dimen/sp16</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
     </style>
+
+    <style name="ToolbarColoredBackArrow" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+
+    <style name="DialogStyle" parent="Theme.AppCompat.Dialog" />
+
 </resources>

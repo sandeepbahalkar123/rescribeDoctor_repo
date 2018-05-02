@@ -220,7 +220,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, MyPatientsActivity.class);
+                Intent intent = new Intent(mContext, com.rescribe.doctor.dms.ui.activities.SplashScreenActivity.class);
                 intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM, RescribeConstants.HOME_PAGE);
                 startActivity(intent);
             }

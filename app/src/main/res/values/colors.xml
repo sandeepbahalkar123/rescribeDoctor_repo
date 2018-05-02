@@ -67,4 +67,23 @@
     <color name="logo_color">#7f5b5b5b</color>
     <color name="clickHere">#3676a3</color>
     <color name="activity_background">#E4E4E4</color>
+
+
+    <!--// DMS //-->
+
+    <color name="reset_yellow">#ffa100</color>
+    <color name="apply_blue">#6AB0D3</color>
+    <color name="dcr_customer_name">#010101</color>
+    <color name="grey_700">#616161</color>
+    <color name="grey_800">#424242</color>
+    <color name="grey_200">#E0E0E0</color>
+    <color name="refId_color">#8dc63f</color>
+    <color name="LightSkyBlue">#82CAFA</color>
+    <color name="cobalt_blue">#0020C2</color>
+    <color name="BlueAngel">#0288d1</color>
+    <color name="MediumSpringGreen">#348017</color>
+    <color name="BlueDress">#157DEC</color>
+    <color name="login_bg">#4FAFDC</color>
+    <color name="login_button">#36657A</color>
+
 </resources>
