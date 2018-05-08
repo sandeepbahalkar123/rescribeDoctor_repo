@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -23,8 +22,6 @@ import android.widget.Toast;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
-import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
@@ -129,15 +126,21 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
 
             } else {
-                mLocationId = waitingclinicLists.get(0).getLocationId();
-                waitingPatientTempList = waitingclinicLists.get(0).getWaitingPatientList();
-                clinicListSpinner.setVisibility(View.GONE);
-                hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
-                clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
-                clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
-                recyclerView.setVisibility(View.VISIBLE);
-                recyclerView.setClipToPadding(false);
-                setAdapter();
+
+                if (waitingclinicLists.isEmpty()) {
+                    noRecords.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                } else {
+                    mLocationId = waitingclinicLists.get(0).getLocationId();
+                    waitingPatientTempList = waitingclinicLists.get(0).getWaitingPatientList();
+                    clinicListSpinner.setVisibility(View.GONE);
+                    hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
+                    clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
+                    clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
+                    recyclerView.setVisibility(View.VISIBLE);
+                    recyclerView.setClipToPadding(false);
+                    setAdapter();
+                }
             }
         }
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

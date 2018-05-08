@@ -56,7 +56,6 @@ public class WaitingListSpinnerAdapter extends BaseAdapter {
             CustomTextView clinicAddress = (CustomTextView) view.findViewById(R.id.clinicAddress);
             clinicNameTextView.setText(waitingClinicListObject.getClinicName()+" - ");
             clinicAddress.setText(waitingClinicListObject.getArea() + ", " + waitingClinicListObject.getCity());
-
         }
         return view;
     }

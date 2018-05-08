@@ -54,6 +54,9 @@ import com.rescribe.doctor.util.dragable_swipable.ViewUtils;
 
 import java.util.ArrayList;
 
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.IN_QUEUE;
 import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
 public class DraggableSwipeableViewAllWaitingListAdapter
@@ -61,8 +64,6 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         implements DraggableItemAdapter<DraggableSwipeableViewAllWaitingListAdapter.MyViewHolder>,
         SwipeableItemAdapter<DraggableSwipeableViewAllWaitingListAdapter.MyViewHolder> {
     private static final String TAG = "MyDSItemAdapter";
-    public static final int IN_QUEUE = 8;
-    public static final int CONFIRMED = 2;
 
     private int mPreLeftSwipePosition = RecyclerView.NO_POSITION;
 
@@ -317,7 +318,12 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             holder.mContainer.setBackgroundResource(bgResId);
         }
 
-        if (item.getViewAll().getWaitingStatusId().equals(IN_QUEUE) || item.getViewAll().getWaitingStatusId().equals(CONFIRMED)) {
+        if (item.getViewAll().getWaitingStatusId().equals(CANCEL))
+            // Set Red Color
+            holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.Red));
+        else holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.tagColor));
+
+        if (item.getViewAll().getWaitingStatusId().equals(IN_QUEUE) || item.getViewAll().getWaitingStatusId().equals(CONFIRM)) {
             if (getAllItems().size() == 1)
                 holder.mDragHandle.setVisibility(View.GONE);
             else holder.mDragHandle.setVisibility(View.VISIBLE);
@@ -359,7 +365,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         move(fromPosition, toPosition);
         if ((toPosition + 1) < mProvider.getCount()) {
             ViewAll viewAll = mProvider.getItem(toPosition + 1).getViewAll();
-            if (viewAll.getWaitingStatusId().equals(IN_QUEUE) || viewAll.getWaitingStatusId().equals(CONFIRMED))
+            if (viewAll.getWaitingStatusId().equals(IN_QUEUE) || viewAll.getWaitingStatusId().equals(CONFIRM))
                 mEventListener.onItemMoved(fromPosition, toPosition);
             else
                 move(toPosition, fromPosition);

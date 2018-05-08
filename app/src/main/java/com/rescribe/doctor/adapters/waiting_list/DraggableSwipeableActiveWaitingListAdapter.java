@@ -54,8 +54,9 @@ import com.rescribe.doctor.util.dragable_swipable.ViewUtils;
 
 import java.util.ArrayList;
 
-import static com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableViewAllWaitingListAdapter.CONFIRMED;
-import static com.rescribe.doctor.adapters.waiting_list.DraggableSwipeableViewAllWaitingListAdapter.IN_QUEUE;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.IN_QUEUE;
 import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
 public class DraggableSwipeableActiveWaitingListAdapter
@@ -315,7 +316,13 @@ public class DraggableSwipeableActiveWaitingListAdapter
             holder.mContainer.setBackgroundResource(bgResId);
         }
 
-        if (item.getActiveAll().getWaitingStatusId().equals(IN_QUEUE) || item.getActiveAll().getWaitingStatusId().equals(CONFIRMED)) {
+        if (item.getActiveAll().getWaitingStatusId().equals(CANCEL))
+            // Set Red Color
+            holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.Red));
+        else
+            holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.tagColor));
+
+        if (item.getActiveAll().getWaitingStatusId().equals(IN_QUEUE) || item.getActiveAll().getWaitingStatusId().equals(CONFIRM)) {
             if (getAllItems().size() == 1)
                 holder.mDragHandle.setVisibility(View.GONE);
             else holder.mDragHandle.setVisibility(View.VISIBLE);
@@ -358,7 +365,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
         move(fromPosition, toPosition);
         if ((toPosition + 1) < mProvider.getCount()) {
             Active active = mProvider.getItem(toPosition + 1).getActiveAll();
-            if (active.getWaitingStatusId().equals(IN_QUEUE) || active.getWaitingStatusId().equals(CONFIRMED))
+            if (active.getWaitingStatusId().equals(IN_QUEUE) || active.getWaitingStatusId().equals(CONFIRM))
                 mEventListener.onItemMoved(fromPosition, toPosition);
             else
                 move(toPosition, fromPosition);
