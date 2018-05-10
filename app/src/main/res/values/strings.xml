@@ -258,7 +258,7 @@
     <string name="add_profile_image">Add Profile Image</string>
     <string name="select_this_location">Select this Location</string>
     <string name="detect_location">Detect my location</string>
-    <string name="do_you_want_to_update">Do you want to update application?</string>
+    <string name="do_you_want_to_update">Update the app to latest version for using new features.</string>
     <string name="update">Update</string>
     <string name="later">Later</string>
     <string name="patient_registration">Patient Registration</string>

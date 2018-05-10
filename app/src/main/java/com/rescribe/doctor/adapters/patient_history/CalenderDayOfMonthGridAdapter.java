@@ -70,6 +70,7 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
         String toDisplay = day + "<sup>" + CommonMethods.getSuffixForNumber(day) + "</sup>";
+        toDisplay=toDisplay+"\n"+ new SimpleDateFormat("MMM", Locale.US).format(cal.getTime());
         //------
         if (patientHistoryInfoObject.getVisitDate().equalsIgnoreCase(mDateFormat.format(new Date()))) {
             toDisplay = toDisplay + "\n" + mContext.getString(R.string.just_now);

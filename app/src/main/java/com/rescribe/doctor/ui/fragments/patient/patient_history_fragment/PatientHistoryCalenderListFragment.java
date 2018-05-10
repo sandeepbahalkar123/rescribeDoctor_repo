@@ -17,6 +17,7 @@ import com.rescribe.doctor.model.login.Year;
 import com.rescribe.doctor.model.my_records.MyRecordInfoAndReports;
 import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
+import com.rescribe.doctor.model.patient.patient_history.YearsMonthsData;
 import com.rescribe.doctor.ui.activities.patient_details.SingleVisitDetailsActivity;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -75,16 +76,16 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
     }
 
 
-    public static PatientHistoryCalenderListFragment createNewFragment(Year dataString, Bundle b) {
+    public static PatientHistoryCalenderListFragment createNewFragment(YearsMonthsData dataString, Bundle b) {
         PatientHistoryCalenderListFragment fragment = new PatientHistoryCalenderListFragment();
         Bundle args = new Bundle();
-        args.putString(RescribeConstants.MONTH, dataString.getMonthName());
-        args.putString(RescribeConstants.YEAR, dataString.getYear());
+        args.putString(RescribeConstants.MONTH, dataString.getMonths().get(0));
+        args.putString(RescribeConstants.YEAR, "" + dataString.getYear());
         patientName = b.getString(RescribeConstants.PATIENT_NAME);
         patientInfo = b.getString(RescribeConstants.PATIENT_INFO);
         patientID = b.getString(RescribeConstants.PATIENT_ID);
         mHospitalPatId = b.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
-        mAptId = b.getInt(RescribeConstants.APPOINTMENT_ID,0);
+        mAptId = b.getInt(RescribeConstants.APPOINTMENT_ID, 0);
         fragment.setArguments(args);
         return fragment;
     }
@@ -102,7 +103,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
                 if (monthArrayListHashMap != null) {
 
                     formattedDoctorList = monthArrayListHashMap.get(mMonthName);
-                    if(formattedDoctorList!=null) {
+                    if (formattedDoctorList != null) {
                         Collections.sort(formattedDoctorList, new DateWiseComparator());
 
                         mCalenderDayOfMonthGridAdapter = new CalenderDayOfMonthGridAdapter(this.getContext(), formattedDoctorList, this);
@@ -135,7 +136,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         intent.putExtra(RescribeConstants.PATIENT_NAME, patientName);
         intent.putExtra(RescribeConstants.PATIENT_INFO, patientInfo);
         intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-        intent.putExtra(RescribeConstants.APPOINTMENT_ID,mAptId);
+        intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
         intent.putExtra(RescribeConstants.DATE, visitDate);
         intent.putExtra(RescribeConstants.OPD_TIME, opdTime);
         getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
