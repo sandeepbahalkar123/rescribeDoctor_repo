@@ -732,7 +732,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 dialog.dismiss();
                 Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
                 startActivity(intent);
-                getActivity().finish();
+              //  getActivity().finish();
                 getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 isLongPressed = false;
             }

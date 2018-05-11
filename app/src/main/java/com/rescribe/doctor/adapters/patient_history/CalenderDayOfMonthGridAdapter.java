@@ -70,7 +70,7 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
         String toDisplay = day + "<sup>" + CommonMethods.getSuffixForNumber(day) + "</sup>";
-        toDisplay=toDisplay+"\n"+ new SimpleDateFormat("MMM", Locale.US).format(cal.getTime());
+        toDisplay = toDisplay + "\n" + new SimpleDateFormat("MMM", Locale.US).format(cal.getTime());
         //------
         if (patientHistoryInfoObject.getVisitDate().equalsIgnoreCase(mDateFormat.format(new Date()))) {
             toDisplay = toDisplay + "\n" + mContext.getString(R.string.just_now);
@@ -93,11 +93,24 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         String opdLabel = patientHistoryInfoObject.getOpdLabel();
         String opdLabelToShow = opdLabel.substring(0, 1).toUpperCase() + opdLabel.substring(1);
         holder.doctorName.setText(opdLabelToShow);
-        holder.doctorAddress.setText(CommonMethods.stripExtension(patientHistoryInfoObject.getOpdValue()));
+
+        //------------
+        String opdValue = patientHistoryInfoObject.getOpdValue();
+        holder.doctorAddress.setText(CommonMethods.stripExtension(opdValue));
+        //--------
+        //------ set View more text //---------
+        if (opdValue.trim().length() == 0) {
+            SpannableString viweMoreText = new SpannableString(mContext.getString(R.string.add_record).toUpperCase(Locale.US));
+            viweMoreText.setSpan(new UnderlineSpan(), 0, viweMoreText.length(), 0);
+            holder.viewMore.setText(viweMoreText);
+        } else {
+            SpannableString viweMoreText = new SpannableString("VIEW MORE");
+            viweMoreText.setSpan(new UnderlineSpan(), 0, viweMoreText.length(), 0);
+            holder.viewMore.setText(viweMoreText);
+        }
+        //------ set View more text //---------
         holder.time.setText(CommonMethods.formatDateTime(patientHistoryInfoObject.getOpdTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
-        SpannableString patientID = new SpannableString("VIEW MORE");
-        patientID.setSpan(new UnderlineSpan(), 0, patientID.length(), 0);
-        holder.viewMore.setText(patientID);
+
 
         if (position == 0) {
             holder.circularBulletMainElement.setVisibility(View.VISIBLE);
@@ -114,6 +127,7 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         holder.viewMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate(), String.valueOf(patientHistoryInfoObject.getOpdId()), patientHistoryInfoObject.getOpdTime());
             }
         });

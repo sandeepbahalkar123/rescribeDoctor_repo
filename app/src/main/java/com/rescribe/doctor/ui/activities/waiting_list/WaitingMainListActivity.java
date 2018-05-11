@@ -120,7 +120,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
-                finish();
+               onBackPressed();
                 break;
             case R.id.titleTextView:
                 break;

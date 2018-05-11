@@ -89,6 +89,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     Spinner mYearSpinnerView;
     @BindView(R.id.dateTextview)
     CustomTextView mYearSpinnerSingleItem;
+    //----------
     @BindView(R.id.noRecords)
     ImageView noRecords;
     @BindView(R.id.addRecordButton)
@@ -219,7 +220,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 }
                 //-------
                 if (mYearList.size() == 1) {
-                    mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
+                    mYearSpinnerSingleItem.setVisibility(View.GONE);
                     mYearSpinnerView.setVisibility(View.GONE);
                     mYearSpinnerSingleItem.setText(mYearList.get(0));
                 } else {
@@ -512,7 +513,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 if (mYearList.size() > 0) {
                     if (mYearList.size() == 1) {
                         mYearSpinnerView.setVisibility(View.GONE);
-                        mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
+                        mYearSpinnerSingleItem.setVisibility(View.GONE);
                         mYearSpinnerSingleItem.setText(mYearList.get(0));
                     } else {
                         mYearSpinnerView.setVisibility(View.GONE);

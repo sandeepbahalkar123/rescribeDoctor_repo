@@ -94,7 +94,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String mOpdTime;
     private PatientDetailHelper mSingleVisitDetailHelper;
     private boolean isAllAttachmentDeleted = false;
-    private int mAptId ;
+    private int mAptId;
 
 
     @Override
@@ -113,7 +113,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         dateTextview.setVisibility(View.VISIBLE);
         if (intent.getExtras() != null) {
             patientID = intent.getStringExtra(RescribeConstants.PATIENT_ID);
-            mAptId = intent.getIntExtra(RescribeConstants.APPOINTMENT_ID,0);
+            mAptId = intent.getIntExtra(RescribeConstants.APPOINTMENT_ID, 0);
             opdID = intent.getStringExtra(RescribeConstants.PATIENT_OPDID);
             mOpdTime = intent.getStringExtra(RescribeConstants.OPD_TIME);
             mHospitalPatId = intent.getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
@@ -201,11 +201,12 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                         mSingleVisitAdapter.getListDataList().remove(0);
                         mSingleVisitAdapter.notifyDataSetChanged();
                         mNoRecordAvailable.setVisibility(View.VISIBLE);
+                        mHistoryExpandableListView.setVisibility(View.INVISIBLE);
                     }
                 } else {
                     mSingleVisitAdapter.notifyDataSetChanged();
-                    mNoRecordAvailable.setVisibility(View.GONE);
-
+                    mNoRecordAvailable.setVisibility(View.VISIBLE);
+                    mHistoryExpandableListView.setVisibility(View.INVISIBLE);
                 }
             }
             CommonMethods.showToast(this, common.getCommonRespose().getStatusMessage());
@@ -215,7 +216,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 mHistoryExpandableListView.setVisibility(View.VISIBLE);
                 mNoRecordAvailable.setVisibility(View.GONE);
             } else {
-                mHistoryExpandableListView.setVisibility(View.GONE);
+                mHistoryExpandableListView.setVisibility(View.INVISIBLE);
                 mNoRecordAvailable.setVisibility(View.VISIBLE);
             }
             List<PatientHistory> patientHistoryList = visitData.getPatientHistory();
@@ -302,12 +303,50 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             }
 
 
-            mSingleVisitAdapter = new SingleVisitAdapter(this, patientHistoryList, this);
-            mHistoryExpandableListView.setAdapter(mSingleVisitAdapter);
+            if (!isAllCaseDetailsDataIsEmpty(patientHistoryList)) {
+                mSingleVisitAdapter = new SingleVisitAdapter(this, patientHistoryList, this);
+                mHistoryExpandableListView.setAdapter(mSingleVisitAdapter);
+                mHistoryExpandableListView.setVisibility(View.VISIBLE);
+                mNoRecordAvailable.setVisibility(View.GONE);
+            } else {
+                mHistoryExpandableListView.setVisibility(View.INVISIBLE);
+                mNoRecordAvailable.setVisibility(View.VISIBLE);
+            }
+
             addRecordButton.setVisibility(View.VISIBLE);
 
-
         }
+
+    }
+
+    private boolean isAllCaseDetailsDataIsEmpty(List<PatientHistory> patientHistoryList) {
+
+        int allEmptyCount = 0;
+        int isVitalEmpty = 0;
+        //---- to check vital is empty or not.
+        for (PatientHistory obj :
+                patientHistoryList) {
+            if (obj.getVitals() != null) {
+                if (obj.getVitals().isEmpty())
+                    isVitalEmpty = isVitalEmpty + 1;
+            }
+        }
+        //--------
+        for (PatientHistory obj :
+                patientHistoryList) {
+            if (obj.getCommonData() != null) {
+                if (obj.getCommonData().isEmpty()) {
+                    allEmptyCount = allEmptyCount + 1;
+                }
+            }
+        }
+
+        if ((isVitalEmpty + allEmptyCount) == patientHistoryList.size()) {
+            return true;
+        }
+        return false;
+
+        //---------
 
     }
 
@@ -365,7 +404,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 intent.putExtra(RescribeConstants.LOCATION_ID, "0");
                 intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
                 intent.putExtra(RescribeConstants.CLINIC_ID, "0");
-                intent.putExtra(RescribeConstants.APPOINTMENT_ID,mAptId);
+                intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
                 intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
                 intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
                 intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
