@@ -156,7 +156,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
         mGeneratedRequestForYearList = new HashSet<>();
 
-        mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
+        mPatientDetailHelper.doGetPatientHistory(mPatientId, "", getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
     }
 
     @OnClick({R.id.backImageView, R.id.addRecordButton})
@@ -577,5 +577,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
 }
 
