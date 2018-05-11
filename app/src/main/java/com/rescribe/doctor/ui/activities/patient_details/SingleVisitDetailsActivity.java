@@ -205,8 +205,10 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                     }
                 } else {
                     mSingleVisitAdapter.notifyDataSetChanged();
+                    if(mSingleVisitAdapter.getListDataList().size()  == 0){
                     mNoRecordAvailable.setVisibility(View.VISIBLE);
                     mHistoryExpandableListView.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
             CommonMethods.showToast(this, common.getCommonRespose().getStatusMessage());
