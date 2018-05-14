@@ -112,9 +112,7 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
         ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
         ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
         for (AppointmentList appointmentList : appointmentList) {
-            for (PatientList patientList : appointmentList.getPatientList()) {
-                patientListsToShowOnSmsScreen.add(patientList);
-            }
+            patientListsToShowOnSmsScreen.addAll(appointmentList.getPatientList());
         }
 
         for (AppointmentList appointmentList : appointmentList) {

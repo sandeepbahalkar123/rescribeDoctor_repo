@@ -68,7 +68,6 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
 
     public static final int CONFIRM_REQUESTCODE = 212;
     private static final String TAG = "TimeSlotFragment";
-    private static Bundle args;
     //-------------
 
     Unbinder unbinder;
@@ -180,17 +179,15 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
 
     public static SelectSlotTimeToBookAppointmentFragment newInstance(Bundle b) {
         SelectSlotTimeToBookAppointmentFragment fragment = new SelectSlotTimeToBookAppointmentFragment();
-        args = new Bundle();
-        args = b;
-        fragment.setArguments(args);
+        fragment.setArguments(b);
         return fragment;
     }
 
     private void init() {
 
-        mPatientDetail = args.getString(RescribeConstants.PATIENT_DETAILS);
-        mPatientinfoObject = args.getParcelable(RescribeConstants.PATIENT_INFO);
-        isAppointmentTypeReschedule = args.getBoolean(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
+        mPatientDetail = getArguments().getString(RescribeConstants.PATIENT_DETAILS);
+        mPatientinfoObject = getArguments().getParcelable(RescribeConstants.PATIENT_INFO);
+        isAppointmentTypeReschedule = getArguments().getBoolean(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
 
         mContext = getContext();
         mSelectedTimeSlot = null;
@@ -509,29 +506,31 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
         switch (view.getId()) {
             case R.id.selectDateTime:
 
-                //---------
-                Calendar selectedTimeSlotDateCal = Calendar.getInstance();
-                Date date1 = CommonMethods.convertStringToDate(mSelectedTimeSlotDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-                selectedTimeSlotDateCal.setTime(date1);
-                mDatePickerDialog = DatePickerDialog.newInstance(
-                        this,
-                        selectedTimeSlotDateCal.get(Calendar.YEAR),
-                        selectedTimeSlotDateCal.get(Calendar.MONTH),
-                        selectedTimeSlotDateCal.get(Calendar.DAY_OF_MONTH));
-                //---------
+                if (mDoctorLocationModelObject != null) {
+                    //---------
+                    Calendar selectedTimeSlotDateCal = Calendar.getInstance();
+                    Date date1 = CommonMethods.convertStringToDate(mSelectedTimeSlotDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+                    selectedTimeSlotDateCal.setTime(date1);
+                    mDatePickerDialog = DatePickerDialog.newInstance(
+                            this,
+                            selectedTimeSlotDateCal.get(Calendar.YEAR),
+                            selectedTimeSlotDateCal.get(Calendar.MONTH),
+                            selectedTimeSlotDateCal.get(Calendar.DAY_OF_MONTH));
+                    //---------
 
-                mDatePickerDialog.setAccentColor(getResources().getColor(R.color.tagColor));
-                mDatePickerDialog.setMinDate(now);
-                mDatePickerDialog.show(getFragmentManager(), getResources().getString(R.string.select_date_text));
-                mDatePickerDialog.setOutOfRageInvisible();
+                    mDatePickerDialog.setAccentColor(getResources().getColor(R.color.tagColor));
+                    mDatePickerDialog.setMinDate(now);
+                    mDatePickerDialog.show(getFragmentManager(), getResources().getString(R.string.select_date_text));
+                    mDatePickerDialog.setOutOfRageInvisible();
 
-                //-------------
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.DATE, mDoctorLocationModelObject.getApptScheduleLmtDays());
-                mMaxDateRange = calendar.getTime();
-                mDatePickerDialog.setMaxDate(calendar);
-                //-------------
+                    //-------------
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DATE, mDoctorLocationModelObject.getApptScheduleLmtDays());
+                    mMaxDateRange = calendar.getTime();
+                    mDatePickerDialog.setMaxDate(calendar);
+                    //-------------
 
+                }
                 break;
 
             case R.id.appointmentTypeIsBookButton:
@@ -544,11 +543,8 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                             reschedule.setAptId(String.valueOf(mPatientinfoObject.getAptId()));
                             reschedule.setStatus("4");
                             mAppointmentHelper.doConfirmAppointmentRequest(Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())), mDoctorLocationModelObject.getLocationId(), mSelectedTimeSlotDate, mSelectSlotToBookAppointmentAdapter.getSelectedTimeSlot(), mSelectSlotToBookAppointmentAdapter.getToTimeSlot(), Integer.parseInt(mSelectSlotToBookAppointmentAdapter.getSlotId()), reschedule, mPatientinfoObject.getPatientId());
-
-                        } else {
+                        } else
                             mAppointmentHelper.doConfirmAppointmentRequest(Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())), mDoctorLocationModelObject.getLocationId(), mSelectedTimeSlotDate, mSelectSlotToBookAppointmentAdapter.getSelectedTimeSlot(), mSelectSlotToBookAppointmentAdapter.getToTimeSlot(), Integer.parseInt(mSelectSlotToBookAppointmentAdapter.getSlotId()), null, mPatientinfoObject.getPatientId());
-
-                        }
                     }
                 }
 
@@ -556,36 +552,38 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                 break;
 
             case R.id.leftArrow:
-                mSelectedTimeSlot = null;
-                mSelectedToTimeSlot = null;
-                mAptslotId = null;
-                isShowPreviousDayLeftArrow(true);
+                if (mDoctorLocationModelObject != null) {
+                    mSelectedTimeSlot = null;
+                    mSelectedToTimeSlot = null;
+                    mAptslotId = null;
+                    isShowPreviousDayLeftArrow(true);
+                }
                 break;
 
             case R.id.rightArrow:
-                mSelectedTimeSlot = null;
-                mSelectedToTimeSlot = null;
-                mAptslotId = null;
-                Calendar calendarNow = Calendar.getInstance();
-                calendarNow.add(Calendar.DATE, mDoctorLocationModelObject.getApptScheduleLmtDays());
-                mMaxDateRange = calendarNow.getTime();
-                //---------
-                Date date = CommonMethods.convertStringToDate(this.mSelectedTimeSlotDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-                Calendar c = Calendar.getInstance();
-                c.setTime(date); // Now use today date.
-                c.add(Calendar.DATE, 1); // Adding 1 days
-                date = c.getTime();
-                //---------
-                if (mMaxDateRange.getTime() >= date.getTime()) {
-                    onDateSet(mDatePickerDialog, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+                if (mDoctorLocationModelObject != null) {
+                    mSelectedTimeSlot = null;
+                    mSelectedToTimeSlot = null;
+                    mAptslotId = null;
+                    Calendar calendarNow = Calendar.getInstance();
+                    calendarNow.add(Calendar.DATE, mDoctorLocationModelObject.getApptScheduleLmtDays());
+                    mMaxDateRange = calendarNow.getTime();
+                    //---------
+                    Date date = CommonMethods.convertStringToDate(this.mSelectedTimeSlotDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(date); // Now use today date.
+                    c.add(Calendar.DATE, 1); // Adding 1 days
+                    date = c.getTime();
+                    //---------
+                    if (mMaxDateRange.getTime() >= date.getTime()) {
+                        onDateSet(mDatePickerDialog, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+                    }
                 }
-
                 break;
         }
     }
 
     private void isShowPreviousDayLeftArrow(boolean isCallOnDateSet) {
-
 
         leftArrow.setVisibility(View.VISIBLE);
         //------------

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/divider"
+    android:background="@color/activity_background"
     android:orientation="vertical">
 
     <LinearLayout
@@ -101,11 +101,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp32"
+                android:layout_marginStart="@dimen/dp32"
                 android:fontFamily="@font/roboto_medium"
                 android:gravity="center"
                 android:paddingTop="@dimen/dp30"
-                android:layout_marginEnd="@dimen/dp32"
-                android:layout_marginStart="@dimen/dp32"
                 android:text="@string/waiting_list_message"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp16" />

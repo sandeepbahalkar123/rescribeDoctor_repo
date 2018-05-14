@@ -47,8 +47,6 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
     @BindView(R.id.emptyListView)
     RelativeLayout emptyListView;
     private Context mContext;
-    private NewPatientFragment mNewPatientFragment;
-    Intent mIntent;
     public HashSet<Integer> selectedDoctorId = new HashSet<>();
     private String phoneNo;
 
@@ -61,7 +59,6 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
     }
 
     private void initialize() {
-        mIntent = getIntent();
         mContext = NewPatientActivity.this;
         titleTextView.setText(getString(R.string.today_new_patients));
         AppointmentHelper mAppointmentHelper = new AppointmentHelper(this, this);
@@ -79,7 +76,7 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
                 NewPatientBaseModel mNewPatientBaseModel = (NewPatientBaseModel) customResponse;
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(RescribeConstants.MY_PATIENTS_DATA, mNewPatientBaseModel);
-                mNewPatientFragment = NewPatientFragment.newInstance(bundle);
+                NewPatientFragment mNewPatientFragment = NewPatientFragment.newInstance(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mNewPatientFragment).commit();
             }
 

@@ -258,13 +258,15 @@
     <string name="add_profile_image">Add Profile Image</string>
     <string name="select_this_location">Select this Location</string>
     <string name="detect_location">Detect my location</string>
-    <string name="do_you_want_to_update">Do you want to update application?</string>
+    <string name="do_you_want_to_update">Update the app to latest version for using new features.</string>
     <string name="update">Update</string>
     <string name="later">Later</string>
     <string name="patient_registration">Patient Registration</string>
     <string name="cannot_completed_appointment">You cannot complete appointment for future dates.</string>
     <string name="you_cannot_add_waiting_list">You cannot add future appointments in waiting list</string>
     <string name="waiting_list_message">Oops !! There are no patients currently in the waiting list.</string>
+    <string name="company_name">SCORG TECHNOLOGIES Pvt.Ltd.</string>
+    <string name="added_to_waiting_list_message">Completed and Cancelled status patients cannot be added to waiting list</string>
 
 
 </resources>

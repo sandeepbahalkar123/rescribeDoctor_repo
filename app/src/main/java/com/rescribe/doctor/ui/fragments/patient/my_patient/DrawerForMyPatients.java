@@ -256,15 +256,20 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
             LocationsModel locationsModel = (LocationsModel) customResponse;
             if (locationsModel.getCommon().getStatusCode().equals(SUCCESS)) {
                 ArrayList<CityList> cityList = locationsModel.getData().getCityList();
-                mDrawerPatientsCityNameAdapter = new DrawerPatientsCityNameAdapter(DrawerForMyPatients.this, cityList);
-                LinearLayoutManager layoutManagerClinicList = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-                if (locationContentRecycleView != null) {
-                    locationContentRecycleView.setLayoutManager(layoutManagerClinicList);
-                    locationContentRecycleView.setHasFixedSize(true);
-                    locationContentRecycleView.setNestedScrollingEnabled(false);
-                    locationContentRecycleView.setAdapter(mDrawerPatientsCityNameAdapter);
+                if (cityList.isEmpty())
+                    locationView.setVisibility(View.GONE);
+                else {
+                    locationView.setVisibility(View.VISIBLE);
+                    mDrawerPatientsCityNameAdapter = new DrawerPatientsCityNameAdapter(DrawerForMyPatients.this, cityList);
+                    LinearLayoutManager layoutManagerClinicList = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                    if (locationContentRecycleView != null) {
+                        locationContentRecycleView.setLayoutManager(layoutManagerClinicList);
+                        locationContentRecycleView.setHasFixedSize(true);
+                        locationContentRecycleView.setNestedScrollingEnabled(false);
+                        locationContentRecycleView.setAdapter(mDrawerPatientsCityNameAdapter);
+                    }
                 }
-            }
+            } else locationView.setVisibility(View.GONE);
         }
     }
 

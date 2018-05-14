@@ -35,7 +35,6 @@ import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
 import com.rescribe.doctor.model.my_appointments.PatientList;
@@ -290,7 +289,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         b.putString(RescribeConstants.PATIENT_NAME, patientName);
         b.putString(RescribeConstants.PATIENT_INFO, patientDetails);
         b.putInt(RescribeConstants.CLINIC_ID, clinicId);
-        b.putInt(RescribeConstants.APPOINTMENT_ID,patientListObject.getAptId());
+        b.putInt(RescribeConstants.APPOINTMENT_ID, patientListObject.getAptId());
         b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
         b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
         Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
@@ -457,7 +456,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
             //Add to WaitingList
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
-            if (mUserSelectedDate.equals(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.d_M_YYYY))){
+            if (mUserSelectedDate.equals(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.d_M_YYYY))) {
                 addToArrayList = new ArrayList<>();
                 ArrayList<AddToList> addToArrayListForSelectedCount = new ArrayList<>();
                 for (int groupIndex = 0; groupIndex < mAppointmentAdapter.getGroupList().size(); groupIndex++) {
@@ -528,7 +527,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                     }
                     mBottomMenuAppointmentAdapter.notifyDataSetChanged();
                 }
-            }else{
+            } else {
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                     if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.waiting_list))) {
                         mBottomMenuAppointmentAdapter.getList().get(i).setSelected(false);
@@ -643,14 +642,45 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                     intent.putParcelableArrayListExtra(RescribeConstants.APPOINTMENT_LIST, mAppointmentLists);
                     intent.putParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST, templateLists);
                     startActivity(intent);
+                } else {
+                    //  showSendSmsDialog(clinicListForSms);
+
+                    ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
+                    for (AppointmentList appointmentList : mAppointmentLists) {
+                        patientListsToShowOnSmsScreen.addAll(appointmentList.getPatientList());
+                    }
+
+                    ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
+                    for (AppointmentList appointmentList : mAppointmentLists) {
+                        ClinicListForSms listForSms = new ClinicListForSms();
+                        ArrayList<PatientInfoList> patientInfoLists = new ArrayList<>();
+                        listForSms.setClinicId(appointmentList.getClinicId());
+                        listForSms.setClinicName(appointmentList.getClinicName());
+                        listForSms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
+                        listForSms.setLocationId(appointmentList.getLocationId());
+                        listForSms.setTemplateContent("");
+                        for (PatientList patientList : appointmentList.getPatientList()) {
+                            PatientInfoList patientInfoList = new PatientInfoList();
+                            patientInfoList.setHospitalPatId(patientList.getHospitalPatId());
+                            patientInfoList.setPatientId(patientList.getPatientId());
+                            patientInfoList.setPatientPhone(patientList.getPatientPhone());
+                            patientInfoList.setPatientName(patientList.getPatientName());
+                            patientInfoLists.add(patientInfoList);
+                        }
+                        listForSms.setPatientInfoList(patientInfoLists);
+                        clinicListForSms.add(listForSms);
+                    }
+
+                    Intent intent = new Intent(getActivity(), SendSmsActivity.class);
+                    intent.putExtra(RescribeConstants.SMS_DETAIL_LIST, clinicListForSms);
+                    intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW, patientListsToShowOnSmsScreen);
+                    startActivityForResult(intent, RESULT_SMS_SEND);
                 }
             } else {
                 ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
                 ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
                 for (AppointmentList appointmentList : mAppointmentLists) {
-                    for (PatientList patientList : appointmentList.getPatientList()) {
-                        patientListsToShowOnSmsScreen.add(patientList);
-                    }
+                    patientListsToShowOnSmsScreen.addAll(appointmentList.getPatientList());
                 }
 
                 for (AppointmentList appointmentList : mAppointmentLists) {
@@ -702,7 +732,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 dialog.dismiss();
                 Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
                 startActivity(intent);
-                getActivity().finish();
+              //  getActivity().finish();
                 getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 isLongPressed = false;
             }

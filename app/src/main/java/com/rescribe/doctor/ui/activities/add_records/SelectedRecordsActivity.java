@@ -239,10 +239,6 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     }
 
     private void init() {
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) dateTextview.getLayoutParams();
-
-        lp.setMargins(0, 0, getResources().getDimensionPixelSize(R.dimen.dp30), 0);
-        dateTextview.setLayoutParams(lp);
         mContext = SelectedRecordsActivity.this;
         mHospitalPatId = getIntent().getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
         mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);

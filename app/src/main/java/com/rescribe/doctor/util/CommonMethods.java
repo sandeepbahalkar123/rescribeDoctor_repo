@@ -300,6 +300,17 @@ public class CommonMethods {
         return versionCode;
     }
 
+    public static String getVersionName(Context mContext) {
+        String versionName = "";
+        try {
+            PackageInfo pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+            versionName = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
+    }
+
 
     public static String getCurrentDateTime() // for enrollmentId
     {

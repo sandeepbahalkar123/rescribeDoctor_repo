@@ -1,10 +1,7 @@
 package com.rescribe.doctor.ui.fragments.patient.my_patient;
 
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -55,7 +52,6 @@ import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.Pa
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.services.LoadAllPatientsService;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
@@ -74,12 +70,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.rescribe.doctor.services.SyncOfflineRecords.DOC_UPLOAD;
 import static com.rescribe.doctor.singleton.RescribeApplication.getDoctorLocationModels;
 import static com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatientWebViewActivity.ADD_PATIENT_REQUEST;
 import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
 import static com.rescribe.doctor.ui.fragments.patient.my_patient.SendSmsPatientActivity.RESULT_SEND_SMS;
+import static com.rescribe.doctor.util.CommonMethods.Log;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
@@ -498,7 +496,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -619,16 +616,30 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         }
         ArrayList<AddToList> addToWaitingArrayList = new ArrayList<>();
         AddToList addToList = new AddToList();
-        addToList.setPatientAddToWaitingList(patientsListAddToWaitingLists);
-        addToList.setLocationId(mLocationId);
-        addToList.setLocationDetails(mClinicName + ", " + mClinicArea + ", " + mClinicCity);
-        addToWaitingArrayList.add(addToList);
-        RequestToAddWaitingList requestForWaitingListPatients = new RequestToAddWaitingList();
-        requestForWaitingListPatients.setAddToList(addToWaitingArrayList);
-        requestForWaitingListPatients.setTime(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss));
-        requestForWaitingListPatients.setDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
-        requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-        mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);
+
+        // Check appointmentType
+        ArrayList<PatientAddToWaitingList> patientWaitingLists = new ArrayList<>();
+        for (PatientAddToWaitingList patientAddToWaitingList : patientsListAddToWaitingLists) {
+            if (patientAddToWaitingList.getAppointmentStatusId() != null) {
+                if (patientAddToWaitingList.getAppointmentStatusId() == COMPLETED || patientAddToWaitingList.getAppointmentStatusId() == CANCEL)
+                    Log("ADD WAITING LIST", "NOT ADDED");
+                else patientWaitingLists.add(patientAddToWaitingList);
+            } else patientWaitingLists.add(patientAddToWaitingList);
+        }
+
+        if (patientsListAddToWaitingLists.size() == patientWaitingLists.size()) {
+            addToList.setPatientAddToWaitingList(patientWaitingLists);
+            addToList.setLocationId(mLocationId);
+            addToList.setLocationDetails(mClinicName + ", " + mClinicArea + ", " + mClinicCity);
+            addToWaitingArrayList.add(addToList);
+            RequestToAddWaitingList requestForWaitingListPatients = new RequestToAddWaitingList();
+            requestForWaitingListPatients.setAddToList(addToWaitingArrayList);
+            requestForWaitingListPatients.setTime(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss));
+            requestForWaitingListPatients.setDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+            requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+            mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);
+        } else
+            Toast.makeText(getContext(), getResources().getString(R.string.added_to_waiting_list_message), Toast.LENGTH_SHORT).show();
     }
 
 
@@ -691,27 +702,15 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_ADD_TO_WAITING_LIST)) {
             AddToWaitingListBaseModel addToWaitingListBaseModel = (AddToWaitingListBaseModel) customResponse;
             if (addToWaitingListBaseModel.getCommon().isSuccess()) {
-                if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase())) {
+                if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase()) || addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
                     Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
                     intent.putExtra(LOCATION_ID, mLocationId);
                     startActivity(intent);
-                    Toast.makeText(getActivity(), addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage(), Toast.LENGTH_LONG).show();
-                    getActivity().finish();
-                    getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
-                } else if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patient_limit_exceeded).toLowerCase())) {
-                    Toast.makeText(getActivity(), addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage(), Toast.LENGTH_LONG).show();
-
-                } else if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.already_exists_in_waiting_list).toLowerCase())) {
-                    Toast.makeText(getActivity(), addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage(), Toast.LENGTH_LONG).show();
-
-                } else if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
-                    Intent intent = new Intent(getActivity(), WaitingMainListActivity.class);
-                    intent.putExtra(LOCATION_ID, mLocationId);
-                    startActivity(intent);
-                    Toast.makeText(getActivity(), addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage(), Toast.LENGTH_LONG).show();
                     getActivity().finish();
                     getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 }
+
+                Toast.makeText(getActivity(), addToWaitingListBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
             }
         }
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
