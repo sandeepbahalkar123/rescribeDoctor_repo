@@ -28,7 +28,7 @@ import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.InternetConnect;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
-import com.rescribe.doctor.notification.MessageNotification;
+import com.rescribe.doctor.notification.NotificationHelper;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.util.CommonMethods;
@@ -100,11 +100,13 @@ public class MQTTService extends Service {
     private Context mContext;
     private SyncOfflineRecords syncOfflineRecords = new SyncOfflineRecords();
     private SyncOfflinePatients syncOfflinePatients = new SyncOfflinePatients();
+    private NotificationHelper notificationHelper;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = this;
+        notificationHelper = new NotificationHelper(mContext);
         syncOfflineRecords.onCreate(mContext);
         syncOfflinePatients.onCreate(mContext);
         initRxNetwork();
@@ -245,7 +247,7 @@ public class MQTTService extends Service {
                                                 // change
                                                 statusInfo.setMessageStatus(REACHED);
 
-                                                MessageNotification.notify(mContext, messagesTemp, messageL.getSenderName(), getProfilePhotoBitmap(messageL), (int) appDBHelper.unreadChatMessageCountByPatientId(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
+                                                notificationHelper.notify(mContext, messagesTemp, messageL.getSenderName(), getProfilePhotoBitmap(messageL), (int) appDBHelper.unreadChatMessageCountByPatientId(messageL.getPatId()), getReplyPendingIntent(messageL), messageL.getPatId()); // Change
                                             } else {
                                                 // change
                                                 messageL.setReadStatus(READ);
