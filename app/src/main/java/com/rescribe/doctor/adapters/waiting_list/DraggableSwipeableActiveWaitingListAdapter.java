@@ -100,7 +100,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
         void onItemPinned(int position);
 
-        void onItemViewClicked(View v, boolean pinned);
+        void onItemViewClicked(View v, boolean pinned, AbstractDataProvider.Data clickedDataObject);
 
         void onItemMoved(int fromPosition, int toPosition);
     }
@@ -167,13 +167,17 @@ public class DraggableSwipeableActiveWaitingListAdapter
         mItemViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemViewClick(v);
+                AbstractDataProvider.Data item = mProvider.getItem(Integer.parseInt(String.valueOf(v.getTag())));
+
+                onItemViewClick(v,item);
             }
         };
         mSwipeableViewContainerOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSwipeableViewContainerClick(v);
+                AbstractDataProvider.Data item = mProvider.getItem(Integer.parseInt(String.valueOf(v.getTag())));
+
+                onSwipeableViewContainerClick(v,item);
             }
         };
 
@@ -182,15 +186,15 @@ public class DraggableSwipeableActiveWaitingListAdapter
         setHasStableIds(true);
     }
 
-    private void onItemViewClick(View v) {
+    private void onItemViewClick(View v, AbstractDataProvider.Data clickedDataObject) {
         if (mEventListener != null) {
-            mEventListener.onItemViewClicked(v, true); // true --- pinned
+            mEventListener.onItemViewClicked(v, true, clickedDataObject); // true --- pinned
         }
     }
 
-    private void onSwipeableViewContainerClick(View v) {
+    private void onSwipeableViewContainerClick(View v, AbstractDataProvider.Data clickedDataObject) {
         if (mEventListener != null) {
-            mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false);  // false --- not pinned
+            mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false, clickedDataObject);  // false --- not pinned
         }
     }
 
@@ -218,8 +222,10 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
         // set listeners
         // (if the item is *pinned*, click event comes to the itemView)
+        holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(mItemViewOnClickListener);
         // (if the item is *not pinned*, click event comes to the mContainer)
+        holder.mContainer.setTag(position);
         holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
 
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {

@@ -43,6 +43,7 @@ import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.Reques
 import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAndDropBaseModel;
 import com.rescribe.doctor.model.waiting_list.request_drag_drop.WaitingListSequence;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.OnStartDragListener;
@@ -57,6 +58,7 @@ import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 
 /**
@@ -76,6 +78,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     Spinner clinicListSpinner;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+
     @BindView(R.id.bulletImageView)
     CircularImageView bulletImageView;
     @BindView(R.id.clinicNameTextView)
@@ -96,6 +99,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     private DraggableSwipeableViewAllWaitingListAdapter myItemAdapter;
     private WaitingPatientList waitingPatientTempList;
     private String phoneNo;
+    private Integer mClinicID;
 
     public ViewAllPatientListFragment() {
     }
@@ -103,6 +107,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // unbind
         unbinder.unbind();
     }
 
@@ -124,7 +129,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 hospitalDetailsLinearLayout.setVisibility(View.GONE);
                 WaitingListSpinnerAdapter mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
                 clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
-
             } else {
 
                 if (waitingclinicLists.isEmpty()) {
@@ -147,15 +151,14 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mLocationId = waitingclinicLists.get(i).getLocationId();
+                mClinicID = waitingclinicLists.get(i).getClinicId();
                 waitingPatientTempList = waitingclinicLists.get(i).getWaitingPatientList();
 
                 if (waitingPatientTempList != null) {
-
                     recyclerView.setVisibility(View.VISIBLE);
                     recyclerView.setClipToPadding(false);
                     setAdapter();
                 }
-
 
             }
 
@@ -174,6 +177,11 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         }
     }
 
+    public static ViewAllPatientListFragment newInstance(Bundle bundle) {
+        ViewAllPatientListFragment fragment = new ViewAllPatientListFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     private void setAdapter() {
         // New
@@ -215,8 +223,8 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             }
 
             @Override
-            public void onItemViewClicked(View v, boolean pinned) {
-                onItemViewClick(v, pinned);
+            public void onItemViewClicked(View v, boolean pinned, AbstractDataProvider.Data clickedDataObject) {
+                onItemViewClick(v, pinned, clickedDataObject);
             }
 
             @Override
@@ -235,7 +243,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
                     waitingListSequences.add(waitingListSequence);
                 }
-
                 requestForDragAndDropBaseModel.setWaitingListSequence(waitingListSequences);
                 mAppointmentHelper.doDargAndDropApi(requestForDragAndDropBaseModel);
             }
@@ -285,11 +292,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
     }
 
-    public static ViewAllPatientListFragment newInstance(Bundle bundle) {
-        ViewAllPatientListFragment fragment = new ViewAllPatientListFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
 
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
@@ -360,9 +362,8 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
     @Override
     public void onPause() {
-        if (recyclerViewDragDropManager != null) {
+        if (recyclerViewDragDropManager != null)
             recyclerViewDragDropManager.cancelDrag();
-        }
         super.onPause();
     }
 
@@ -399,11 +400,26 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         super.onDestroyView();
     }
 
-    private void onItemViewClick(View v, boolean pinned) {
-//        int position = recyclerView.getChildAdapterPosition(v);
-//        if (position != RecyclerView.NO_POSITION) {
-//
-//        }
+    private void onItemViewClick(View v, boolean pinned, AbstractDataProvider.Data clickedDataObject) {
+
+        Integer salutation = clickedDataObject.getViewAll().getSalutation();
+        String pName = clickedDataObject.getViewAll().getPatientName();
+        String pID = String.valueOf(clickedDataObject.getViewAll().getPatientId());
+        Integer hostPatID = clickedDataObject.getViewAll().getHospitalPatId();
+
+        String patientName;
+        if (salutation != 0)
+            patientName = RescribeConstants.SALUTATION[salutation - 1] + toCamelCase(pName);
+        else patientName = toCamelCase(pName);
+        Bundle b = new Bundle();
+        b.putString(RescribeConstants.PATIENT_NAME, patientName);
+        b.putString(RescribeConstants.PATIENT_INFO, ""); // TODO: Age and gender is not getting from API
+        b.putInt(RescribeConstants.CLINIC_ID, mClinicID);
+        b.putString(RescribeConstants.PATIENT_ID, pID);
+        b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(hostPatID));
+        Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
+        intent.putExtra(RescribeConstants.PATIENT_INFO, b);
+        startActivity(intent);
     }
 
     private boolean supportsViewElevation() {
