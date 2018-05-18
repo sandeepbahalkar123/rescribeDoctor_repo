@@ -261,6 +261,8 @@ public class RescribePreferencesManager {
         String SHOW_UPDATE_DIALOG = "show_update_dialog";
         String SHOW_UPDATE_DIALOG_ON_SKIPPED = "show_update_dialog_on_skipped";
         String ADD_PATIENT_OFFLINE_SETTINGS = "isAddPatientOfflineSetting";
+        String ADD_PATIENT_OFFLINE_SETTINGS_ADDRESS_DETAILS = "isAddPatientOfflineSettingAddressDetails";
+        String ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS = "isAddPatientOfflineSettingReferenceDetails";
 
     }
 }

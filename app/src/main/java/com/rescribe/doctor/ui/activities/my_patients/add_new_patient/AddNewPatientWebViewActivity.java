@@ -15,6 +15,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
@@ -80,7 +81,25 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     Button mSubmit;
     @BindView(R.id.genderRadioGroup)
     RadioGroup mGenderRadioGroup;
-
+    //---------
+    @BindView(R.id.addressLine)
+    EditText mAddressLine;
+    @BindView(R.id.addressArea)
+    EditText mAddressArea;
+    @BindView(R.id.addressCity)
+    EditText mAddressCity;
+    @BindView(R.id.addressDetailLayout)
+    LinearLayout mAddressDetailLayout;
+    //---------
+    @BindView(R.id.referredBy)
+    EditText mReferredBy;
+    @BindView(R.id.referredPhone)
+    EditText mReferredPhone;
+    @BindView(R.id.referredEmail)
+    EditText mReferredEmail;
+    @BindView(R.id.referenceDetailLayout)
+    LinearLayout mReferenceDetailLayout;
+    //---------
     private int hospitalId;
     private boolean isCalled = false;
     private String locationID;
@@ -124,6 +143,15 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 CommonMethods.showToast(this, getString(R.string.add_patient_offline_msg));
             mWebViewObject.setVisibility(View.GONE);
             mMainParentScrollViewLayout.setVisibility(View.VISIBLE);
+
+            //--- show addresss /referecens details based on setting done in SettingActivity. : START
+            if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_ADDRESS_DETAILS, mContext)) {
+                mAddressDetailLayout.setVisibility(View.VISIBLE);
+            }
+            if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, mContext)) {
+                mReferenceDetailLayout.setVisibility(View.VISIBLE);
+            }
+            //--- show addresss /referecens details based on setting done in SettingActivity. : END
         }
     }
 

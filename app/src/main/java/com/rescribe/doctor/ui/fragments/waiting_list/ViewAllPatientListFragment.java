@@ -44,6 +44,7 @@ import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAn
 import com.rescribe.doctor.model.waiting_list.request_drag_drop.WaitingListSequence;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
+import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.OnStartDragListener;
@@ -100,6 +101,9 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     private WaitingPatientList waitingPatientTempList;
     private String phoneNo;
     private Integer mClinicID;
+    private Integer mWaitingIdToBeDeleted;
+
+    private WaitingMainListActivity mParentActivity;
 
     public ViewAllPatientListFragment() {
     }
@@ -117,12 +121,15 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         View mRootView = inflater.inflate(R.layout.waiting_content_layout, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
         init();
+        setClinicListSpinner();
         return mRootView;
     }
 
-    private void init() {
+    public void init() {
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
-        waitingclinicLists = getArguments().getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
+        mParentActivity = (WaitingMainListActivity) getActivity();
+        waitingclinicLists = mParentActivity.getReceivedWaitingClinicList();
+
         if (waitingclinicLists != null) {
             if (waitingclinicLists.size() > 1) {
                 clinicListSpinner.setVisibility(View.VISIBLE);
@@ -147,6 +154,10 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 }
             }
         }
+
+    }
+
+    private void setClinicListSpinner() {
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -175,6 +186,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 break;
             }
         }
+
     }
 
     public static ViewAllPatientListFragment newInstance(Bundle bundle) {
@@ -208,6 +220,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             @Override
             public void onDeleteClick(int position, ViewAll viewAll) {
                 adapterPos = position;
+                mWaitingIdToBeDeleted = viewAll.getWaitingId();
                 RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
                 requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
                 requestDeleteBaseModel.setLocationId(mLocationId);
@@ -325,6 +338,11 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
                 myItemAdapter.removeItem(adapterPos);
                 waitingPatientTempList.getViewAll().remove(adapterPos);
+
+
+                //------------
+                mParentActivity.deletePatientFromWaitingClinicList(mClinicID, mWaitingIdToBeDeleted);
+                //------------
 
                 // remove from original
 

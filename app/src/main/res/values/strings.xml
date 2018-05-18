@@ -189,6 +189,10 @@
     <string name="select_date_text">Select Date</string>
     <string name="enter_date">Enter Date</string>
     <string name="enter_address">Enter Address</string>
+    <string name="address_details">Address details</string>
+    <string name="address_line">Address line</string>
+    <string name="area">Area</string>
+    <string name="referenced_details">Reference details</string>
     <string name="next">Next</string>
     <string name="addrecords">Add Records</string>
     <string name="upload">Upload</string>

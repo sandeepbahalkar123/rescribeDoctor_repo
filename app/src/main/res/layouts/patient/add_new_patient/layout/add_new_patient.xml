@@ -233,6 +233,163 @@
 
                 </android.support.design.widget.TextInputLayout>
 
+                <LinearLayout
+                    android:id="@+id/addressDetailLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:visibility="visible"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/addressLine"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp40"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/address_line"
+                            android:maxLength="50"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:visibility="visible"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/addressArea"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp40"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/city"
+                            android:maxLength="50"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:visibility="visible"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/addressCity"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp40"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/area"
+                            android:maxLength="50"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/referenceDetailLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:visibility="visible"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/referredBy"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp40"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/name"
+                            android:maxLength="50"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:visibility="visible"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/referredPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp40"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/enter_mobile_no"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:visibility="visible"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/referredEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp40"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/enter_email_id"
+                            android:inputType="textEmailAddress"
+                            android:maxLength="50"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+
+
                 <Button
                     android:id="@+id/btnAddPatientSubmit"
                     android:layout_width="match_parent"

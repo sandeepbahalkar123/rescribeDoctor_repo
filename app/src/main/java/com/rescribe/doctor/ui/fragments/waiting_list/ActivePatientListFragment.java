@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +44,7 @@ import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAn
 import com.rescribe.doctor.model.waiting_list.request_drag_drop.WaitingListSequence;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
+import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -100,6 +102,8 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     private WaitingPatientList waitingPatientTempList;
     private String phoneNo;
     private Integer mClinicID;
+    private Integer mWaitingIdToBeDeleted;
+    private WaitingMainListActivity mParentActivity;
 
     public ActivePatientListFragment() {
     }
@@ -117,12 +121,15 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         View mRootView = inflater.inflate(R.layout.waiting_content_layout, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
         init();
+        setClinicListSpinner();
         return mRootView;
     }
 
-    private void init() {
+    public void init() {
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
-        waitingclinicLists = getArguments().getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
+        mParentActivity = (WaitingMainListActivity) getActivity();
+
+        waitingclinicLists = mParentActivity.getReceivedWaitingClinicList();
         if (waitingclinicLists != null) {
             if (waitingclinicLists.size() > 1) {
                 clinicListSpinner.setVisibility(View.VISIBLE);
@@ -147,6 +154,10 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 }
             }
         }
+
+    }
+
+    private void setClinicListSpinner() {
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -209,6 +220,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 // update in original list
 
                 adapterPos = position;
+                mWaitingIdToBeDeleted = viewAll.getWaitingId();
                 RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
                 requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
                 requestDeleteBaseModel.setLocationId(mLocationId);
@@ -239,7 +251,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 for (int i = 0; i < mDraggableSwipeableActiveWaitingListAdapter.getAllItems().size(); i++) {
                     WaitingListSequence waitingListSequence = new WaitingListSequence();
                     waitingListSequence.setWaitingSequence(i + 1);
-		     waitingListSequence.setWaitingId(String.valueOf(mDraggableSwipeableActiveWaitingListAdapter.getAllItems().get(i).getWaitingId()));
+                    waitingListSequence.setWaitingId(String.valueOf(mDraggableSwipeableActiveWaitingListAdapter.getAllItems().get(i).getWaitingId()));
                     waitingListSequences.add(waitingListSequence);
                 }
                 requestForDragAndDropBaseModel.setWaitingListSequence(waitingListSequences);
@@ -285,7 +297,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         recyclerViewSwipeManager.attachRecyclerView(recyclerView);
         recyclerViewDragDropManager.attachRecyclerView(recyclerView);
 
-  if (mDraggableSwipeableActiveWaitingListAdapter.getItemCount() == 0)
+        if (mDraggableSwipeableActiveWaitingListAdapter.getItemCount() == 0)
             noRecords.setVisibility(View.VISIBLE);
         else noRecords.setVisibility(View.GONE);
 
@@ -300,6 +312,9 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 mDraggableSwipeableActiveWaitingListAdapter.removeItem(adapterPos);
                 waitingPatientTempList.getActive().remove(adapterPos);
 
+                //------------
+                mParentActivity.deletePatientFromWaitingClinicList(mClinicID, mWaitingIdToBeDeleted);
+                //------------
                 if (mDraggableSwipeableActiveWaitingListAdapter.getItemCount() == 0)
                     noRecords.setVisibility(View.VISIBLE);
                 else noRecords.setVisibility(View.GONE);

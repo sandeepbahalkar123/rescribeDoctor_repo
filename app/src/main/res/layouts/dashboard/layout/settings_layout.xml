@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -16,35 +17,89 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp56"
-            android:orientation="horizontal">
-
-            <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:id="@+id/textName"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center|left"
-                android:text="@string/setting_add_patient_header"
-                android:textColor="@color/tagColor"
-                android:textSize="@dimen/sp16"
-                app:customFont="@string/roboto_medium" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp56"
                 android:orientation="horizontal">
 
-                <com.rescribe.doctor.ui.customesViews.SwitchButton
-                    android:id="@+id/addPatientRadioSwitch"
-                    style="@style/SwitchButtonStyle"
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/textName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:text="@string/setting_add_patient_header"
+                    android:textColor="@color/tagColor"
+                    android:textSize="@dimen/sp16"
+                    app:customFont="@string/roboto_medium" />
+
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:kswAnimationDuration="0"
-                    app:kswTextOff="OFF"
-                    app:kswTextOn="ON" />
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.rescribe.doctor.ui.customesViews.SwitchButton
+                        android:id="@+id/addPatientRadioSwitch"
+                        style="@style/SwitchButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:kswAnimationDuration="0"
+                        app:kswTextOff="OFF"
+                        app:kswTextOn="ON" />
+                </LinearLayout>
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp1"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:id="@+id/showOtherSettingForOfflinePatient"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <CheckedTextView
+                    android:id="@+id/addressDetailCheckbox"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp56"
+                    android:clickable="true"
+                    android:drawableEnd="@drawable/unchked"
+                    android:drawableRight="@drawable/unchked"
+                    android:focusable="false"
+                    android:fontFamily="@string/roboto_medium"
+                    android:gravity="center"
+                    android:text="@string/address_details"
+                    android:textColor="@color/tagColor"
+                    android:textSize="@dimen/sp16" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp1"
+                    android:background="@color/divider" />
+
+                <CheckedTextView
+                    android:id="@+id/referenceDetailCheckbox"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp56"
+                    android:clickable="true"
+                    android:drawableEnd="@drawable/unchked"
+                    android:drawableRight="@drawable/unchked"
+                    android:focusable="false"
+                    android:fontFamily="@string/roboto_medium"
+                    android:gravity="center"
+                    android:text="@string/referenced_details"
+                    android:textColor="@color/tagColor"
+                    android:textSize="@dimen/sp16" />
+
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <View
