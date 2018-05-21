@@ -20,6 +20,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
@@ -30,15 +31,22 @@ import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.SyncPatientsModel;
+import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.AddToList;
+import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.PatientAddToWaitingList;
+import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
+import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
+import com.rescribe.doctor.ui.activities.book_appointment.SelectSlotToBookAppointmentBaseActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
+import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,6 +55,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity.RESULT_CLOSE_ACTIVITY_WAITING_LIST;
+import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class AddNewPatientWebViewActivity extends AppCompatActivity implements HelperResponse {
@@ -79,6 +89,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     EditText mReferenceID;
     @BindView(R.id.btnAddPatientSubmit)
     Button mSubmit;
+    @BindView(R.id.btnAddPatientAndBookAppointment)
+    Button mBtnAddPatientAndBookAppointment;
+
     @BindView(R.id.genderRadioGroup)
     RadioGroup mGenderRadioGroup;
     //---------
@@ -109,6 +122,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private Context mContext;
     private boolean mAddPatientOfflineSetting;
     private PatientList mAddedPatientListData;
+    private String mDoOperationTaskID;
+    private AppointmentHelper mAppointmentHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +170,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         }
     }
 
-    @OnClick({R.id.backButton, R.id.btnAddPatientSubmit})
+    @OnClick({R.id.backButton, R.id.btnAddPatientSubmit, R.id.btnAddPatientAndBookAppointment})
     public void back(View view) {
         switch (view.getId()) {
             case R.id.backButton:
@@ -166,6 +181,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 boolean internetAvailable = NetworkUtil.isInternetAvailable(this);
                 if (mAddedPatientListData != null) {
                     if (internetAvailable && mAddPatientOfflineSetting) {
+                        mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
                         AppointmentHelper m = new AppointmentHelper(this, this);
                         m.addNewPatient(mAddedPatientListData);
                     } else {
@@ -174,6 +190,21 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     }
                 }
                 break;
+            case R.id.btnAddPatientAndBookAppointment: {
+                mAddedPatientListData = validate();
+                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(this);
+                if (mAddedPatientListData != null) {
+                    if (internetAvailableCheck && mAddPatientOfflineSetting) {
+                        //mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
+                          mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
+                        AppointmentHelper m = new AppointmentHelper(this, this);
+                        m.addNewPatient(mAddedPatientListData);
+                    } else {
+                        CommonMethods.showToast(this, getString(R.string.add_patient_offline_and_book_apt));
+                    }
+                }
+            }
+            break;
         }
     }
 
@@ -351,6 +382,24 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         } else if (!enteredRefIDIsValid) {
             message = getString(R.string.reference_id_input_err_msg);
             CommonMethods.showToast(this, message);
+        } else if (mAddressDetailLayout.getVisibility() == View.VISIBLE) {
+
+
+        } else if (mReferenceDetailLayout.getVisibility() == View.VISIBLE) {
+
+            String refName = mReferredBy.getText().toString().trim();
+            String refMob = mReferredPhone.getText().toString().trim();
+            String refEmail = mReferredEmail.getText().toString().trim();
+/*
+            if (refName.isEmpty()) {
+                message = enter + getString(R.string.first_name).toLowerCase(Locale.US);
+                CommonMethods.showToast(this, message);
+            } else if ((refMob.trim().length() < 10) || !(refMob.trim().startsWith("6") || refMob.trim().startsWith("7") || refMob.trim().startsWith("8") || refMob.trim().startsWith("9"))) {
+                message = getString(R.string.err_invalid_mobile_no);
+                CommonMethods.showToast(this, message);
+            }*/
+
+
         } else {
             patientList = new PatientList();
             int id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
@@ -448,16 +497,43 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         bundle.putInt(RescribeConstants.CLINIC_ID, mAddedPatientListData.getClinicId());
                         bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(mAddedPatientListData.getPatientId()));
                         bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mAddedPatientListData.getHospitalPatId()));
-                        Intent intent = new Intent(this, PatientHistoryActivity.class);
-                        intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
-                        startActivity(intent);
 
-                        finish();
+                        if (mDoOperationTaskID.equalsIgnoreCase(RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT)) {
+
+                            Intent intent = new Intent(this, SelectSlotToBookAppointmentBaseActivity.class);
+                            intent.putExtra(RescribeConstants.PATIENT_INFO, mAddedPatientListData);
+                            intent.putExtra(RescribeConstants.PATIENT_DETAILS, patientInfo);
+                            intent.putExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                            startActivity(intent);
+
+                            finish();
+                        } else if (mDoOperationTaskID.equalsIgnoreCase(RescribeConstants.TASK_ADD_TO_WAITING_LIST)) {
+                            callWaitingListApi(mAddedPatientListData);
+                        } else {
+                            Intent intent = new Intent(this, PatientHistoryActivity.class);
+                            intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
+                            startActivity(intent);
+                            finish();
+                        }
+
                     }
                 }
 
 
                 break;
+            case RescribeConstants.TASK_ADD_TO_WAITING_LIST: {
+                AddToWaitingListBaseModel addToWaitingListBaseModel = (AddToWaitingListBaseModel) customResponse;
+                if (addToWaitingListBaseModel.getCommon().isSuccess()) {
+                    if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase()) || addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
+                        Intent intent = new Intent(this, WaitingMainListActivity.class);
+                        intent.putExtra(LOCATION_ID, locationID);
+                        startActivity(intent);
+                        finish();
+                    }
+                    Toast.makeText(this, addToWaitingListBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
         }
     }
 
@@ -474,5 +550,31 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
 
+    }
+
+    private void callWaitingListApi(PatientList mAddedPatientListData) {
+
+        mAppointmentHelper = new AppointmentHelper(this, this);
+
+        ArrayList<PatientAddToWaitingList> patientsListAddToWaitingLists = new ArrayList<>();
+        PatientAddToWaitingList patientInfoListObject = new PatientAddToWaitingList();
+        patientInfoListObject.setPatientName(mAddedPatientListData.getPatientName());
+        patientInfoListObject.setPatientId(String.valueOf(mAddedPatientListData.getPatientId()));
+        patientInfoListObject.setHospitalPatId(String.valueOf(mAddedPatientListData.getHospitalPatId()));
+        patientsListAddToWaitingLists.add(patientInfoListObject);
+
+        ArrayList<AddToList> addToArrayList = new ArrayList<>();
+        AddToList addToListObject = new AddToList();
+        addToListObject.setLocationDetails(cityName);
+        addToListObject.setLocationId(Integer.parseInt(locationID));
+        addToListObject.setPatientAddToWaitingList(patientsListAddToWaitingLists);
+        addToArrayList.add(addToListObject);
+
+        RequestToAddWaitingList requestForWaitingListPatients = new RequestToAddWaitingList();
+        requestForWaitingListPatients.setAddToList(addToArrayList);
+        requestForWaitingListPatients.setTime(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss));
+        requestForWaitingListPatients.setDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+        requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this)));
+        mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);
     }
 }

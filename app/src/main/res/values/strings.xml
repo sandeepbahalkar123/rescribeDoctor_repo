@@ -245,6 +245,7 @@
     <string name="reference_id">Reference ID.</string>
     <string name="reference_id_input_err_msg">Reference ID should be alphanumeric, no special characters and no white spaces.</string>
     <string name="add_patient_offline_msg">No internet connection found, still you can add patient offline.</string>
+    <string name="add_patient_offline_and_book_apt">To use this option, you must have valid internet connection</string>
     <string name="setting_add_patient_header">Add Patient Offline</string>
 
     <string name="book_appointment">Book Appointment</string>
@@ -272,5 +273,8 @@
     <string name="company_name">SCORG TECHNOLOGIES Pvt.Ltd.</string>
     <string name="added_to_waiting_list_message">Completed and Cancelled status patients cannot be added to waiting list</string>
 
+
+    <string name="delete">Delete</string>
+    <string name="inconsultation">In-consultation</string>
 
 </resources>

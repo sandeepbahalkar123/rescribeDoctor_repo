@@ -404,6 +404,21 @@
                     android:textAllCaps="true"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/sp16" />
+
+                <Button
+                    android:id="@+id/btnAddPatientAndBookAppointment"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/dp30"
+                    android:layout_marginTop="@dimen/dp16"
+                    android:background="@color/tagColor"
+                    android:fontFamily="@font/roboto_regular"
+                    android:gravity="center"
+                    android:text="@string/book_appointment"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/sp16" />
             </LinearLayout>
         </ScrollView>
 

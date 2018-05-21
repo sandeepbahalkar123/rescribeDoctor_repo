@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -114,7 +115,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         ImageButton mDragHandle;
 
         LinearLayout mBehindViews;
-        ImageButton deleteButton;
+        Button deleteButton;
 
         LinearLayout mCardView;
         ImageView mBluelineImageView;
@@ -140,7 +141,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             mDragHandle = v.findViewById(R.id.dragHandle);
 
             mBehindViews = v.findViewById(R.id.behind_views);
-            deleteButton = v.findViewById(R.id.deleteButton);
+            deleteButton = v.findViewById(R.id.waitingDeleteButton);
 
             mCardView = v.findViewById(R.id.cardView);
             mBluelineImageView = v.findViewById(R.id.bluelineImageView);
