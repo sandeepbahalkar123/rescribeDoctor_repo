@@ -19,7 +19,7 @@ import com.rescribe.doctor.model.request_appointment_confirmation.RequestAppoint
 import com.rescribe.doctor.model.request_appointment_confirmation.Reschedule;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
-import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
+import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestWaitingListStatusChangeBaseModel;
 import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAndDropBaseModel;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.network.ConnectionFactory;
@@ -29,7 +29,6 @@ import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import static com.rescribe.doctor.util.RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
 
@@ -143,7 +142,8 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_ADD_TO_WAITING_LIST);
     }
 
-    public void doDeleteWaitingList(RequestDeleteBaseModel mRequestDeleteBaseModel) {
+    //---------- Waiting list API : START-------
+    public void doDeleteWaitingList(RequestWaitingListStatusChangeBaseModel mRequestDeleteBaseModel) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_WAITING_LIST, Request.Method.POST, true);
         mConnectionFactory.setPostParams(mRequestDeleteBaseModel);
         mConnectionFactory.setHeaderParams();
@@ -151,6 +151,16 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_DELETE_WAITING_LIST);
     }
 
+    //Use to change waiting list status to in-consultation or completed.
+    public void doUpdateWaitingListStatus(RequestWaitingListStatusChangeBaseModel mRequestDeleteBaseModel) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST, Request.Method.POST, true);
+        mConnectionFactory.setPostParams(mRequestDeleteBaseModel);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.INCONSULATION_OR_COMPLETED_WAITING_LIST);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST);
+    }
+
+    //----------- Waiting list API :END------
     public void doAppointmentCancelOrComplete(RequestAppointmentCancelModel mRequestAppointmentCancelModel) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE, Request.Method.POST, true);
         mConnectionFactory.setPostParams(mRequestAppointmentCancelModel);

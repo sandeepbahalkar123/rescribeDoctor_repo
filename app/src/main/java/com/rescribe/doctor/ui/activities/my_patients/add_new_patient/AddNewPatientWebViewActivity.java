@@ -1,9 +1,11 @@
 package com.rescribe.doctor.ui.activities.my_patients.add_new_patient;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.Log;
@@ -89,8 +91,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     EditText mReferenceID;
     @BindView(R.id.btnAddPatientSubmit)
     Button mSubmit;
-    @BindView(R.id.btnAddPatientAndBookAppointment)
-    Button mBtnAddPatientAndBookAppointment;
 
     @BindView(R.id.genderRadioGroup)
     RadioGroup mGenderRadioGroup;
@@ -170,41 +170,19 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         }
     }
 
-    @OnClick({R.id.backButton, R.id.btnAddPatientSubmit, R.id.btnAddPatientAndBookAppointment})
+    @OnClick({R.id.backButton, R.id.btnAddPatientSubmit})
     public void back(View view) {
         switch (view.getId()) {
             case R.id.backButton:
                 onBackPressed();
                 break;
             case R.id.btnAddPatientSubmit:
-                mAddedPatientListData = validate();
-                boolean internetAvailable = NetworkUtil.isInternetAvailable(this);
-                if (mAddedPatientListData != null) {
-                    if (internetAvailable && mAddPatientOfflineSetting) {
-                        mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
-                        AppointmentHelper m = new AppointmentHelper(this, this);
-                        m.addNewPatient(mAddedPatientListData);
-                    } else {
-
-                        addOfflinePatient();
-                    }
-                }
+                showDialogToSelectOption();
+                /* */
                 break;
-            case R.id.btnAddPatientAndBookAppointment: {
-                mAddedPatientListData = validate();
-                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(this);
-                if (mAddedPatientListData != null) {
-                    if (internetAvailableCheck && mAddPatientOfflineSetting) {
-                        //mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
-                          mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
-                        AppointmentHelper m = new AppointmentHelper(this, this);
-                        m.addNewPatient(mAddedPatientListData);
-                    } else {
-                        CommonMethods.showToast(this, getString(R.string.add_patient_offline_and_book_apt));
-                    }
-                }
-            }
-            break;
+            /*case R.id.btnAddPatientAndBookAppointment: {
+
+            break;*/
         }
     }
 
@@ -576,5 +554,64 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         requestForWaitingListPatients.setDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
         requestForWaitingListPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this)));
         mAppointmentHelper.doAddToWaitingListFromMyPatients(requestForWaitingListPatients);
+    }
+
+    private void showDialogToSelectOption() {
+        final String[] singleChoiceItems = getResources().getStringArray(R.array.add_patient_options);
+        new AlertDialog.Builder(this)
+                .setTitle("Select")
+                .setSingleChoiceItems(singleChoiceItems, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int selectedIndex) {
+
+                        switch (selectedIndex) {
+                            case 0:
+                                mAddedPatientListData = validate();
+                                boolean internetAvailable = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
+                                if (mAddedPatientListData != null) {
+                                    if (internetAvailable && mAddPatientOfflineSetting) {
+                                        mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
+                                        AppointmentHelper m = new AppointmentHelper(AddNewPatientWebViewActivity.this, AddNewPatientWebViewActivity.this);
+                                        m.addNewPatient(mAddedPatientListData);
+                                    } else {
+                                        addOfflinePatient();
+                                    }
+                                }
+                                break;
+                            case 1: {
+                                mAddedPatientListData = validate();
+                                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
+                                if (mAddedPatientListData != null) {
+                                    if (internetAvailableCheck && mAddPatientOfflineSetting) {
+                                        //mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
+                                        mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
+                                        AppointmentHelper m = new AppointmentHelper(AddNewPatientWebViewActivity.this, AddNewPatientWebViewActivity.this);
+                                        m.addNewPatient(mAddedPatientListData);
+                                    } else {
+                                        CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
+                                    }
+                                }
+                            }
+                            break;
+                            case 2: {
+                                mAddedPatientListData = validate();
+                                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
+                                if (mAddedPatientListData != null) {
+                                    if (internetAvailableCheck && mAddPatientOfflineSetting) {
+                                        //mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
+                                        mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
+                                        AppointmentHelper m = new AppointmentHelper(AddNewPatientWebViewActivity.this, AddNewPatientWebViewActivity.this);
+                                        m.addNewPatient(mAddedPatientListData);
+                                    } else {
+                                        CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
+                                    }
+                                }
+                            }
+                            break;
+                        }
+
+                    }
+                })
+                .show();
     }
 }

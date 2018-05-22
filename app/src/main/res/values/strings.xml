@@ -53,6 +53,7 @@
     <string name="message_forgot_password">Please provide your email id to access the reset password link.</string>
     <string name="message_social_login_confirm_mobile_no_password">Please input your mobile no. and password.</string>
     <string name="submit">Submit</string>
+    <string name="save">Save</string>
     <string name="err_email_invalid">Enter valid email.</string>
     <string name="err_otp_invalid">Enter valid OTP</string>
     <string name="err_maximum_otp_retries">You have exceeded maximum retry of OTP generation, please try after sometime.</string>
@@ -276,5 +277,12 @@
 
     <string name="delete">Delete</string>
     <string name="inconsultation">In-consultation</string>
+    <string name="err_inconsultation_delete_msg">You can not delete in-consultation patient</string>
+    <string name="err_inconsultation_already_msg">Patient is already in-consultation</string>
 
+    <string-array name="add_patient_options">
+        <item>Save patient</item>
+        <item>Save and add to waiting list</item>
+        <item>Save and book appointment</item>
+    </string-array>
 </resources>

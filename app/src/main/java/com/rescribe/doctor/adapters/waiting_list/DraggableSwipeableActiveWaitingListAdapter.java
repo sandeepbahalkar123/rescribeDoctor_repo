@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.IN_QUEUE;
+import static com.rescribe.doctor.util.RescribeConstants.WAITING_LIST_STATUS.IN_CONSULTATION;
 import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
 public class DraggableSwipeableActiveWaitingListAdapter
@@ -99,6 +100,10 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
         void onPhoneClick(String phoneNumber);
 
+        void onInConsultation(int position, Active viewAll);
+
+        void onCompletedAction(int position, Active viewAll);
+
         void onItemPinned(int position);
 
         void onItemViewClicked(View v, boolean pinned, AbstractDataProvider.Data clickedDataObject);
@@ -111,7 +116,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
         ImageView mDragHandle;
 
         LinearLayout mBehindViews;
-        Button deleteButton;
+        Button deleteButton, waitingCompleteButton, waitingInConsultationButton;
 
         LinearLayout mCardView;
         ImageView mBluelineImageView;
@@ -138,6 +143,8 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
             mBehindViews = v.findViewById(R.id.behind_views);
             deleteButton = v.findViewById(R.id.waitingDeleteButton);
+            waitingCompleteButton = v.findViewById(R.id.waitingComplete);
+            waitingInConsultationButton = v.findViewById(R.id.waitingInConsultation);
 
             mCardView = v.findViewById(R.id.cardView);
             mBluelineImageView = v.findViewById(R.id.bluelineImageView);
@@ -234,6 +241,20 @@ public class DraggableSwipeableActiveWaitingListAdapter
             public void onClick(View v) {
                 // call delete api
                 mEventListener.onDeleteClick(position, item.getActiveAll());
+            }
+        });
+        holder.waitingCompleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // call delete api
+                mEventListener.onCompletedAction(position, item.getActiveAll());
+            }
+        });
+        holder.waitingInConsultationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // call delete api
+                mEventListener.onInConsultation(position, item.getActiveAll());
             }
         });
         holder.mPatientPhoneNumber.setOnClickListener(new View.OnClickListener() {
@@ -334,6 +355,10 @@ public class DraggableSwipeableActiveWaitingListAdapter
                 holder.mDragHandle.setVisibility(View.GONE);
             else holder.mDragHandle.setVisibility(View.VISIBLE);
 
+            holder.setMaxLeftSwipeAmount(-0.4f);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
+        } else if (item.getActiveAll().getWaitingStatusId().equals(IN_CONSULTATION)) {
+            holder.mDragHandle.setVisibility(View.GONE);
             holder.setMaxLeftSwipeAmount(-0.4f);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
         } else {

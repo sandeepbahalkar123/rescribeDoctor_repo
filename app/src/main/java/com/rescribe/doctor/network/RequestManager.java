@@ -598,6 +598,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         SyncPatientsModel model = new Gson().fromJson(data, SyncPatientsModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, model, mOldDataTag);
                         break;
+                    case RescribeConstants.TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST: //This is for delete attachments
+                        CommonBaseModelContainer modelDeleteCommonBaseModelContainer = new Gson().fromJson(data, CommonBaseModelContainer.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, modelDeleteCommonBaseModelContainer, mOldDataTag);
+                        break;
 
 
                     default:

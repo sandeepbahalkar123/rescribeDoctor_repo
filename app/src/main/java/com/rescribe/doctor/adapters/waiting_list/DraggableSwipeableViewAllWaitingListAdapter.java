@@ -46,6 +46,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeabl
 import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
+import com.rescribe.doctor.model.waiting_list.Active;
 import com.rescribe.doctor.model.waiting_list.PatientDataProvider;
 import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.util.CommonMethods;
@@ -101,6 +102,10 @@ public class DraggableSwipeableViewAllWaitingListAdapter
     public interface EventListener {
         void onDeleteClick(int position, ViewAll viewAll);
 
+        void onInConsultation(int position, ViewAll viewAll);
+
+        void onCompletedAction(int position, ViewAll viewAll);
+
         void onItemPinned(int position);
 
         void onItemViewClicked(View v, boolean pinned, AbstractDataProvider.Data clickedDataObject);
@@ -115,7 +120,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         ImageButton mDragHandle;
 
         LinearLayout mBehindViews;
-        Button deleteButton;
+        Button deleteButton, waitingCompleteButton, waitingInConsultationButton;
 
         LinearLayout mCardView;
         ImageView mBluelineImageView;
@@ -142,6 +147,8 @@ public class DraggableSwipeableViewAllWaitingListAdapter
 
             mBehindViews = v.findViewById(R.id.behind_views);
             deleteButton = v.findViewById(R.id.waitingDeleteButton);
+            waitingCompleteButton = v.findViewById(R.id.waitingComplete);
+            waitingInConsultationButton = v.findViewById(R.id.waitingInConsultation);
 
             mCardView = v.findViewById(R.id.cardView);
             mBluelineImageView = v.findViewById(R.id.bluelineImageView);
@@ -237,6 +244,20 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             public void onClick(View v) {
                 // call delete api
                 mEventListener.onDeleteClick(position, item.getViewAll());
+            }
+        });
+        holder.waitingCompleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // call delete api
+                mEventListener.onCompletedAction(position, item.getViewAll());
+            }
+        });
+        holder.waitingInConsultationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // call delete api
+                mEventListener.onInConsultation(position, item.getViewAll());
             }
         });
         holder.mPatientPhoneNumber.setOnClickListener(new View.OnClickListener() {

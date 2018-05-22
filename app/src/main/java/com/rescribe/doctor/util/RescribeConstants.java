@@ -23,7 +23,7 @@ public class RescribeConstants {
     public static final String OS = "OS";
     public static final String OSVERSION = "OsVersion";
     public static final String DEVICE_TYPE = "DeviceType";
-    public static final String APP_NAME ="appName";
+    public static final String APP_NAME = "appName";
     public static final String ACCESS_TOKEN = "accessToken";
     public static final String TOKEN_TYPE = "token_type";
     public static final String REFRESH_TOKEN = "refresh_token";
@@ -113,6 +113,7 @@ public class RescribeConstants {
     public static final String TASK_DELETE_PATIENT_OPD_ATTCHMENTS = RescribeConstants.BLANK + 36;
     public static final String TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT = RescribeConstants.BLANK + 37;
     public static final String TASK_CONFIRM_APPOINTMENT = RescribeConstants.BLANK + 38;
+    public static final String TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST = RescribeConstants.BLANK + 39;
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
 
@@ -207,6 +208,12 @@ public class RescribeConstants {
         int IN_CONSULTATION = 7;
         int IN_QUEUE = 8;
         int COMING = 9;
+    }
+
+    public interface WAITING_LIST_STATUS {
+        int IN_CONSULTATION = 7;
+        int COMPLETED = 3;
+        int IN_QUEUE = 8;
     }
 
     public interface USER_STATUS {
