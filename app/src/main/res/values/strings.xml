@@ -284,7 +284,7 @@
     <string name="plz_select_state">Please select state</string>
     <string name="plz_select_city">Please select city</string>
     <string name="err_msg_no_area_found_for_city">No area found for selected city, you can add new area</string>
-    <string name="reffered_by">Refer by</string>
+    <string name="reffered_by">Refer by:</string>
 
     <string-array name="add_patient_options">
         <item>Save patient</item>
@@ -294,7 +294,7 @@
 
     <string-array name="reffferd_by">
         <item>Select reference</item>
-        <item>Patient</item>
         <item>Doctor</item>
+        <item>Patient</item>
     </string-array>
 </resources>
