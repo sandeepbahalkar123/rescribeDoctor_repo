@@ -1,23 +1,17 @@
 package com.rescribe.doctor.singleton;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.evernote.android.job.JobManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
-import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
-import com.rescribe.doctor.model.login.ClinicList;
-import com.rescribe.doctor.util.CommonMethods;
-import com.rescribe.doctor.util.RescribeConstants;
+import com.rescribe.doctor.services.job_creator_download_cities.AppJobCreator;
 
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
@@ -64,6 +58,7 @@ public class RescribeApplication extends MultiDexApplication {
         AppEventsLogger.activateApp(this);
 //        new NukeSSLCerts().nuke(); // disable all ssl certificates (dangerous)
         //--------------
+        JobManager.create(this).addJobCreator(new AppJobCreator());
     }
     public static ArrayList<DoctorLocationModel> getDoctorLocationModels() {
         return doctorLocationModels;
@@ -72,7 +67,5 @@ public class RescribeApplication extends MultiDexApplication {
     public static void setDoctorLocationModels(ArrayList<DoctorLocationModel> doctorLocationModels) {
         RescribeApplication.doctorLocationModels = doctorLocationModels;
     }
-
-
 
 }

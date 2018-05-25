@@ -131,6 +131,9 @@ dependencies {
         transitive = true;
     }
 
+    //job creator for latest version instead services
+    implementation 'com.evernote:android-job:1.2.5'
+
 }
 //apply plugin: 'com.google.gms.google-services'
 

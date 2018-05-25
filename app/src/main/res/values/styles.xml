@@ -206,4 +206,13 @@
         <item name="android:textSize">@dimen/sp16</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
     </style>
+
+    <style name="addNewPatientDialogCustomTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--buttons color-->
+        <item name="colorAccent">@color/recentblue</item>
+        <!--title and message color-->
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <!--dialog background-->
+        <item name="android:windowBackground">@color/white</item>
+    </style>
 </resources>

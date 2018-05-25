@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaDetailsBaseModel;
 import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.Connector;
@@ -601,6 +602,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST: //This is for delete attachments
                         CommonBaseModelContainer modelDeleteCommonBaseModelContainer = new Gson().fromJson(data, CommonBaseModelContainer.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, modelDeleteCommonBaseModelContainer, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_GET_AREA_TO_ADD_NEW_PATIENT: //This is for delete attachments
+                        AreaDetailsBaseModel areaDetailsBaseModel = new Gson().fromJson(data, AreaDetailsBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, areaDetailsBaseModel, mOldDataTag);
                         break;
 
 

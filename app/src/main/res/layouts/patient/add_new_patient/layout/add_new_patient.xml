@@ -238,7 +238,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
@@ -263,51 +263,120 @@
 
                     </android.support.design.widget.TextInputLayout>
 
-                    <android.support.design.widget.TextInputLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp10"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:visibility="visible"
-                        app:theme="@style/text_edit">
+                        android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/addressArea"
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/statesTextInputLayout"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp40"
-                            android:fontFamily="@font/roboto_regular"
-                            android:gravity="center|left"
-                            android:hint="@string/city"
-                            android:maxLength="50"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp10"
+                            android:layout_weight="1"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="@dimen/sp16" />
+                            android:visibility="visible"
+                            app:theme="@style/text_edit">
 
-                    </android.support.design.widget.TextInputLayout>
+                            <EditText
+                                android:id="@+id/states"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/dp40"
+                                android:clickable="true"
+                                android:focusable="false"
+                                android:focusableInTouchMode="true"
+                                android:fontFamily="@font/roboto_regular"
+                                android:gravity="center|left"
+                                android:hint="@string/state"
+                                android:maxLength="50"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="@dimen/sp16" />
 
-                    <android.support.design.widget.TextInputLayout
+                        </android.support.design.widget.TextInputLayout>
+
+                        <Button
+                            android:id="@+id/tempStateButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/state" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp10"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:visibility="visible"
-                        app:theme="@style/text_edit">
+                        android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/addressCity"
+                        <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp40"
-                            android:fontFamily="@font/roboto_regular"
-                            android:gravity="center|left"
-                            android:hint="@string/area"
-                            android:maxLength="50"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp10"
+                            android:layout_weight="1"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="@dimen/sp16" />
+                            android:visibility="visible"
+                            app:theme="@style/text_edit">
 
-                    </android.support.design.widget.TextInputLayout>
+                            <EditText
+                                android:id="@+id/addressCity"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/dp40"
+                                android:fontFamily="@font/roboto_regular"
+                                android:gravity="center|left"
+                                android:hint="@string/city"
+                                android:maxLength="50"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="@dimen/sp16" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <Button
+                            android:id="@+id/tempCityButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/city" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp10"
+                            android:layout_weight="1"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:visibility="visible"
+                            app:theme="@style/text_edit">
+
+                            <EditText
+                                android:id="@+id/addressArea"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/dp40"
+                                android:fontFamily="@font/roboto_regular"
+                                android:gravity="center|left"
+                                android:hint="@string/area"
+                                android:maxLength="50"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="@dimen/sp16" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <Button
+                            android:id="@+id/tempAreaButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/area" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -315,7 +384,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:orientation="horizontal">
+
+                        <com.rescribe.doctor.ui.customesViews.CustomTextView
+                            android:layout_width="@dimen/dp0"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center|left"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp16"
+                            tools:text="@string/reffered_by" />
+
+                        <Spinner
+                            android:id="@+id/referenceBySpinner"
+                            android:layout_width="@dimen/dp0"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:entries="@array/reffferd_by"></Spinner>
+
+                    </LinearLayout>
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"

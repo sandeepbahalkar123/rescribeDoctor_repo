@@ -114,6 +114,8 @@ public class RescribeConstants {
     public static final String TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT = RescribeConstants.BLANK + 37;
     public static final String TASK_CONFIRM_APPOINTMENT = RescribeConstants.BLANK + 38;
     public static final String TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST = RescribeConstants.BLANK + 39;
+    public static final String TASK_GET_STATE_AND_CITY_TO_ADD_NEW_PATIENT = RescribeConstants.BLANK + 40;
+    public static final String TASK_GET_AREA_TO_ADD_NEW_PATIENT = RescribeConstants.BLANK + 41;
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
 
@@ -165,6 +167,8 @@ public class RescribeConstants {
     public static final String PATIENT_LIST = "patient_list";
     public static final String LOCATION_ID = "location_id";
     public static final String CITY_ID = "city_id";
+    public static final String STATE_ID = "state_id";
+    public static final String AREA_LIST = "AREA_LIST";
     public static final String CITY_NAME = "city_name";
     public static final String TEMPLATE_OBJECT = "template_object";
     public static final String CLINIC_ID = "clinic_id";

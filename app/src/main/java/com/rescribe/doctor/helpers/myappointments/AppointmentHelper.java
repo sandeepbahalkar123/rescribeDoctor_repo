@@ -6,6 +6,7 @@ import com.android.volley.Request;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
 import com.rescribe.doctor.model.patient.add_new_patient.SyncPatientsRequest;
+import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.city_details.CityData;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -28,7 +29,11 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.rescribe.doctor.util.RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
 
@@ -283,6 +288,18 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_ADD_NEW_PATIENT);
     }
 
+    public void getAreaOfSelectedCity(int mCityID) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_AREA_TO_ADD_NEW_PATIENT, Request.Method.POST, false);
+
+        // send cityId to get area list based on city-id.
+        CityData c = new CityData();
+        c.setCityId(mCityID);
+
+        mConnectionFactory.setPostParams(c);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.GET_ALL_AREA_OF_CITIES_TO_ADD_PATIENT);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_AREA_TO_ADD_NEW_PATIENT);
+    }
 }
 
 

@@ -78,6 +78,8 @@ public class Config {
     public static final String GET_DOCTOR_PATIENT_CITY = "doctor/api/patient/getDoctorPatientCity";
     public static final String GET_PATIENTS_SYNC = "doctor/api/patient/getPatientSyncList";
     public static final String ADD_PATIENTS_SYNC = "doctor/api/patient/addPatients";
+    public static final String GET_ALL_CITIES_STATE_WISE = "doctor/api/patient/getCityDetails";
+    public static final String GET_ALL_AREA_OF_CITIES_TO_ADD_PATIENT = "doctor/api/patient/getAreaDetails";
 
 }
 
