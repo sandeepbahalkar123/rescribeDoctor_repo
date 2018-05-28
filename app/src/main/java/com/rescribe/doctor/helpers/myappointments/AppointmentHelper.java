@@ -253,6 +253,7 @@ public class AppointmentHelper implements ConnectionListener {
 
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ADD_NEW_PATIENT, Request.Method.POST, false);
         PatientDetail patient = new PatientDetail();
+        patient.setSalutation(dataToAdd.getSalutation());
         patient.setMobilePatientId(dataToAdd.getPatientId());
 
         //---------
@@ -273,6 +274,9 @@ public class AppointmentHelper implements ConnectionListener {
         patient.setClinicId(dataToAdd.getClinicId());
         patient.setPatientDob(dataToAdd.getDateOfBirth());
         patient.setOfflineReferenceID(dataToAdd.getReferenceID());
+        patient.setPatientState(dataToAdd.getPatientState());
+        patient.setPatientAddress(dataToAdd.getPatientAddress());
+        patient.setReferedDetails(dataToAdd.getReferedDetails());
 
         SyncPatientsRequest mSyncPatientsRequest = new SyncPatientsRequest();
         String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);

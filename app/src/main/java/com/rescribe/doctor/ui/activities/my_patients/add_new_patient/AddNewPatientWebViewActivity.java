@@ -47,10 +47,12 @@ import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddTo
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.activities.book_appointment.SelectSlotToBookAppointmentBaseActivity;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.DoctorListViewDialogFragment;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.PatientListViewDialogFragment;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.StateCityAndAreaDialogFragment;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
-import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.NetworkUtil;
@@ -87,6 +89,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     @BindView(R.id.webViewTitle)
     TextView mWebViewTitle;
     //---------
+    @BindView(R.id.salutationSpinner)
+    Spinner mSalutationSpinner;
     @BindView(R.id.firstName)
     EditText mFirstName;
     @BindView(R.id.middleName)
@@ -101,36 +105,31 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     EditText mReferenceID;
     @BindView(R.id.btnAddPatientSubmit)
     Button mSubmit;
-
     @BindView(R.id.genderRadioGroup)
     RadioGroup mGenderRadioGroup;
     //---------
     @BindView(R.id.addressLine)
     EditText mAddressLine;
-
     @BindView(R.id.addressDetailLayout)
     LinearLayout mAddressDetailLayout;
     //----------
     @BindView(R.id.stateEditText)
     EditText mStateEditText;
-
     //-------------
-
     @BindView(R.id.cityEditText)
     EditText mCityEditText;
-
     //---------
-
     @BindView(R.id.areaEditText)
     EditText mAreaEditText;
     @BindView(R.id.addressAreaTextInputLayout)
     TextInputLayout mAddressAreaTextInputLayout;
-
     //--------
     @BindView(R.id.referenceBySpinner)
     Spinner mReferenceBySpinner;
     @BindView(R.id.referredBy)
     EditText mReferredBy;
+    @BindView(R.id.referredByTextInputLayout)
+    TextInputLayout mReferredByTextInputLayout;
     @BindView(R.id.referredPhone)
     EditText mReferredPhone;
     @BindView(R.id.referredEmail)
@@ -159,11 +158,13 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
 
     //--------
+    int mSelectedSalutationOfPatient = 1;
     int mSelectedStateID = -1;
     int mSelectedCityID = -1;
     int mSelectedAreaID = -1;
-    private int mSelectedReferenceTypeID = -1;
-    private DoctorData mSelectedReferencePersonData;
+    private int mSelectedReferenceTypeID = 0;
+    private DoctorData mSelectedDoctorReference;
+    private PatientList mSelectedPatientReference;
 
     //--------
     @Override
@@ -174,7 +175,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         ButterKnife.bind(this);
 
         initialize();
-        referenceBySpinnerConfig();
+        doSpinnerItemSelectedListener();
     }
 
     private void initialize() {
@@ -213,6 +214,11 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 mAddressDetailLayout.setVisibility(View.VISIBLE);
             }
             if (internetAvailable && RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, mContext)) {
+
+                mReferredBy.setClickable(true);
+                mReferredBy.setFocusable(false);
+                mReferredByTextInputLayout.setClickable(true);
+                mReferredByTextInputLayout.setFocusable(false);
                 mReferenceDetailLayout.setVisibility(View.VISIBLE);
             }
             //--- show addresss /referecens details based on setting done in SettingActivity. : END
@@ -236,7 +242,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 Bundle iState = new Bundle();
                 iState.putString(RescribeConstants.TITLE, getString(R.string.state));
 
-                PatientAddDetailsListViewDialogFragment fState = PatientAddDetailsListViewDialogFragment.newInstance(iState, new PatientAddDetailsListViewDialogFragment.OnItemClickedListener() {
+                StateCityAndAreaDialogFragment fState = StateCityAndAreaDialogFragment.newInstance(iState, new StateCityAndAreaDialogFragment.OnItemClickedListener() {
 
                     @Override
                     public void onItemClicked(int id, String value) {
@@ -257,7 +263,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     iCity.putString(RescribeConstants.TITLE, getString(R.string.city));
                     iCity.putInt(RescribeConstants.STATE_ID, mSelectedStateID);
 
-                    PatientAddDetailsListViewDialogFragment fCity = PatientAddDetailsListViewDialogFragment.newInstance(iCity, new PatientAddDetailsListViewDialogFragment.OnItemClickedListener() {
+                    StateCityAndAreaDialogFragment fCity = StateCityAndAreaDialogFragment.newInstance(iCity, new StateCityAndAreaDialogFragment.OnItemClickedListener() {
 
                         @Override
                         public void onItemClicked(int id, String value) {
@@ -285,7 +291,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         iArea.putInt(RescribeConstants.CITY_ID, mSelectedCityID);
                         iArea.putParcelableArrayList(RescribeConstants.AREA_LIST, mAreaListBasedOnCity);
 
-                        PatientAddDetailsListViewDialogFragment fArea = PatientAddDetailsListViewDialogFragment.newInstance(iArea, new PatientAddDetailsListViewDialogFragment.OnItemClickedListener() {
+                        StateCityAndAreaDialogFragment fArea = StateCityAndAreaDialogFragment.newInstance(iArea, new StateCityAndAreaDialogFragment.OnItemClickedListener() {
 
                             @Override
                             public void onItemClicked(int id, String value) {
@@ -306,21 +312,47 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             case R.id.referredBy:
             case R.id.referredByTextInputLayout: {
 
-                Bundle iArea = new Bundle();
-                iArea.putString(RescribeConstants.TITLE, getString(R.string.about_doctor));
-                DoctorListViewDialogFragment fArea = DoctorListViewDialogFragment.newInstance(iArea, new DoctorListViewDialogFragment.OnItemClickedListener() {
+                switch (mSelectedReferenceTypeID) {
+                    case 0:
+                        CommonMethods.showToast(this, getString(R.string.err_msg_select_reffered_by));
+                        break;
+                    case 1: {
+                        Bundle iArea = new Bundle();
+                        iArea.putString(RescribeConstants.TITLE, getString(R.string.about_doctor));
+                        DoctorListViewDialogFragment fArea = DoctorListViewDialogFragment.newInstance(iArea, new DoctorListViewDialogFragment.OnItemClickedListener() {
 
-                    @Override
-                    public void onItemClicked(int id, DoctorData data) {
-                        mReferredBy.setText(data.getDocName());
-                        mReferredEmail.setText(data.getDocEmail());
-                        mReferredPhone.setText(data.getDocPhone());
+                            @Override
+                            public void onItemClicked(int id, DoctorData data) {
+                                mReferredBy.setText(data.getDocName());
+                                mReferredEmail.setText(data.getDocEmail());
+                                mReferredPhone.setText("" + data.getDocPhone());
 
-                        mSelectedReferencePersonData = data;
+                                mSelectedDoctorReference = data;
+                            }
+                        });
+
+                        fArea.show(fm, "");
                     }
-                });
+                    break;
+                    case 2: {
+                        Bundle iArea = new Bundle();
+                        iArea.putString(RescribeConstants.TITLE, getString(R.string.my_patients));
+                        PatientListViewDialogFragment fArea = PatientListViewDialogFragment.newInstance(iArea, new PatientListViewDialogFragment.OnItemClickedListener() {
 
-                fArea.show(fm, "");
+                            @Override
+                            public void onItemClicked(int id, PatientList data) {
+                                mReferredBy.setText(data.getPatientName());
+                                mReferredEmail.setText(data.getPatientEmail());
+                                mReferredPhone.setText("" + data.getPatientPhone());
+
+                                mSelectedPatientReference = data;
+                            }
+                        });
+
+                        fArea.show(fm, "");
+                    }
+                    break;
+                }
             }
             break;
         }
@@ -482,6 +514,12 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
         boolean enteredRefIDIsValid = isEnteredRefIDIsValid(refID);
 
+        //---------
+        String refName = mReferredBy.getText().toString().trim();
+        String refMob = mReferredPhone.getText().toString().trim();
+        String refEmail = mReferredEmail.getText().toString().trim();
+        //---------
+
         if (firstName.isEmpty()) {
             message = enter + getString(R.string.first_name).toLowerCase(Locale.US);
             CommonMethods.showToast(this, message);
@@ -500,24 +538,20 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         } else if (!enteredRefIDIsValid) {
             message = getString(R.string.reference_id_input_err_msg);
             CommonMethods.showToast(this, message);
-        } else if (mReferenceDetailLayout.getVisibility() == View.VISIBLE) {
+        }
+       /*
+        else if (refName.isEmpty() && mReferenceDetailLayout.getVisibility() == View.VISIBLE) {
+            message = enter + getString(R.string.first_name).toLowerCase(Locale.US);
+            CommonMethods.showToast(this, message);
+        } else if (mReferenceDetailLayout.getVisibility() == View.VISIBLE && (refMob.trim().length() < 10) || !(refMob.trim().startsWith("6") || refMob.trim().startsWith("7") || refMob.trim().startsWith("8") || refMob.trim().startsWith("9"))) {
+            message = getString(R.string.err_invalid_mobile_no);
+            CommonMethods.showToast(this, message);
+        } else if (mReferenceDetailLayout.getVisibility() == View.VISIBLE && !CommonMethods.isValidEmail(refEmail)) {
+            message = getString(R.string.err_email_invalid);
+            CommonMethods.showToast(this, message);
+        }*/
 
-            String refName = mReferredBy.getText().toString().trim();
-            String refMob = mReferredPhone.getText().toString().trim();
-            String refEmail = mReferredEmail.getText().toString().trim();
-
-            if (refName.isEmpty()) {
-                message = enter + getString(R.string.first_name).toLowerCase(Locale.US);
-                CommonMethods.showToast(this, message);
-            } else if ((refMob.trim().length() < 10) || !(refMob.trim().startsWith("6") || refMob.trim().startsWith("7") || refMob.trim().startsWith("8") || refMob.trim().startsWith("9"))) {
-                message = getString(R.string.err_invalid_mobile_no);
-                CommonMethods.showToast(this, message);
-            } else if (!CommonMethods.isValidEmail(refEmail)) {
-                message = getString(R.string.err_email_invalid);
-                CommonMethods.showToast(this, message);
-            }
-
-        } else {
+        else {
             patientList = new PatientList();
             int id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
             patientList.setPatientId(id);
@@ -525,7 +559,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 middleName = "|";
             }
             patientList.setPatientName(firstName + " " + middleName + " " + lastName);
-            patientList.setSalutation(0);
+            patientList.setSalutation(mSelectedSalutationOfPatient);
             patientList.setOutStandingAmount("0.00");
             patientList.setPatientImageUrl("");
             patientList.setPatientEmail("");
@@ -548,28 +582,24 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             patientList.setPatientCityId(cityID);
             patientList.setCreationDate(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN));
 
-
-            String refName = mReferredBy.getText().toString().trim();
-            String refMob = mReferredPhone.getText().toString().trim();
-            String refEmail = mReferredEmail.getText().toString().trim();
-
             //----------
             if (mReferenceDetailLayout.getVisibility() == View.VISIBLE) {
                 PatientReferenceDetails ref = new PatientReferenceDetails();
                 ref.setName(refName);
-                ref.setPhoneNumber(Integer.parseInt(refMob));
+                ref.setPhoneNumber(refMob);
                 ref.setEmailId(refEmail);
-                ref.setReferredTypeId(mSelectedReferenceTypeID);
+                //// mSelectedReferenceTypeID 1:DOCTOR and 2: PATIENT
+                ref.setReferredTypeId(String.valueOf(mSelectedReferenceTypeID));
                 if (mSelectedReferenceTypeID == 1) {
-                    ref.setDocId(mSelectedReferencePersonData.getId());
-                    ref.setPatientId(0);
+                    ref.setDocId(String.valueOf(mSelectedDoctorReference.getId()));
                 } else if (mSelectedReferenceTypeID == 2) {
-                    ref.setPatientId(mSelectedReferencePersonData.getId());
-                    ref.setDocId(0);
+                    ref.setPatientId(String.valueOf(mSelectedPatientReference.getPatientId()));
                 }
                 //-----------
 
-                patientList.setReferenceDetails(ref);
+                patientList.setReferedDetails(ref);
+            } else {
+                patientList.setReferedDetails(null);
             }
 
         }
@@ -810,14 +840,31 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 .show();
     }
 
-    private void referenceBySpinnerConfig() {
-
-        final String[] reffferdBy = getResources().getStringArray(R.array.reffferd_by);
+    private void doSpinnerItemSelectedListener() {
 
         mReferenceBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mSelectedReferenceTypeID = position;
+
+                if (position == 2) {
+                    mReferredEmail.setEnabled(false);
+                    mReferredPhone.setEnabled(false);
+                }
+                mReferredBy.setText("");
+                mReferredEmail.setText("");
+                mReferredPhone.setText("");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        mSalutationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mSelectedSalutationOfPatient = position;
             }
 
             @Override

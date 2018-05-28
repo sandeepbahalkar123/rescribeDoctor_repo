@@ -312,6 +312,13 @@ public class RescribeConstants {
         String ONLY_ATTACHMENTS = "only attachments";
         String NO_SHOW = "no show";
     }
+
+    public interface SALUTATIONS {
+        String MR = "1";
+        String MRS = "2";
+        String MISS = "3";
+        String OTHER = "4";
+    }
 }
 
 

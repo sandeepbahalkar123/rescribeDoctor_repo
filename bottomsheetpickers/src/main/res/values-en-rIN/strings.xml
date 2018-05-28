@@ -23,7 +23,7 @@
     <string name="bsp_select_hours" msgid="7651068754188418859">"Select hours"</string>
     <string name="bsp_select_minutes" msgid="8327182090226828481">"Select minutes"</string>
     <string name="bsp_day_picker_description" msgid="3968620852217927702">"Month grid of days"</string>
-    <string name="bsp_year_picker_description" msgid="6963340404644587098">"Year list"</string>
+    <string name="bsp_year_picker_description" msgid="6963340404644587098">"Year mDataList"</string>
     <string name="bsp_select_day" msgid="3973338219107019769">"Select month and day"</string>
     <string name="bsp_select_year" msgid="2603330600102539372">"Select year"</string>
     <string name="bsp_item_is_selected" msgid="2674929164900463786">"<xliff:g id="ITEM">%1$s</xliff:g> selected"</string>

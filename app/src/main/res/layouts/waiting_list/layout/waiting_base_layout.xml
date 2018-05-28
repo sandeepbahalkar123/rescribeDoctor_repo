@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -43,8 +44,22 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginTop="@dimen/dp5"
-        app:srcCompat="@drawable/ic_add_action"
         android:visibility="visible"
-        app:backgroundTint="@color/floating_blue_color" />
+        app:backgroundTint="@color/floating_blue_color"
+        app:srcCompat="@drawable/ic_add_action" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addNewPatientFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginTop="@dimen/dp5"
+        android:visibility="visible"
+        app:backgroundTint="@color/floating_blue_color"
+        app:srcCompat="@drawable/add_patient"
+        tools:visibility="visible" />
 
 </android.support.design.widget.CoordinatorLayout>

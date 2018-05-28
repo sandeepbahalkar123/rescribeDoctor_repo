@@ -44,10 +44,10 @@
     <string name="bsp_day_picker_description">Month grid of days</string>
     <!--
         Content description for the year selector in the date picker, which displays
-        a scrolling, vertical list of years.
+        a scrolling, vertical mDataList of years.
         [CHAR LIMIT=50]
      -->
-    <string name="bsp_year_picker_description">Year list</string>
+    <string name="bsp_year_picker_description">Year mDataList</string>
     <!-- Accessibility announcement for the day picker [CHAR LIMIT=NONE] -->
     <string name="bsp_select_day">Select month and day</string>
     <!-- Accessibility announcement for the year picker [CHAR LIMIT=NONE] -->

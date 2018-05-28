@@ -64,6 +64,8 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
     String[] mFragmentTitleList = new String[2];
     @BindView(R.id.leftFab)
     FloatingActionButton leftFab;
+    @BindView(R.id.addNewPatientFAB)
+    FloatingActionButton mAddNewPatientFAB;
     private ArrayList<WaitingclinicList> mWaitingClinicList;
     private AppointmentHelper mAppointmentHelper;
 
@@ -102,7 +104,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
             @Override
             public void onPageSelected(int position) {
 
-                 if (isAnyItemDeleted) {
+                if (isAnyItemDeleted) {
                     switch (position) {
                         case 0:
                             ActivePatientListFragment item = (ActivePatientListFragment) adapter.getItem(position);
@@ -152,7 +154,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
 
     }
 
-    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.leftFab})
+    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.leftFab, R.id.addNewPatientFAB})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -166,6 +168,8 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
                 Intent intent = new Intent(this, MyPatientsActivity.class);
                 intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM, RescribeConstants.WAITING_LIST);
                 startActivityForResult(intent, RESULT_CLOSE_ACTIVITY_WAITING_LIST);
+                break;
+            case R.id.addNewPatientFAB:
                 break;
         }
     }

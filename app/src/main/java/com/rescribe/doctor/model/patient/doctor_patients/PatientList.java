@@ -83,7 +83,9 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     private String patientState;
     private String patientAddress;
 
-    private PatientReferenceDetails referenceDetails;
+    @SerializedName("referedDetails")
+    @Expose
+    private PatientReferenceDetails referedDetails;
     //---------------
 
     private boolean isOfflinePatientSynced = true; //considered always sync with server.
@@ -351,11 +353,11 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientAddress = patientAddress;
     }
 
-    public PatientReferenceDetails getReferenceDetails() {
-        return referenceDetails;
+    public PatientReferenceDetails getReferedDetails() {
+        return referedDetails;
     }
 
-    public void setReferenceDetails(PatientReferenceDetails referenceDetails) {
-        this.referenceDetails = referenceDetails;
+    public void setReferedDetails(PatientReferenceDetails referedDetails) {
+        this.referedDetails = referedDetails;
     }
 }

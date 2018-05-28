@@ -25,7 +25,7 @@
              This attribute is only applied if the time picker is using the bottom
              sheet layout.
 
-             This should be a color state list where the enabled state will be used
+             This should be a color state mDataList where the enabled state will be used
              when the button is enabled. -->
         <attr name="bsp_fabBackgroundColor" format="color" />
 
@@ -54,12 +54,12 @@
         <attr name="bsp_animateFabIn" format="boolean" />
 
         <!-- The text color for the number keys. This should be a color
-             state list where the enabled state will be used when the number
+             state mDataList where the enabled state will be used when the number
              key is enabled. -->
         <attr name="bsp_numberKeysTextColor" format="color" />
 
         <!-- The text color for the alt keys, i.e. "AM" and "PM" for 12-hour mode.
-             This should be a color state list where the enabled state will be used
+             This should be a color state mDataList where the enabled state will be used
              when the alt key is enabled. -->
         <attr name="bsp_altKeysTextColor" format="color" />
 
@@ -69,7 +69,7 @@
         <!-- The text color for the inputted AM/PM in the header. -->
         <attr name="bsp_inputAmPmTextColor" format="color" />
 
-        <!-- Tint to apply to the backspace icon. This should be a color state list
+        <!-- Tint to apply to the backspace icon. This should be a color state mDataList
              where the enabled state will be used when the backspace key is enabled. -->
         <attr name="bsp_backspaceTint" format="color" />
 
@@ -99,7 +99,7 @@
         <!-- The tint to apply to the floating action button's icon.
              This attribute is only applied if the time picker is using the bottom sheet layout.
 
-             This should be a color state list where the enabled state will be used when the
+             This should be a color state mDataList where the enabled state will be used when the
              floating action button is enabled. -->
         <attr name="bsp_fabIconTint" format="color" />
     </declare-styleable>
