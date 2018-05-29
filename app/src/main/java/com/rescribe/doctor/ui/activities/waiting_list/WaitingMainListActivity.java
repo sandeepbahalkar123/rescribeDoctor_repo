@@ -17,12 +17,16 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.waiting_list.Active;
+import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.model.waiting_list.WaitingListBaseModel;
+import com.rescribe.doctor.model.waiting_list.WaitingPatientList;
 import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.waiting_list.ActivePatientListFragment;
 import com.rescribe.doctor.ui.fragments.waiting_list.ViewAllPatientListFragment;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -60,12 +64,12 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
     String[] mFragmentTitleList = new String[2];
     @BindView(R.id.leftFab)
     FloatingActionButton leftFab;
-    private ActivePatientListFragment mActivePatientListFragment;
-    private ViewAllPatientListFragment mViewAllPatientListFragment;
+    @BindView(R.id.addNewPatientFAB)
+    FloatingActionButton mAddNewPatientFAB;
     private ArrayList<WaitingclinicList> mWaitingClinicList;
-    private Bundle bundle;
     private AppointmentHelper mAppointmentHelper;
 
+    private boolean isAnyItemDeleted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,17 +79,53 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         mFragmentTitleList[0] = getString(R.string.active);
         mFragmentTitleList[1] = getString(R.string.view_all);
         mAppointmentHelper = new AppointmentHelper(this, this);
-        mAppointmentHelper.doGetWaitingList();
+        doCallGetWaitingListAPI();
     }
 
     private void setupViewPager(ViewPager viewPager) {
         titleTextView.setText(getString(R.string.waiting_list));
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        mActivePatientListFragment = ActivePatientListFragment.newInstance(bundle);
-        mViewAllPatientListFragment = ViewAllPatientListFragment.newInstance(bundle);
-        adapter.addFragment(mActivePatientListFragment, getString(R.string.active));
-        adapter.addFragment(mViewAllPatientListFragment, getString(R.string.view_all));
+        final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        //-----------
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(RescribeConstants.WAITING_LIST_INFO, mWaitingClinicList);
+        bundle.putInt(LOCATION_ID, getIntent().getIntExtra(LOCATION_ID, -1));
+        //-----------
+        adapter.addFragment(ActivePatientListFragment.newInstance(bundle), getString(R.string.active));
+        adapter.addFragment(ViewAllPatientListFragment.newInstance(bundle), getString(R.string.view_all));
         viewPager.setAdapter(adapter);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                CommonMethods.Log("addOnPageChangeListener", "" + adapter.getPageTitle(position));
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                if (isAnyItemDeleted) {
+                    switch (position) {
+                        case 0:
+                            ActivePatientListFragment item = (ActivePatientListFragment) adapter.getItem(position);
+                            item.init();
+                            break;
+                        case 1:
+                            ViewAllPatientListFragment itemViewAll = (ViewAllPatientListFragment) adapter.getItem(position);
+                            itemViewAll.init();
+                            break;
+                    }
+                    isAnyItemDeleted = false;
+                }
+
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
@@ -93,9 +133,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         if (customResponse != null) {
             WaitingListBaseModel waitingListBaseModel = (WaitingListBaseModel) customResponse;
             mWaitingClinicList = waitingListBaseModel.getWaitingListDataModel().getWaitingclinicList();
-            bundle = new Bundle();
-            bundle.putParcelableArrayList(RescribeConstants.WAITING_LIST_INFO, mWaitingClinicList);
-            bundle.putInt(LOCATION_ID, getIntent().getIntExtra(LOCATION_ID, -1));
+
             setupViewPager(viewpager);
             tabs.setupWithViewPager(viewpager);
         }
@@ -116,11 +154,11 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
 
     }
 
-    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView,R.id.leftFab})
+    @OnClick({R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.leftFab, R.id.addNewPatientFAB})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
-               onBackPressed();
+                onBackPressed();
                 break;
             case R.id.titleTextView:
                 break;
@@ -128,8 +166,10 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
                 break;
             case R.id.leftFab:
                 Intent intent = new Intent(this, MyPatientsActivity.class);
-                intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM,RescribeConstants.WAITING_LIST);
-                startActivityForResult(intent,RESULT_CLOSE_ACTIVITY_WAITING_LIST);
+                intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM, RescribeConstants.WAITING_LIST);
+                startActivityForResult(intent, RESULT_CLOSE_ACTIVITY_WAITING_LIST);
+                break;
+            case R.id.addNewPatientFAB:
                 break;
         }
     }
@@ -174,5 +214,43 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         if (requestCode == RESULT_CLOSE_ACTIVITY_WAITING_LIST) {
             finish();
         }
+    }
+
+    public void doCallGetWaitingListAPI() {
+        mAppointmentHelper.doGetWaitingList();
+    }
+
+    public void deletePatientFromWaitingClinicList(int clinicId, int waitingID) {
+
+        for (WaitingclinicList cList :
+                mWaitingClinicList) {
+            if (cList.getClinicId() == clinicId) {
+                WaitingPatientList waitingPatientList = cList.getWaitingPatientList();
+                //---------
+                ArrayList<Active> activeList = waitingPatientList.getActive();
+                for (Active activeObj :
+                        activeList) {
+                    if (activeObj.getWaitingId() == waitingID) {
+                        waitingPatientList.getActive().remove(activeObj);
+                        isAnyItemDeleted = true;
+                        break;
+                    }
+                }
+                //-------
+                ArrayList<ViewAll> viewAllList = waitingPatientList.getViewAll();
+                for (ViewAll viewAllObj :
+                        viewAllList) {
+                    if (viewAllObj.getWaitingId() == waitingID) {
+                        waitingPatientList.getViewAll().remove(viewAllObj);
+                        isAnyItemDeleted = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public ArrayList<WaitingclinicList> getReceivedWaitingClinicList() {
+        return mWaitingClinicList;
     }
 }

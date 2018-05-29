@@ -3,9 +3,13 @@ package com.rescribe.doctor.model.patient.add_new_patient;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientReferenceDetails;
 
 public class PatientDetail implements CustomResponse {
 
+    @SerializedName("salutation")
+    @Expose
+    private int salutation;
     @SerializedName("mobilePatientId")
     @Expose
     private int mobilePatientId;
@@ -36,6 +40,16 @@ public class PatientDetail implements CustomResponse {
     @SerializedName("referenceId")
     @Expose
     private String offlineReferenceID;
+
+    //-------fields for adding patient in offline mode--------
+
+    private String patientState;
+    private String patientAddress;
+
+    @SerializedName("referedDetails")
+    @Expose
+    private PatientReferenceDetails referedDetails;
+    //---------------
 
 
     public int getMobilePatientId() {
@@ -116,5 +130,37 @@ public class PatientDetail implements CustomResponse {
 
     public void setOfflineReferenceID(String offlineReferenceID) {
         this.offlineReferenceID = offlineReferenceID;
+    }
+
+    public String getPatientState() {
+        return patientState;
+    }
+
+    public void setPatientState(String patientState) {
+        this.patientState = patientState;
+    }
+
+    public String getPatientAddress() {
+        return patientAddress;
+    }
+
+    public void setPatientAddress(String patientAddress) {
+        this.patientAddress = patientAddress;
+    }
+
+    public PatientReferenceDetails getReferedDetails() {
+        return referedDetails;
+    }
+
+    public void setReferedDetails(PatientReferenceDetails referedDetails) {
+        this.referedDetails = referedDetails;
+    }
+
+    public int getSalutation() {
+        return salutation;
+    }
+
+    public void setSalutation(int salutation) {
+        this.salutation = salutation;
     }
 }

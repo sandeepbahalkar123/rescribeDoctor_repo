@@ -2,7 +2,6 @@ package com.rescribe.doctor.ui.fragments.login;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,19 +19,17 @@ import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
-import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.singleton.RescribeApplication;
-import com.rescribe.doctor.ui.activities.AppGlobalContainerActivity;
+import com.rescribe.doctor.services.job_creator_download_cities.CitySyncJob;
 import com.rescribe.doctor.ui.activities.ForgotPasswordWebViewActivity;
 import com.rescribe.doctor.ui.activities.HomePageActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -80,6 +77,12 @@ public class LoginFragment extends Fragment implements HelperResponse {
         View rootView = inflater.inflate(R.layout.fragment_login, container, false);
 
         unbinder = ButterKnife.bind(this, rootView);
+
+        //-----------
+        editTextEmailID.setText("sandeep.nehte@scorgtechnologies.com");
+        editTextPassword.setText("doctor");
+        //-----------
+
         return rootView;
     }
 
@@ -191,6 +194,14 @@ public class LoginFragment extends Fragment implements HelperResponse {
             if (receivedModel.getCommon().isSuccess()) {
 
                 DocDetail docDetail = receivedModel.getDoctorLoginData().getDocDetail();
+
+                //-----------
+                HashSet<Integer> uniqStatesOfClinic = docDetail.getUniqStatesOfClinic();
+                if (uniqStatesOfClinic.size() > 0) {
+                    new CitySyncJob().runJobImmediately(uniqStatesOfClinic);
+                }
+                //-----------
+
                 String authToken = receivedModel.getDoctorLoginData().getAuthToken();
 
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, authToken, getActivity());
@@ -212,6 +223,7 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 startActivity(intent);
                 new AppDBHelper(getContext());
                 getActivity().finish();
+
 
             } else {
                 CommonMethods.showToast(getActivity(), receivedModel.getCommon().getStatusMessage());

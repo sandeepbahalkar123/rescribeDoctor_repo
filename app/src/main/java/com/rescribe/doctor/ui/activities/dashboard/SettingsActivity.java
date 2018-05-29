@@ -8,8 +8,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -59,6 +61,14 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
     RelativeLayout selectMenuLayout;
     @BindView(R.id.addPatientRadioSwitch)
     SwitchButton mAddPatientRadioSwitch;
+    //--------
+    @BindView(R.id.addressDetailCheckbox)
+    CheckedTextView mAddressDetailCheckbox;
+    @BindView(R.id.referenceDetailCheckbox)
+    CheckedTextView mReferenceDetailCheckbox;
+    //--------
+    @BindView(R.id.showOtherSettingForOfflinePatient)
+    LinearLayout mShowOtherSettingForOfflinePatient;
     private AppDBHelper appDBHelper;
     private Context mContext;
     private LoginHelper loginHelper;
@@ -81,13 +91,29 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         titleTextView.setText(getString(R.string.settings));
         backImageView.setVisibility(View.GONE);
 
-        mAddPatientRadioSwitch.setCheckedNoEvent(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, mContext));
+        //-------------
+        boolean aBoolean = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, mContext);
+        mAddPatientRadioSwitch.setCheckedNoEvent(aBoolean);
+        if (aBoolean) {
+            //the values are inverted bcaz logic implemented based on clicked ;)
+            setCheckBoxDrawable(!RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_ADDRESS_DETAILS, mContext), getString(R.string.address_details));
+            setCheckBoxDrawable(!RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, mContext), getString(R.string.referenced_details));
+            mShowOtherSettingForOfflinePatient.setVisibility(View.VISIBLE);
+        } else {
+            mShowOtherSettingForOfflinePatient.setVisibility(View.GONE);
+        }
+        //-------------
 
         mAddPatientRadioSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, isChecked, mContext);
                 mAddPatientRadioSwitch.setChecked(isChecked);
+                if (isChecked) {
+                    mShowOtherSettingForOfflinePatient.setVisibility(View.VISIBLE);
+                } else {
+                    mShowOtherSettingForOfflinePatient.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -117,7 +143,7 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         super.onBackPressed();
     }
 
-    @OnClick({R.id.backImageView, R.id.selectMenuLayout})
+    @OnClick({R.id.backImageView, R.id.selectMenuLayout, R.id.addressDetailCheckbox, R.id.referenceDetailCheckbox})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -126,7 +152,41 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
             case R.id.selectMenuLayout:
                 showLogoutDialog();
                 break;
+            case R.id.addressDetailCheckbox:
+                boolean checked = mAddressDetailCheckbox.isChecked();
+                boolean returnAddFlag = setCheckBoxDrawable(checked, getString(R.string.address_details));
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_ADDRESS_DETAILS, returnAddFlag, mContext);
+                break;
+            case R.id.referenceDetailCheckbox:
+                boolean refChecked = mReferenceDetailCheckbox.isChecked();
+                boolean returnFlag = setCheckBoxDrawable(refChecked, getString(R.string.referenced_details));
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, returnFlag, mContext);
+                break;
         }
+    }
+
+    private boolean setCheckBoxDrawable(boolean flag, String type) {
+        boolean returnFlag = !flag;
+
+        if (getString(R.string.address_details).equalsIgnoreCase(type)) {
+
+            mAddressDetailCheckbox.setChecked(returnFlag);
+            if (flag) {
+                mAddressDetailCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.unchked, 0);
+            } else {
+                mAddressDetailCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.check_box, 0);
+            }
+        } else if (getString(R.string.referenced_details).equalsIgnoreCase(type)) {
+
+            mReferenceDetailCheckbox.setChecked(returnFlag);
+            if (flag) {
+                mReferenceDetailCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.unchked, 0);
+            } else {
+                mReferenceDetailCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.check_box, 0);
+            }
+        }
+        return returnFlag;
+
     }
 
     private void showLogoutDialog() {

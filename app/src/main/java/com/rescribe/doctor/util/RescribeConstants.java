@@ -23,7 +23,7 @@ public class RescribeConstants {
     public static final String OS = "OS";
     public static final String OSVERSION = "OsVersion";
     public static final String DEVICE_TYPE = "DeviceType";
-    public static final String APP_NAME ="appName";
+    public static final String APP_NAME = "appName";
     public static final String ACCESS_TOKEN = "accessToken";
     public static final String TOKEN_TYPE = "token_type";
     public static final String REFRESH_TOKEN = "refresh_token";
@@ -113,6 +113,10 @@ public class RescribeConstants {
     public static final String TASK_DELETE_PATIENT_OPD_ATTCHMENTS = RescribeConstants.BLANK + 36;
     public static final String TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT = RescribeConstants.BLANK + 37;
     public static final String TASK_CONFIRM_APPOINTMENT = RescribeConstants.BLANK + 38;
+    public static final String TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST = RescribeConstants.BLANK + 39;
+    public static final String TASK_GET_STATE_AND_CITY_TO_ADD_NEW_PATIENT = RescribeConstants.BLANK + 40;
+    public static final String TASK_GET_AREA_TO_ADD_NEW_PATIENT = RescribeConstants.BLANK + 41;
+    public static final String TASK_GET_DOC_LIST_FOR_REFERENCE_TO_ADD_PATIENT = RescribeConstants.BLANK + 42;
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
 
@@ -164,6 +168,8 @@ public class RescribeConstants {
     public static final String PATIENT_LIST = "patient_list";
     public static final String LOCATION_ID = "location_id";
     public static final String CITY_ID = "city_id";
+    public static final String STATE_ID = "state_id";
+    public static final String AREA_LIST = "AREA_LIST";
     public static final String CITY_NAME = "city_name";
     public static final String TEMPLATE_OBJECT = "template_object";
     public static final String CLINIC_ID = "clinic_id";
@@ -207,6 +213,12 @@ public class RescribeConstants {
         int IN_CONSULTATION = 7;
         int IN_QUEUE = 8;
         int COMING = 9;
+    }
+
+    public interface WAITING_LIST_STATUS {
+        int IN_CONSULTATION = 7;
+        int COMPLETED = 3;
+        int IN_QUEUE = 8;
     }
 
     public interface USER_STATUS {
@@ -299,6 +311,13 @@ public class RescribeConstants {
         String OPD_SAVED = "opd saved";
         String ONLY_ATTACHMENTS = "only attachments";
         String NO_SHOW = "no show";
+    }
+
+    public interface SALUTATIONS {
+        String MR = "1";
+        String MRS = "2";
+        String MISS = "3";
+        String OTHER = "4";
     }
 }
 

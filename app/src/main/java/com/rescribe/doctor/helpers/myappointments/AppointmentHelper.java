@@ -6,6 +6,7 @@ import com.android.volley.Request;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
 import com.rescribe.doctor.model.patient.add_new_patient.SyncPatientsRequest;
+import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.city_details.CityData;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -19,7 +20,7 @@ import com.rescribe.doctor.model.request_appointment_confirmation.RequestAppoint
 import com.rescribe.doctor.model.request_appointment_confirmation.Reschedule;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
-import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
+import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestWaitingListStatusChangeBaseModel;
 import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAndDropBaseModel;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.network.ConnectionFactory;
@@ -28,8 +29,11 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 
 import static com.rescribe.doctor.util.RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
 
@@ -143,7 +147,8 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_ADD_TO_WAITING_LIST);
     }
 
-    public void doDeleteWaitingList(RequestDeleteBaseModel mRequestDeleteBaseModel) {
+    //---------- Waiting list API : START-------
+    public void doDeleteWaitingList(RequestWaitingListStatusChangeBaseModel mRequestDeleteBaseModel) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_WAITING_LIST, Request.Method.POST, true);
         mConnectionFactory.setPostParams(mRequestDeleteBaseModel);
         mConnectionFactory.setHeaderParams();
@@ -151,6 +156,16 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_DELETE_WAITING_LIST);
     }
 
+    //Use to change waiting list status to in-consultation or completed.
+    public void doUpdateWaitingListStatus(RequestWaitingListStatusChangeBaseModel mRequestDeleteBaseModel) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST, Request.Method.POST, true);
+        mConnectionFactory.setPostParams(mRequestDeleteBaseModel);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.INCONSULATION_OR_COMPLETED_WAITING_LIST);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST);
+    }
+
+    //----------- Waiting list API :END------
     public void doAppointmentCancelOrComplete(RequestAppointmentCancelModel mRequestAppointmentCancelModel) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE, Request.Method.POST, true);
         mConnectionFactory.setPostParams(mRequestAppointmentCancelModel);
@@ -238,6 +253,7 @@ public class AppointmentHelper implements ConnectionListener {
 
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ADD_NEW_PATIENT, Request.Method.POST, false);
         PatientDetail patient = new PatientDetail();
+        patient.setSalutation(dataToAdd.getSalutation());
         patient.setMobilePatientId(dataToAdd.getPatientId());
 
         //---------
@@ -258,6 +274,9 @@ public class AppointmentHelper implements ConnectionListener {
         patient.setClinicId(dataToAdd.getClinicId());
         patient.setPatientDob(dataToAdd.getDateOfBirth());
         patient.setOfflineReferenceID(dataToAdd.getReferenceID());
+        patient.setPatientState(dataToAdd.getPatientState());
+        patient.setPatientAddress(dataToAdd.getPatientAddress());
+        patient.setReferedDetails(dataToAdd.getReferedDetails());
 
         SyncPatientsRequest mSyncPatientsRequest = new SyncPatientsRequest();
         String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
@@ -273,6 +292,18 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_ADD_NEW_PATIENT);
     }
 
+    public void getAreaOfSelectedCity(int mCityID) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_AREA_TO_ADD_NEW_PATIENT, Request.Method.POST, false);
+
+        // send cityId to get area list based on city-id.
+        CityData c = new CityData();
+        c.setCityId(mCityID);
+
+        mConnectionFactory.setPostParams(c);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.GET_ALL_AREA_OF_CITIES_TO_ADD_PATIENT);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_AREA_TO_ADD_NEW_PATIENT);
+    }
 }
 
 

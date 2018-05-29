@@ -53,6 +53,7 @@
     <string name="message_forgot_password">Please provide your email id to access the reset password link.</string>
     <string name="message_social_login_confirm_mobile_no_password">Please input your mobile no. and password.</string>
     <string name="submit">Submit</string>
+    <string name="save">Save</string>
     <string name="err_email_invalid">Enter valid email.</string>
     <string name="err_otp_invalid">Enter valid OTP</string>
     <string name="err_maximum_otp_retries">You have exceeded maximum retry of OTP generation, please try after sometime.</string>
@@ -140,6 +141,7 @@
     <string name="greater_than_sign"><![CDATA[>]]></string>
     <string name="age_range">Age Range</string>
     <string name="city">City</string>
+    <string name="state">State</string>
     <string name="select_city">Select City</string>
     <string name="welcome">Welcome,</string>
     <string name="appointment_status">Appointment Status</string>
@@ -189,6 +191,10 @@
     <string name="select_date_text">Select Date</string>
     <string name="enter_date">Enter Date</string>
     <string name="enter_address">Enter Address</string>
+    <string name="address_details">Address details</string>
+    <string name="address_line">Address line</string>
+    <string name="area">Area</string>
+    <string name="referenced_details">Reference details</string>
     <string name="next">Next</string>
     <string name="addrecords">Add Records</string>
     <string name="upload">Upload</string>
@@ -204,8 +210,8 @@
     <string name="select_clinic_location">Select Clinic Location</string>
     <string name="patients_added_to_waiting_list">Patients added successfully!</string>
     <string name="patient_limit_exceeded">Patient limit exceeded!</string>
-    <string name="already_exists_in_waiting_list">All patients already exists in waiting list!</string>
-    <string name="added_to_waiting_list">added to waiting list!</string>
+    <string name="already_exists_in_waiting_list">All patients already exists in waiting mDataList!</string>
+    <string name="added_to_waiting_list">added to waiting mDataList!</string>
     <string name="appointment_completed">Appointment is completed</string>
     <string name="appointment_cancelled">Appointment is cancelled</string>
     <string name="confirmed">confirmed</string>
@@ -215,7 +221,7 @@
     <string name="other">Other</string>
     <string name="enter_sms_text_here">Enter sms text here</string>
     <string name="location">Location</string>
-    <string name="complete_and_cancelled_status">Complete and cancel status patients cannot be added to waiting list</string>
+    <string name="complete_and_cancelled_status">Complete and cancel status patients cannot be added to waiting mDataList</string>
     <string name="today_new_patient">"Today's\nNew Patients"</string>
     <string name="today_appointment">"Today's\nAppointments"</string>
     <string name="today_waiting_list"> "Today's\nWaiting List"</string>
@@ -241,6 +247,7 @@
     <string name="reference_id">Reference ID.</string>
     <string name="reference_id_input_err_msg">Reference ID should be alphanumeric, no special characters and no white spaces.</string>
     <string name="add_patient_offline_msg">No internet connection found, still you can add patient offline.</string>
+    <string name="add_patient_offline_and_book_apt">To use this option, you must have valid internet connection</string>
     <string name="setting_add_patient_header">Add Patient Offline</string>
 
     <string name="book_appointment">Book Appointment</string>
@@ -263,10 +270,39 @@
     <string name="later">Later</string>
     <string name="patient_registration">Patient Registration</string>
     <string name="cannot_completed_appointment">You cannot complete appointment for future dates.</string>
-    <string name="you_cannot_add_waiting_list">You cannot add future appointments in waiting list</string>
-    <string name="waiting_list_message">Oops !! There are no patients currently in the waiting list.</string>
+    <string name="you_cannot_add_waiting_list">You cannot add future appointments in waiting mDataList</string>
+    <string name="waiting_list_message">Oops !! There are no patients currently in the waiting mDataList.</string>
     <string name="company_name">SCORG TECHNOLOGIES Pvt.Ltd.</string>
-    <string name="added_to_waiting_list_message">Completed and Cancelled status patients cannot be added to waiting list</string>
+    <string name="added_to_waiting_list_message">Completed and Cancelled status patients cannot be added to waiting mDataList</string>
 
 
+    <string name="delete">Delete</string>
+    <string name="inconsultation">In-consultation</string>
+    <string name="err_inconsultation_delete_msg">You can not delete in-consultation patient</string>
+    <string name="err_inconsultation_already_msg">Patient is already in-consultation</string>
+    <string name="plz_select_option">Please select option</string>
+    <string name="plz_select_state">Please select state</string>
+    <string name="plz_select_city">Please select city</string>
+    <string name="err_msg_no_area_found_for_city">No area found for selected city, you can add new area</string>
+    <string name="reffered_by">Refer by:</string>
+    <string name="err_msg_select_reffered_by">Select refer by</string>
+
+    <string-array name="add_patient_options">
+        <item>Save patient</item>
+        <item>Save and add to waiting mDataList</item>
+        <item>Save and book appointment</item>
+    </string-array>
+
+    <string-array name="reffferd_by">
+        <item>Select reference</item>
+        <item>Doctor</item>
+        <item>Patient</item>
+    </string-array>
+
+    <string-array name="salutation_entries">
+        <item>Mr.</item>
+        <item>Mrs.</item>
+        <item>Miss</item>
+        <item>Other</item>
+    </string-array>
 </resources>
