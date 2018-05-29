@@ -235,7 +235,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 onBackPressed();
                 break;
             case R.id.btnAddPatientSubmit:
-                showDialogToSelectOption();
+                mAddedPatientListData = validate();
+                if(mAddedPatientListData!=null)
+                    showDialogToSelectOption();
                 /* */
                 break;
             case R.id.stateEditText:
@@ -781,21 +783,21 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     public void onClick(DialogInterface dialog, int which) {
                         switch (mAddNewPatientSelectedOption) {
                             case 0:
-                                mAddedPatientListData = validate();
+//                                mAddedPatientListData = validate();
                                 boolean internetAvailable = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-                                if (mAddedPatientListData != null) {
+//                                if (mAddedPatientListData != null) {
                                     if (internetAvailable && mAddPatientOfflineSetting) {
                                         mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
                                         mAppointmentHelper.addNewPatient(mAddedPatientListData);
                                     } else {
                                         addOfflinePatient();
                                     }
-                                }
+//                                }
                                 break;
                             case 1: {
-                                mAddedPatientListData = validate();
+//                                mAddedPatientListData = validate();
                                 boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-                                if (mAddedPatientListData != null) {
+//                                if (mAddedPatientListData != null) {
                                     if (internetAvailableCheck && mAddPatientOfflineSetting) {
                                         //mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
                                         mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
@@ -803,13 +805,13 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                                     } else {
                                         CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
                                     }
-                                }
+//                                }
                             }
                             break;
                             case 2: {
-                                mAddedPatientListData = validate();
+//                                mAddedPatientListData = validate();
                                 boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-                                if (mAddedPatientListData != null) {
+//                                if (mAddedPatientListData != null) {
                                     if (internetAvailableCheck && mAddPatientOfflineSetting) {
                                         //mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
                                         mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
@@ -817,7 +819,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                                     } else {
                                         CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
                                     }
-                                }
+//                                }
                             }
                             break;
                             default:

@@ -269,7 +269,9 @@ public class DrawerForMyPatients extends Fragment implements HelperResponse, Sor
                         locationContentRecycleView.setAdapter(mDrawerPatientsCityNameAdapter);
                     }
                 }
-            } else locationView.setVisibility(View.GONE);
+            } else {
+                locationView.setVisibility(View.GONE);
+            }
         }
     }
 
