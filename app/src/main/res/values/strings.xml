@@ -208,7 +208,7 @@
     <string name="view_all">VIEW ALL</string>
     <string name="in_time">In Time</string>
     <string name="select_clinic_location">Select Clinic Location</string>
-    <string name="patients_added_to_waiting_list">Patients added successfully!</string>
+    <string name="patients_added_successfully">Patients added successfully!</string>
     <string name="patient_limit_exceeded">Patient limit exceeded!</string>
     <string name="already_exists_in_waiting_list">All patients already exists in waiting mDataList!</string>
     <string name="added_to_waiting_list">added to waiting mDataList!</string>

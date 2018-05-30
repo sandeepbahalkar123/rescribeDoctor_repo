@@ -152,7 +152,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private boolean mAddPatientOfflineSetting;
     private PatientList mAddedPatientListData;
     //----
-    private String mDoOperationTaskID;
+    private String mDoOperationTaskID = null;
     private int mAddNewPatientSelectedOption = -1;
     //------
     private AppointmentHelper mAppointmentHelper;
@@ -372,6 +372,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private void addOfflinePatient() {
 
         if (AppDBHelper.getInstance(mContext).addNewPatient(mAddedPatientListData) != -1) {
+
+            CommonMethods.showToast(this,getString(R.string.patients_added_successfully));
+
             Bundle bundle = new Bundle();
             // this is done to replzce | with space, | used in case blank middle name.
             String replace = mAddedPatientListData.getPatientName().replace("|", "");
@@ -392,9 +395,13 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             bundle.putInt(RescribeConstants.CLINIC_ID, mAddedPatientListData.getClinicId());
             bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(mAddedPatientListData.getPatientId()));
             bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mAddedPatientListData.getHospitalPatId()));
-            Intent intent = new Intent(this, PatientHistoryActivity.class);
-            intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
-            startActivity(intent);
+
+            if (mDoOperationTaskID.equalsIgnoreCase(RescribeConstants.TASK_ADD_NEW_PATIENT)) {
+                Intent intent = new Intent(this, PatientHistoryActivity.class);
+                intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
+                startActivity(intent);
+            }else
+
             finish();
         } else
             CommonMethods.showToast(mContext, "Failed to store");
@@ -724,7 +731,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             case RescribeConstants.TASK_ADD_TO_WAITING_LIST: {
                 AddToWaitingListBaseModel addToWaitingListBaseModel = (AddToWaitingListBaseModel) customResponse;
                 if (addToWaitingListBaseModel.getCommon().isSuccess()) {
-                    if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase()) || addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
+                    if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_successfully).toLowerCase()) || addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
                         Intent intent = new Intent(this, WaitingMainListActivity.class);
                         intent.putExtra(LOCATION_ID, locationID);
                         startActivity(intent);
@@ -858,40 +865,24 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private void doAddNewPatientOnSelectedOption() {
         switch (mAddNewPatientSelectedOption) {
             case 0:
-                boolean internetAvailable = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-                if (internetAvailable && mAddPatientOfflineSetting) {
-                    mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
-                    mAppointmentHelper.addNewPatient(mAddedPatientListData);
-                } else {
-                    addOfflinePatient();
-                }
-
+                mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
                 break;
-            case 1: {
-                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-                if (internetAvailableCheck && mAddPatientOfflineSetting) {
-                    mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
-                    mAppointmentHelper.addNewPatient(mAddedPatientListData);
-                } else {
-                    CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
-                }
-
-            }
-            break;
-            case 2: {
-                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-
-                if (internetAvailableCheck && mAddPatientOfflineSetting) {
-                    mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
-                    mAppointmentHelper.addNewPatient(mAddedPatientListData);
-                } else {
-                    CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
-                }
-
-            }
-            break;
+            case 1:
+                mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
+                break;
+            case 2:
+                mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
+                break;
             default:
                 CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.plz_select_option));
+        }
+        if (mDoOperationTaskID != null) {
+            boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
+            if (internetAvailableCheck && mAddPatientOfflineSetting) {
+                mAppointmentHelper.addNewPatient(mAddedPatientListData);
+            } else {
+                addOfflinePatient();
+            }
         }
     }
 

@@ -41,9 +41,11 @@ import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.waiting_list.ActivePatientListFragment;
 import com.rescribe.doctor.ui.fragments.waiting_list.ViewAllPatientListFragment;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -87,6 +89,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
 
     private boolean isAnyItemDeleted = false;
     private Integer mLocationId;
+    private ViewPagerAdapter mViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,20 +104,20 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
 
     private void setupViewPager(ViewPager viewPager) {
         titleTextView.setText(getString(R.string.waiting_list));
-        final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         //-----------
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(RescribeConstants.WAITING_LIST_INFO, mWaitingClinicList);
         bundle.putInt(LOCATION_ID, getIntent().getIntExtra(LOCATION_ID, -1));
         //-----------
-        adapter.addFragment(ActivePatientListFragment.newInstance(bundle), getString(R.string.active));
-        adapter.addFragment(ViewAllPatientListFragment.newInstance(bundle), getString(R.string.view_all));
-        viewPager.setAdapter(adapter);
+        mViewPagerAdapter.addFragment(ActivePatientListFragment.newInstance(bundle), getString(R.string.active));
+        mViewPagerAdapter.addFragment(ViewAllPatientListFragment.newInstance(bundle), getString(R.string.view_all));
+        viewPager.setAdapter(mViewPagerAdapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                CommonMethods.Log("addOnPageChangeListener", "" + adapter.getPageTitle(position));
+                CommonMethods.Log("addOnPageChangeListener", "" + mViewPagerAdapter.getPageTitle(position));
 
             }
 
@@ -124,11 +127,11 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
                 if (isAnyItemDeleted) {
                     switch (position) {
                         case 0:
-                            ActivePatientListFragment item = (ActivePatientListFragment) adapter.getItem(position);
+                            ActivePatientListFragment item = (ActivePatientListFragment) mViewPagerAdapter.getItem(position);
                             item.init();
                             break;
                         case 1:
-                            ViewAllPatientListFragment itemViewAll = (ViewAllPatientListFragment) adapter.getItem(position);
+                            ViewAllPatientListFragment itemViewAll = (ViewAllPatientListFragment) mViewPagerAdapter.getItem(position);
                             itemViewAll.init();
                             break;
                     }
@@ -186,9 +189,40 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
                 intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM, RescribeConstants.WAITING_LIST);
                 startActivityForResult(intent, RESULT_CLOSE_ACTIVITY_WAITING_LIST);
                 break;
-            case R.id.addNewPatientFAB:
-                showDialogToSelectLocation();
+            case R.id.addNewPatientFAB: {
+
+                HashMap<String, String> selectedClinicDataMap = null;
+                Fragment item = mViewPagerAdapter.getItem(viewpager.getCurrentItem());
+                switch (viewpager.getCurrentItem()) {
+                    case 0:
+                        selectedClinicDataMap = ((ActivePatientListFragment) item).getSelectedClinicDataMap();
+                        break;
+                    case 1:
+                        selectedClinicDataMap = ((ViewAllPatientListFragment) item).getSelectedClinicDataMap();
+                        break;
+                }
+                if (selectedClinicDataMap != null) {
+                    Bundle b = new Bundle();
+                    b.putInt(RescribeConstants.CLINIC_ID, Integer.parseInt(selectedClinicDataMap.get(RescribeConstants.CLINIC_ID)));
+                    b.putInt(RescribeConstants.CITY_ID, Integer.parseInt(selectedClinicDataMap.get(RescribeConstants.CITY_ID)));
+                    b.putString(RescribeConstants.CITY_NAME, selectedClinicDataMap.get(RescribeConstants.CITY_NAME));
+                    b.putString(RescribeConstants.LOCATION_ID, selectedClinicDataMap.get(RescribeConstants.LOCATION_ID));
+
+                    Intent i = new Intent(WaitingMainListActivity.this, AddNewPatientWebViewActivity.class);
+                    //  Intent i = new Intent(getActivity(), AddNewPatientActivity.class);
+                    i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
+                    i.putExtra(RescribeConstants.START_FROM, RescribeConstants.WAITING_LIST);
+                    startActivity(i);
+
+                    boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(this);
+                    if (internetAvailableCheck) {
+                        finish();
+                    }
+                }
+
+                //   showDialogToSelectLocation();
                 break;
+            }
         }
     }
 
