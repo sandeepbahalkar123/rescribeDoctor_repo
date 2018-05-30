@@ -152,7 +152,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
         mGeneratedRequestForYearList = new HashSet<>();
 
-        mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null,getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
+        mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
     }
 
     @OnClick({R.id.backImageView, R.id.addRecordButton})
@@ -246,15 +246,20 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             @Override
             public void run() {
 
+                boolean status = false;
                 for (int i = 0; i < mTimePeriodList.size(); i++) {
                     Year temp = mTimePeriodList.get(i);
                     if (temp.getYear().equalsIgnoreCase(mCurrentSelectedTimePeriodTab.getYear()) &&
                             temp.getMonthName().equalsIgnoreCase(mCurrentSelectedTimePeriodTab.getMonthName())) {
                         mViewpager.setCurrentItem(i);
+                        status = true;
                         break;
                     }
-
                     //    mViewpager.setCurrentItem(mTimePeriodList.size());
+                }
+                if (!status) {
+
+                    mViewpager.setCurrentItem(mTimePeriodList.size()-1);
                 }
             }
         }, 0);
@@ -359,7 +364,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         intent.putExtra(RescribeConstants.OPD_ID, "0");
         intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
         intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
-        intent.putExtra(RescribeConstants.APPOINTMENT_ID,mAptId);
+        intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
         intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
         intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
         intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
@@ -483,43 +488,45 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
             mTimePeriodList = dataModel.getFormattedYearList();
 
-            mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
-            mTabLayout.setupWithViewPager(mViewpager);
-            mYearList = dataModel.getUniqueYears();
-            YearSpinnerAdapter mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
-            mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
-
-            if (dataModel.getYearsMonthsData().isEmpty()) {
-                noRecords.setVisibility(View.VISIBLE);
-                mYearSpinnerView.setVisibility(View.GONE);
-                mTabLayout.setVisibility(View.GONE);
-                mViewpager.setVisibility(View.GONE);
-            } else {
+            if (isAdded()) {
+                mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
+                mTabLayout.setupWithViewPager(mViewpager);
                 mYearList = dataModel.getUniqueYears();
-                mViewpager.setVisibility(View.VISIBLE);
-                noRecords.setVisibility(View.GONE);
-                mTabLayout.setVisibility(View.VISIBLE);
-                if (mYearList.size() > 0) {
-                    if (mYearList.size() == 1) {
-                        mYearSpinnerView.setVisibility(View.GONE);
-                        mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
-                        mYearSpinnerSingleItem.setText(mYearList.get(0));
-                    } else {
-                        mYearSpinnerView.setVisibility(View.VISIBLE);
-                        mYearSpinnerSingleItem.setVisibility(View.GONE);
-                    }
-                }
+                YearSpinnerAdapter mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
+                mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
 
-                if (mTabLayout != null) {
-                    if (mTabLayout.getTabCount() > 5) {
-                        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-                    } else {
-                        mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-                        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
+                if (dataModel.getYearsMonthsData().isEmpty()) {
+                    noRecords.setVisibility(View.VISIBLE);
+                    mYearSpinnerView.setVisibility(View.GONE);
+                    mTabLayout.setVisibility(View.GONE);
+                    mViewpager.setVisibility(View.GONE);
+                } else {
+                    mYearList = dataModel.getUniqueYears();
+                    mViewpager.setVisibility(View.VISIBLE);
+                    noRecords.setVisibility(View.GONE);
+                    mTabLayout.setVisibility(View.VISIBLE);
+                    if (mYearList.size() > 0) {
+                        if (mYearList.size() == 1) {
+                            mYearSpinnerView.setVisibility(View.GONE);
+                            mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
+                            mYearSpinnerSingleItem.setText(mYearList.get(0));
+                        } else {
+                            mYearSpinnerView.setVisibility(View.VISIBLE);
+                            mYearSpinnerSingleItem.setVisibility(View.GONE);
+                        }
                     }
-                }
 
-                setupViewPager();
+                    if (mTabLayout != null) {
+                        if (mTabLayout.getTabCount() > 5) {
+                            mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+                        } else {
+                            mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+                            mTabLayout.setTabMode(TabLayout.MODE_FIXED);
+                        }
+                    }
+
+                    setupViewPager();
+                }
             }
         }
     }
