@@ -165,6 +165,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private int mSelectedReferenceTypeID = 0;
     private DoctorData mSelectedDoctorReference;
     private PatientList mSelectedPatientReference;
+    private String mActivityStartFrom;
 
     //--------
     @Override
@@ -183,6 +184,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         mContext = this;
 
         //------------
+        mActivityStartFrom = getIntent().getStringExtra(RescribeConstants.START_FROM);
+
         Bundle extras = getIntent().getBundleExtra(RescribeConstants.PATIENT_DETAILS);
         hospitalId = extras.getInt(RescribeConstants.CLINIC_ID);
         locationID = extras.getString(RescribeConstants.LOCATION_ID);
@@ -236,9 +239,14 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 break;
             case R.id.btnAddPatientSubmit:
                 mAddedPatientListData = validate();
-                if(mAddedPatientListData!=null)
-                    showDialogToSelectOption();
-                /* */
+                if (mAddedPatientListData != null) {
+                    if (RescribeConstants.WAITING_LIST.equalsIgnoreCase(mActivityStartFrom)) {
+                        mAddNewPatientSelectedOption = 1;
+                        doAddNewPatientOnSelectedOption();
+                    } else {
+                        showDialogToSelectOption();
+                    }
+                }
                 break;
             case R.id.stateEditText:
                 Bundle iState = new Bundle();
@@ -781,50 +789,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (mAddNewPatientSelectedOption) {
-                            case 0:
-//                                mAddedPatientListData = validate();
-                                boolean internetAvailable = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-//                                if (mAddedPatientListData != null) {
-                                    if (internetAvailable && mAddPatientOfflineSetting) {
-                                        mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
-                                        mAppointmentHelper.addNewPatient(mAddedPatientListData);
-                                    } else {
-                                        addOfflinePatient();
-                                    }
-//                                }
-                                break;
-                            case 1: {
-//                                mAddedPatientListData = validate();
-                                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-//                                if (mAddedPatientListData != null) {
-                                    if (internetAvailableCheck && mAddPatientOfflineSetting) {
-                                        //mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
-                                        mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
-                                        mAppointmentHelper.addNewPatient(mAddedPatientListData);
-                                    } else {
-                                        CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
-                                    }
-//                                }
-                            }
-                            break;
-                            case 2: {
-//                                mAddedPatientListData = validate();
-                                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-//                                if (mAddedPatientListData != null) {
-                                    if (internetAvailableCheck && mAddPatientOfflineSetting) {
-                                        //mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
-                                        mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
-                                        mAppointmentHelper.addNewPatient(mAddedPatientListData);
-                                    } else {
-                                        CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
-                                    }
-//                                }
-                            }
-                            break;
-                            default:
-                                CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.plz_select_option));
-                        }
+                        doAddNewPatientOnSelectedOption();
                     }
                 })
                 .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -874,6 +839,46 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
             }
         });
+    }
+
+    private void doAddNewPatientOnSelectedOption() {
+        switch (mAddNewPatientSelectedOption) {
+            case 0:
+                boolean internetAvailable = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
+                if (internetAvailable && mAddPatientOfflineSetting) {
+                    mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
+                    mAppointmentHelper.addNewPatient(mAddedPatientListData);
+                } else {
+                    addOfflinePatient();
+                }
+
+                break;
+            case 1: {
+                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
+                if (internetAvailableCheck && mAddPatientOfflineSetting) {
+                    mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
+                    mAppointmentHelper.addNewPatient(mAddedPatientListData);
+                } else {
+                    CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
+                }
+
+            }
+            break;
+            case 2: {
+                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
+
+                if (internetAvailableCheck && mAddPatientOfflineSetting) {
+                    mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
+                    mAppointmentHelper.addNewPatient(mAddedPatientListData);
+                } else {
+                    CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
+                }
+
+            }
+            break;
+            default:
+                CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.plz_select_option));
+        }
     }
 
 }

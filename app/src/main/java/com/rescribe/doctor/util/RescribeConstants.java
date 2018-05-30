@@ -196,6 +196,7 @@ public class RescribeConstants {
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
+    public static String START_FROM = "START_FROM";
 
     public static final String[] SALUTATION = {"Mr. ", "Mrs. ", "Miss ", ""};
     public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};
@@ -313,12 +314,7 @@ public class RescribeConstants {
         String NO_SHOW = "no show";
     }
 
-    public interface SALUTATIONS {
-        String MR = "1";
-        String MRS = "2";
-        String MISS = "3";
-        String OTHER = "4";
-    }
+
 }
 
 
