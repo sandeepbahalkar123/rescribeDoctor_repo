@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -99,9 +98,8 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
             addressDetailSwitch.setCheckedNoEvent(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_ADDRESS_DETAILS, mContext));
             referenceDetailSwitch.setCheckedNoEvent(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, mContext));
             mShowOtherSettingForOfflinePatient.setVisibility(View.VISIBLE);
-        } else {
+        } else
             mShowOtherSettingForOfflinePatient.setVisibility(View.GONE);
-        }
         //-------------
 
         mAddPatientRadioSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -109,11 +107,10 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, isChecked, mContext);
                 mAddPatientRadioSwitch.setChecked(isChecked);
-                if (isChecked) {
+                if (isChecked)
                     mShowOtherSettingForOfflinePatient.setVisibility(View.VISIBLE);
-                } else {
+                else
                     mShowOtherSettingForOfflinePatient.setVisibility(View.GONE);
-                }
             }
         });
 
