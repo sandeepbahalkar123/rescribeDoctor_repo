@@ -274,8 +274,9 @@ public class AppointmentHelper implements ConnectionListener {
         patient.setClinicId(dataToAdd.getClinicId());
         patient.setPatientDob(dataToAdd.getDateOfBirth());
         patient.setOfflineReferenceID(dataToAdd.getReferenceID());
-        patient.setPatientState(dataToAdd.getPatientState());
-        patient.setPatientAddress(dataToAdd.getPatientAddress());
+
+        patient.setAddressDetails(dataToAdd.getAddressDetails());
+
         patient.setReferedDetails(dataToAdd.getReferedDetails());
 
         SyncPatientsRequest mSyncPatientsRequest = new SyncPatientsRequest();

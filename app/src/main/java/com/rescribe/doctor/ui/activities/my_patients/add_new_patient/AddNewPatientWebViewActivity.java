@@ -36,6 +36,7 @@ import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaData;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaDetailsBaseModel;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorData;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientAddressDetails;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientReferenceDetails;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
@@ -581,9 +582,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             else
                 patientList.setGender("");
 
-
-            patientList.setPatientAddress(mAddressLine.getText().toString().trim());
-
             patientList.setReferenceID(refID);
             patientList.setOfflinePatientSynced(false);
             patientList.setClinicId(hospitalId);
@@ -592,7 +590,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             patientList.setPatientCityId(cityID);
             patientList.setCreationDate(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN));
 
-            //----------
+            //------ reference details----
             if (mReferenceDetailLayout.getVisibility() == View.VISIBLE) {
                 PatientReferenceDetails ref = new PatientReferenceDetails();
                 ref.setName(refName);
@@ -605,11 +603,21 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 } else if (mSelectedReferenceTypeID == 2) {
                     ref.setPatientId(String.valueOf(mSelectedPatientReference.getPatientId()));
                 }
-                //-----------
-
                 patientList.setReferedDetails(ref);
             } else {
                 patientList.setReferedDetails(null);
+            }
+            //-----------
+            //------ address details----
+            if (mAddressDetailLayout.getVisibility() == View.VISIBLE) {
+                PatientAddressDetails address = new PatientAddressDetails();
+                address.setPatientAddress(mAddressLine.getText().toString().trim());
+                address.setPatientState("" + mSelectedStateID);
+                address.setPatientCity("" + mSelectedCityID);
+                address.setPatientArea("" + mAreaEditText.getText().toString().trim());
+                patientList.setAddressDetails(address);
+            } else {
+                patientList.setAddressDetails(null);
             }
 
         }

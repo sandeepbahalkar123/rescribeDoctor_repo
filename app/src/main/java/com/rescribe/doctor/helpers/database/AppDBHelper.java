@@ -13,7 +13,9 @@ import android.util.Log;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
 import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientAddressDetails;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientReferenceDetails;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.model.request_patients.FilterParams;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
@@ -43,7 +45,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "MyRescribe.sqlite";
     private static final String DB_PATH_SUFFIX = "/data/data/com.rescribe.doctor/databases/"; // Change
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     //this is globle table to save data of any APIs response.
     public static final String APP_DATA_TABLE = "PrescriptionData";
@@ -334,7 +336,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public Cursor getRecordUploads() {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "SELECT * FROM " + MY_RECORDS.MY_RECORDS_TABLE + " WHERE " + MY_RECORDS.UPLOAD_STATUS + " = " + FAILED;
-        return  db.rawQuery(sql, null);
+        return db.rawQuery(sql, null);
     }
 
     public void insertRecordUploads(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath, int mAptId) {
@@ -354,7 +356,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(MY_RECORDS.PARENT_CAPTION, parentCaption);
         contentValues.put(MY_RECORDS.IMAGE_PATH, imagePath);
         contentValues.put(MY_RECORDS.UPLOAD_STATUS, FAILED);
-        contentValues.put(MY_RECORDS.APT_ID,mAptId);
+        contentValues.put(MY_RECORDS.APT_ID, mAptId);
 
         db.insert(MY_RECORDS.MY_RECORDS_TABLE, null, contentValues);
 
@@ -442,6 +444,18 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String DOC_ID = "docID";
         Integer IS_SYNC_WITH_SERVER = 1;
         Integer IS_NOT_SYNC_WITH_SERVER = 0;
+
+        //-------
+        String PATIENT_ADDRESS_LINE = "patientAddressLine";
+        String PATIENT_ADDRESS_STATE = "patientAddressState";
+        String PATIENT_ADDRESS_CITY = "patientAddressCity";
+        String PATIENT_ADDRESS_AREA = "patientAddressArea";
+        //-------
+        String REFFERED_TYPE_ID = "referenceTypeID";
+        String REFERENCE_NAME = "referenceName";
+        String REFERENCE_PHONE = "referencePhone";
+        String REFERENCE_EMAIL = "referenceEmail";
+        //------
     }
 
     public ArrayList<MQTTMessage> insertChatMessage(MQTTMessage mqttMessage) {
@@ -629,6 +643,24 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(ADD_NEW_PATIENT.CREATED_TIME_STAMP, newPatient.getCreationDate());
         contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, newPatient.getHospitalPatId());
 
+        //-----ADDRESS ---
+        PatientAddressDetails addressDetails = newPatient.getAddressDetails();
+        if (addressDetails != null) {
+            contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_LINE, addressDetails.getPatientAddress());
+            contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE, addressDetails.getPatientState());
+            contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY, addressDetails.getPatientCity());
+            contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA, addressDetails.getPatientArea());
+        }
+        //-----REFERENCE----
+        PatientReferenceDetails referedDetails = newPatient.getReferedDetails();
+        if (referedDetails != null) {
+            contentValues.put(ADD_NEW_PATIENT.REFFERED_TYPE_ID, referedDetails.getReferredTypeId());
+            contentValues.put(ADD_NEW_PATIENT.REFERENCE_NAME, referedDetails.getName());
+            contentValues.put(ADD_NEW_PATIENT.REFERENCE_EMAIL, referedDetails.getEmailId());
+            contentValues.put(ADD_NEW_PATIENT.REFERENCE_PHONE, referedDetails.getPhoneNumber());
+        }
+        //------------------
+
         if (checkIsPatientExist(newPatient.getPatientId()) > 0)
             return db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?", new String[]{String.valueOf(newPatient.getPatientId())});
         else return db.insert(ADD_NEW_PATIENT.TABLE_NAME, null, contentValues);
@@ -764,6 +796,25 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 patient.setCreationDate(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
                 patient.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.HOSPITALPATID)));
 
+
+                //-----ADDRESS ---
+                PatientAddressDetails addressDetails = new PatientAddressDetails();
+
+                addressDetails.setPatientAddress(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_LINE)));
+                addressDetails.setPatientState(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE)));
+                addressDetails.setPatientCity(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY)));
+                addressDetails.setPatientArea(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA)));
+                patient.setAddressDetails(addressDetails);
+                //-----REFERENCE----
+                PatientReferenceDetails referedDetails = new PatientReferenceDetails();
+
+                referedDetails.setReferredTypeId("" + cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.REFFERED_TYPE_ID)));
+                referedDetails.setName(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_NAME)));
+                referedDetails.setEmailId(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_EMAIL)));
+                referedDetails.setPhoneNumber("" + cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_PHONE)));
+                patient.setReferedDetails(referedDetails);
+                //------------------
+
                 list.add(patient);
                 cursor.moveToNext();
             }
@@ -852,6 +903,25 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
                 patient.setClinicId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.CLINIC_ID)));
                 patient.setPatientDob(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.DOB)));
+
+
+                //-----ADDRESS ---
+                PatientAddressDetails addressDetails = new PatientAddressDetails();
+
+                addressDetails.setPatientAddress(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_LINE)));
+                addressDetails.setPatientState(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE)));
+                addressDetails.setPatientCity(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY)));
+                addressDetails.setPatientArea(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA)));
+                patient.setAddressDetails(addressDetails);
+                //-----REFERENCE----
+                PatientReferenceDetails referedDetails = new PatientReferenceDetails();
+
+                referedDetails.setReferredTypeId("" + cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.REFFERED_TYPE_ID)));
+                referedDetails.setName(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_NAME)));
+                referedDetails.setEmailId(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_EMAIL)));
+                referedDetails.setPhoneNumber("" + cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_PHONE)));
+                patient.setReferedDetails(referedDetails);
+                //------------------
 
                 list.add(patient);
                 cursor.moveToNext();
