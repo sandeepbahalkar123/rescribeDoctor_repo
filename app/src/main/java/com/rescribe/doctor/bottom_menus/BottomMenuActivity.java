@@ -7,16 +7,16 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.rescribe.doctor.R;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 
 
 @SuppressWarnings("unused")
@@ -44,78 +44,78 @@ public class BottomMenuActivity extends AppCompatActivity implements BottomMenuA
 
     public void init() {
         mFrame = (FrameLayout) findViewById(R.id.activityView);
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView) ;
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
 
     }
 
-    public void setCurrentActivityTab(String nameOfActivity){
+    public void setCurrentActivityTab(String nameOfActivity) {
         mBottomMenuList = new ArrayList<>();
-      if(nameOfActivity.equals(getString(R.string.home))){
-          for (String mMenuName : mMenuNames) {
-              if(mMenuName.equalsIgnoreCase(getString(R.string.home))) {
-                  BottomMenu bottomMenu = new BottomMenu();
-                  bottomMenu.setMenuName(mMenuName);
-                  bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
-                  bottomMenu.setSelected(true);
-                  mBottomMenuList.add(bottomMenu);
-              }else{
-                  BottomMenu bottomMenu = new BottomMenu();
-                  bottomMenu.setMenuName(mMenuName);
-                  bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
-                  bottomMenu.setSelected(false);
-                  mBottomMenuList.add(bottomMenu);
-              }
-          }
-      }else  if(nameOfActivity.equals(getString(R.string.profile))){
-          for (String mMenuName : mMenuNames) {
-              if(mMenuName.equalsIgnoreCase(getString(R.string.profile))) {
-                  BottomMenu bottomMenu = new BottomMenu();
-                  bottomMenu.setMenuName(mMenuName);
-                  bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
-                  bottomMenu.setSelected(true);
-                  mBottomMenuList.add(bottomMenu);
-              }else{
-                  BottomMenu bottomMenu = new BottomMenu();
-                  bottomMenu.setMenuName(mMenuName);
-                  bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
-                  bottomMenu.setSelected(false);
-                  mBottomMenuList.add(bottomMenu);
-              }
-          }
-      }else  if(nameOfActivity.equals(getString(R.string.settings))){
-          for (String mMenuName : mMenuNames) {
-              if(mMenuName.equalsIgnoreCase(getString(R.string.settings))) {
-                  BottomMenu bottomMenu = new BottomMenu();
-                  bottomMenu.setMenuName(mMenuName);
-                  bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
-                  bottomMenu.setSelected(true);
-                  mBottomMenuList.add(bottomMenu);
-              }else{
-                  BottomMenu bottomMenu = new BottomMenu();
-                  bottomMenu.setMenuName(mMenuName);
-                  bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
-                  bottomMenu.setSelected(false);
-                  mBottomMenuList.add(bottomMenu);
-              }
-          }
-      }else  if(nameOfActivity.equals(getString(R.string.support))){
-          for (String mMenuName : mMenuNames) {
-              if(mMenuName.equalsIgnoreCase(getString(R.string.support))) {
-                  BottomMenu bottomMenu = new BottomMenu();
-                  bottomMenu.setMenuName(mMenuName);
-                  bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
-                  bottomMenu.setSelected(true);
-                  mBottomMenuList.add(bottomMenu);
-              }else{
-                  BottomMenu bottomMenu = new BottomMenu();
-                  bottomMenu.setMenuName(mMenuName);
-                  bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
-                  bottomMenu.setSelected(false);
-                  mBottomMenuList.add(bottomMenu);
-              }
-          }
-      }
+        if (nameOfActivity.equals(getString(R.string.home))) {
+            for (String mMenuName : mMenuNames) {
+                if (mMenuName.equalsIgnoreCase(getString(R.string.home))) {
+                    BottomMenu bottomMenu = new BottomMenu();
+                    bottomMenu.setMenuName(mMenuName);
+                    bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
+                    bottomMenu.setSelected(true);
+                    mBottomMenuList.add(bottomMenu);
+                } else {
+                    BottomMenu bottomMenu = new BottomMenu();
+                    bottomMenu.setMenuName(mMenuName);
+                    bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
+                    bottomMenu.setSelected(false);
+                    mBottomMenuList.add(bottomMenu);
+                }
+            }
+        } else if (nameOfActivity.equals(getString(R.string.profile))) {
+            for (String mMenuName : mMenuNames) {
+                if (mMenuName.equalsIgnoreCase(getString(R.string.profile))) {
+                    BottomMenu bottomMenu = new BottomMenu();
+                    bottomMenu.setMenuName(mMenuName);
+                    bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
+                    bottomMenu.setSelected(true);
+                    mBottomMenuList.add(bottomMenu);
+                } else {
+                    BottomMenu bottomMenu = new BottomMenu();
+                    bottomMenu.setMenuName(mMenuName);
+                    bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
+                    bottomMenu.setSelected(false);
+                    mBottomMenuList.add(bottomMenu);
+                }
+            }
+        } else if (nameOfActivity.equals(getString(R.string.settings))) {
+            for (String mMenuName : mMenuNames) {
+                if (mMenuName.equalsIgnoreCase(getString(R.string.settings))) {
+                    BottomMenu bottomMenu = new BottomMenu();
+                    bottomMenu.setMenuName(mMenuName);
+                    bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
+                    bottomMenu.setSelected(true);
+                    mBottomMenuList.add(bottomMenu);
+                } else {
+                    BottomMenu bottomMenu = new BottomMenu();
+                    bottomMenu.setMenuName(mMenuName);
+                    bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
+                    bottomMenu.setSelected(false);
+                    mBottomMenuList.add(bottomMenu);
+                }
+            }
+        } else if (nameOfActivity.equals(getString(R.string.support))) {
+            for (String mMenuName : mMenuNames) {
+                if (mMenuName.equalsIgnoreCase(getString(R.string.support))) {
+                    BottomMenu bottomMenu = new BottomMenu();
+                    bottomMenu.setMenuName(mMenuName);
+                    bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
+                    bottomMenu.setSelected(true);
+                    mBottomMenuList.add(bottomMenu);
+                } else {
+                    BottomMenu bottomMenu = new BottomMenu();
+                    bottomMenu.setMenuName(mMenuName);
+                    bottomMenu.setAppIcon(mMenuName.equals(getString(R.string.app_logo)));
+                    bottomMenu.setSelected(false);
+                    mBottomMenuList.add(bottomMenu);
+                }
+            }
+        }
         mContext = BottomMenuActivity.this;
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);

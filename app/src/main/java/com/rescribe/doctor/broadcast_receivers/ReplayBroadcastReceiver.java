@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.MQTTMessage;
-import com.rescribe.doctor.notification.MessageNotification;
+import com.rescribe.doctor.notification.NotificationHelper;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.util.CommonMethods;
@@ -84,7 +84,7 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements Help
             intentService.putExtra(SEND_MESSAGE, true);
             intentService.putExtra(MESSAGE_LIST, messageL);
             context.startService(intentService);
-            MessageNotification.cancel(context, recievedMessage.getPatId()); // Change
+            NotificationHelper.cancel(context, recievedMessage.getPatId()); // Change
             appDBHelper.markAsAReadChatMessageByPatientId(recievedMessage.getPatId()); // Change
 
         }
@@ -94,7 +94,7 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements Help
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (customResponse instanceof SendMessageModel) {
             if (recievedMessage != null) {
-                MessageNotification.cancel(context, recievedMessage.getPatId()); // Change
+                NotificationHelper.cancel(context, recievedMessage.getPatId()); // Change
                 appDBHelper.deleteUnreadMessage(recievedMessage.getPatId()); // Change
             }
         }

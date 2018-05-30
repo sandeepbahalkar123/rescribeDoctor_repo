@@ -60,7 +60,7 @@ import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
-import com.rescribe.doctor.notification.MessageNotification;
+import com.rescribe.doctor.notification.NotificationHelper;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.singleton.Device;
@@ -1378,7 +1378,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     protected void onResume() {
         super.onResume();
 
-        MessageNotification.cancel(this, chatList.getId());
+        NotificationHelper.cancel(this, chatList.getId());
         appDBHelper.markAsAReadChatMessageByPatientId(chatList.getId());
 
         broadcastReceiver.register(this);

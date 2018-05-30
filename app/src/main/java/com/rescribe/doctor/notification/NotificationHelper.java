@@ -1,22 +1,39 @@
+/*
+ * Copyright 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.rescribe.doctor.notification;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.RemoteInput;
 import android.support.v4.content.ContextCompat;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.activities.ChatActivity;
-import com.rescribe.doctor.ui.activities.PatientConnectActivity;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -31,21 +48,106 @@ import static com.rescribe.doctor.util.RescribeConstants.FILE.VID;
 import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
 /**
- * Helper class for showing and canceling new message
- * notifications.
- * <p>
- * This class makes heavy use of the {@link NotificationCompat.Builder} helper
- * class to create notifications in a backward-compatible way.
+ * Helper class to manage notification channels, and create notifications.
  */
-public class MessageNotification {
+public class NotificationHelper extends ContextWrapper {
+    private NotificationManager mNotificationManager;
+    public static final String CONNECT_CHANNEL = "connect";
+
     /**
      * The unique identifier for this type of notification.
      */
-    private static final String NOTIFICATION_TAG = "RescribeMessage";
-    private static final String GROUP = "RescribeMessages";
+    public static final String NOTIFICATION_TAG = "RescribeMessage";
+    public static final String GROUP = "RescribeMessages";
 
-    public static void notify(final Context context, final ArrayList<MQTTMessage> messageContent,
-                              final String userName, Bitmap picture, final int unread, PendingIntent replyPendingIntent, final int notificationId) {
+
+    /**
+     * Registers notification channels, which can be used later by individual notifications.
+     *
+     * @param context The application context
+     */
+
+
+    public NotificationHelper(Context context) {
+        super(context);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            // Create the channel object with the unique ID CONNECT_CHANNEL
+            NotificationChannel connectChannel = new NotificationChannel(
+                    CONNECT_CHANNEL, "Connect",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+
+            // Configure the channel's initial settings
+            connectChannel.setLightColor(Color.GREEN);
+            connectChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
+            // Submit the notification channel object to the notification manager
+            getNotificationManager().createNotificationChannel(connectChannel);
+        }
+    }
+
+    /**
+     * Get the notification mNotificationManager.
+     * <p>
+     * <p>Utility method as this helper works with it a lot.
+     *
+     * @return The system service NotificationManager
+     */
+    private NotificationManager getNotificationManager() {
+        if (mNotificationManager == null) {
+            mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        return mNotificationManager;
+    }
+
+    @TargetApi(Build.VERSION_CODES.ECLAIR)
+    private static void notify(final Context context, final Notification notification, int notificationId) {
+        final NotificationManager nm = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(NOTIFICATION_TAG, notificationId, notification);
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.ECLAIR)
+    public static void cancel(final Context context, int notificationId) {
+        final NotificationManager nm = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.cancel(NOTIFICATION_TAG, notificationId);
+    }
+
+
+    private String getContent(MQTTMessage mqttMessage) {
+        String content;
+
+        if (mqttMessage.getFileType() != null) {
+            switch (mqttMessage.getFileType()) {
+                case DOC:
+                    content = RescribeConstants.FILE_EMOJI.DOC_FILE;
+                    break;
+                case AUD:
+                    content = RescribeConstants.FILE_EMOJI.AUD_FILE;
+                    break;
+                case VID:
+                    content = RescribeConstants.FILE_EMOJI.VID_FILE;
+                    break;
+                case LOC:
+                    content = RescribeConstants.FILE_EMOJI.LOC_FILE;
+                    break;
+                case IMG:
+                    content = RescribeConstants.FILE_EMOJI.IMG_FILE;
+                    break;
+                default:
+                    content = mqttMessage.getMsg();
+                    break;
+            }
+        } else content = mqttMessage.getMsg();
+
+        return content;
+    }
+
+    public void notify(final Context context, final ArrayList<MQTTMessage> messageContent,
+                       final String userName, Bitmap picture, final int unread, PendingIntent replyPendingIntent, final int notificationId) {
 
         MQTTMessage lastMessage = messageContent.get(messageContent.size() - 1);
         String content = getContent(lastMessage);
@@ -81,7 +183,7 @@ public class MessageNotification {
             inboxStyle.addLine(getContent(message));
 
 // Create the RemoteInput specifying above key
-        RemoteInput remoteInput = new RemoteInput.Builder(MQTTService.KEY_REPLY)
+        android.support.v4.app.RemoteInput remoteInput = new android.support.v4.app.RemoteInput.Builder(MQTTService.KEY_REPLY)
                 .setLabel("Reply")
                 .build();
 
@@ -140,49 +242,5 @@ public class MessageNotification {
                 .setAutoCancel(true);
 
         notify(context, builder.build(), notificationId);
-    }
-
-    @TargetApi(Build.VERSION_CODES.ECLAIR)
-    private static void notify(final Context context, final Notification notification, int notificationId) {
-        final NotificationManager nm = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(NOTIFICATION_TAG, notificationId, notification);
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.ECLAIR)
-    public static void cancel(final Context context, int notificationId) {
-        final NotificationManager nm = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(NOTIFICATION_TAG, notificationId);
-    }
-
-    private static String getContent(MQTTMessage mqttMessage) {
-        String content;
-
-        if (mqttMessage.getFileType() != null) {
-            switch (mqttMessage.getFileType()) {
-                case DOC:
-                    content = RescribeConstants.FILE_EMOJI.DOC_FILE;
-                    break;
-                case AUD:
-                    content = RescribeConstants.FILE_EMOJI.AUD_FILE;
-                    break;
-                case VID:
-                    content = RescribeConstants.FILE_EMOJI.VID_FILE;
-                    break;
-                case LOC:
-                    content = RescribeConstants.FILE_EMOJI.LOC_FILE;
-                    break;
-                case IMG:
-                    content = RescribeConstants.FILE_EMOJI.IMG_FILE;
-                    break;
-                default:
-                    content = mqttMessage.getMsg();
-                    break;
-            }
-        } else content = mqttMessage.getMsg();
-
-        return content;
     }
 }

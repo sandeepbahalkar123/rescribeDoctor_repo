@@ -580,4 +580,3 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
 
 }
-
