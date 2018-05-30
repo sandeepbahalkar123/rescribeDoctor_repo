@@ -26,6 +26,14 @@ public class ClinicList implements Parcelable
     @SerializedName("services")
     @Expose
     private ArrayList<String> services = new ArrayList<>();
+
+    @SerializedName("stateId")
+    @Expose
+    private Integer stateId;
+    @SerializedName("cityId")
+    @Expose
+    private Integer cityId;
+
     public final static Parcelable.Creator<ClinicList> CREATOR = new Creator<ClinicList>() {
 
 
@@ -47,6 +55,10 @@ public class ClinicList implements Parcelable
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.clinicAddress = ((String) in.readValue((String.class.getClassLoader())));
         this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+
+        this.stateId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.cityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+
         in.readList(this.services, (java.lang.String.class.getClassLoader()));
     }
 
@@ -93,11 +105,30 @@ public class ClinicList implements Parcelable
         this.services = services;
     }
 
+
+    public Integer getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(Integer stateId) {
+        this.stateId = stateId;
+    }
+
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(clinicId);
         dest.writeValue(clinicName);
         dest.writeValue(clinicAddress);
         dest.writeValue(locationId);
+        dest.writeValue(stateId);
+        dest.writeValue(cityId);
         dest.writeList(services);
     }
 

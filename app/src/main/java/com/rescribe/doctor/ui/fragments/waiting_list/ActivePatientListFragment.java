@@ -32,16 +32,19 @@ import com.rescribe.doctor.adapters.waiting_list.WaitingListSpinnerAdapter;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.CommonBaseModelContainer;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
 import com.rescribe.doctor.model.waiting_list.Active;
 import com.rescribe.doctor.model.waiting_list.PatientDataActiveWaitingListProvider;
 import com.rescribe.doctor.model.waiting_list.WaitingPatientList;
 import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
-import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestDeleteBaseModel;
+import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestWaitingListStatusChangeBaseModel;
 import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAndDropBaseModel;
 import com.rescribe.doctor.model.waiting_list.request_drag_drop.WaitingListSequence;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
+import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -55,6 +58,7 @@ import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 
 /**
@@ -63,10 +67,18 @@ import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 @RuntimePermissions
 public class ActivePatientListFragment extends Fragment implements HelperResponse {
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.Adapter mWrappedAdapter;
+    private RecyclerViewDragDropManager recyclerViewDragDropManager;
+    private RecyclerViewSwipeManager recyclerViewSwipeManager;
+    private RecyclerViewTouchActionGuardManager recyclerViewTouchActionGuardManager;
+
     @BindView(R.id.clinicListSpinner)
     Spinner clinicListSpinner;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+
     @BindView(R.id.bulletImageView)
     CircularImageView bulletImageView;
     @BindView(R.id.clinicNameTextView)
@@ -84,17 +96,14 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     //    private ActiveWaitingListAdapter mActiveWaitingListAdapter;
 //    private ArrayList<Active> activeArrayList = new ArrayList<>();
     private int adapterPos;
-    private int mLocationId;
     private AppointmentHelper mAppointmentHelper;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.Adapter mWrappedAdapter;
-    private RecyclerViewDragDropManager recyclerViewDragDropManager;
-    private RecyclerViewSwipeManager recyclerViewSwipeManager;
-    private RecyclerViewTouchActionGuardManager recyclerViewTouchActionGuardManager;
+    private int mLocationId;
     private DraggableSwipeableActiveWaitingListAdapter mDraggableSwipeableActiveWaitingListAdapter;
     private WaitingPatientList waitingPatientTempList;
     private String phoneNo;
+    private Integer mClinicID;
+    private Integer mWaitingIdToBeDeleted;
+    private WaitingMainListActivity mParentActivity;
 
     public ActivePatientListFragment() {
     }
@@ -112,12 +121,15 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         View mRootView = inflater.inflate(R.layout.waiting_content_layout, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
         init();
+        setClinicListSpinner();
         return mRootView;
     }
 
-    private void init() {
+    public void init() {
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
-        waitingclinicLists = getArguments().getParcelableArrayList(RescribeConstants.WAITING_LIST_INFO);
+        mParentActivity = (WaitingMainListActivity) getActivity();
+
+        waitingclinicLists = mParentActivity.getReceivedWaitingClinicList();
         if (waitingclinicLists != null) {
             if (waitingclinicLists.size() > 1) {
                 clinicListSpinner.setVisibility(View.VISIBLE);
@@ -131,8 +143,8 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                     recyclerView.setVisibility(View.GONE);
                 } else {
                     mLocationId = waitingclinicLists.get(0).getLocationId();
-                    clinicListSpinner.setVisibility(View.GONE);
                     waitingPatientTempList = waitingclinicLists.get(0).getWaitingPatientList();
+                    clinicListSpinner.setVisibility(View.GONE);
                     hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
                     clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
                     clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
@@ -142,10 +154,15 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 }
             }
         }
+
+    }
+
+    private void setClinicListSpinner() {
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mLocationId = waitingclinicLists.get(i).getLocationId();
+                mClinicID = waitingclinicLists.get(i).getClinicId();
                 waitingPatientTempList = waitingclinicLists.get(i).getWaitingPatientList();
 
                 if (waitingPatientTempList != null) {
@@ -177,43 +194,6 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         return fragment;
     }
 
-    @Override
-    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equals(RescribeConstants.TASK_DELETE_WAITING_LIST)) {
-            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
-            if (templateBaseModel.getCommon().isSuccess()) {
-                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
-                mDraggableSwipeableActiveWaitingListAdapter.removeItem(adapterPos);
-                waitingPatientTempList.getActive().remove(adapterPos);
-
-                if (mDraggableSwipeableActiveWaitingListAdapter.getItemCount() == 0)
-                    noRecords.setVisibility(View.VISIBLE);
-                else noRecords.setVisibility(View.GONE);
-
-            } else
-                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
-
-        } else if (mOldDataTag.equals(RescribeConstants.TASK_DARG_DROP)) {
-            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
-            Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onParseError(String mOldDataTag, String errorMessage) {
-
-    }
-
-    @Override
-    public void onServerError(String mOldDataTag, String serverErrorMessage) {
-
-    }
-
-    @Override
-    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-
-    }
-
     private void setAdapter() {
         // New
 
@@ -235,24 +215,44 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         //adapter
         mDraggableSwipeableActiveWaitingListAdapter = new DraggableSwipeableActiveWaitingListAdapter(getDataProvider());
         mDraggableSwipeableActiveWaitingListAdapter.setEventListener(new DraggableSwipeableActiveWaitingListAdapter.EventListener() {
+
+            @Override
+            public void onInConsultation(int position, Active viewAll) {
+                if (viewAll.getWaitingStatusId().equals(RescribeConstants.WAITING_LIST_STATUS.IN_CONSULTATION)) {
+                    CommonMethods.showToast(getActivity(), getString(R.string.err_inconsultation_already_msg));
+                } else {
+                    adapterPos = position;
+                    mWaitingIdToBeDeleted = viewAll.getWaitingId();
+                    createInstanceToChangeWaitingListStatus(RescribeConstants.WAITING_LIST_STATUS.IN_CONSULTATION, viewAll);
+                }
+
+            }
+
+            @Override
+            public void onCompletedAction(int position, Active viewAll) {
+                adapterPos = position;
+                mWaitingIdToBeDeleted = viewAll.getWaitingId();
+                createInstanceToChangeWaitingListStatus(RescribeConstants.WAITING_LIST_STATUS.COMPLETED, viewAll);
+            }
+
             @Override
             public void onDeleteClick(int position, Active viewAll) {
                 // update in original list
 
-                adapterPos = position;
-                RequestDeleteBaseModel requestDeleteBaseModel = new RequestDeleteBaseModel();
-                requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-                requestDeleteBaseModel.setLocationId(mLocationId);
-                requestDeleteBaseModel.setWaitingDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
-                requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
-                requestDeleteBaseModel.setWaitingSequence(viewAll.getWaitingSequence());
-                mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);
-            }
+                if (viewAll.getWaitingStatusId().equals(RescribeConstants.WAITING_LIST_STATUS.IN_CONSULTATION)) {
+                    CommonMethods.showToast(getActivity(), getString(R.string.err_inconsultation_delete_msg));
+                } else {
+                    adapterPos = position;
+                    mWaitingIdToBeDeleted = viewAll.getWaitingId();
+                    RequestWaitingListStatusChangeBaseModel requestDeleteBaseModel = new RequestWaitingListStatusChangeBaseModel();
+                    requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+                    requestDeleteBaseModel.setLocationId(mLocationId);
+                    requestDeleteBaseModel.setWaitingDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+                    requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
+                    requestDeleteBaseModel.setWaitingSequence(viewAll.getWaitingSequence());
+                    mAppointmentHelper.doDeleteWaitingList(requestDeleteBaseModel);
+                }
 
-            @Override
-            public void onPhoneClick(String phoneNumber) {
-                phoneNo = phoneNumber;
-                ActivePatientListFragmentPermissionsDispatcher.doCallSupportWithCheck(ActivePatientListFragment.this);
             }
 
             @Override
@@ -261,13 +261,12 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
             }
 
             @Override
-            public void onItemViewClicked(View v, boolean pinned) {
-
+            public void onItemViewClicked(View v, boolean pinned, AbstractDataProvider.Data clickedDataObject) {
+                onItemViewClick(v, pinned, clickedDataObject);
             }
 
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
-                // update original list
 
                 Active removed = waitingPatientTempList.getActive().remove(fromPosition);
                 waitingPatientTempList.getActive().add(toPosition, removed);
@@ -276,20 +275,24 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 ArrayList<WaitingListSequence> waitingListSequences = new ArrayList<>();
                 for (int i = 0; i < mDraggableSwipeableActiveWaitingListAdapter.getAllItems().size(); i++) {
                     WaitingListSequence waitingListSequence = new WaitingListSequence();
-                    waitingListSequence.setWaitingId(String.valueOf(mDraggableSwipeableActiveWaitingListAdapter.getAllItems().get(i).getWaitingId()));
                     waitingListSequence.setWaitingSequence(i + 1);
+                    waitingListSequence.setWaitingId(String.valueOf(mDraggableSwipeableActiveWaitingListAdapter.getAllItems().get(i).getWaitingId()));
                     waitingListSequences.add(waitingListSequence);
                 }
                 requestForDragAndDropBaseModel.setWaitingListSequence(waitingListSequences);
                 mAppointmentHelper.doDargAndDropApi(requestForDragAndDropBaseModel);
             }
+
+            @Override
+            public void onPhoneClick(String phoneNumber) {
+                phoneNo = phoneNumber;
+                ActivePatientListFragmentPermissionsDispatcher.doCallSupportWithCheck(ActivePatientListFragment.this);
+            }
+
+
         });
 
         mAdapter = mDraggableSwipeableActiveWaitingListAdapter;
-        if (mDraggableSwipeableActiveWaitingListAdapter.getItemCount() == 0)
-            noRecords.setVisibility(View.VISIBLE);
-        else noRecords.setVisibility(View.GONE);
-
         mWrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(mDraggableSwipeableActiveWaitingListAdapter);      // wrap for dragging
         mWrappedAdapter = recyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);      // wrap for swiping
 
@@ -319,6 +322,54 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         recyclerViewTouchActionGuardManager.attachRecyclerView(recyclerView);
         recyclerViewSwipeManager.attachRecyclerView(recyclerView);
         recyclerViewDragDropManager.attachRecyclerView(recyclerView);
+
+        if (mDraggableSwipeableActiveWaitingListAdapter.getItemCount() == 0)
+            noRecords.setVisibility(View.VISIBLE);
+        else noRecords.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        if (mOldDataTag.equals(RescribeConstants.TASK_DELETE_WAITING_LIST)) {
+            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
+            if (templateBaseModel.getCommon().isSuccess()) {
+                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
+                mDraggableSwipeableActiveWaitingListAdapter.removeItem(adapterPos);
+                waitingPatientTempList.getActive().remove(adapterPos);
+
+                //------------
+                mParentActivity.deletePatientFromWaitingClinicList(mClinicID, mWaitingIdToBeDeleted);
+                //------------
+                if (mDraggableSwipeableActiveWaitingListAdapter.getItemCount() == 0)
+                    noRecords.setVisibility(View.VISIBLE);
+                else noRecords.setVisibility(View.GONE);
+
+            } else
+                Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
+
+        } else if (mOldDataTag.equals(RescribeConstants.TASK_DARG_DROP)) {
+            TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
+            CommonMethods.showToast(getActivity(), templateBaseModel.getCommon().getStatusMessage());
+        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST)) {
+            CommonBaseModelContainer templateBaseModel = (CommonBaseModelContainer) customResponse;
+            CommonMethods.showToast(getActivity(), templateBaseModel.getCommonRespose().getStatusMessage());
+            mParentActivity.doCallGetWaitingListAPI();
+        }
+    }
+
+    @Override
+    public void onParseError(String mOldDataTag, String errorMessage) {
+
+    }
+
+    @Override
+    public void onServerError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @Override
+    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
 
     }
 
@@ -362,11 +413,26 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         super.onDestroyView();
     }
 
-    private void onItemViewClick(View v, boolean pinned) {
-        int position = recyclerView.getChildAdapterPosition(v);
-        if (position != RecyclerView.NO_POSITION) {
+    private void onItemViewClick(View v, boolean pinned, AbstractDataProvider.Data clickedDataObject) {
 
-        }
+        Integer salutation = clickedDataObject.getActiveAll().getSalutation();
+        String pName = clickedDataObject.getActiveAll().getPatientName();
+        String pID = String.valueOf(clickedDataObject.getActiveAll().getPatientId());
+        Integer hostPatID = clickedDataObject.getActiveAll().getHospitalPatId();
+
+        String patientName;
+        if (salutation != 0)
+            patientName = RescribeConstants.SALUTATION[salutation - 1] + toCamelCase(pName);
+        else patientName = toCamelCase(pName);
+        Bundle b = new Bundle();
+        b.putString(RescribeConstants.PATIENT_NAME, patientName);
+        b.putString(RescribeConstants.PATIENT_INFO, ""); // TODO: Age and gender is not getting from API
+        b.putInt(RescribeConstants.CLINIC_ID, mClinicID);
+        b.putString(RescribeConstants.PATIENT_ID, pID);
+        b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(hostPatID));
+        Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
+        intent.putExtra(RescribeConstants.PATIENT_INFO, b);
+        startActivity(intent);
     }
 
     private boolean supportsViewElevation() {
@@ -401,5 +467,19 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     public void onRequestPermssionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         ActivePatientListFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    private void createInstanceToChangeWaitingListStatus(int status, Active viewAll) {
+        RequestWaitingListStatusChangeBaseModel requestDeleteBaseModel = new RequestWaitingListStatusChangeBaseModel();
+        requestDeleteBaseModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+        requestDeleteBaseModel.setLocationId(mLocationId);
+        requestDeleteBaseModel.setWaitingDate(CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD));
+        requestDeleteBaseModel.setTime(viewAll.getWaitingInTime());
+        requestDeleteBaseModel.setWaitingId(viewAll.getWaitingId());
+        requestDeleteBaseModel.setPatientId("" + viewAll.getPatientId());
+        requestDeleteBaseModel.setHospitalPatId("" + viewAll.getHospitalPatId());
+        requestDeleteBaseModel.setHospitalId("" + mClinicID);
+        requestDeleteBaseModel.setStatus("" + status);
+        mAppointmentHelper.doUpdateWaitingListStatus(requestDeleteBaseModel);
     }
 }

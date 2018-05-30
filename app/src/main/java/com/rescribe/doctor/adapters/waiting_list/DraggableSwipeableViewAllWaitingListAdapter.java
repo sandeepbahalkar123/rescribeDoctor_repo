@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,6 +46,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeabl
 import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
+import com.rescribe.doctor.model.waiting_list.Active;
 import com.rescribe.doctor.model.waiting_list.PatientDataProvider;
 import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.util.CommonMethods;
@@ -100,9 +102,13 @@ public class DraggableSwipeableViewAllWaitingListAdapter
     public interface EventListener {
         void onDeleteClick(int position, ViewAll viewAll);
 
+        void onInConsultation(int position, ViewAll viewAll);
+
+        void onCompletedAction(int position, ViewAll viewAll);
+
         void onItemPinned(int position);
 
-        void onItemViewClicked(View v, boolean pinned);
+        void onItemViewClicked(View v, boolean pinned, AbstractDataProvider.Data clickedDataObject);
 
         void onItemMoved(int fromPosition, int toPosition);
 
@@ -114,7 +120,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         ImageButton mDragHandle;
 
         LinearLayout mBehindViews;
-        ImageButton deleteButton;
+        Button deleteButton, waitingCompleteButton, waitingInConsultationButton;
 
         LinearLayout mCardView;
         ImageView mBluelineImageView;
@@ -140,7 +146,9 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             mDragHandle = v.findViewById(R.id.dragHandle);
 
             mBehindViews = v.findViewById(R.id.behind_views);
-            deleteButton = v.findViewById(R.id.deleteButton);
+            deleteButton = v.findViewById(R.id.waitingDeleteButton);
+            waitingCompleteButton = v.findViewById(R.id.waitingComplete);
+            waitingInConsultationButton = v.findViewById(R.id.waitingInConsultation);
 
             mCardView = v.findViewById(R.id.cardView);
             mBluelineImageView = v.findViewById(R.id.bluelineImageView);
@@ -171,13 +179,16 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         mItemViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemViewClick(v);
+                AbstractDataProvider.Data item = mProvider.getItem(Integer.parseInt(String.valueOf(v.getTag())));
+                onItemViewClick(v, item);
             }
         };
         mSwipeableViewContainerOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSwipeableViewContainerClick(v);
+                AbstractDataProvider.Data item = mProvider.getItem(Integer.parseInt(String.valueOf(v.getTag())));
+
+                onSwipeableViewContainerClick(v, item);
             }
         };
 
@@ -186,15 +197,15 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         setHasStableIds(true);
     }
 
-    private void onItemViewClick(View v) {
+    private void onItemViewClick(View v, AbstractDataProvider.Data clickedDataObject) {
         if (mEventListener != null) {
-            mEventListener.onItemViewClicked(v, true); // true --- pinned
+            mEventListener.onItemViewClicked(v, true, clickedDataObject); // true --- pinned
         }
     }
 
-    private void onSwipeableViewContainerClick(View v) {
+    private void onSwipeableViewContainerClick(View v, AbstractDataProvider.Data clickedDataObject) {
         if (mEventListener != null) {
-            mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false);  // false --- not pinned
+            mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false, clickedDataObject);  // false --- not pinned
         }
     }
 
@@ -222,8 +233,10 @@ public class DraggableSwipeableViewAllWaitingListAdapter
 
         // set listeners
         // (if the item is *pinned*, click event comes to the itemView)
+        holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(mItemViewOnClickListener);
         // (if the item is *not pinned*, click event comes to the mContainer)
+        holder.mContainer.setTag(position);
         holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
 
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -231,6 +244,20 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             public void onClick(View v) {
                 // call delete api
                 mEventListener.onDeleteClick(position, item.getViewAll());
+            }
+        });
+        holder.waitingCompleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // call delete api
+                mEventListener.onCompletedAction(position, item.getViewAll());
+            }
+        });
+        holder.waitingInConsultationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // call delete api
+                mEventListener.onInConsultation(position, item.getViewAll());
             }
         });
         holder.mPatientPhoneNumber.setOnClickListener(new View.OnClickListener() {
@@ -321,7 +348,8 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         if (item.getViewAll().getWaitingStatusId().equals(CANCEL))
             // Set Red Color
             holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.Red));
-        else holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.tagColor));
+        else
+            holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.tagColor));
 
         if (item.getViewAll().getWaitingStatusId().equals(IN_QUEUE) || item.getViewAll().getWaitingStatusId().equals(CONFIRM)) {
             if (getAllItems().size() == 1)

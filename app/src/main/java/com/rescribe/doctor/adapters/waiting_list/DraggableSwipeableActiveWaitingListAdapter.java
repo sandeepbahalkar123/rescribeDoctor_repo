@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -57,6 +58,7 @@ import java.util.ArrayList;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.IN_QUEUE;
+import static com.rescribe.doctor.util.RescribeConstants.WAITING_LIST_STATUS.IN_CONSULTATION;
 import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
 public class DraggableSwipeableActiveWaitingListAdapter
@@ -98,9 +100,13 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
         void onPhoneClick(String phoneNumber);
 
+        void onInConsultation(int position, Active viewAll);
+
+        void onCompletedAction(int position, Active viewAll);
+
         void onItemPinned(int position);
 
-        void onItemViewClicked(View v, boolean pinned);
+        void onItemViewClicked(View v, boolean pinned, AbstractDataProvider.Data clickedDataObject);
 
         void onItemMoved(int fromPosition, int toPosition);
     }
@@ -110,7 +116,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
         ImageView mDragHandle;
 
         LinearLayout mBehindViews;
-        ImageButton deleteButton;
+        Button deleteButton, waitingCompleteButton, waitingInConsultationButton;
 
         LinearLayout mCardView;
         ImageView mBluelineImageView;
@@ -136,7 +142,9 @@ public class DraggableSwipeableActiveWaitingListAdapter
             mDragHandle = v.findViewById(R.id.dragHandle);
 
             mBehindViews = v.findViewById(R.id.behind_views);
-            deleteButton = v.findViewById(R.id.deleteButton);
+            deleteButton = v.findViewById(R.id.waitingDeleteButton);
+            waitingCompleteButton = v.findViewById(R.id.waitingComplete);
+            waitingInConsultationButton = v.findViewById(R.id.waitingInConsultation);
 
             mCardView = v.findViewById(R.id.cardView);
             mBluelineImageView = v.findViewById(R.id.bluelineImageView);
@@ -167,13 +175,17 @@ public class DraggableSwipeableActiveWaitingListAdapter
         mItemViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemViewClick(v);
+                AbstractDataProvider.Data item = mProvider.getItem(Integer.parseInt(String.valueOf(v.getTag())));
+
+                onItemViewClick(v, item);
             }
         };
         mSwipeableViewContainerOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSwipeableViewContainerClick(v);
+                AbstractDataProvider.Data item = mProvider.getItem(Integer.parseInt(String.valueOf(v.getTag())));
+
+                onSwipeableViewContainerClick(v, item);
             }
         };
 
@@ -182,15 +194,15 @@ public class DraggableSwipeableActiveWaitingListAdapter
         setHasStableIds(true);
     }
 
-    private void onItemViewClick(View v) {
+    private void onItemViewClick(View v, AbstractDataProvider.Data clickedDataObject) {
         if (mEventListener != null) {
-            mEventListener.onItemViewClicked(v, true); // true --- pinned
+            mEventListener.onItemViewClicked(v, true, clickedDataObject); // true --- pinned
         }
     }
 
-    private void onSwipeableViewContainerClick(View v) {
+    private void onSwipeableViewContainerClick(View v, AbstractDataProvider.Data clickedDataObject) {
         if (mEventListener != null) {
-            mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false);  // false --- not pinned
+            mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false, clickedDataObject);  // false --- not pinned
         }
     }
 
@@ -218,8 +230,10 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
         // set listeners
         // (if the item is *pinned*, click event comes to the itemView)
+        holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(mItemViewOnClickListener);
         // (if the item is *not pinned*, click event comes to the mContainer)
+        holder.mContainer.setTag(position);
         holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
 
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -227,6 +241,20 @@ public class DraggableSwipeableActiveWaitingListAdapter
             public void onClick(View v) {
                 // call delete api
                 mEventListener.onDeleteClick(position, item.getActiveAll());
+            }
+        });
+        holder.waitingCompleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // call delete api
+                mEventListener.onCompletedAction(position, item.getActiveAll());
+            }
+        });
+        holder.waitingInConsultationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // call delete api
+                mEventListener.onInConsultation(position, item.getActiveAll());
             }
         });
         holder.mPatientPhoneNumber.setOnClickListener(new View.OnClickListener() {
@@ -327,6 +355,10 @@ public class DraggableSwipeableActiveWaitingListAdapter
                 holder.mDragHandle.setVisibility(View.GONE);
             else holder.mDragHandle.setVisibility(View.VISIBLE);
 
+            holder.setMaxLeftSwipeAmount(-0.4f);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
+        } else if (item.getActiveAll().getWaitingStatusId().equals(IN_CONSULTATION)) {
+            holder.mDragHandle.setVisibility(View.GONE);
             holder.setMaxLeftSwipeAmount(-0.4f);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
         } else {

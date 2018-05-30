@@ -42,6 +42,7 @@ import com.rescribe.doctor.model.patient.patient_history.PatientDetails;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryDataModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
+import com.rescribe.doctor.model.patient.patient_history.YearsMonthsData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
@@ -82,17 +83,20 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     CustomTextView titleTextView;
     @BindView(R.id.userInfoTextView)
     CustomTextView userInfoTextView;
+
+    //REMOVED FROM UI,BUT FUNCTIONALIY IS STILL AS IT IS, IF REQUIRED IN FUTURE
     @BindView(R.id.year)
     Spinner mYearSpinnerView;
     @BindView(R.id.dateTextview)
     CustomTextView mYearSpinnerSingleItem;
+    //----------
     @BindView(R.id.noRecords)
     ImageView noRecords;
     @BindView(R.id.addRecordButton)
     Button mAddRecordButton;
     //----------
     private ArrayList<String> mYearList;
-    private ArrayList<Year> mTimePeriodList;
+    private ArrayList<YearsMonthsData> mTimePeriodList;
     private Year mCurrentSelectedTimePeriodTab;
     private PatientDetailHelper mPatientDetailHelper;
     private ViewPagerAdapter mViewPagerAdapter;
@@ -152,7 +156,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
         mGeneratedRequestForYearList = new HashSet<>();
 
-        mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
+        mPatientDetailHelper.doGetPatientHistory(mPatientId, "", getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
     }
 
     @OnClick({R.id.backImageView, R.id.addRecordButton})
@@ -181,7 +185,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private void setupViewPager() {
         mViewPagerAdapter.mFragmentList.clear();
         mViewPagerAdapter.mFragmentTitleList.clear();
-        for (Year data :
+        for (YearsMonthsData data :
                 mTimePeriodList) {
             Fragment fragment = PatientHistoryCalenderListFragment.createNewFragment(data, getArguments());
             mViewPagerAdapter.addFragment(fragment, data); // pass title here
@@ -216,12 +220,12 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 }
                 //-------
                 if (mYearList.size() == 1) {
-                    mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
+                    mYearSpinnerSingleItem.setVisibility(View.GONE);
                     mYearSpinnerView.setVisibility(View.GONE);
                     mYearSpinnerSingleItem.setText(mYearList.get(0));
                 } else {
                     mYearSpinnerSingleItem.setVisibility(View.GONE);
-                    mYearSpinnerView.setVisibility(View.VISIBLE);
+                    mYearSpinnerView.setVisibility(View.GONE);
                 }
                 //-------
 
@@ -248,18 +252,15 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
                 boolean status = false;
                 for (int i = 0; i < mTimePeriodList.size(); i++) {
-                    Year temp = mTimePeriodList.get(i);
-                    if (temp.getYear().equalsIgnoreCase(mCurrentSelectedTimePeriodTab.getYear()) &&
-                            temp.getMonthName().equalsIgnoreCase(mCurrentSelectedTimePeriodTab.getMonthName())) {
+                    YearsMonthsData temp = mTimePeriodList.get(i);
+                    if (temp.getYear() == Integer.parseInt(mCurrentSelectedTimePeriodTab.getYear())) {
                         mViewpager.setCurrentItem(i);
                         status = true;
                         break;
                     }
-                    //    mViewpager.setCurrentItem(mTimePeriodList.size());
                 }
                 if (!status) {
-
-                    mViewpager.setCurrentItem(mTimePeriodList.size()-1);
+                    mViewpager.setCurrentItem(mTimePeriodList.size() - 1);
                 }
             }
         }, 0);
@@ -379,7 +380,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     //---------------
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<Year> mFragmentTitleList = new ArrayList<>();
+        private final List<YearsMonthsData> mFragmentTitleList = new ArrayList<>();
 
         ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -395,14 +396,14 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             return mFragmentList.size();
         }
 
-        public void addFragment(Fragment fragment, Year title) {
+        public void addFragment(Fragment fragment, YearsMonthsData title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position).getMonthName();
+            return "" + mFragmentTitleList.get(position).getYear();
         }
 
         @Override
@@ -429,8 +430,13 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 if (parent.getId() == R.id.year && !mYearSpinnerConfigChange) {
                     String selectedYear = mYearList.get(parent.getSelectedItemPosition());
                     for (int i = 0; i < mTimePeriodList.size(); i++) {
-                        if (mTimePeriodList.get(i).getYear().equalsIgnoreCase("" + selectedYear)) {
-                            mCurrentSelectedTimePeriodTab = mTimePeriodList.get(i);
+                        if (mTimePeriodList.get(i).getYear() == Integer.parseInt(selectedYear)) {
+                            Year y = new Year();
+                            YearsMonthsData yearsMonthsData = mTimePeriodList.get(i);
+                            y.setYear("" + yearsMonthsData.getYear());
+                            y.setMonthName(yearsMonthsData.getMonths().get(yearsMonthsData.getMonths().size() - 1));
+
+                            mCurrentSelectedTimePeriodTab = y;
                             mViewpager.setCurrentItem(i);
                             break;
                         }
@@ -488,45 +494,43 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
             mTimePeriodList = dataModel.getFormattedYearList();
 
-            if (isAdded()) {
-                mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
-                mTabLayout.setupWithViewPager(mViewpager);
+            mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
+            mTabLayout.setupWithViewPager(mViewpager);
+            mYearList = dataModel.getUniqueYears();
+            YearSpinnerAdapter mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
+            mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
+
+            if (dataModel.getYearsMonthsData().isEmpty()) {
+                noRecords.setVisibility(View.VISIBLE);
+                mYearSpinnerView.setVisibility(View.GONE);
+                mTabLayout.setVisibility(View.GONE);
+                mViewpager.setVisibility(View.GONE);
+            } else {
                 mYearList = dataModel.getUniqueYears();
-                YearSpinnerAdapter mYearSpinnerAdapter = new YearSpinnerAdapter(mParentActivity, mYearList, ContextCompat.getColor(getActivity(), R.color.white));
-                mYearSpinnerView.setAdapter(mYearSpinnerAdapter);
-
-                if (dataModel.getYearsMonthsData().isEmpty()) {
-                    noRecords.setVisibility(View.VISIBLE);
-                    mYearSpinnerView.setVisibility(View.GONE);
-                    mTabLayout.setVisibility(View.GONE);
-                    mViewpager.setVisibility(View.GONE);
-                } else {
-                    mYearList = dataModel.getUniqueYears();
-                    mViewpager.setVisibility(View.VISIBLE);
-                    noRecords.setVisibility(View.GONE);
-                    mTabLayout.setVisibility(View.VISIBLE);
-                    if (mYearList.size() > 0) {
-                        if (mYearList.size() == 1) {
-                            mYearSpinnerView.setVisibility(View.GONE);
-                            mYearSpinnerSingleItem.setVisibility(View.VISIBLE);
-                            mYearSpinnerSingleItem.setText(mYearList.get(0));
-                        } else {
-                            mYearSpinnerView.setVisibility(View.VISIBLE);
-                            mYearSpinnerSingleItem.setVisibility(View.GONE);
-                        }
+                mViewpager.setVisibility(View.VISIBLE);
+                noRecords.setVisibility(View.GONE);
+                mTabLayout.setVisibility(View.VISIBLE);
+                if (mYearList.size() > 0) {
+                    if (mYearList.size() == 1) {
+                        mYearSpinnerView.setVisibility(View.GONE);
+                        mYearSpinnerSingleItem.setVisibility(View.GONE);
+                        mYearSpinnerSingleItem.setText(mYearList.get(0));
+                    } else {
+                        mYearSpinnerView.setVisibility(View.GONE);
+                        mYearSpinnerSingleItem.setVisibility(View.GONE);
                     }
-
-                    if (mTabLayout != null) {
-                        if (mTabLayout.getTabCount() > 5) {
-                            mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-                        } else {
-                            mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-                            mTabLayout.setTabMode(TabLayout.MODE_FIXED);
-                        }
-                    }
-
-                    setupViewPager();
                 }
+
+                if (mTabLayout != null) {
+                    if (mTabLayout.getTabCount() > 5) {
+                        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+                    } else {
+                        mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+                        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
+                    }
+                }
+
+                setupViewPager();
             }
         }
     }
@@ -573,5 +577,6 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
-}
 
+
+}

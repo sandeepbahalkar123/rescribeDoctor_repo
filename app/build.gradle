@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'findbugs'
+
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -131,6 +133,9 @@ dependencies {
         transitive = true;
     }
 
+    //job creator for latest version instead services
+    implementation 'com.evernote:android-job:1.2.5'
+
 }
 //apply plugin: 'com.google.gms.google-services'
 
@@ -144,3 +149,21 @@ configurations.all {
         }
     }
 }
+
+task customFindbugs(type: FindBugs) {
+    ignoreFailures = true
+    effort = "default"
+    reportLevel = "medium"
+    classes = files("$project.buildDir/intermediates/classes")
+    excludeFilter = file("$rootProject.rootDir/config/findbugs/exclude.xml")
+
+    source = fileTree('src/main/java/')
+    classpath = files()
+    reports {
+        xml.enabled false
+        html.enabled true
+        html.setDestination(file("$project.buildDir/outputs/findbugs/findbugs-output.html"))
+    }
+}
+// UPDATE: renamed the task to customFindbugs and made it automatically be called when build is called
+build.dependsOn customFindbugs

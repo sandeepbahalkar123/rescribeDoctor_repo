@@ -78,6 +78,16 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     private boolean isAddedMiddleName;
     //--Added for offline adding patient.
 
+    //-------fields for adding patient in offline mode--------
+
+    private String patientState;
+    private String patientAddress;
+
+    @SerializedName("referedDetails")
+    @Expose
+    private PatientReferenceDetails referedDetails;
+    //---------------
+
     private boolean isOfflinePatientSynced = true; //considered always sync with server.
 
     public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
@@ -325,5 +335,29 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
 
     public void setReferenceID(String referenceID) {
         this.referenceID = referenceID;
+    }
+
+    public String getPatientState() {
+        return patientState;
+    }
+
+    public void setPatientState(String patientState) {
+        this.patientState = patientState;
+    }
+
+    public String getPatientAddress() {
+        return patientAddress;
+    }
+
+    public void setPatientAddress(String patientAddress) {
+        this.patientAddress = patientAddress;
+    }
+
+    public PatientReferenceDetails getReferedDetails() {
+        return referedDetails;
+    }
+
+    public void setReferedDetails(PatientReferenceDetails referedDetails) {
+        this.referedDetails = referedDetails;
     }
 }

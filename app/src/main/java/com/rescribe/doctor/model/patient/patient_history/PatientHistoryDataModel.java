@@ -5,8 +5,13 @@ package com.rescribe.doctor.model.patient.patient_history;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.model.login.Year;
+import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 
 public class PatientHistoryDataModel {
@@ -37,9 +42,11 @@ public class PatientHistoryDataModel {
         this.patientHistoryInfoMonthContainer = patientHistoryInfoMonthContainer;
     }
 
-    public ArrayList<Year> getFormattedYearList() {
+    public ArrayList<YearsMonthsData> getFormattedYearList() {
         ArrayList<YearsMonthsData> yearsMonthsDataList = getYearsMonthsData();
-        ArrayList<Year> yearList = new ArrayList<>();
+
+        Collections.sort(yearsMonthsDataList, new YearWiseComparator());
+        /*ArrayList<Year> yearList = new ArrayList<>();
         for (YearsMonthsData yearObject :
                 yearsMonthsDataList) {
             String[] months = yearObject.getMonths().toArray(new String[yearObject.getMonths().size()]);
@@ -51,8 +58,8 @@ public class PatientHistoryDataModel {
                     yearList.add(year);
                 }
             }
-        }
-        return yearList;
+        }*/
+        return yearsMonthsDataList;
     }
 
     public ArrayList<String> getUniqueYears() {
@@ -71,5 +78,13 @@ public class PatientHistoryDataModel {
 
     public void setPatientDetails(PatientDetails patientDetails) {
         this.patientDetails = patientDetails;
+    }
+
+
+    private class YearWiseComparator implements Comparator<YearsMonthsData> {
+
+        public int compare(YearsMonthsData m1, YearsMonthsData m2) {
+            return String.valueOf(m2.getYear()).compareTo(String.valueOf(m1.getYear()));
+        }
     }
 }

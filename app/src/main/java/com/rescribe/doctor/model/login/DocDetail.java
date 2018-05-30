@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class DocDetail implements Parcelable {
 
@@ -196,4 +197,15 @@ public class DocDetail implements Parcelable {
         return 0;
     }
 
+
+    public HashSet<Integer> getUniqStatesOfClinic() {
+        HashSet<Integer> states = new HashSet<Integer>();
+
+        for (ClinicList clinicList :
+                clinicList) {
+            states.add(clinicList.getStateId());
+        }
+
+        return states;
+    }
 }
