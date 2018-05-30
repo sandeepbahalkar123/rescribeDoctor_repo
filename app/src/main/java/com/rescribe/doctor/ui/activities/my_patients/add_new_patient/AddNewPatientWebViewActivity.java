@@ -694,6 +694,12 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         if (mDoOperationTaskID.equalsIgnoreCase(RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT)) {
 
                             Intent intent = new Intent(this, SelectSlotToBookAppointmentBaseActivity.class);
+
+                            //-----
+                            String replacePatientName = mAddedPatientListData.getPatientName().replace("|", "");
+                            mAddedPatientListData.setPatientName(replacePatientName);
+                            //-----
+
                             intent.putExtra(RescribeConstants.PATIENT_INFO, mAddedPatientListData);
                             intent.putExtra(RescribeConstants.PATIENT_DETAILS, patientInfo);
                             intent.putExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
@@ -839,7 +845,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         mSalutationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mSelectedSalutationOfPatient = position;
+                mSelectedSalutationOfPatient = position + 1;
             }
 
             @Override
