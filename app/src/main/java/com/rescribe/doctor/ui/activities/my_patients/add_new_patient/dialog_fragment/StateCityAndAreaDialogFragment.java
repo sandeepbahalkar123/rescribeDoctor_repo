@@ -2,9 +2,13 @@ package com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fra
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -12,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
@@ -26,6 +31,7 @@ import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.c
 import com.rescribe.doctor.services.job_creator_download_cities.CitySyncJob;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.IdAndValueDataModel;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -49,6 +55,9 @@ public class StateCityAndAreaDialogFragment extends DialogFragment implements Id
     private ActionBar mActionBar;
     Context mContext;
     private String mHeader;
+
+    @BindView(R.id.rightFab)
+    FloatingActionButton rightFab;
 
     private ArrayList<IdAndValueDataModel> mList = new ArrayList<>();
     private int mStateID;
@@ -152,6 +161,13 @@ public class StateCityAndAreaDialogFragment extends DialogFragment implements Id
 
             }
         } else if (mHeader.equalsIgnoreCase(getString(R.string.area))) {
+            rightFab.setVisibility(View.VISIBLE);
+            rightFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDialogToAddNewArea();
+                }
+            });
             setAdapter(mList);
         }
     }
@@ -200,5 +216,48 @@ public class StateCityAndAreaDialogFragment extends DialogFragment implements Id
 
     public interface OnItemClickedListener {
         public void onItemClicked(int id, String value);
+    }
+
+    private void showDialogToAddNewArea() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.addNewPatientDialogCustomTheme);
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_new_reference_details, null);
+        dialogBuilder.setView(dialogView);
+
+        //------------
+        final EditText referByField = (EditText) dialogView.findViewById(R.id.referredBy);
+
+        TextInputLayout referredByTextInputLayout = (TextInputLayout) dialogView.findViewById(R.id.referredByTextInputLayout);
+        referredByTextInputLayout.setHint(getString(R.string.area));
+        TextInputLayout referredEmailTextInputLayout = (TextInputLayout) dialogView.findViewById(R.id.referredEmailTextInputLayout);
+        TextInputLayout referredPhoneTextInputLayout = (TextInputLayout) dialogView.findViewById(R.id.referredPhoneTextInputLayout);
+        referredEmailTextInputLayout.setVisibility(View.GONE);
+        referredPhoneTextInputLayout.setVisibility(View.GONE);
+        //-----------
+
+        dialogBuilder.setTitle(getString(R.string.err_msg_no_area_entered))
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String area = referByField.getText().toString().trim();
+
+                        if (area.isEmpty()) {
+                            CommonMethods.showToast(getActivity(), getString(R.string.err_msg_no_area_entered));
+                        } else {
+                            onValueClicked(0, area);
+                            dismiss();
+                        }
+                    }
+                }).setCancelable(true)
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
     }
 }

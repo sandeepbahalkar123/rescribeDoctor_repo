@@ -47,8 +47,8 @@ public class DoctorListViewDialogFragment extends DialogFragment implements Doct
     RecyclerView mRecyclerView;
     @BindView(R.id.emptyListView)
     RelativeLayout mEmptyListView;
-    @BindView(R.id.rightFabForAppointment)
-    FloatingActionButton mRightFabForAppointment;
+    @BindView(R.id.rightFab)
+    FloatingActionButton rightFab;
     private ActionBar mActionBar;
     Context mContext;
     private String mHeader;
@@ -87,7 +87,7 @@ public class DoctorListViewDialogFragment extends DialogFragment implements Doct
 
         mContext = this.getDialog().getContext();
 
-        mRightFabForAppointment.setVisibility(View.VISIBLE);
+        rightFab.setVisibility(View.VISIBLE);
 
         mSearchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
@@ -107,7 +107,7 @@ public class DoctorListViewDialogFragment extends DialogFragment implements Doct
             }
         });
 
-        mRightFabForAppointment.setOnClickListener(new View.OnClickListener() {
+        rightFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialogToAddReferenceDetails();

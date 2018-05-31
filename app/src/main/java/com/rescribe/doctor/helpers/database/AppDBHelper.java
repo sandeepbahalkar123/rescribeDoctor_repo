@@ -29,6 +29,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.PATIENT;
@@ -642,6 +644,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(ADD_NEW_PATIENT.IS_SYNC, newPatient.isOfflinePatientSynced() ? ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER : ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER);
         contentValues.put(ADD_NEW_PATIENT.CREATED_TIME_STAMP, newPatient.getCreationDate());
         contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, newPatient.getHospitalPatId());
+        contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA, newPatient.getPatientArea());
 
         //-----ADDRESS ---
         PatientAddressDetails addressDetails = newPatient.getAddressDetails();
@@ -823,6 +826,38 @@ public class AppDBHelper extends SQLiteOpenHelper {
         db.close();
 
         return list;
+    }
+
+    public HashMap<String, HashSet<String>> doGetAreaDetails() {
+
+        SQLiteDatabase db = getReadableDatabase();
+        String countQuery = "select " + ADD_NEW_PATIENT.CITY_NAME + "," + ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA + " from " + ADD_NEW_PATIENT.TABLE_NAME;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        CommonMethods.Log(TAG, "doGetAreaDetails" + countQuery);
+        HashMap<String, HashSet<String>> cityAreaMap = new HashMap<String, HashSet<String>>();
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String cityName = cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CITY_NAME));
+
+                String area = cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA));
+
+                //-----------
+                HashSet<String> areaHashSet = cityAreaMap.get(cityName.toLowerCase());
+                if (areaHashSet == null) {
+                    areaHashSet = new HashSet<>();
+                }
+                areaHashSet.add(area);
+                cityAreaMap.put(cityName.toLowerCase(), areaHashSet);
+                //-----------
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        db.close();
+
+        return cityAreaMap;
     }
 
 //    public ArrayList<PatientList> getOfflineAddedPatients() {
