@@ -143,15 +143,27 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                     noRecords.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                 } else {
-                    mLocationId = waitingclinicLists.get(0).getLocationId();
-                    waitingPatientTempList = waitingclinicLists.get(0).getWaitingPatientList();
+
+                    WaitingclinicList waitingclinicList = waitingclinicLists.get(0);
+                    mLocationId = waitingclinicList.getLocationId();
+                    waitingPatientTempList = waitingclinicList.getWaitingPatientList();
                     clinicListSpinner.setVisibility(View.GONE);
                     hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
-                    clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
-                    clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
+                    clinicNameTextView.setText(waitingclinicList.getClinicName() + " - ");
+                    clinicAddress.setText(waitingclinicList.getArea() + ", " + waitingclinicList.getCity());
                     recyclerView.setVisibility(View.VISIBLE);
                     recyclerView.setClipToPadding(false);
                     setAdapter();
+
+                    //-------
+                    //-------
+                    mClinicID = waitingclinicList.getClinicId();
+                    mSelectedClinicDataMap.put(RescribeConstants.CLINIC_ID, "" + mClinicID);
+                    mSelectedClinicDataMap.put(RescribeConstants.CITY_ID, "" + waitingclinicList.getCityId());
+                    mSelectedClinicDataMap.put(RescribeConstants.CITY_NAME, "" + waitingclinicList.getCity());
+                    mSelectedClinicDataMap.put(RescribeConstants.LOCATION_ID, "" + mLocationId);
+                    //-------
+                    //-------
                 }
             }
         }
@@ -188,9 +200,9 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
             }
         });
 
-        int receivedLocationID = getArguments().getInt(LOCATION_ID);
         for (int index = 0; index < waitingclinicLists.size(); index++) {
             WaitingclinicList waitingclinicL = waitingclinicLists.get(index);
+            int receivedLocationID = getArguments().getInt(LOCATION_ID);
             if (waitingclinicL.getLocationId() == receivedLocationID) {
                 clinicListSpinner.setSelection(index);
                 break;

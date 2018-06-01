@@ -48,9 +48,11 @@ import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddTo
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.activities.book_appointment.SelectSlotToBookAppointmentBaseActivity;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.CityAndAreaDialogFragment;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.CityListViewDialogFragment;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.DoctorListViewDialogFragment;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.PatientListViewDialogFragment;
-import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.StateCityAndAreaDialogFragment;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.StateListViewDialogFragment;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
@@ -263,7 +265,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 Bundle iState = new Bundle();
                 iState.putString(RescribeConstants.TITLE, getString(R.string.state));
 
-                StateCityAndAreaDialogFragment fState = StateCityAndAreaDialogFragment.newInstance(iState, new StateCityAndAreaDialogFragment.OnItemClickedListener() {
+                StateListViewDialogFragment fState = StateListViewDialogFragment.newInstance(iState, new CityAndAreaDialogFragment.OnItemClickedListener() {
 
                     @Override
                     public void onItemClicked(int id, String value) {
@@ -271,7 +273,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         mStateEditText.setText("" + value);
                     }
                 });
-
                 fState.show(fm, "");
 
                 break;
@@ -284,7 +285,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     iCity.putString(RescribeConstants.TITLE, getString(R.string.city));
                     iCity.putInt(RescribeConstants.STATE_ID, mSelectedStateID);
 
-                    StateCityAndAreaDialogFragment fCity = StateCityAndAreaDialogFragment.newInstance(iCity, new StateCityAndAreaDialogFragment.OnItemClickedListener() {
+                    CityListViewDialogFragment fCity = CityListViewDialogFragment.newInstance(iCity, new CityAndAreaDialogFragment.OnItemClickedListener() {
 
                         @Override
                         public void onItemClicked(int id, String value) {
@@ -329,7 +330,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     iArea.putInt(RescribeConstants.CITY_ID, mSelectedCityID);
                     iArea.putParcelableArrayList(RescribeConstants.AREA_LIST, mAreaListBasedOnCity);
 
-                    StateCityAndAreaDialogFragment fArea = StateCityAndAreaDialogFragment.newInstance(iArea, new StateCityAndAreaDialogFragment.OnItemClickedListener() {
+                    CityAndAreaDialogFragment fArea = CityAndAreaDialogFragment.newInstance(iArea, new CityAndAreaDialogFragment.OnItemClickedListener() {
 
                         @Override
                         public void onItemClicked(int id, String value) {
@@ -634,7 +635,14 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 }
                 patientList.setReferedDetails(ref);
             } else {
-                patientList.setReferedDetails(null);
+
+                //This is done, bzac wrong imeplementation at server
+                PatientReferenceDetails ref = new PatientReferenceDetails();
+                ref.setName("");
+                ref.setPhoneNumber("");
+                ref.setEmailId("");
+                ref.setReferredTypeId("");
+                patientList.setReferedDetails(ref);
             }
             //-----------
             //------ address details----
@@ -650,7 +658,14 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 patientList.setPatientCity(mCityEditText.getText().toString().trim());
                 patientList.setPatientCityId(mSelectedCityID);
             } else {
-                patientList.setAddressDetails(null);
+
+                //This is done, bzac wrong imeplementation at server
+                PatientAddressDetails address = new PatientAddressDetails();
+                address.setPatientAddress("");
+                address.setPatientState("");
+                address.setPatientCity("");
+                address.setPatientArea("");
+                patientList.setAddressDetails(address);
             }
 
         }
