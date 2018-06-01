@@ -188,9 +188,10 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
             }
         });
 
+        int receivedLocationID = getArguments().getInt(LOCATION_ID);
         for (int index = 0; index < waitingclinicLists.size(); index++) {
             WaitingclinicList waitingclinicL = waitingclinicLists.get(index);
-            if (waitingclinicL.getLocationId() == getArguments().getInt(LOCATION_ID)) {
+            if (waitingclinicL.getLocationId() == receivedLocationID) {
                 clinicListSpinner.setSelection(index);
                 break;
             }

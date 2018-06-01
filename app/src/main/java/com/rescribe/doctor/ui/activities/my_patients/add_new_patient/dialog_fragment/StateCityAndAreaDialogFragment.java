@@ -30,6 +30,7 @@ import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.c
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.city_details.StateDetailsModel;
 import com.rescribe.doctor.services.job_creator_download_cities.CitySyncJob;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.IdAndValueDataModel;
+import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -56,8 +57,8 @@ public class StateCityAndAreaDialogFragment extends DialogFragment implements Id
     Context mContext;
     private String mHeader;
 
-    @BindView(R.id.rightFab)
-    FloatingActionButton rightFab;
+    @BindView(R.id.tapToAddNewFab)
+    CustomTextView tapToAddNewFab;
 
     private ArrayList<IdAndValueDataModel> mList = new ArrayList<>();
     private int mStateID;
@@ -161,8 +162,8 @@ public class StateCityAndAreaDialogFragment extends DialogFragment implements Id
 
             }
         } else if (mHeader.equalsIgnoreCase(getString(R.string.area))) {
-            rightFab.setVisibility(View.VISIBLE);
-            rightFab.setOnClickListener(new View.OnClickListener() {
+            tapToAddNewFab.setVisibility(View.VISIBLE);
+            tapToAddNewFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showDialogToAddNewArea();

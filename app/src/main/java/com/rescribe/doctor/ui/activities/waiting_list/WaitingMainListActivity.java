@@ -90,6 +90,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
     private boolean isAnyItemDeleted = false;
     private Integer mLocationId;
     private ViewPagerAdapter mViewPagerAdapter;
+    int receivedLocationID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,11 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         mFragmentTitleList[0] = getString(R.string.active);
         mFragmentTitleList[1] = getString(R.string.view_all);
         mAppointmentHelper = new AppointmentHelper(this, this);
-        doCallGetWaitingListAPI();
+
+        String tempLocID = getIntent().getStringExtra(LOCATION_ID);
+        receivedLocationID = tempLocID != null ? Integer.parseInt(tempLocID) : -1;
+
+
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -108,7 +113,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         //-----------
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(RescribeConstants.WAITING_LIST_INFO, mWaitingClinicList);
-        bundle.putInt(LOCATION_ID, getIntent().getIntExtra(LOCATION_ID, -1));
+        bundle.putInt(LOCATION_ID, receivedLocationID);
         //-----------
         mViewPagerAdapter.addFragment(ActivePatientListFragment.newInstance(bundle), getString(R.string.active));
         mViewPagerAdapter.addFragment(ViewAllPatientListFragment.newInstance(bundle), getString(R.string.view_all));
@@ -191,34 +196,38 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
                 break;
             case R.id.addNewPatientFAB: {
 
-                HashMap<String, String> selectedClinicDataMap = null;
-                Fragment item = mViewPagerAdapter.getItem(viewpager.getCurrentItem());
-                switch (viewpager.getCurrentItem()) {
-                    case 0:
-                        selectedClinicDataMap = ((ActivePatientListFragment) item).getSelectedClinicDataMap();
-                        break;
-                    case 1:
-                        selectedClinicDataMap = ((ViewAllPatientListFragment) item).getSelectedClinicDataMap();
-                        break;
-                }
-                if (selectedClinicDataMap != null) {
-                    Bundle b = new Bundle();
-                    b.putInt(RescribeConstants.CLINIC_ID, Integer.parseInt(selectedClinicDataMap.get(RescribeConstants.CLINIC_ID)));
-                    b.putInt(RescribeConstants.CITY_ID, Integer.parseInt(selectedClinicDataMap.get(RescribeConstants.CITY_ID)));
-                    b.putString(RescribeConstants.CITY_NAME, selectedClinicDataMap.get(RescribeConstants.CITY_NAME));
-                    b.putString(RescribeConstants.LOCATION_ID, selectedClinicDataMap.get(RescribeConstants.LOCATION_ID));
-
-                    Intent i = new Intent(WaitingMainListActivity.this, AddNewPatientWebViewActivity.class);
-                    //  Intent i = new Intent(getActivity(), AddNewPatientActivity.class);
-                    i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
-                    i.putExtra(RescribeConstants.START_FROM, RescribeConstants.WAITING_LIST);
-                    startActivity(i);
-
-                    boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(this);
-                    if (internetAvailableCheck) {
-                        finish();
+                if (mViewPagerAdapter != null) {
+                    HashMap<String, String> selectedClinicDataMap = null;
+                    Fragment item = mViewPagerAdapter.getItem(viewpager.getCurrentItem());
+                    switch (viewpager.getCurrentItem()) {
+                        case 0:
+                            selectedClinicDataMap = ((ActivePatientListFragment) item).getSelectedClinicDataMap();
+                            break;
+                        case 1:
+                            selectedClinicDataMap = ((ViewAllPatientListFragment) item).getSelectedClinicDataMap();
+                            break;
                     }
+                    if (selectedClinicDataMap != null) {
+                        Bundle b = new Bundle();
+                        b.putInt(RescribeConstants.CLINIC_ID, Integer.parseInt(selectedClinicDataMap.get(RescribeConstants.CLINIC_ID)));
+                        b.putInt(RescribeConstants.CITY_ID, Integer.parseInt(selectedClinicDataMap.get(RescribeConstants.CITY_ID)));
+                        b.putString(RescribeConstants.CITY_NAME, selectedClinicDataMap.get(RescribeConstants.CITY_NAME));
+                        b.putString(RescribeConstants.LOCATION_ID, selectedClinicDataMap.get(RescribeConstants.LOCATION_ID));
+
+                        Intent i = new Intent(WaitingMainListActivity.this, AddNewPatientWebViewActivity.class);
+                        //  Intent i = new Intent(getActivity(), AddNewPatientActivity.class);
+                        i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
+                        i.putExtra(RescribeConstants.START_FROM, RescribeConstants.WAITING_LIST);
+                        startActivity(i);
+
+                        boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(this);
+                        if (internetAvailableCheck) {
+                            finish();
+                        }
+                    }
+
                 }
+
 
                 //   showDialogToSelectLocation();
                 break;
@@ -268,6 +277,12 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        doCallGetWaitingListAPI();
+    }
+
     public void doCallGetWaitingListAPI() {
         mAppointmentHelper.doGetWaitingList();
     }
@@ -306,7 +321,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         return mWaitingClinicList;
     }
 
-
+/*
     private void showDialogToSelectLocation() {
 
         final Dialog dialog = new Dialog(this);
@@ -393,6 +408,6 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         dialog.show();
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
-    }
+    }*/
 
 }

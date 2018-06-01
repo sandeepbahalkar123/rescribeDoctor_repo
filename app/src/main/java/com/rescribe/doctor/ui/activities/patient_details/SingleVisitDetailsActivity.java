@@ -60,6 +60,8 @@ import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 
 public class SingleVisitDetailsActivity extends AppCompatActivity implements HelperResponse, SingleVisitAdapter.OnDeleteAttachments {
 
+    private boolean mIsDocUploaded = false;
+
     private static final String PAIN_SCALE = "pain scale";
     @BindView(R.id.historyExpandableListView)
     ExpandableListView mHistoryExpandableListView;
@@ -205,9 +207,9 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                     }
                 } else {
                     mSingleVisitAdapter.notifyDataSetChanged();
-                    if(mSingleVisitAdapter.getListDataList().size()  == 0){
-                    mNoRecordAvailable.setVisibility(View.VISIBLE);
-                    mHistoryExpandableListView.setVisibility(View.INVISIBLE);
+                    if (mSingleVisitAdapter.getListDataList().size() == 0) {
+                        mNoRecordAvailable.setVisibility(View.VISIBLE);
+                        mHistoryExpandableListView.setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -419,7 +421,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     @Override
     public void onBackPressed() {
-        if (isAllAttachmentDeleted) {
+        if (isAllAttachmentDeleted || mIsDocUploaded) {
             Intent output = new Intent();
             output.putExtra("SINGLE_PAGE_ADAPTER", isAllAttachmentDeleted);
             setResult(RESULT_OK, output);
@@ -439,8 +441,11 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 if (intent.getAction().equals(DOC_UPLOAD)) {
                     UploadInfo uploadInfo = intent.getParcelableExtra(UPLOAD_INFO);
                     int isFailed = intent.getIntExtra(STATUS, FAILED);
-                    if (uploadInfo.getFilesLeft().isEmpty() && isFailed == COMPLETED)
+                    if (uploadInfo.getFilesLeft().isEmpty() && isFailed == COMPLETED) {
                         initialize();
+                        mIsDocUploaded = true;
+                    }
+
                 }
             }
         }
