@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -53,20 +51,24 @@ import static com.rescribe.doctor.util.RescribeConstants.PATIENT_HOS_PAT_ID;
  * Created by jeetal on 31/1/18.
  */
 
-public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.ListViewHolder> implements Filterable {
+public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.ListViewHolder> /*implements Filterable*/ {
 
     private Context mContext;
-    private ArrayList<PatientList> mDataList = new ArrayList<>();
+    //    private ArrayList<PatientList> mDataList = new ArrayList<>();
+    private ArrayList<PatientList> mDataList;
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
     private boolean isClickOnPatientDetailsRequired;
-    private ArrayList<PatientList> mListToShowAfterFilter;
+    //    private ArrayList<PatientList> mListToShowAfterFilter;
     private AppDBHelper appDBHelper;
 
     public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
-        this.mListToShowAfterFilter = dataList;
-        mDataList.addAll(dataList);
+//        this.mListToShowAfterFilter = dataList;
+//        mDataList.addAll(dataList);
+
+        this.mDataList = dataList;
         removeDuplicateElements();
+
         this.mContext = mContext;
         appDBHelper = new AppDBHelper(mContext);
         this.mOnDownArrowClicked = mOnDownArrowClicked;
@@ -361,7 +363,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
     public void add(PatientList mc) {
         mDataList.add(mc);
-        mListToShowAfterFilter.add(mc);
+//        mListToShowAfterFilter.add(mc);
         removeDuplicateElements();
         notifyItemInserted(mDataList.size() - 1);
     }
@@ -376,8 +378,8 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
         mDataList.clear();
         mDataList.addAll(map.values());
-        mListToShowAfterFilter.clear();
-        mListToShowAfterFilter.addAll(map.values());
+//        mListToShowAfterFilter.clear();
+//        mListToShowAfterFilter.addAll(map.values());
     }
 
     public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
@@ -405,7 +407,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         mDataList.clear();
     }
 
-    @Override
+   /* @Override
     public Filter getFilter() {
 
         return new Filter() {
@@ -447,5 +449,5 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 notifyDataSetChanged();
             }
         };
-    }
+    }*/
 }

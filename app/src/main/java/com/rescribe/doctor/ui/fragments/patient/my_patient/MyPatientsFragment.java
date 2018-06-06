@@ -207,8 +207,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             public void afterTextChanged(Editable s) {
                 searchText = s.toString();
 
-                if (NetworkUtil.getConnectivityStatusBoolean(getContext())) {
-                    if (searchText.length() >= 3) {
+                /*if (NetworkUtil.getConnectivityStatusBoolean(getContext())) {
+
+                    if (searchText.length() >= 1) {
                         searchPatients(true);
                         isFiltered = true;
                     } else if (isFiltered) {
@@ -220,7 +221,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     if (s.toString().length() < 3)
                         mMyPatientsAdapter.getFilter().filter(s.toString());
                 } else
-                    searchPatients(false);
+                    searchPatients(false);*/
+
+                searchPatients(NetworkUtil.getConnectivityStatusBoolean(getContext()));
             }
         });
         if (fromActivityLaunched.equals(RescribeConstants.HOME_PAGE)) {
