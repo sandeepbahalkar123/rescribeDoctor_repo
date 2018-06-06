@@ -111,8 +111,15 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     EditText mReferenceID;
     @BindView(R.id.btnAddPatientSubmit)
     Button mSubmit;
+    //-------
     @BindView(R.id.genderRadioGroup)
     RadioGroup mGenderRadioGroup;
+    @BindView(R.id.genderMale)
+    RadioButton genderMale;
+    @BindView(R.id.genderFemale)
+    RadioButton genderFemale;
+    @BindView(R.id.genderOther)
+    RadioButton genderOther;
     //---------
     @BindView(R.id.addressLine)
     EditText mAddressLine;
@@ -901,6 +908,19 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mSelectedSalutationOfPatient = position + 1;
+
+                switch (position) {
+                    case 0:
+                        genderMale.setChecked(true);
+                        break;
+                    case 1:
+                    case 2:
+                        genderFemale.setChecked(true);
+                        break;
+                    case 3:
+                        genderOther.setChecked(true);
+                        break;
+                }
             }
 
             @Override

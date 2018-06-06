@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.evernote.android.job.JobManager;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
@@ -24,6 +25,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.services.job_creator_download_cities.CitySyncJob;
 import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
 import com.rescribe.doctor.ui.activities.ProfileActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -180,6 +182,8 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         dialog.findViewById(R.id.button_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                JobManager.create(mContext).cancelAll();
                 dialog.dismiss();
                 ActiveRequest activeRequest = new ActiveRequest();
                 activeRequest.setId(Integer.parseInt(docId));
@@ -216,6 +220,8 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         boolean isLaterClicked;
         boolean isSkippedClicked;
 
+        appDBHelper.deleteDatabase();
+
         //Logout functionality
         if (RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_gmail))) {
             gmailLogin = RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext);
@@ -251,7 +257,6 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, passwordFacebook, mContext);
         RescribePreferencesManager.putString(getString(R.string.logout), "" + 1, mContext);
 
-        appDBHelper.deleteDatabase();
 
         Intent intent = new Intent(mContext, LoginSignUpActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

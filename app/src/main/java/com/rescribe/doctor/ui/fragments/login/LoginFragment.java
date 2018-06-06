@@ -79,8 +79,8 @@ public class LoginFragment extends Fragment implements HelperResponse {
         unbinder = ButterKnife.bind(this, rootView);
 
         //-----------
-        editTextEmailID.setText("sandeep.nehte@scorgtechnologies.com");
-        editTextPassword.setText("doctor");
+        //editTextEmailID.setText("sandeep.nehte@scorgtechnologies.com");
+        //editTextPassword.setText("doctor");
         //-----------
 
         return rootView;

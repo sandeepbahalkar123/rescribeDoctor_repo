@@ -59,6 +59,7 @@ public class RescribeApplication extends MultiDexApplication {
 //        new NukeSSLCerts().nuke(); // disable all ssl certificates (dangerous)
         //--------------
         JobManager.create(this).addJobCreator(new AppJobCreator());
+
     }
     public static ArrayList<DoctorLocationModel> getDoctorLocationModels() {
         return doctorLocationModels;
@@ -67,5 +68,5 @@ public class RescribeApplication extends MultiDexApplication {
     public static void setDoctorLocationModels(ArrayList<DoctorLocationModel> doctorLocationModels) {
         RescribeApplication.doctorLocationModels = doctorLocationModels;
     }
-
+    
 }

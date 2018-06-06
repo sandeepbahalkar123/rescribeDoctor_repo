@@ -19,6 +19,7 @@ import com.rescribe.doctor.model.patient.doctor_patients.PatientReferenceDetails
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.model.request_patients.FilterParams;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
+import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.util.CommonMethods;
 
 import java.io.BufferedReader;
@@ -225,9 +226,13 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     public void deleteDatabase() {
         File dbFile = mContext.getDatabasePath(DATABASE_NAME);
-        dbFile.delete();
+        boolean delete = dbFile.delete();
+        if (delete) {
+            CommonMethods.Log("DeletedOfflineDatabase", "APP_DATA , PREFERENCES TABLE, INVESTIGATION");
+            instance = null;
+            AppDBHelper.getInstance(mContext);
+        }
 
-        CommonMethods.Log("DeletedOfflineDatabase", "APP_DATA , PREFERENCES TABLE, INVESTIGATION");
     }
 
     public int updateMessageUploadStatus(String messageId, int msgUploadStatus) {
