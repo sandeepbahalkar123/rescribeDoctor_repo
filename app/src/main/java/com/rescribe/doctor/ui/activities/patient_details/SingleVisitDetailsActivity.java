@@ -391,12 +391,13 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
-                if (isAllAttachmentDeleted) {
+               /* if (isAllAttachmentDeleted) {
                     Intent output = new Intent();
                     output.putExtra("SINGLE_PAGE_ADAPTER", isAllAttachmentDeleted);
                     setResult(RESULT_OK, output);
                 }
-                finish();
+                finish();*/
+                onBackPressed();
                 break;
             case R.id.userInfoTextView:
                 break;

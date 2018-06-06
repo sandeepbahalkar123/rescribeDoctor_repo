@@ -90,36 +90,6 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         return fragment;
     }
 
-/*
-
-    private void setGridViewAdapter() {
-
-        PatientHistoryListFragmentContainer parentFragment = (PatientHistoryListFragmentContainer) getParentFragment();
-
-        PatientDetailHelper parentPatientDetailHelper = parentFragment.getParentPatientDetailHelper();
-        if (parentPatientDetailHelper != null) {
-            Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedPatientHistoryInfo = parentPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
-            if (yearWiseSortedPatientHistoryInfo.size() != 0) {
-                Map<String, ArrayList<PatientHistoryInfo>> monthArrayListHashMap = yearWiseSortedPatientHistoryInfo.get(mYear);
-                if (monthArrayListHashMap != null) {
-
-                    formattedDoctorList = monthArrayListHashMap.get(mMonthName);
-                    if (formattedDoctorList != null) {
-                        Collections.sort(formattedDoctorList, new DateWiseComparator());
-
-                        mCalenderDayOfMonthGridAdapter = new CalenderDayOfMonthGridAdapter(this.getContext(), formattedDoctorList, this);
-                        LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                        mCalenderDays.setLayoutManager(linearlayoutManager);
-                        mCalenderDays.setAdapter(mCalenderDayOfMonthGridAdapter);
-                    }
-
-                    //setOPDStatusGridViewAdapter(parentFragment, formattedDoctorList);
-                }
-            }
-        }
-    }
-*/
-
     private class DateWiseComparator implements Comparator<PatientHistoryInfo> {
 
         public int compare(PatientHistoryInfo m1, PatientHistoryInfo m2) {
