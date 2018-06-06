@@ -36,6 +36,7 @@ import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaData;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaDetailsBaseModel;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorData;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientAddressDetails;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientReferenceDetails;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
@@ -47,9 +48,11 @@ import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddTo
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.ui.activities.book_appointment.SelectSlotToBookAppointmentBaseActivity;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.CityAndAreaDialogFragment;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.CityListViewDialogFragment;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.DoctorListViewDialogFragment;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.PatientListViewDialogFragment;
-import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.StateCityAndAreaDialogFragment;
+import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.StateListViewDialogFragment;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
@@ -59,6 +62,9 @@ import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,8 +111,15 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     EditText mReferenceID;
     @BindView(R.id.btnAddPatientSubmit)
     Button mSubmit;
+    //-------
     @BindView(R.id.genderRadioGroup)
     RadioGroup mGenderRadioGroup;
+    @BindView(R.id.genderMale)
+    RadioButton genderMale;
+    @BindView(R.id.genderFemale)
+    RadioButton genderFemale;
+    @BindView(R.id.genderOther)
+    RadioButton genderOther;
     //---------
     @BindView(R.id.addressLine)
     EditText mAddressLine;
@@ -151,7 +164,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private boolean mAddPatientOfflineSetting;
     private PatientList mAddedPatientListData;
     //----
-    private String mDoOperationTaskID;
+    private String mDoOperationTaskID = null;
     private int mAddNewPatientSelectedOption = -1;
     //------
     private AppointmentHelper mAppointmentHelper;
@@ -166,6 +179,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private DoctorData mSelectedDoctorReference;
     private PatientList mSelectedPatientReference;
     private String mActivityStartFrom;
+    private HashMap<String, HashSet<String>> mOfflineCityAndAreaMap = null;
 
     //--------
     @Override
@@ -244,7 +258,13 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         mAddNewPatientSelectedOption = 1;
                         doAddNewPatientOnSelectedOption();
                     } else {
-                        showDialogToSelectOption();
+                        if (NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this)) {
+                            showDialogToSelectOption();
+                        } else {
+                            mAddNewPatientSelectedOption = 0;
+                            mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
+                            addOfflinePatient();
+                        }
                     }
                 }
                 break;
@@ -252,7 +272,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 Bundle iState = new Bundle();
                 iState.putString(RescribeConstants.TITLE, getString(R.string.state));
 
-                StateCityAndAreaDialogFragment fState = StateCityAndAreaDialogFragment.newInstance(iState, new StateCityAndAreaDialogFragment.OnItemClickedListener() {
+                StateListViewDialogFragment fState = StateListViewDialogFragment.newInstance(iState, new CityAndAreaDialogFragment.OnItemClickedListener() {
 
                     @Override
                     public void onItemClicked(int id, String value) {
@@ -260,7 +280,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         mStateEditText.setText("" + value);
                     }
                 });
-
                 fState.show(fm, "");
 
                 break;
@@ -273,7 +292,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     iCity.putString(RescribeConstants.TITLE, getString(R.string.city));
                     iCity.putInt(RescribeConstants.STATE_ID, mSelectedStateID);
 
-                    StateCityAndAreaDialogFragment fCity = StateCityAndAreaDialogFragment.newInstance(iCity, new StateCityAndAreaDialogFragment.OnItemClickedListener() {
+                    CityListViewDialogFragment fCity = CityListViewDialogFragment.newInstance(iCity, new CityAndAreaDialogFragment.OnItemClickedListener() {
 
                         @Override
                         public void onItemClicked(int id, String value) {
@@ -281,10 +300,28 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                             mCityEditText.setText("" + value);
                             if (NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this)) {
                                 mAppointmentHelper.getAreaOfSelectedCity(mSelectedCityID);
+                            } else {
+                                if (mOfflineCityAndAreaMap == null)
+                                    mOfflineCityAndAreaMap = AppDBHelper.getInstance(AddNewPatientWebViewActivity.this).doGetAreaDetails();
+
+                                HashSet<String> areaList = mOfflineCityAndAreaMap.get(mCityEditText.getText().toString().toLowerCase().trim());
+                                if (areaList != null) {
+                                    // create an iterator
+                                    Iterator iterator = areaList.iterator();
+
+                                    // check values
+                                    int count = 1;
+                                    while (iterator.hasNext()) {
+                                        IdAndValueDataModel i = new IdAndValueDataModel();
+                                        i.setIdValue(String.valueOf(iterator.next()));
+                                        i.setId(count);
+                                        count = count + 1;
+                                        mAreaListBasedOnCity.add(i);
+                                    }
+                                }
                             }
                         }
                     });
-
                     fCity.show(fm, "");
                 }
 
@@ -295,28 +332,22 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     CommonMethods.showToast(this, getString(R.string.plz_select_city));
                 } else {
 
-                    if (!mAreaListBasedOnCity.isEmpty()) {
-                        Bundle iArea = new Bundle();
-                        iArea.putString(RescribeConstants.TITLE, getString(R.string.area));
-                        iArea.putInt(RescribeConstants.CITY_ID, mSelectedCityID);
-                        iArea.putParcelableArrayList(RescribeConstants.AREA_LIST, mAreaListBasedOnCity);
+                    Bundle iArea = new Bundle();
+                    iArea.putString(RescribeConstants.TITLE, getString(R.string.area));
+                    iArea.putInt(RescribeConstants.CITY_ID, mSelectedCityID);
+                    iArea.putParcelableArrayList(RescribeConstants.AREA_LIST, mAreaListBasedOnCity);
 
-                        StateCityAndAreaDialogFragment fArea = StateCityAndAreaDialogFragment.newInstance(iArea, new StateCityAndAreaDialogFragment.OnItemClickedListener() {
+                    CityAndAreaDialogFragment fArea = CityAndAreaDialogFragment.newInstance(iArea, new CityAndAreaDialogFragment.OnItemClickedListener() {
 
-                            @Override
-                            public void onItemClicked(int id, String value) {
-                                mSelectedAreaID = id;
-                                mAreaEditText.setText("" + value);
-                            }
-                        });
+                        @Override
+                        public void onItemClicked(int id, String value) {
+                            mSelectedAreaID = id;
+                            mAreaEditText.setText("" + value);
+                        }
+                    });
 
-                        fArea.show(fm, "");
-                    } else {
-                        mAreaEditText.setFocusable(true);
-                        mAddressAreaTextInputLayout.setFocusable(true);
-                        mAreaEditText.setFocusableInTouchMode(true);
-                        mAddressAreaTextInputLayout.setFocusableInTouchMode(true);
-                    }
+                    fArea.show(fm, "");
+
                 }
                 break;
             case R.id.referredBy:
@@ -371,6 +402,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private void addOfflinePatient() {
 
         if (AppDBHelper.getInstance(mContext).addNewPatient(mAddedPatientListData) != -1) {
+
+            CommonMethods.showToast(this, getString(R.string.patients_added_successfully));
+
             Bundle bundle = new Bundle();
             // this is done to replzce | with space, | used in case blank middle name.
             String replace = mAddedPatientListData.getPatientName().replace("|", "");
@@ -391,9 +425,12 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             bundle.putInt(RescribeConstants.CLINIC_ID, mAddedPatientListData.getClinicId());
             bundle.putString(RescribeConstants.PATIENT_ID, String.valueOf(mAddedPatientListData.getPatientId()));
             bundle.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(mAddedPatientListData.getHospitalPatId()));
-            Intent intent = new Intent(this, PatientHistoryActivity.class);
-            intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
-            startActivity(intent);
+
+            if (mDoOperationTaskID.equalsIgnoreCase(RescribeConstants.TASK_ADD_NEW_PATIENT)) {
+                Intent intent = new Intent(this, PatientHistoryActivity.class);
+                intent.putExtra(RescribeConstants.PATIENT_INFO, bundle);
+                startActivity(intent);
+            }
             finish();
         } else
             CommonMethods.showToast(mContext, "Failed to store");
@@ -581,18 +618,16 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             else
                 patientList.setGender("");
 
-
-            patientList.setPatientAddress(mAddressLine.getText().toString().trim());
-
             patientList.setReferenceID(refID);
             patientList.setOfflinePatientSynced(false);
             patientList.setClinicId(hospitalId);
             patientList.setHospitalPatId(id + 1);
             patientList.setPatientCity(cityName);
             patientList.setPatientCityId(cityID);
+            patientList.setPatientArea("" + mAreaEditText.getText().toString().trim());
             patientList.setCreationDate(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN));
 
-            //----------
+            //------ reference details----
             if (mReferenceDetailLayout.getVisibility() == View.VISIBLE) {
                 PatientReferenceDetails ref = new PatientReferenceDetails();
                 ref.setName(refName);
@@ -605,11 +640,39 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 } else if (mSelectedReferenceTypeID == 2) {
                     ref.setPatientId(String.valueOf(mSelectedPatientReference.getPatientId()));
                 }
-                //-----------
-
                 patientList.setReferedDetails(ref);
             } else {
-                patientList.setReferedDetails(null);
+
+                //This is done, bzac wrong imeplementation at server
+                PatientReferenceDetails ref = new PatientReferenceDetails();
+                ref.setName("");
+                ref.setPhoneNumber("");
+                ref.setEmailId("");
+                ref.setReferredTypeId("");
+                patientList.setReferedDetails(ref);
+            }
+            //-----------
+            //------ address details----
+            if (mAddressDetailLayout.getVisibility() == View.VISIBLE) {
+                PatientAddressDetails address = new PatientAddressDetails();
+                address.setPatientAddress(mAddressLine.getText().toString().trim());
+                address.setPatientState("" + mSelectedStateID);
+                address.setPatientCity("" + mSelectedCityID);
+                address.setPatientArea("" + mAreaEditText.getText().toString().trim());
+                patientList.setAddressDetails(address);
+
+                //THis is hack, to keep common city for online & offline patient.
+                patientList.setPatientCity(mCityEditText.getText().toString().trim());
+                patientList.setPatientCityId(mSelectedCityID);
+            } else {
+
+                //This is done, bzac wrong imeplementation at server
+                PatientAddressDetails address = new PatientAddressDetails();
+                address.setPatientAddress("");
+                address.setPatientState("");
+                address.setPatientCity("");
+                address.setPatientArea("");
+                patientList.setAddressDetails(address);
             }
 
         }
@@ -686,6 +749,12 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         if (mDoOperationTaskID.equalsIgnoreCase(RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT)) {
 
                             Intent intent = new Intent(this, SelectSlotToBookAppointmentBaseActivity.class);
+
+                            //-----
+                            String replacePatientName = mAddedPatientListData.getPatientName().replace("|", "");
+                            mAddedPatientListData.setPatientName(replacePatientName);
+                            //-----
+
                             intent.putExtra(RescribeConstants.PATIENT_INFO, mAddedPatientListData);
                             intent.putExtra(RescribeConstants.PATIENT_DETAILS, patientInfo);
                             intent.putExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
@@ -710,7 +779,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             case RescribeConstants.TASK_ADD_TO_WAITING_LIST: {
                 AddToWaitingListBaseModel addToWaitingListBaseModel = (AddToWaitingListBaseModel) customResponse;
                 if (addToWaitingListBaseModel.getCommon().isSuccess()) {
-                    if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_to_waiting_list).toLowerCase()) || addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
+                    if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_successfully).toLowerCase()) || addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
                         Intent intent = new Intent(this, WaitingMainListActivity.class);
                         intent.putExtra(LOCATION_ID, locationID);
                         startActivity(intent);
@@ -769,7 +838,14 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
         ArrayList<AddToList> addToArrayList = new ArrayList<>();
         AddToList addToListObject = new AddToList();
-        addToListObject.setLocationDetails(cityName);
+
+        //THis is hack, to keep common city for online & offline patient.
+        if (mAddressDetailLayout.getVisibility() == View.VISIBLE) {
+            addToListObject.setLocationDetails(mCityEditText.getText().toString().trim());
+        } else {
+            addToListObject.setLocationDetails(cityName);
+        }
+
         addToListObject.setLocationId(Integer.parseInt(locationID));
         addToListObject.setPatientAddToWaitingList(patientsListAddToWaitingLists);
         addToArrayList.add(addToListObject);
@@ -831,7 +907,20 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         mSalutationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mSelectedSalutationOfPatient = position;
+                mSelectedSalutationOfPatient = position + 1;
+
+                switch (position) {
+                    case 0:
+                        genderMale.setChecked(true);
+                        break;
+                    case 1:
+                    case 2:
+                        genderFemale.setChecked(true);
+                        break;
+                    case 3:
+                        genderOther.setChecked(true);
+                        break;
+                }
             }
 
             @Override
@@ -844,40 +933,24 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private void doAddNewPatientOnSelectedOption() {
         switch (mAddNewPatientSelectedOption) {
             case 0:
-                boolean internetAvailable = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-                if (internetAvailable && mAddPatientOfflineSetting) {
-                    mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
-                    mAppointmentHelper.addNewPatient(mAddedPatientListData);
-                } else {
-                    addOfflinePatient();
-                }
-
+                mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
                 break;
-            case 1: {
-                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-                if (internetAvailableCheck && mAddPatientOfflineSetting) {
-                    mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
-                    mAppointmentHelper.addNewPatient(mAddedPatientListData);
-                } else {
-                    CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
-                }
-
-            }
-            break;
-            case 2: {
-                boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
-
-                if (internetAvailableCheck && mAddPatientOfflineSetting) {
-                    mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
-                    mAppointmentHelper.addNewPatient(mAddedPatientListData);
-                } else {
-                    CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.add_patient_offline_and_book_apt));
-                }
-
-            }
-            break;
+            case 1:
+                mDoOperationTaskID = RescribeConstants.TASK_ADD_TO_WAITING_LIST;
+                break;
+            case 2:
+                mDoOperationTaskID = RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
+                break;
             default:
                 CommonMethods.showToast(AddNewPatientWebViewActivity.this, getString(R.string.plz_select_option));
+        }
+        if (mDoOperationTaskID != null) {
+            boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this);
+            if (internetAvailableCheck && mAddPatientOfflineSetting) {
+                mAppointmentHelper.addNewPatient(mAddedPatientListData);
+            } else {
+                addOfflinePatient();
+            }
         }
     }
 

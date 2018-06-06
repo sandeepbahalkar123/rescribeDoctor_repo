@@ -265,10 +265,6 @@
             android:label="@string/title_activity_location_picker"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.activities.my_patients.add_new_patient.PatientAddDetailsListView"
-            android:label="@string/title_activity_location_picker"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activities.ConnectSplashActivity"

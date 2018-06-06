@@ -28,7 +28,9 @@ import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaDetailsBaseModel;
+import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.city_details.StateAndCityBaseModel;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorListBaseModel;
+import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.states_details.StatesDetailsBaseModel;
 import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.Connector;
@@ -611,6 +613,14 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_GET_DOC_LIST_FOR_REFERENCE_TO_ADD_PATIENT: //This is for delete attachments
                         DoctorListBaseModel doctorListBaseModel = new Gson().fromJson(data, DoctorListBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, doctorListBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_GET_STATE_TO_ADD_NEW_PATIENT: //This is for delete attachments
+                        StatesDetailsBaseModel statesDetailsBaseModel = new Gson().fromJson(data, StatesDetailsBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, statesDetailsBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_GET_STATE_AND_CITY_TO_ADD_NEW_PATIENT: //This is for delete attachments
+                        StateAndCityBaseModel stateAndCityBaseModel = new Gson().fromJson(data, StateAndCityBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, stateAndCityBaseModel, mOldDataTag);
                         break;
 
 

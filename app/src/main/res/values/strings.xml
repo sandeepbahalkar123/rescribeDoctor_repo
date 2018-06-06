@@ -191,10 +191,10 @@
     <string name="select_date_text">Select Date</string>
     <string name="enter_date">Enter Date</string>
     <string name="enter_address">Enter Address</string>
-    <string name="address_details">Address details</string>
+    <string name="address_details">Address Details</string>
     <string name="address_line">Address line</string>
     <string name="area">Area</string>
-    <string name="referenced_details">Reference details</string>
+    <string name="referenced_details">Reference Details</string>
     <string name="next">Next</string>
     <string name="addrecords">Add Records</string>
     <string name="upload">Upload</string>
@@ -208,7 +208,7 @@
     <string name="view_all">VIEW ALL</string>
     <string name="in_time">In Time</string>
     <string name="select_clinic_location">Select Clinic Location</string>
-    <string name="patients_added_to_waiting_list">Patients added successfully!</string>
+    <string name="patients_added_successfully">Patients added successfully!</string>
     <string name="patient_limit_exceeded">Patient limit exceeded!</string>
     <string name="already_exists_in_waiting_list">All patients already exists in waiting mDataList!</string>
     <string name="added_to_waiting_list">added to waiting mDataList!</string>
@@ -249,6 +249,7 @@
     <string name="add_patient_offline_msg">No internet connection found, still you can add patient offline.</string>
     <string name="add_patient_offline_and_book_apt">To use this option, you must have valid internet connection</string>
     <string name="setting_add_patient_header">Add Patient Offline</string>
+    <string name="setting_add_patient_form">Add Patient form</string>
 
     <string name="book_appointment">Book Appointment</string>
     <string name="appointment_booked_message">Appointment has already been taken with this doctor.</string>
@@ -284,8 +285,12 @@
     <string name="plz_select_state">Please select state</string>
     <string name="plz_select_city">Please select city</string>
     <string name="err_msg_no_area_found_for_city">No area found for selected city, you can add new area</string>
+    <string name="err_msg_no_area_entered">Please enter area</string>
     <string name="reffered_by">Referred by:</string>
     <string name="err_msg_select_reffered_by">Select referred by</string>
+
+    <string name="tap_to_add_new_area">Tap to add new area</string>
+    <string name="tap_to_add_new_doctor">Tap to add new doctor</string>
 
     <string-array name="add_patient_options">
         <item>Save patient</item>

@@ -117,6 +117,7 @@ public class RescribeConstants {
     public static final String TASK_GET_STATE_AND_CITY_TO_ADD_NEW_PATIENT = RescribeConstants.BLANK + 40;
     public static final String TASK_GET_AREA_TO_ADD_NEW_PATIENT = RescribeConstants.BLANK + 41;
     public static final String TASK_GET_DOC_LIST_FOR_REFERENCE_TO_ADD_PATIENT = RescribeConstants.BLANK + 42;
+    public static final String TASK_GET_STATE_TO_ADD_NEW_PATIENT = RescribeConstants.BLANK + 43;
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
 

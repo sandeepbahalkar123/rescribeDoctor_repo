@@ -3,6 +3,7 @@ package com.rescribe.doctor.model.patient.add_new_patient;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientAddressDetails;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientReferenceDetails;
 
 public class PatientDetail implements CustomResponse {
@@ -42,9 +43,9 @@ public class PatientDetail implements CustomResponse {
     private String offlineReferenceID;
 
     //-------fields for adding patient in offline mode--------
-
-    private String patientState;
-    private String patientAddress;
+    @SerializedName("patientAddressDetails")
+    @Expose
+    private PatientAddressDetails addressDetails;
 
     @SerializedName("referedDetails")
     @Expose
@@ -132,22 +133,6 @@ public class PatientDetail implements CustomResponse {
         this.offlineReferenceID = offlineReferenceID;
     }
 
-    public String getPatientState() {
-        return patientState;
-    }
-
-    public void setPatientState(String patientState) {
-        this.patientState = patientState;
-    }
-
-    public String getPatientAddress() {
-        return patientAddress;
-    }
-
-    public void setPatientAddress(String patientAddress) {
-        this.patientAddress = patientAddress;
-    }
-
     public PatientReferenceDetails getReferedDetails() {
         return referedDetails;
     }
@@ -162,5 +147,13 @@ public class PatientDetail implements CustomResponse {
 
     public void setSalutation(int salutation) {
         this.salutation = salutation;
+    }
+
+    public PatientAddressDetails getAddressDetails() {
+        return addressDetails;
+    }
+
+    public void setAddressDetails(PatientAddressDetails addressDetails) {
+        this.addressDetails = addressDetails;
     }
 }

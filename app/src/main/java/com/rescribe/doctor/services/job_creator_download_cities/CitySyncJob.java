@@ -40,10 +40,12 @@ public class CitySyncJob extends Job {
     @Override
     protected Result onRunJob(@NonNull Params params) {
 
-        PersistableBundleCompat requestExtras = params.getExtras();
-        int[] keys = requestExtras.getIntArray("key");
-        mContext = getContext();
-        check(keys);
+        if (!isCanceled()) {
+            PersistableBundleCompat requestExtras = params.getExtras();
+            int[] keys = requestExtras.getIntArray("key");
+            mContext = getContext();
+            check(keys);
+        }
         return Result.SUCCESS;
 
     }
@@ -97,8 +99,11 @@ public class CitySyncJob extends Job {
                     public void onResponse(JSONObject response) {
 
                         CommonMethods.Log(TAG, "RESPONSE:" + response.toString());
-                        AppDBHelper.getInstance(mContext).insertData(TAG, response.toString());
 
+                        if (!isCanceled() ) {
+                            CommonMethods.Log(TAG, "RESPONSE:" + response.toString());
+                            AppDBHelper.getInstance(mContext).insertData(TAG, response.toString());
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override

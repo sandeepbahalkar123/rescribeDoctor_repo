@@ -85,19 +85,19 @@ public class NewPatientActivity extends AppCompatActivity implements HelperRespo
 
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
-        CommonMethods.showToast(mContext, errorMessage);
+       // CommonMethods.showToast(mContext, errorMessage);
         emptyListView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
-        CommonMethods.showToast(mContext, serverErrorMessage);
+       // CommonMethods.showToast(mContext, serverErrorMessage);
         emptyListView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-        CommonMethods.showToast(mContext, serverErrorMessage);
+      //  CommonMethods.showToast(mContext, serverErrorMessage);
 
     }
 

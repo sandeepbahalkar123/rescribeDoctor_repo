@@ -24,6 +24,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorData;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorListBaseModel;
+import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.NetworkUtil;
@@ -47,8 +48,8 @@ public class DoctorListViewDialogFragment extends DialogFragment implements Doct
     RecyclerView mRecyclerView;
     @BindView(R.id.emptyListView)
     RelativeLayout mEmptyListView;
-    @BindView(R.id.rightFabForAppointment)
-    FloatingActionButton mRightFabForAppointment;
+    @BindView(R.id.tapToAddNewFab)
+    CustomTextView tapToAddNewFab;
     private ActionBar mActionBar;
     Context mContext;
     private String mHeader;
@@ -87,7 +88,11 @@ public class DoctorListViewDialogFragment extends DialogFragment implements Doct
 
         mContext = this.getDialog().getContext();
 
-        mRightFabForAppointment.setVisibility(View.VISIBLE);
+        //--------
+        tapToAddNewFab.setVisibility(View.VISIBLE);
+        tapToAddNewFab.setText(getString(R.string.tap_to_add_new_doctor));
+        //--------
+
 
         mSearchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
@@ -107,7 +112,7 @@ public class DoctorListViewDialogFragment extends DialogFragment implements Doct
             }
         });
 
-        mRightFabForAppointment.setOnClickListener(new View.OnClickListener() {
+        tapToAddNewFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialogToAddReferenceDetails();

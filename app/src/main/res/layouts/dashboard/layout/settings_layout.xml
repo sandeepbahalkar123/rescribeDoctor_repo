@@ -1,28 +1,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp16"
-        android:layout_marginRight="@dimen/dp16"
+        android:layout_marginTop="@dimen/dp16"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp17"
         android:visibility="visible">
+
+        <com.rescribe.doctor.ui.customesViews.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|left"
+            android:paddingLeft="@dimen/dp17"
+            android:text="@string/setting_add_patient_form"
+            android:textAllCaps="true"
+            android:textColor="@color/Gray"
+            android:textSize="@dimen/sp16"
+            app:customFont="@string/roboto_regular" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp5"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp56"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp35"
+                android:paddingRight="@dimen/dp10">
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/textName"
@@ -63,20 +75,21 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp56">
+                    android:layout_height="@dimen/dp56"
+                    android:paddingRight="@dimen/dp10"
+                    android:paddingLeft="@dimen/dp35">
 
-                    <TextView
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/addressDetailCheckbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:fontFamily="@string/roboto_medium"
                         android:text="@string/address_details"
                         android:textColor="@color/tagColor"
-                        android:textSize="@dimen/sp16" />
+                        android:textSize="@dimen/sp16"
+                        app:customFont="@string/roboto_medium" />
 
                     <com.rescribe.doctor.ui.customesViews.SwitchButton
                         android:id="@+id/addressDetailSwitch"
@@ -98,10 +111,12 @@
                     android:background="@color/divider" />
 
                 <RelativeLayout
+                    android:paddingRight="@dimen/dp10"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp56">
+                    android:layout_height="@dimen/dp56"
+                    android:paddingLeft="@dimen/dp35">
 
-                    <TextView
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/referenceDetailCheckbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -109,7 +124,8 @@
                         android:fontFamily="@string/roboto_medium"
                         android:text="@string/referenced_details"
                         android:textColor="@color/tagColor"
-                        android:textSize="@dimen/sp16" />
+                        android:textSize="@dimen/sp16"
+                        app:customFont="@string/roboto_medium" />
 
                     <com.rescribe.doctor.ui.customesViews.SwitchButton
                         android:id="@+id/referenceDetailSwitch"
@@ -134,10 +150,28 @@
             android:layout_height="@dimen/dp1"
             android:background="@color/divider" />
 
+        <com.rescribe.doctor.ui.customesViews.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp16"
+            android:layout_weight="1"
+            android:gravity="center|left"
+            android:paddingLeft="@dimen/dp17"
+            android:text="@string/other"
+            android:textAllCaps="true"
+            android:textColor="@color/Gray"
+            android:textSize="@dimen/sp16"
+            app:customFont="@string/roboto_regular" />
+
         <RelativeLayout
             android:id="@+id/selectMenuLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp56">
+            android:layout_height="@dimen/dp56"
+            android:layout_marginTop="@dimen/dp5"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp35"
+            android:paddingRight="@dimen/dp10">
 
             <ImageView
                 android:id="@+id/menuIcon"

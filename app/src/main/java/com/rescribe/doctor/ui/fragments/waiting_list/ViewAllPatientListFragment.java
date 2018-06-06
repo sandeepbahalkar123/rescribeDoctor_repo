@@ -52,6 +52,7 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,6 +95,8 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
     private Unbinder unbinder;
     private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
+    private HashMap<String, String> mSelectedClinicDataMap = new HashMap<>();
+
     private int adapterPos;
     private AppointmentHelper mAppointmentHelper;
     private int mLocationId;
@@ -161,15 +164,23 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mLocationId = waitingclinicLists.get(i).getLocationId();
-                mClinicID = waitingclinicLists.get(i).getClinicId();
-                waitingPatientTempList = waitingclinicLists.get(i).getWaitingPatientList();
+                WaitingclinicList waitingclinicList = waitingclinicLists.get(i);
+                mLocationId = waitingclinicList.getLocationId();
+                mClinicID = waitingclinicList.getClinicId();
+                waitingPatientTempList = waitingclinicList.getWaitingPatientList();
 
                 if (waitingPatientTempList != null) {
                     recyclerView.setVisibility(View.VISIBLE);
                     recyclerView.setClipToPadding(false);
                     setAdapter();
                 }
+
+                //-------
+                mSelectedClinicDataMap.put(RescribeConstants.CLINIC_ID, "" + mClinicID);
+                mSelectedClinicDataMap.put(RescribeConstants.CITY_ID, "" + waitingclinicList.getCityId());
+                mSelectedClinicDataMap.put(RescribeConstants.CITY_NAME, "" + waitingclinicList.getCity());
+                mSelectedClinicDataMap.put(RescribeConstants.LOCATION_ID, "" + mLocationId);
+                //-------
 
             }
 
@@ -509,5 +520,9 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         requestDeleteBaseModel.setHospitalId("" + mClinicID);
         requestDeleteBaseModel.setStatus("" + status);
         mAppointmentHelper.doUpdateWaitingListStatus(requestDeleteBaseModel);
+    }
+
+    public HashMap<String, String> getSelectedClinicDataMap() {
+        return mSelectedClinicDataMap;
     }
 }

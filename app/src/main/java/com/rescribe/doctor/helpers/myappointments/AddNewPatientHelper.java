@@ -3,6 +3,8 @@ package com.rescribe.doctor.helpers.myappointments;
 import android.content.Context;
 
 import com.android.volley.Request;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -95,6 +97,79 @@ public class AddNewPatientHelper implements ConnectionListener {
         mConnectionFactory.setUrl(url);
         mConnectionFactory.createConnection(TASK_GET_DOC_LIST_FOR_REFERENCE_TO_ADD_PATIENT);
 
+    }
+
+    public void searchState(String searchText) {
+
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_STATE_TO_ADD_NEW_PATIENT, Request.Method.POST, false);
+        mConnectionFactory.setHeaderParams();
+
+
+        String url = Config.GET_ALL_STATE;
+
+        // send cityId to get area list based on city-id.
+        SearchText c = new SearchText();
+        c.setSearchText(searchText);
+
+        mConnectionFactory.setPostParams(c);
+        mConnectionFactory.setHeaderParams();
+
+        mConnectionFactory.setUrl(url);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_STATE_TO_ADD_NEW_PATIENT);
+
+    }
+
+    public void searchCity(int[] searchText) {
+
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_STATE_AND_CITY_TO_ADD_NEW_PATIENT, Request.Method.POST, false);
+        mConnectionFactory.setHeaderParams();
+
+
+        String url = Config.GET_ALL_CITIES_STATE_WISE;
+
+        // send cityId to get area list based on city-id.
+        SearchCityText c = new SearchCityText();
+        c.setSearchText(searchText);
+
+        mConnectionFactory.setPostParams(c);
+        mConnectionFactory.setHeaderParams();
+
+        mConnectionFactory.setUrl(url);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_STATE_AND_CITY_TO_ADD_NEW_PATIENT);
+
+    }
+
+
+    //TODO, this is implemented for now. NEED TO MAKE API GET
+    class SearchText implements CustomResponse {
+
+        @SerializedName("searchText")
+        @Expose
+        private String searchText;
+
+        public String getSearchText() {
+            return searchText;
+        }
+
+        public void setSearchText(String searchText) {
+            this.searchText = searchText;
+        }
+    }
+
+    //TODO, this is implemented for now. NEED TO MAKE API GET
+    class SearchCityText implements CustomResponse {
+
+        @SerializedName("stateId")
+        @Expose
+        private int[] stateId;
+
+        public int[] getSearchText() {
+            return stateId;
+        }
+
+        public void setSearchText(int[] searchText) {
+            this.stateId = searchText;
+        }
     }
 
 }

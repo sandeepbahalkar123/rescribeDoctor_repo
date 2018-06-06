@@ -37,6 +37,7 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
+        android:id="@+id/referredPhoneTextInputLayout"
         android:layout_height="?actionBarSize"
         android:layout_marginTop="@dimen/dp10"
         android:textColor="@color/black"
@@ -60,6 +61,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/referredEmailTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_marginTop="@dimen/dp10"

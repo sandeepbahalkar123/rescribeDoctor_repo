@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
+        android:background="@drawable/coachmark_download_all_patient"
         app:cropAlign="top"
         app:cropType="fit_width"
         app:srcCompat="@drawable/coachmark_download_all_patient" />

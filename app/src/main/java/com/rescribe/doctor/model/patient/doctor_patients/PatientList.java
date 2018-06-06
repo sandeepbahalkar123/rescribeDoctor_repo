@@ -80,12 +80,13 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
 
     //-------fields for adding patient in offline mode--------
 
-    private String patientState;
-    private String patientAddress;
-
     @SerializedName("referedDetails")
     @Expose
     private PatientReferenceDetails referedDetails;
+
+    @SerializedName("patientAddressDetails")
+    @Expose
+    private PatientAddressDetails addressDetails;
     //---------------
 
     private boolean isOfflinePatientSynced = true; //considered always sync with server.
@@ -337,27 +338,19 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.referenceID = referenceID;
     }
 
-    public String getPatientState() {
-        return patientState;
-    }
-
-    public void setPatientState(String patientState) {
-        this.patientState = patientState;
-    }
-
-    public String getPatientAddress() {
-        return patientAddress;
-    }
-
-    public void setPatientAddress(String patientAddress) {
-        this.patientAddress = patientAddress;
-    }
-
     public PatientReferenceDetails getReferedDetails() {
         return referedDetails;
     }
 
     public void setReferedDetails(PatientReferenceDetails referedDetails) {
         this.referedDetails = referedDetails;
+    }
+
+    public PatientAddressDetails getAddressDetails() {
+        return addressDetails;
+    }
+
+    public void setAddressDetails(PatientAddressDetails addressDetails) {
+        this.addressDetails = addressDetails;
     }
 }

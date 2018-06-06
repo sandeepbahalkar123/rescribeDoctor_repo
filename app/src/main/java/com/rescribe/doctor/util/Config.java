@@ -43,18 +43,18 @@ public class Config {
 
 
     //---------------QA SERVER URL START-----------------------
-    public static String BASE_URL = "http://drrescribe.com:3003/";
-    public static final String FORGOT_PASSWORD_URL = "https://drrescribe.com/app.html#/access/forgotPassword";
-    public static final String ADD_NEW_PATIENT_WEB_URL = "https://drrescribe.com/app.html#/addpatientmobile/";
-    public static final String BROKER = "tcp://drrescribe.com:1883";//"tcp://52.66.154.249:1883"; // Dr Rescribe.com IP QA
+//    public static String BASE_URL = "http://drrescribe.com:3003/";
+//    public static final String FORGOT_PASSWORD_URL = "https://drrescribe.com/app.html#/access/forgotPassword";
+//    public static final String ADD_NEW_PATIENT_WEB_URL = "https://drrescribe.com/app.html#/addpatientmobile/";
+//    public static final String BROKER = "tcp://drrescribe.com:1883";//"tcp://52.66.154.249:1883"; // Dr Rescribe.com IP QA
 
     //---------------QA SERVER URL END-----------------------
 
     //---------------LIVE URL START-----------------------
-//    public static String BASE_URL = "http://rescribe.in:3003/";
-//    public static final String FORGOT_PASSWORD_URL = "https://rescribe.in/app.html#/access/forgotPassword";
-//    public static final String ADD_NEW_PATIENT_WEB_URL = "https://rescribe.in/app.html#/addpatientmobile/";
-//    public static final String BROKER = "tcp://rescribe.in:1883";// "tcp://52.66.154.249:1883"; // Rescribe.in IP LIVE
+    public static String BASE_URL = "http://rescribe.in:3003/";
+    public static final String FORGOT_PASSWORD_URL = "https://rescribe.in/app.html#/access/forgotPassword";
+    public static final String ADD_NEW_PATIENT_WEB_URL = "https://rescribe.in/app.html#/addpatientmobile/";
+    public static final String BROKER = "tcp://rescribe.in:1883";// "tcp://52.66.154.249:1883"; // Rescribe.in IP LIVE
 //    //---------------LIVE URL ENDS-----------------------
 
     public static final String MY_RECORDS_DOCTOR_LIST = "api/doctors/getDoctorsWithPatientVisits";
@@ -81,6 +81,7 @@ public class Config {
     public static final String GET_PATIENTS_SYNC = "doctor/api/patient/getPatientSyncList";
     public static final String ADD_PATIENTS_SYNC = "doctor/api/patient/addPatients";
     public static final String GET_ALL_CITIES_STATE_WISE = "doctor/api/patient/getCityDetails";
+    public static final String GET_ALL_STATE = "doctor/api/patient/getStateDetails";
     public static final String GET_ALL_AREA_OF_CITIES_TO_ADD_PATIENT = "doctor/api/patient/getAreaDetails";
     public static final String GET_DOC_LIST_FOR_REFERENCE_TO_ADD_PATIENT = "api/patient/getDoctorNameList";
 
