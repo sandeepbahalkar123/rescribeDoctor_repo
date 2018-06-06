@@ -104,7 +104,7 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
             viweMoreText.setSpan(new UnderlineSpan(), 0, viweMoreText.length(), 0);
             holder.viewMore.setText(viweMoreText);
         } else {
-            SpannableString viweMoreText = new SpannableString("VIEW MORE");
+            SpannableString viweMoreText = new SpannableString(mContext.getString(R.string.view_more).toUpperCase(Locale.US));
             viweMoreText.setSpan(new UnderlineSpan(), 0, viweMoreText.length(), 0);
             holder.viewMore.setText(viweMoreText);
         }
