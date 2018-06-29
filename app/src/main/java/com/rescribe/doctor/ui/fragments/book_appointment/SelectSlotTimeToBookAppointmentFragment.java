@@ -183,7 +183,6 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
         isAppointmentTypeReschedule = getArguments().getBoolean(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
 
         mContext = getContext();
-        mSelectedTimeSlot = null;
         mDoctorLocationModel = getDoctorLocationModels();
         yearsExperienceLine.setVisibility(View.GONE);
         mColorGenerator = ColorGenerator.MATERIAL;
@@ -429,9 +428,6 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == CONFIRM_REQUESTCODE) {
-                mSelectedTimeSlot.setToTime(null);
-                mSelectedTimeSlot.setFromTime(null);
-                mSelectedTimeSlot.setSlotId(null);
                 init();
             }
         }
@@ -517,14 +513,12 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
 
             case R.id.leftArrow:
                 if (mDoctorLocationModelObject != null) {
-                    mSelectedTimeSlot = null;
                     isShowPreviousDayLeftArrow(true);
                 }
                 break;
 
             case R.id.rightArrow:
                 if (mDoctorLocationModelObject != null) {
-                    mSelectedTimeSlot = null;
                     Calendar calendarNow = Calendar.getInstance();
                     calendarNow.add(Calendar.DATE, mDoctorLocationModelObject.getApptScheduleLmtDays());
                     mMaxDateRange = calendarNow.getTime();

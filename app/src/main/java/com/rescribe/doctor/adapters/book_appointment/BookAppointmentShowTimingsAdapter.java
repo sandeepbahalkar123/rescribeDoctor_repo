@@ -57,7 +57,7 @@ public class BookAppointmentShowTimingsAdapter extends RecyclerView.Adapter<Book
         holder.showTime.setText(s);
         //-----------
 
-        Date fromTimeDate = CommonMethods.convertStringToDate(mSelectedDate + " " + fromTime, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
+        Date fromTimeDate = CommonMethods.convertStringToDate(mSelectedDate + " " + fromTime, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm);
         Date currentDate = Calendar.getInstance().getTime();
 
         if (currentDate.getTime() > fromTimeDate.getTime())
@@ -67,23 +67,22 @@ public class BookAppointmentShowTimingsAdapter extends RecyclerView.Adapter<Book
             @Override
             public void onClick(View v) {
 
-                String mFormattedCurrentTimeString = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss);
+                String mFormattedCurrentTimeString = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm);
                 String s = "" + v.getTag();
-                TimeSlotData tag1 = mDataList.get(Integer.parseInt(s));
-                String fromTime = tag1.getFromTime();
-                String toTime = tag1.getToTime();
-                String slotId = tag1.getSlotId();
+                TimeSlotData timeSlot = mDataList.get(Integer.parseInt(s));
+                String fromTime = timeSlot.getFromTime();
+                String toTime = timeSlot.getToTime();
+                String slotId = timeSlot.getSlotId();
 
-                Date fromTimeDate = CommonMethods.convertStringToDate(mSelectedDate + " " + fromTime, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
-                Date currentDate = CommonMethods.convertStringToDate(mFormattedCurrentDateString + " " + mFormattedCurrentTimeString, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm_ss);
-
+                Date fromTimeDate = CommonMethods.convertStringToDate(mSelectedDate + " " + fromTime, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm);
+                Date currentDate = CommonMethods.convertStringToDate(mFormattedCurrentDateString + " " + mFormattedCurrentTimeString, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm);
                 if ((currentDate.getTime() > fromTimeDate.getTime()) && (mSelectedDate.equalsIgnoreCase(mFormattedCurrentDateString))) {
                     CommonMethods.showToast(mContext, mContext.getString(R.string.book_time_slot_err));
                     holder.showTime.setPaintFlags(holder.showTime.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 } else {
-                    if (tag1.isAvailable()) {
-                        fromTime = tag1.getFromTime();
-                        if (fromTime.equalsIgnoreCase(mSelectedTimeSlot.getFromTime())) {
+                    if (timeSlot.isAvailable()) {
+                        fromTime = timeSlot.getFromTime();
+                        if (fromTime.equalsIgnoreCase(mSelectedTimeSlot.getFromTime()) && slotId.equals(mSelectedTimeSlot.getSlotId())) {
                             mSelectedTimeSlot.setFromTime("");
                             mSelectedTimeSlot.setToTime("");
                             mSelectedTimeSlot.setSlotId("");
@@ -104,7 +103,7 @@ public class BookAppointmentShowTimingsAdapter extends RecyclerView.Adapter<Book
             }
         });
 
-        if (timeSlotData.getFromTime().equalsIgnoreCase(mSelectedTimeSlot.getFromTime())) {
+        if (timeSlotData.getFromTime().equalsIgnoreCase(mSelectedTimeSlot.getFromTime()) && timeSlotData.getSlotId().equals(mSelectedTimeSlot.getSlotId())) {
             mSelectedTimeSlot = timeSlotData;
             holder.mainLayout.setBackground(ContextCompat.getDrawable(mContext, R.drawable.green_round_rectangle));
             holder.showTime.setTextColor(ContextCompat.getColor(mContext, R.color.white));
