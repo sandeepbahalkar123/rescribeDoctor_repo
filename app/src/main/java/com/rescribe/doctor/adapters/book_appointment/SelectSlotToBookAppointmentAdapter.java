@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotData;
 import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotsInfoList;
@@ -17,6 +18,7 @@ import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotsInfoList;
 import java.util.ArrayList;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.rescribe.doctor.ui.fragments.book_appointment.SelectSlotTimeToBookAppointmentFragment.mSelectedTimeSlot;
 
 public class SelectSlotToBookAppointmentAdapter extends BaseExpandableListAdapter {
 
@@ -52,7 +54,6 @@ public class SelectSlotToBookAppointmentAdapter extends BaseExpandableListAdapte
         }
 
         RecyclerView slotRecyclerView = (RecyclerView) convertView.findViewById(R.id.slotRecyclerView);
-
         BookAppointmentShowTimingsAdapter mBookAppointmentShowTimingsAdapter = new BookAppointmentShowTimingsAdapter(mContext, timeSlotData, mSelectedDate);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 4);
         slotRecyclerView.setLayoutManager(layoutManager);
@@ -114,6 +115,7 @@ public class SelectSlotToBookAppointmentAdapter extends BaseExpandableListAdapte
         }
         slotTime.setText(slotList.getSlotDescription());
         slotName.setText(slotList.getSlotName());
+
         return convertView;
     }
 
@@ -131,5 +133,4 @@ public class SelectSlotToBookAppointmentAdapter extends BaseExpandableListAdapte
     public TimeSlotData getSelectedTimeSlot() {
         return BookAppointmentShowTimingsAdapter.getmSelectedToTimeSlot();
     }
-
 }

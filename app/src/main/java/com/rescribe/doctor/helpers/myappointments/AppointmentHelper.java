@@ -224,7 +224,6 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setHeaderParams();
 
         String currentTimeStamp = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm);
-
         String url = Config.TIME_SLOT_TO_BOOK_APPOINTMENT + "docId=" + docId + "&locationId=" + locationID + "&date=" + date + "&time=" + currentTimeStamp + "&patientId=" + patientID + "&docDetailReq=" + isReqDoctorData;
 
         mConnectionFactory.setUrl(url);

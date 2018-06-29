@@ -40,6 +40,7 @@ import com.rescribe.doctor.model.request_appointment_confirmation.ResponseAppoin
 import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotData;
 import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotListBaseModel;
 import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotListDataModel;
+import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotsInfoList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
@@ -293,7 +294,7 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
             ArrayAdapter<DoctorLocationModel> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.global_item_simple_spinner, mDoctorLocationModel);
             clinicNameSpinner.setAdapter(arrayAdapter);
 
-            int selectedPosition = getSelectedPosition();
+            int selectedPosition = getClinicSelectedPosition();
             clinicNameSpinner.setSelection(selectedPosition, false);
             mDoctorLocationModelObject = mDoctorLocationModel.get(selectedPosition);
             changeViewBasedOnAppointmentType();
@@ -327,7 +328,7 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
         //---------
     }
 
-    private int getSelectedPosition() {
+    private int getClinicSelectedPosition() {
         int result = 0;
         for (int index = 0; index < mDoctorLocationModel.size(); index++) {
             if (mDoctorLocationModel.get(index).getLocationId() == RescribePreferencesManager.getInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_APP_CLINIC, mContext)) {
@@ -361,6 +362,9 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                                     appointmentTypeIsBookButton.setVisibility(View.VISIBLE);
                                     mSelectSlotToBookAppointmentAdapter = new SelectSlotToBookAppointmentAdapter(getActivity(), selectSlotList.getTimeSlotsInfoList(), mSelectedTimeSlotDate);
                                     selectTimeDateExpandableView.setAdapter(mSelectSlotToBookAppointmentAdapter);
+                                    int selectedSlotPosition = getSelectedSlotPosition(selectSlotList.getTimeSlotsInfoList());
+                                    if (selectedSlotPosition != -1)
+                                        selectTimeDateExpandableView.expandGroup(selectedSlotPosition, true);
                                 } else {
                                     noTimeSlotMessageTextView.setVisibility(View.VISIBLE);
                                     selectTimeDateExpandableView.setVisibility(View.GONE);
@@ -380,6 +384,9 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                                 appointmentTypeIsBookButton.setVisibility(View.VISIBLE);
                                 mSelectSlotToBookAppointmentAdapter = new SelectSlotToBookAppointmentAdapter(getActivity(), selectSlotList.getTimeSlotsInfoList(), mSelectedTimeSlotDate);
                                 selectTimeDateExpandableView.setAdapter(mSelectSlotToBookAppointmentAdapter);
+                                int selectedSlotPosition = getSelectedSlotPosition(selectSlotList.getTimeSlotsInfoList());
+                                if (selectedSlotPosition != -1)
+                                selectTimeDateExpandableView.expandGroup(selectedSlotPosition, true);
                             } else {
                                 noTimeSlotMessageTextView.setVisibility(View.VISIBLE);
                                 selectTimeDateExpandableView.setVisibility(View.GONE);
@@ -407,6 +414,20 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                 }
                 break;
         }
+    }
+
+    private int getSelectedSlotPosition(ArrayList<TimeSlotsInfoList> timeSlotsInfoList) {
+        int index = -1;
+        for (int pos = 0; pos < timeSlotsInfoList.size(); pos++) {
+            TimeSlotsInfoList timeSlotsInfo = timeSlotsInfoList.get(pos);
+            for (TimeSlotData timeSlotData : timeSlotsInfo.getTimeSlotList()) {
+                if (timeSlotData.getFromTime().equalsIgnoreCase(mSelectedTimeSlot.getFromTime()) && timeSlotData.getSlotId().equals(mSelectedTimeSlot.getSlotId())) {
+                    index = pos;
+                    break;
+                }
+            }
+        }
+        return index;
     }
 
     @Override
