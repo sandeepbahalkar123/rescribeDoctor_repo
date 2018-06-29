@@ -11,6 +11,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotData;
 import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotsInfoList;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class SelectSlotToBookAppointmentAdapter extends BaseExpandableListAdapte
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        ArrayList<TimeSlotsInfoList.TimeSlotData> timeSlotData = expandableListTitle.get(listPosition).getTimeSlotList();
+        ArrayList<TimeSlotData> timeSlotData = expandableListTitle.get(listPosition).getTimeSlotList();
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -52,11 +53,11 @@ public class SelectSlotToBookAppointmentAdapter extends BaseExpandableListAdapte
 
         RecyclerView slotRecyclerView = (RecyclerView) convertView.findViewById(R.id.slotRecyclerView);
 
-        ShowTimingsBookAppointmentDoctor mShowTimingsBookAppointmentDoctor = new ShowTimingsBookAppointmentDoctor(mContext, timeSlotData, mSelectedDate);
+        BookAppointmentShowTimingsAdapter mBookAppointmentShowTimingsAdapter = new BookAppointmentShowTimingsAdapter(mContext, timeSlotData, mSelectedDate);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 4);
         slotRecyclerView.setLayoutManager(layoutManager);
         slotRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        slotRecyclerView.setAdapter(mShowTimingsBookAppointmentDoctor);
+        slotRecyclerView.setAdapter(mBookAppointmentShowTimingsAdapter);
         slotRecyclerView.setNestedScrollingEnabled(false);
 
         return convertView;
@@ -127,15 +128,8 @@ public class SelectSlotToBookAppointmentAdapter extends BaseExpandableListAdapte
     }
 
 
-    public String getSelectedTimeSlot() {
-        return ShowTimingsBookAppointmentDoctor.getSelectedTimeSlot();
-    }
-
-    public String getToTimeSlot() {
-        return ShowTimingsBookAppointmentDoctor.getmSelectedToTimeSlot();
-    }
-    public String getSlotId() {
-        return ShowTimingsBookAppointmentDoctor.getSlotId();
+    public TimeSlotData getSelectedTimeSlot() {
+        return BookAppointmentShowTimingsAdapter.getmSelectedToTimeSlot();
     }
 
 }

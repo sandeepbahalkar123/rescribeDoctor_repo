@@ -353,9 +353,7 @@ public class CommonMethods {
         try {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(expectedFormat, Locale.US);
-            String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
-
-            return currentTimeStamp;
+            return dateFormat.format(new Date());
         } catch (Exception e) {
             e.printStackTrace();
 

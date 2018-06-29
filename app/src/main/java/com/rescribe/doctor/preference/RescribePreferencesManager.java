@@ -264,5 +264,7 @@ public class RescribePreferencesManager {
         String ADD_PATIENT_OFFLINE_SETTINGS_ADDRESS_DETAILS = "isAddPatientOfflineSettingAddressDetails";
         String ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS = "isAddPatientOfflineSettingReferenceDetails";
 
+        String SELECTED_APP_DATE = "selected_app_date";
+        String SELECTED_APP_CLINIC = "selected_app_clinic";
     }
 }

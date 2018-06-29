@@ -18,7 +18,7 @@ public class RequestAppointmentConfirmationModel implements CustomResponse {
     private Integer locationId;
     @SerializedName("slotId")
     @Expose
-    private Integer slotId;
+    private String slotId;
     @SerializedName("date")
     @Expose
     private String date;
@@ -57,11 +57,11 @@ public class RequestAppointmentConfirmationModel implements CustomResponse {
         this.locationId = locationId;
     }
 
-    public Integer getSlotId() {
+    public String getSlotId() {
         return slotId;
     }
 
-    public void setSlotId(Integer slotId) {
+    public void setSlotId(String slotId) {
         this.slotId = slotId;
     }
 

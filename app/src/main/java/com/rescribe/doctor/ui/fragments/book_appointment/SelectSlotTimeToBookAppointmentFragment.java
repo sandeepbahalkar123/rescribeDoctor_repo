@@ -37,6 +37,7 @@ import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.request_appointment_confirmation.Reschedule;
 import com.rescribe.doctor.model.request_appointment_confirmation.ResponseAppointmentConfirmationModel;
+import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotData;
 import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotListBaseModel;
 import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotListDataModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -58,9 +59,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.rescribe.doctor.adapters.book_appointment.ShowTimingsBookAppointmentDoctor.mAptslotId;
-import static com.rescribe.doctor.adapters.book_appointment.ShowTimingsBookAppointmentDoctor.mSelectedTimeSlot;
-import static com.rescribe.doctor.adapters.book_appointment.ShowTimingsBookAppointmentDoctor.mSelectedToTimeSlot;
 import static com.rescribe.doctor.singleton.RescribeApplication.getDoctorLocationModels;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 
@@ -68,6 +66,8 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
 
     public static final int CONFIRM_REQUESTCODE = 212;
     private static final String TAG = "TimeSlotFragment";
+
+    public static TimeSlotData mSelectedTimeSlot = new TimeSlotData();
     //-------------
 
     Unbinder unbinder;
@@ -141,6 +141,7 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
     AppCompatButton appointmentTypeIsBookButton;
     @BindView(R.id.appointmentTypeFooterButtonBarLayout)
     LinearLayout appointmentTypeFooterButtonBarLayout;
+
     private AppointmentHelper mAppointmentHelper;
     private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
     private Context mContext;
@@ -183,8 +184,6 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
 
         mContext = getContext();
         mSelectedTimeSlot = null;
-        mSelectedToTimeSlot = null;
-        mAptslotId = null;
         mDoctorLocationModel = getDoctorLocationModels();
         yearsExperienceLine.setVisibility(View.GONE);
         mColorGenerator = ColorGenerator.MATERIAL;
@@ -225,18 +224,15 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
             dayInt = "0" + dayInt;
         }
         //----------
-        mSelectedTimeSlotDate = now.get(Calendar.YEAR) + "-" + monthInt + "-" + dayInt;
+        if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_APP_DATE, mContext).equals(""))
+            mSelectedTimeSlotDate = now.get(Calendar.YEAR) + "-" + monthInt + "-" + dayInt;
+        else
+            mSelectedTimeSlotDate = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_APP_DATE, mContext);
+
         //----******************------
 
-        String dayFromDate = CommonMethods.getDayFromDate(RescribeConstants.DD_MM_YYYY, CommonMethods.getCurrentDate(RescribeConstants.DD_MM_YYYY));
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(RescribeConstants.DATE_PATTERN.DD_MMM, Locale.US);
-
-        selectDateTime.setText(dayFromDate + ", " + simpleDateFormat.format(new Date()));
-        //----------
-
-
-        //--------------
+        String dayFromDate = CommonMethods.getDayFromDate(RescribeConstants.YYYY_MM_DD, mSelectedTimeSlotDate);
+        selectDateTime.setText(dayFromDate + ", " + CommonMethods.getFormattedDate(mSelectedTimeSlotDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD, RescribeConstants.DATE_PATTERN.DD_MMM));
 
         selectTimeDateExpandableView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
 
@@ -272,7 +268,6 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
 
         if (mPatientinfoObject.getPatientName() != null) {
 
-
             int color2 = mColorGenerator.getColor(mPatientinfoObject.getPatientName());
             TextDrawable drawable = TextDrawable.builder()
                     .beginConfig()
@@ -298,13 +293,18 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
 
             ArrayAdapter<DoctorLocationModel> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.global_item_simple_spinner, mDoctorLocationModel);
             clinicNameSpinner.setAdapter(arrayAdapter);
-            clinicNameSpinner.setSelection(mSelectedClinicDataPosition, false);
+
+            int selectedPosition = getSelectedPosition();
+            clinicNameSpinner.setSelection(selectedPosition, false);
+            mDoctorLocationModelObject = mDoctorLocationModel.get(selectedPosition);
+            changeViewBasedOnAppointmentType();
 
             clinicNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     mDoctorLocationModelObject = mDoctorLocationModel.get(position);
                     changeViewBasedOnAppointmentType();
+                    RescribePreferencesManager.putInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_APP_CLINIC, mDoctorLocationModel.get(position).getLocationId(), mContext);
                 }
 
                 @Override
@@ -326,6 +326,17 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
         }
 
         //---------
+    }
+
+    private int getSelectedPosition() {
+        int result = 0;
+        for (int index = 0; index < mDoctorLocationModel.size(); index++) {
+            if (mDoctorLocationModel.get(index).getLocationId() == RescribePreferencesManager.getInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_APP_CLINIC, mContext)) {
+                result = index;
+                break;
+            }
+        }
+        return result;
     }
 
     @Override
@@ -418,9 +429,9 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == CONFIRM_REQUESTCODE) {
-                mSelectedTimeSlot = null;
-                mSelectedToTimeSlot = null;
-                mAptslotId = null;
+                mSelectedTimeSlot.setToTime(null);
+                mSelectedTimeSlot.setFromTime(null);
+                mSelectedTimeSlot.setSlotId(null);
                 init();
             }
         }
@@ -488,16 +499,16 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
 
             case R.id.appointmentTypeIsBookButton:
                 if (mSelectSlotToBookAppointmentAdapter != null) {
-                    if (RescribeConstants.BLANK.equalsIgnoreCase(mSelectSlotToBookAppointmentAdapter.getSelectedTimeSlot()) || mSelectSlotToBookAppointmentAdapter.getSelectedTimeSlot() == null) {
+                    if (RescribeConstants.BLANK.equalsIgnoreCase(mSelectSlotToBookAppointmentAdapter.getSelectedTimeSlot().getFromTime()) || mSelectSlotToBookAppointmentAdapter.getSelectedTimeSlot().getFromTime() == null) {
                         CommonMethods.showToast(getContext(), getString(R.string.time_select_err));
                     } else {
                         if (isAppointmentTypeReschedule) {
                             Reschedule reschedule = new Reschedule();
                             reschedule.setAptId(String.valueOf(mPatientinfoObject.getAptId()));
                             reschedule.setStatus("4");
-                            mAppointmentHelper.doConfirmAppointmentRequest(Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())), mDoctorLocationModelObject.getLocationId(), mSelectedTimeSlotDate, mSelectSlotToBookAppointmentAdapter.getSelectedTimeSlot(), mSelectSlotToBookAppointmentAdapter.getToTimeSlot(), Integer.parseInt(mSelectSlotToBookAppointmentAdapter.getSlotId()), reschedule, mPatientinfoObject.getPatientId());
+                            mAppointmentHelper.doConfirmAppointmentRequest(Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())), mDoctorLocationModelObject.getLocationId(), mSelectedTimeSlotDate, mSelectSlotToBookAppointmentAdapter.getSelectedTimeSlot(), reschedule, mPatientinfoObject.getPatientId());
                         } else
-                            mAppointmentHelper.doConfirmAppointmentRequest(Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())), mDoctorLocationModelObject.getLocationId(), mSelectedTimeSlotDate, mSelectSlotToBookAppointmentAdapter.getSelectedTimeSlot(), mSelectSlotToBookAppointmentAdapter.getToTimeSlot(), Integer.parseInt(mSelectSlotToBookAppointmentAdapter.getSlotId()), null, mPatientinfoObject.getPatientId());
+                            mAppointmentHelper.doConfirmAppointmentRequest(Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())), mDoctorLocationModelObject.getLocationId(), mSelectedTimeSlotDate, mSelectSlotToBookAppointmentAdapter.getSelectedTimeSlot(), null, mPatientinfoObject.getPatientId());
                     }
                 }
 
@@ -507,8 +518,6 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
             case R.id.leftArrow:
                 if (mDoctorLocationModelObject != null) {
                     mSelectedTimeSlot = null;
-                    mSelectedToTimeSlot = null;
-                    mAptslotId = null;
                     isShowPreviousDayLeftArrow(true);
                 }
                 break;
@@ -516,8 +525,6 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
             case R.id.rightArrow:
                 if (mDoctorLocationModelObject != null) {
                     mSelectedTimeSlot = null;
-                    mSelectedToTimeSlot = null;
-                    mAptslotId = null;
                     Calendar calendarNow = Calendar.getInstance();
                     calendarNow.add(Calendar.DATE, mDoctorLocationModelObject.getApptScheduleLmtDays());
                     mMaxDateRange = calendarNow.getTime();
@@ -575,7 +582,11 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
             appointmentTypeIsBookButton.setVisibility(View.VISIBLE);
             //----
             //--------
-            leftArrow.setVisibility(View.INVISIBLE);
+            if (CommonMethods.getCurrentDate(RescribeConstants.YYYY_MM_DD).equals(mSelectedTimeSlotDate))
+                leftArrow.setVisibility(View.INVISIBLE);
+            else
+                leftArrow.setVisibility(View.VISIBLE);
+
             rightArrow.setVisibility(View.VISIBLE);
             //--------
 
@@ -620,6 +631,5 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
         selectDateTime.setText(dayFromDate + ", " + CommonMethods.getFormattedDate(dateConverted + "-" + monthOfYearData + "-" + year, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.DD_MMM));
         isShowPreviousDayLeftArrow(false);
         mAppointmentHelper.getTimeSlotToBookAppointmentWithDoctor("" + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity()), mDoctorLocationModelObject.getLocationId(), mSelectedTimeSlotDate, false, mPatientinfoObject.getPatientId());
-
     }
 }

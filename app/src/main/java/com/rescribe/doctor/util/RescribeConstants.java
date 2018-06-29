@@ -13,6 +13,7 @@ public class RescribeConstants {
     public static final String MT_SYRUP = "SYRUP";
     public static final String MT_OINTMENT = "OINTMENT";
     public static final String DD_MM_YYYY = "dd-MM-yyyy";
+    public static final String YYYY_MM_DD = "yyyy-MM-dd";
     public static final String YES = "yes";
     public static final String DOCUMENTS = "documents";
     public static final String ATTACHMENTS_LIST = "ATTACHMENTS_LIST";
@@ -276,12 +277,13 @@ public class RescribeConstants {
         String HH_mm_ss = "HH:mm:ss";
         String DD_MM_YYYY_hh_mm = "dd/MM/yyyy hh:mm aa";
         String HH_MM = "hh:mm";
-        String HH_mm = "HH:mm";
+        String HH_mm = "H:mm";
         String MMM_YYYY = "MMM, yyyy";
         String MMM_YY = "MMM, yy";
         String DD_MM_YYYY_hh_mm_ss = "dd-MM-yyyy hh:mm:ss";
         String YYYY_MM_DD_hh_mm_ss = "yyyy-MM-dd hh:mm:ss";
         String YYYY_MM_DD_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
+        String YYYY_MM_DD_HH_mm = "yyyy-MM-dd H:mm";
         String d_M_YYYY = "d-M-yyyy";
     }
 

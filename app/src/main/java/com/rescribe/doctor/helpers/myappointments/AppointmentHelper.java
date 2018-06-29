@@ -19,6 +19,7 @@ import com.rescribe.doctor.model.patient.template_sms.request_send_sms.RequestSe
 import com.rescribe.doctor.model.request_appointment_confirmation.RequestAppointmentConfirmationModel;
 import com.rescribe.doctor.model.request_appointment_confirmation.Reschedule;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
+import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotData;
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.RequestToAddWaitingList;
 import com.rescribe.doctor.model.waiting_list.request_delete_waiting_list.RequestWaitingListStatusChangeBaseModel;
 import com.rescribe.doctor.model.waiting_list.request_drag_drop.RequestForDragAndDropBaseModel;
@@ -217,6 +218,7 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void getTimeSlotToBookAppointmentWithDoctor(String docId, int locationID, String date, boolean isReqDoctorData, int patientID) {
+        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_APP_DATE, date, mContext);
 
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT, Request.Method.GET, true);
         mConnectionFactory.setHeaderParams();
@@ -230,17 +232,17 @@ public class AppointmentHelper implements ConnectionListener {
 
     }
 
-    public void doConfirmAppointmentRequest(int docId, int locationID, String date, String fromTime, String toTime, int slotId, Reschedule reschedule, int patientID) {
+    public void doConfirmAppointmentRequest(int docId, int locationID, String date, TimeSlotData timeSlotData, Reschedule reschedule, int patientID) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_CONFIRM_APPOINTMENT, Request.Method.POST, false);
         mConnectionFactory.setHeaderParams();
 
         RequestAppointmentConfirmationModel mRequestAppointmentConfirmationModel = new RequestAppointmentConfirmationModel();
         mRequestAppointmentConfirmationModel.setDocId(docId);
-        mRequestAppointmentConfirmationModel.setFromTime(fromTime);
+        mRequestAppointmentConfirmationModel.setFromTime(timeSlotData.getFromTime());
         mRequestAppointmentConfirmationModel.setLocationId(locationID);
-        mRequestAppointmentConfirmationModel.setToTime(toTime);
+        mRequestAppointmentConfirmationModel.setToTime(timeSlotData.getToTime());
         mRequestAppointmentConfirmationModel.setDate(date);
-        mRequestAppointmentConfirmationModel.setSlotId(slotId);
+        mRequestAppointmentConfirmationModel.setSlotId(timeSlotData.getSlotId());
         mRequestAppointmentConfirmationModel.setReschedule(reschedule);
         mRequestAppointmentConfirmationModel.setPatientId(patientID);
         mConnectionFactory.setPostParams(mRequestAppointmentConfirmationModel);
