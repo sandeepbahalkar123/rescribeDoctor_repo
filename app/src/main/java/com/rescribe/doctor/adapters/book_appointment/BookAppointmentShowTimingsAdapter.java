@@ -57,12 +57,6 @@ public class BookAppointmentShowTimingsAdapter extends RecyclerView.Adapter<Book
         holder.showTime.setText(s);
         //-----------
 
-        Date fromTimeDate = CommonMethods.convertStringToDate(mSelectedDate + " " + fromTime, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm);
-        Date currentDate = Calendar.getInstance().getTime();
-
-        if (currentDate.getTime() > fromTimeDate.getTime())
-            holder.showTime.setPaintFlags(holder.showTime.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,31 +80,40 @@ public class BookAppointmentShowTimingsAdapter extends RecyclerView.Adapter<Book
                             mSelectedTimeSlot.setFromTime("");
                             mSelectedTimeSlot.setToTime("");
                             mSelectedTimeSlot.setSlotId("");
-
-                            holder.mainLayout.setBackground(ContextCompat.getDrawable(mContext, R.color.white));
-                            holder.showTime.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
-
                         } else {
                             mSelectedTimeSlot.setFromTime(fromTime);
                             mSelectedTimeSlot.setToTime(toTime);
                             mSelectedTimeSlot.setSlotId(slotId);
-                            holder.mainLayout.setBackground(ContextCompat.getDrawable(mContext, R.drawable.green_round_rectangle));
-                            holder.showTime.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-                            notifyDataSetChanged();
                         }
+
+                        notifyDataSetChanged();
                     }
                 }
             }
         });
 
+        Date fromTimeDate = CommonMethods.convertStringToDate(mSelectedDate + " " + fromTime, RescribeConstants.DATE_PATTERN.YYYY_MM_DD_HH_mm);
+        Date currentDate = Calendar.getInstance().getTime();
+
         if (timeSlotData.getFromTime().equalsIgnoreCase(mSelectedTimeSlot.getFromTime()) && timeSlotData.getSlotId().equals(mSelectedTimeSlot.getSlotId())) {
-            mSelectedTimeSlot = timeSlotData;
-            holder.mainLayout.setBackground(ContextCompat.getDrawable(mContext, R.drawable.green_round_rectangle));
-            holder.showTime.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            if (currentDate.getTime() < fromTimeDate.getTime()){
+                holder.mainLayout.setBackground(ContextCompat.getDrawable(mContext, R.drawable.green_round_rectangle));
+                holder.showTime.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            } else {
+
+                mSelectedTimeSlot.setSlotId("");
+                mSelectedTimeSlot.setToTime("");
+                mSelectedTimeSlot.setFromTime("");
+
+                holder.mainLayout.setBackground(ContextCompat.getDrawable(mContext, R.color.white));
+                holder.showTime.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
+                holder.showTime.setPaintFlags(holder.showTime.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+
         } else {
             holder.mainLayout.setBackground(ContextCompat.getDrawable(mContext, R.color.white));
             holder.showTime.setTextColor(ContextCompat.getColor(mContext, R.color.tagColor));
-            if (!timeSlotData.isAvailable())
+            if (!timeSlotData.isAvailable() || currentDate.getTime() > fromTimeDate.getTime())
                 holder.showTime.setPaintFlags(holder.showTime.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
