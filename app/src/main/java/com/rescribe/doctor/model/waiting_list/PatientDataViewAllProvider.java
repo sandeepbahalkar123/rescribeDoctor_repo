@@ -21,12 +21,12 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PatientDataProvider extends AbstractDataProvider {
+public class PatientDataViewAllProvider extends AbstractDataProvider {
     private List<ConcreteData> mData;
     private ConcreteData mLastRemovedData;
     private int mLastRemovedPosition = -1;
 
-    public PatientDataProvider(ArrayList<ViewAll> viewAlls) {
+    public PatientDataViewAllProvider(ArrayList<ViewAll> viewAlls) {
         mData = new LinkedList<>();
         for (int i = 0; i < viewAlls.size(); i++) {
             final long id = mData.size();
@@ -43,10 +43,11 @@ public class PatientDataProvider extends AbstractDataProvider {
     @Override
     public Data getItem(int index) {
         if (index < 0 || index >= getCount()) {
-            throw new IndexOutOfBoundsException("index = " + index);
+//            throw new IndexOutOfBoundsException("index = " + index);
+            return mData.get(getCount() - 1);
+        } else {
+            return mData.get(index);
         }
-
-        return mData.get(index);
     }
 
     @Override

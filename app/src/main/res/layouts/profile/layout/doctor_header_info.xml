@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp130"
+        android:layout_height="@dimen/dp140"
         android:background="@drawable/doctor_profile_bg"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dp5"
@@ -141,6 +141,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp16"
                     android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:visibility="visible"
                     app:customFont="@string/roboto_bold"
                     tools:text="Neurology" />

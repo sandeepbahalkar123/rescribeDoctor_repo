@@ -2,11 +2,13 @@ package com.rescribe.doctor.adapters.my_appointments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -444,8 +446,13 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
     @SuppressLint("CheckResult")
     private void bindGroupItem(final AppointmentList appointmentListObject, final int groupPosition, final boolean isExpanded, final GroupViewHolder groupViewHolder) {
-        groupViewHolder.mClinicNameTextView.setText(appointmentListObject.getClinicName() + " - ");
-        groupViewHolder.mClinicAddress.setText(appointmentListObject.getArea() + ", " + appointmentListObject.getCity());
+
+        String clinicName = appointmentListObject.getClinicName() + " - ";
+        String address = appointmentListObject.getArea() + ", " + appointmentListObject.getCity();
+        SpannableString ss1 = new SpannableString(clinicName + address);
+        ss1.setSpan(new RelativeSizeSpan(.8f), clinicName.length(), (clinicName + address).length(), 0);
+//        ss1.setSpan(new android.text.style.StyleSpan(Typeface.NORMAL), clinicName.length(), (clinicName + address).length(), 0);
+        groupViewHolder.mClinicNameTextView.setText(ss1);
 
         int count = appointmentListObject.getPatientList().size();
         if (count < 10)
@@ -838,7 +845,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         private CheckBox mGroupCheckbox;
         private RelativeLayout mHospitalDetailsLinearLayout;
         private CustomTextView mClinicNameTextView;
-        private CustomTextView mClinicAddress;
         private CustomTextView mClinicPatientCount;
         private ImageView mDownArrow;
         private ImageView upArrow;
@@ -874,7 +880,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             cardView = (LinearLayout) convertView.findViewById(R.id.cardView);
             mHospitalDetailsLinearLayout = (RelativeLayout) convertView.findViewById(R.id.hospitalDetailsLinearLayout);
             mClinicNameTextView = (CustomTextView) convertView.findViewById(R.id.clinicNameTextView);
-            mClinicAddress = (CustomTextView) convertView.findViewById(R.id.clinicAddress);
             mClinicPatientCount = (CustomTextView) convertView.findViewById(R.id.clinicPatientCount);
             mDownArrow = (ImageView) convertView.findViewById(R.id.downArrow);
             upArrow = (ImageView) convertView.findViewById(R.id.upArrow);

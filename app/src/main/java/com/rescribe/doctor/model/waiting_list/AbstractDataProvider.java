@@ -50,7 +50,7 @@ public abstract class AbstractDataProvider {
 
     public abstract void addViewAllItem(ViewAll viewAll);
 
-    public abstract List<PatientDataProvider.ConcreteData> getViewAllData();
+    public abstract List<PatientDataViewAllProvider.ConcreteData> getViewAllData();
 
     public abstract List<PatientDataActiveWaitingListProvider.ConcreteActiveData> getActiveData();
 }

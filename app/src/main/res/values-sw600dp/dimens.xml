@@ -56,6 +56,7 @@
     <dimen name="dp86">86dp</dimen>
     <dimen name="dashboard_back">300dp</dimen>
     <dimen name="dp130">130dp</dimen>
+    <dimen name="dp140">140dp</dimen>
     <dimen name="dp222">222dp</dimen>
     <dimen name="dialog_waitinglist_bullet_width_height">14dp</dimen>
     <dimen name="dialog_waitinglist_textsize">18sp</dimen>

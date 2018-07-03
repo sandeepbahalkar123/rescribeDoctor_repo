@@ -43,10 +43,11 @@ public class PatientDataActiveWaitingListProvider extends AbstractDataProvider {
     @Override
     public Data getItem(int index) {
         if (index < 0 || index >= getCount()) {
-            throw new IndexOutOfBoundsException("index = " + index);
+//            throw new IndexOutOfBoundsException("index = " + index);
+            return mData.get(getCount() - 1);
+        } else {
+            return mData.get(index);
         }
-
-        return mData.get(index);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class PatientDataActiveWaitingListProvider extends AbstractDataProvider {
     }
 
     @Override
-    public List<PatientDataProvider.ConcreteData> getViewAllData() {
+    public List<PatientDataViewAllProvider.ConcreteData> getViewAllData() {
         return null;
     }
 

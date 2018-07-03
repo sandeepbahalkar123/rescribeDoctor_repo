@@ -85,7 +85,9 @@
             android:id="@+id/patientDetailsClickLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp6">
+            android:layout_marginBottom="@dimen/dp6"
+            android:clickable="true"
+            android:focusable="true">
 
             <com.rescribe.doctor.ui.customesViews.CircularImageView
                 android:id="@+id/patientImageView"
@@ -96,15 +98,16 @@
                 tools:src="@drawable/uren_pic" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp11"
                 android:layout_marginStart="@dimen/dp11"
                 android:layout_toEndOf="@id/patientImageView"
+                android:layout_toLeftOf="@+id/checkbox"
                 android:layout_toRightOf="@id/patientImageView"
-                android:orientation="vertical"
-                tools:ignore="RelativeOverlap">
+                android:layout_toStartOf="@+id/checkbox"
+                android:orientation="vertical">
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/patientNameTextView"

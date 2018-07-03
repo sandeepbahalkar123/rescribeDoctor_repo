@@ -176,7 +176,6 @@ public class DraggableSwipeableActiveWaitingListAdapter
             @Override
             public void onClick(View v) {
                 AbstractDataProvider.Data item = mProvider.getItem(Integer.parseInt(String.valueOf(v.getTag())));
-
                 onItemViewClick(v, item);
             }
         };

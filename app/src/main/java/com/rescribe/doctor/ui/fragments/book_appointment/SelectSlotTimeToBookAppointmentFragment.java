@@ -226,8 +226,16 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
         //----------
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_APP_DATE, mContext).equals(""))
             mSelectedTimeSlotDate = now.get(Calendar.YEAR) + "-" + monthInt + "-" + dayInt;
-        else
+        else {
+            // store currentDate if date is less than current date
             mSelectedTimeSlotDate = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_APP_DATE, mContext);
+            Date date = CommonMethods.convertStringToDate(mSelectedTimeSlotDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+            Date currentDate = new Date();
+            if (date.getTime() < currentDate.getTime()) {
+                mSelectedTimeSlotDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_APP_DATE, mSelectedTimeSlotDate, mContext);
+            }
+        }
 
         //----******************------
 
@@ -386,7 +394,7 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                                 selectTimeDateExpandableView.setAdapter(mSelectSlotToBookAppointmentAdapter);
                                 int selectedSlotPosition = getSelectedSlotPosition(selectSlotList.getTimeSlotsInfoList());
                                 if (selectedSlotPosition != -1)
-                                selectTimeDateExpandableView.expandGroup(selectedSlotPosition, true);
+                                    selectTimeDateExpandableView.expandGroup(selectedSlotPosition, true);
                             } else {
                                 noTimeSlotMessageTextView.setVisibility(View.VISIBLE);
                                 selectTimeDateExpandableView.setVisibility(View.GONE);

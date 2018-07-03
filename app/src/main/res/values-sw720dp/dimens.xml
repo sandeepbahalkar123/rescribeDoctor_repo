@@ -57,6 +57,7 @@
     <dimen name="dp222">333dp</dimen>
     <dimen name="dashboard_back">420dp</dimen>
     <dimen name="dp130">195dp</dimen>
+    <dimen name="dp140">210dp</dimen>
     <dimen name="dp82">123dp</dimen>
     <dimen name="dp500">750dp</dimen>
     <dimen name="drawer_width">500dp</dimen>

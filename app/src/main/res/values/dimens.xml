@@ -60,6 +60,7 @@
     <dimen name="dashboard_back">250dp</dimen>
 
     <dimen name="dp130">130dp</dimen>
+    <dimen name="dp140">140dp</dimen>
     <dimen name="dp500">500dp</dimen>
     <dimen name="drawer_width">280dp</dimen>
     <dimen name="dialog_waitinglist_bullet_width_height">8dp</dimen>

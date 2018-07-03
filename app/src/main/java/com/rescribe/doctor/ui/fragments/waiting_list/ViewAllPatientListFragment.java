@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +37,7 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
 import com.rescribe.doctor.model.waiting_list.Active;
-import com.rescribe.doctor.model.waiting_list.PatientDataProvider;
+import com.rescribe.doctor.model.waiting_list.PatientDataViewAllProvider;
 import com.rescribe.doctor.model.waiting_list.ViewAll;
 import com.rescribe.doctor.model.waiting_list.WaitingPatientList;
 import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
@@ -85,8 +87,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     CircularImageView bulletImageView;
     @BindView(R.id.clinicNameTextView)
     CustomTextView clinicNameTextView;
-    @BindView(R.id.clinicAddress)
-    CustomTextView clinicAddress;
     @BindView(R.id.hospitalDetailsLinearLayout)
     RelativeLayout hospitalDetailsLinearLayout;
 
@@ -94,7 +94,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     LinearLayout noRecords;
 
     private Unbinder unbinder;
-    private ArrayList<WaitingclinicList> waitingclinicLists = new ArrayList<>();
     private HashMap<String, String> mSelectedClinicDataMap = new HashMap<>();
 
     private int adapterPos;
@@ -103,8 +102,8 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     private DraggableSwipeableViewAllWaitingListAdapter myItemAdapter;
     private WaitingPatientList waitingPatientTempList;
     private String phoneNo;
-    private Integer mClinicID;
-    private Integer mWaitingIdToBeDeleted;
+    private int mClinicID = -1;
+    private int mWaitingIdToBeDeleted = -1;
 
     private WaitingMainListActivity mParentActivity;
 
@@ -123,34 +122,40 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                              Bundle savedInstanceState) {
         View mRootView = inflater.inflate(R.layout.waiting_content_layout, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
+        mAppointmentHelper = new AppointmentHelper(getActivity(), this);
+        mParentActivity = (WaitingMainListActivity) getActivity();
         init();
         setClinicListSpinner();
         return mRootView;
     }
 
     public void init() {
-        mAppointmentHelper = new AppointmentHelper(getActivity(), this);
-        mParentActivity = (WaitingMainListActivity) getActivity();
-        waitingclinicLists = mParentActivity.getReceivedWaitingClinicList();
-
-        if (waitingclinicLists != null) {
-            if (waitingclinicLists.size() > 1) {
+        if (mParentActivity.mWaitingClinicList != null) {
+            if (mParentActivity.mWaitingClinicList.size() > 1) {
                 clinicListSpinner.setVisibility(View.VISIBLE);
                 hospitalDetailsLinearLayout.setVisibility(View.GONE);
-                WaitingListSpinnerAdapter mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), waitingclinicLists);
+                WaitingListSpinnerAdapter mWaitingListSpinnerAdapter = new WaitingListSpinnerAdapter(getActivity(), mParentActivity.mWaitingClinicList);
                 clinicListSpinner.setAdapter(mWaitingListSpinnerAdapter);
             } else {
 
-                if (waitingclinicLists.isEmpty()) {
+                if (mParentActivity.mWaitingClinicList.isEmpty()) {
                     noRecords.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                 } else {
-                    mLocationId = waitingclinicLists.get(0).getLocationId();
-                    waitingPatientTempList = waitingclinicLists.get(0).getWaitingPatientList();
+                    mLocationId = mParentActivity.mWaitingClinicList.get(0).getLocationId();
+                    waitingPatientTempList = mParentActivity.mWaitingClinicList.get(0).getWaitingPatientList();
                     clinicListSpinner.setVisibility(View.GONE);
                     hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
-                    clinicNameTextView.setText(waitingclinicLists.get(0).getClinicName() + " - ");
-                    clinicAddress.setText(waitingclinicLists.get(0).getArea() + ", " + waitingclinicLists.get(0).getCity());
+
+                    String clinicName = mParentActivity.mWaitingClinicList.get(0).getClinicName() + " - ";
+                    String address = mParentActivity.mWaitingClinicList.get(0).getArea() + ", " + mParentActivity.mWaitingClinicList.get(0).getCity();
+
+                    SpannableString ss1 = new SpannableString(clinicName + address);
+                    ss1.setSpan(new RelativeSizeSpan(.8f), clinicName.length(), (clinicName + address).length(), 0);
+                    //      ss1.setSpan(new android.text.style.StyleSpan(Typeface.NORMAL), clinicName.length(), (clinicName + address).length(), 0);
+
+                    clinicNameTextView.setText(ss1);
+
                     recyclerView.setVisibility(View.VISIBLE);
                     recyclerView.setClipToPadding(false);
                     setAdapter();
@@ -164,7 +169,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                WaitingclinicList waitingclinicList = waitingclinicLists.get(i);
+                WaitingclinicList waitingclinicList = mParentActivity.mWaitingClinicList.get(i);
                 mLocationId = waitingclinicList.getLocationId();
                 mClinicID = waitingclinicList.getClinicId();
                 waitingPatientTempList = waitingclinicList.getWaitingPatientList();
@@ -190,8 +195,8 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             }
         });
 
-        for (int index = 0; index < waitingclinicLists.size(); index++) {
-            WaitingclinicList waitingclinicL = waitingclinicLists.get(index);
+        for (int index = 0; index < mParentActivity.mWaitingClinicList.size(); index++) {
+            WaitingclinicList waitingclinicL = mParentActivity.mWaitingClinicList.get(index);
             if (waitingclinicL.getLocationId() == getArguments().getInt(LOCATION_ID)) {
                 clinicListSpinner.setSelection(index);
                 break;
@@ -479,7 +484,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     }
 
     public AbstractDataProvider getDataProvider() {
-        return new PatientDataProvider(waitingPatientTempList.getViewAll());
+        return new PatientDataViewAllProvider(waitingPatientTempList.getViewAll());
     }
 
     public void notifyItemChanged(int position) {

@@ -53,20 +53,6 @@
                 app:customFont="@string/roboto_bold"
                 tools:text="Shree Clinic - " />
 
-            <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:id="@+id/clinicAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/dp10"
-                android:layout_toEndOf="@id/clinicNameTextView"
-                android:layout_toRightOf="@id/clinicNameTextView"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/clinic_address_color"
-                android:textSize="@dimen/sp13"
-                app:customFont="@string/roboto_medium"
-                tools:text="Worli, Mumbaifgfdgfdgfgf" />
         </RelativeLayout>
 
     </LinearLayout>
