@@ -1,5 +1,6 @@
 package com.rescribe.doctor.ui.activities.my_patients.add_new_patient;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -780,9 +781,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 AddToWaitingListBaseModel addToWaitingListBaseModel = (AddToWaitingListBaseModel) customResponse;
                 if (addToWaitingListBaseModel.getCommon().isSuccess()) {
                     if (addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.patients_added_successfully).toLowerCase()) || addToWaitingListBaseModel.getAddToWaitingModel().getAddToWaitingResponse().get(0).getStatusMessage().toLowerCase().contains(getString(R.string.added_to_waiting_list).toLowerCase())) {
-                        Intent intent = new Intent(this, WaitingMainListActivity.class);
-                        intent.putExtra(LOCATION_ID, locationID);
-                        startActivity(intent);
+                        Intent intent = new Intent();
+                        intent.putExtra(RescribeConstants.PATIENT_ADDED, true);
+                        intent.putExtra(RescribeConstants.LOCATION_ID, locationID);
+                        setResult(Activity.RESULT_OK, intent);
                         finish();
                     }
                     CommonMethods.showToast(this, addToWaitingListBaseModel.getCommon().getStatusMessage());

@@ -194,7 +194,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
                         //  Intent i = new Intent(getActivity(), AddNewPatientActivity.class);
                         i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
                         i.putExtra(RescribeConstants.START_FROM, RescribeConstants.WAITING_LIST);
-                        startActivity(i);
+                        startActivityForResult(i, 121);
                     }
 
                 }
@@ -243,6 +243,8 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_CLOSE_ACTIVITY_WAITING_LIST) {
             finish();
+        } else if (requestCode == 121){
+            // get location id
         }
     }
 

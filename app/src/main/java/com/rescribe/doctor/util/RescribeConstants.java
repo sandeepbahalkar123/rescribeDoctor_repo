@@ -195,6 +195,7 @@ public class RescribeConstants {
     public static final String IS_APPOINTMENT_TYPE_RESHEDULE = "appointment_type_reschedule";
     public static final String DOCTOR = "doctor";
     public static final String APPOINTMENT_ID = "appointment_id";
+    public static final String PATIENT_ADDED = "patient_added";
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
