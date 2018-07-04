@@ -57,6 +57,7 @@ import java.util.ArrayList;
 
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.IN_CONSULTATION;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.IN_QUEUE;
 import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 
@@ -355,6 +356,10 @@ public class DraggableSwipeableViewAllWaitingListAdapter
                 holder.mDragHandle.setVisibility(View.GONE);
             else holder.mDragHandle.setVisibility(View.VISIBLE);
 
+            holder.setMaxLeftSwipeAmount(-0.4f);
+            holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
+        } else if (item.getViewAll().getWaitingStatusId().equals(IN_CONSULTATION)){
+            holder.mDragHandle.setVisibility(View.GONE);
             holder.setMaxLeftSwipeAmount(-0.4f);
             holder.setSwipeItemHorizontalSlideAmount(item.isPinned() ? -0.4f : 0);
         } else {

@@ -34,6 +34,7 @@ import com.rescribe.doctor.adapters.waiting_list.WaitingListSpinnerAdapter;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.CommonBaseModelContainer;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.waiting_list.AbstractDataProvider;
 import com.rescribe.doctor.model.waiting_list.Active;
@@ -396,6 +397,10 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             } else {
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
             }
+        }  else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST)) {
+            CommonBaseModelContainer templateBaseModel = (CommonBaseModelContainer) customResponse;
+            CommonMethods.showToast(getActivity(), templateBaseModel.getCommonRespose().getStatusMessage());
+            mParentActivity.doCallGetWaitingListAPI();
         }
     }
 
