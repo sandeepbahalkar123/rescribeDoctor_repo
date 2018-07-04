@@ -123,7 +123,6 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         mParentActivity = (WaitingMainListActivity) getActivity();
         init();
-        setClinicListSpinner();
         return mRootView;
     }
 
@@ -152,7 +151,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
 
                     SpannableString ss1 = new SpannableString(clinicName + address);
                     ss1.setSpan(new RelativeSizeSpan(.8f), clinicName.length(), (clinicName + address).length(), 0);
-            //      ss1.setSpan(new android.text.style.StyleSpan(Typeface.NORMAL), clinicName.length(), (clinicName + address).length(), 0);
+                    //      ss1.setSpan(new android.text.style.StyleSpan(Typeface.NORMAL), clinicName.length(), (clinicName + address).length(), 0);
 
                     clinicNameTextView.setText(ss1);
 
@@ -160,17 +159,16 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                     recyclerView.setClipToPadding(false);
                     setAdapter();
 
-                    //-------
-                    //-------
                     mClinicID = waitingclinicList.getClinicId();
                     mSelectedClinicDataMap.put(RescribeConstants.CLINIC_ID, "" + mClinicID);
                     mSelectedClinicDataMap.put(RescribeConstants.CITY_ID, "" + waitingclinicList.getCityId());
                     mSelectedClinicDataMap.put(RescribeConstants.CITY_NAME, "" + waitingclinicList.getCity());
                     mSelectedClinicDataMap.put(RescribeConstants.LOCATION_ID, "" + mLocationId);
-                    //-------
-                    //-------
                 }
             }
+
+            if (!mParentActivity.mWaitingClinicList.isEmpty())
+                setClinicListSpinner();
         }
 
     }
@@ -196,7 +194,6 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                     recyclerView.setClipToPadding(false);
                     setAdapter();
                 }
-
             }
 
             @Override
@@ -207,18 +204,15 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
 
         for (int index = 0; index < mParentActivity.mWaitingClinicList.size(); index++) {
             WaitingclinicList waitingclinicL = mParentActivity.mWaitingClinicList.get(index);
-            int receivedLocationID = getArguments().getInt(LOCATION_ID);
-            if (waitingclinicL.getLocationId() == receivedLocationID) {
+            if (waitingclinicL.getLocationId() == mParentActivity.receivedLocationID) {
                 clinicListSpinner.setSelection(index);
                 break;
             }
         }
     }
 
-    public static ActivePatientListFragment newInstance(Bundle bundle) {
-        ActivePatientListFragment fragment = new ActivePatientListFragment();
-        fragment.setArguments(bundle);
-        return fragment;
+    public static ActivePatientListFragment newInstance() {
+        return new ActivePatientListFragment();
     }
 
     private void setAdapter() {
@@ -364,10 +358,8 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
                 mDraggableSwipeableActiveWaitingListAdapter.removeItem(adapterPos);
                 waitingPatientTempList.getActive().remove(adapterPos);
+                mParentActivity.deletePatientViewAll(mClinicID, mWaitingIdToBeDeleted);
 
-                //------------
-                mParentActivity.deletePatientFromWaitingClinicList(mClinicID, mWaitingIdToBeDeleted);
-                //------------
                 if (mDraggableSwipeableActiveWaitingListAdapter.getItemCount() == 0)
                     noRecords.setVisibility(View.VISIBLE);
                 else noRecords.setVisibility(View.GONE);
@@ -512,5 +504,9 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
 
     public HashMap<String, String> getSelectedClinicDataMap() {
         return mSelectedClinicDataMap;
+    }
+
+    public void removeItem(int adapterPos) {
+        mDraggableSwipeableActiveWaitingListAdapter.removeItem(adapterPos);
     }
 }

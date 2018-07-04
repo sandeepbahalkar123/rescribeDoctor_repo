@@ -63,7 +63,6 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
-import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 
 /**
  * Created by jeetal on 22/2/18.
@@ -125,7 +124,6 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         mAppointmentHelper = new AppointmentHelper(getActivity(), this);
         mParentActivity = (WaitingMainListActivity) getActivity();
         init();
-        setClinicListSpinner();
         return mRootView;
     }
 
@@ -161,32 +159,19 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                     setAdapter();
                 }
             }
+
+            if (!mParentActivity.mWaitingClinicList.isEmpty())
+                setClinicListSpinner();
         }
 
     }
 
     private void setClinicListSpinner() {
+        setSpinnerValues(0);
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                WaitingclinicList waitingclinicList = mParentActivity.mWaitingClinicList.get(i);
-                mLocationId = waitingclinicList.getLocationId();
-                mClinicID = waitingclinicList.getClinicId();
-                waitingPatientTempList = waitingclinicList.getWaitingPatientList();
-
-                if (waitingPatientTempList != null) {
-                    recyclerView.setVisibility(View.VISIBLE);
-                    recyclerView.setClipToPadding(false);
-                    setAdapter();
-                }
-
-                //-------
-                mSelectedClinicDataMap.put(RescribeConstants.CLINIC_ID, "" + mClinicID);
-                mSelectedClinicDataMap.put(RescribeConstants.CITY_ID, "" + waitingclinicList.getCityId());
-                mSelectedClinicDataMap.put(RescribeConstants.CITY_NAME, "" + waitingclinicList.getCity());
-                mSelectedClinicDataMap.put(RescribeConstants.LOCATION_ID, "" + mLocationId);
-                //-------
-
+                setSpinnerValues(i);
             }
 
             @Override
@@ -197,7 +182,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
         for (int index = 0; index < mParentActivity.mWaitingClinicList.size(); index++) {
             WaitingclinicList waitingclinicL = mParentActivity.mWaitingClinicList.get(index);
-            if (waitingclinicL.getLocationId() == getArguments().getInt(LOCATION_ID)) {
+            if (waitingclinicL.getLocationId() == mParentActivity.receivedLocationID) {
                 clinicListSpinner.setSelection(index);
                 break;
             }
@@ -205,10 +190,27 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
     }
 
-    public static ViewAllPatientListFragment newInstance(Bundle bundle) {
-        ViewAllPatientListFragment fragment = new ViewAllPatientListFragment();
-        fragment.setArguments(bundle);
-        return fragment;
+    private void setSpinnerValues(int i) {
+        WaitingclinicList waitingclinicList = mParentActivity.mWaitingClinicList.get(i);
+        mLocationId = waitingclinicList.getLocationId();
+        mClinicID = waitingclinicList.getClinicId();
+        waitingPatientTempList = waitingclinicList.getWaitingPatientList();
+
+        if (waitingPatientTempList != null) {
+            recyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setClipToPadding(false);
+            setAdapter();
+        }
+
+        mSelectedClinicDataMap.put(RescribeConstants.CLINIC_ID, "" + mClinicID);
+        mSelectedClinicDataMap.put(RescribeConstants.CITY_ID, "" + waitingclinicList.getCityId());
+        mSelectedClinicDataMap.put(RescribeConstants.CITY_NAME, "" + waitingclinicList.getCity());
+        mSelectedClinicDataMap.put(RescribeConstants.LOCATION_ID, "" + mLocationId);
+
+    }
+
+    public static ViewAllPatientListFragment newInstance() {
+        return new ViewAllPatientListFragment();
     }
 
     private void setAdapter() {
@@ -377,14 +379,9 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
                 myItemAdapter.removeItem(adapterPos);
                 waitingPatientTempList.getViewAll().remove(adapterPos);
-
-
-                //------------
-                mParentActivity.deletePatientFromWaitingClinicList(mClinicID, mWaitingIdToBeDeleted);
-                //------------
+                mParentActivity.deletePatientActive(mClinicID, mWaitingIdToBeDeleted);
 
                 // remove from original
-
                 if (myItemAdapter.getItemCount() == 0)
                     noRecords.setVisibility(View.VISIBLE);
                 else noRecords.setVisibility(View.GONE);
@@ -529,5 +526,9 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
 
     public HashMap<String, String> getSelectedClinicDataMap() {
         return mSelectedClinicDataMap;
+    }
+
+    public void removeItem(int adapterPos) {
+        myItemAdapter.removeItem(adapterPos);
     }
 }

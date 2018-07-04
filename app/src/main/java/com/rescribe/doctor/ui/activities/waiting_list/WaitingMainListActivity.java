@@ -27,7 +27,6 @@ import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatie
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.waiting_list.ActivePatientListFragment;
 import com.rescribe.doctor.ui.fragments.waiting_list.ViewAllPatientListFragment;
-import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -71,11 +70,8 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
     FloatingActionButton mAddNewPatientFAB;
     public ArrayList<WaitingclinicList> mWaitingClinicList;
     private AppointmentHelper mAppointmentHelper;
-
-    private boolean isAnyItemDeleted = false;
-    private Integer mLocationId;
     private ViewPagerAdapter mViewPagerAdapter;
-    int receivedLocationID;
+    public int receivedLocationID;
     private ViewAllPatientListFragment viewAllPatientListFragment;
     private ActivePatientListFragment activePatientListFragment;
 
@@ -92,26 +88,22 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         receivedLocationID = tempLocID != null ? Integer.parseInt(tempLocID) : -1;
 
 
+        setupViewPager(viewpager);
+        tabs.setupWithViewPager(viewpager);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         titleTextView.setText(getString(R.string.waiting_list));
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        //-----------
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(RescribeConstants.WAITING_LIST_INFO, mWaitingClinicList);
-        bundle.putInt(LOCATION_ID, receivedLocationID);
-        //-----------
-
-        activePatientListFragment = ActivePatientListFragment.newInstance(bundle);
-        viewAllPatientListFragment = ViewAllPatientListFragment.newInstance(bundle);
+        activePatientListFragment = ActivePatientListFragment.newInstance();
+        viewAllPatientListFragment = ViewAllPatientListFragment.newInstance();
 
         mViewPagerAdapter.addFragment(activePatientListFragment, getString(R.string.active));
         mViewPagerAdapter.addFragment(viewAllPatientListFragment, getString(R.string.view_all));
         viewPager.setAdapter(mViewPagerAdapter);
         viewPager.setOffscreenPageLimit(2);
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        /*viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 CommonMethods.Log("addOnPageChangeListener", "" + mViewPagerAdapter.getPageTitle(position));
@@ -119,27 +111,22 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
 
             @Override
             public void onPageSelected(int position) {
-
                 if (isAnyItemDeleted) {
                     switch (position) {
                         case 0:
-                            activePatientListFragment.init();
                             break;
                         case 1:
-                            viewAllPatientListFragment.init();
                             break;
                     }
                     isAnyItemDeleted = false;
                 }
-
-
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        });*/
     }
 
     @Override
@@ -148,8 +135,9 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
             WaitingListBaseModel waitingListBaseModel = (WaitingListBaseModel) customResponse;
             mWaitingClinicList = waitingListBaseModel.getWaitingListDataModel().getWaitingclinicList();
 
-            setupViewPager(viewpager);
-            tabs.setupWithViewPager(viewpager);
+            // pass data to fragment
+            activePatientListFragment.init();
+            viewAllPatientListFragment.init();
         }
     }
 
@@ -207,16 +195,9 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
                         i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
                         i.putExtra(RescribeConstants.START_FROM, RescribeConstants.WAITING_LIST);
                         startActivity(i);
-
-                        boolean internetAvailableCheck = NetworkUtil.isInternetAvailable(this);
-                        if (internetAvailableCheck) {
-                            finish();
-                        }
                     }
 
                 }
-
-
                 //   showDialogToSelectLocation();
                 break;
             }
@@ -275,26 +256,17 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         mAppointmentHelper.doGetWaitingList();
     }
 
-    public void deletePatientFromWaitingClinicList(int clinicId, int waitingID) {
+    public void deletePatientActive(int clinicId, int waitingID) {
 
         for (WaitingclinicList cList : mWaitingClinicList) {
             if (cList.getClinicId() == clinicId) {
                 WaitingPatientList waitingPatientList = cList.getWaitingPatientList();
-                //---------
                 ArrayList<Active> activeList = waitingPatientList.getActive();
-                for (Active activeObj : activeList) {
+                for (int index = 0; index < activeList.size(); index++) {
+                    Active activeObj = activeList.get(index);
                     if (activeObj.getWaitingId() == waitingID) {
+                        activePatientListFragment.removeItem(index);
                         waitingPatientList.getActive().remove(activeObj);
-                        isAnyItemDeleted = true;
-                        break;
-                    }
-                }
-                //-------
-                ArrayList<ViewAll> viewAllList = waitingPatientList.getViewAll();
-                for (ViewAll viewAllObj : viewAllList) {
-                    if (viewAllObj.getWaitingId() == waitingID) {
-                        waitingPatientList.getViewAll().remove(viewAllObj);
-                        isAnyItemDeleted = true;
                         break;
                     }
                 }
@@ -302,93 +274,21 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         }
     }
 
-/*
-    private void showDialogToSelectLocation() {
-
-        final Dialog dialog = new Dialog(this);
-        final Bundle b = new Bundle();
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
-
-        LayoutInflater inflater = LayoutInflater.from(this);
-        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, this).equals("")) {
-            mLocationId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, this));
-
-            for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
-                if (doctorLocationModel.getLocationId().equals(mLocationId)) {
-                    b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
-                    b.putInt(RescribeConstants.CITY_ID, doctorLocationModel.getCityId());
-                    b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
-                    break;
-                }
-            }
-        }
-        RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
-        for (int index = 0; index < mWaitingClinicList.size(); index++) {
-            final WaitingclinicList clinicList = mWaitingClinicList.get(index);
-
-            final RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
-            if (mLocationId == clinicList.getLocationId()) {
-                radioButton.setChecked(true);
-            } else {
-                radioButton.setChecked(false);
-            }
-            radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getArea());
-            radioButton.setId(CommonMethods.generateViewId());
-            radioButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mLocationId = clinicList.getLocationId();
-                    CommonMethods.Log("clinicList", "" + clinicList.toString());
-                }
-            });
-            radioGroup.addView(radioButton);
-        }
-
-        TextView okButton = (TextView) dialog.findViewById(R.id.okButton);
-        okButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (mLocationId != 0) {
-
-                    for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {
-                        if (doctorLocationModel.getLocationId().equals(mLocationId)) {
-                            b.putInt(RescribeConstants.CLINIC_ID, doctorLocationModel.getClinicId());
-                            b.putInt(RescribeConstants.CITY_ID, doctorLocationModel.getCityId());
-                            b.putString(RescribeConstants.CITY_NAME, doctorLocationModel.getCity());
-                            b.putString(RescribeConstants.LOCATION_ID, String.valueOf(doctorLocationModel.getLocationId()));
-                            break;
-                        }
+    public void deletePatientViewAll(int clinicId, int waitingID) {
+        for (WaitingclinicList cList : mWaitingClinicList) {
+            if (cList.getClinicId() == clinicId) {
+                WaitingPatientList waitingPatientList = cList.getWaitingPatientList();
+                ArrayList<ViewAll> viewAllList = waitingPatientList.getViewAll();
+                for (int index = 0; index < viewAllList.size(); index++) {
+                    ViewAll viewAllObj = viewAllList.get(index);
+                    if (viewAllObj.getWaitingId() == waitingID) {
+                        viewAllPatientListFragment.removeItem(index);
+                        waitingPatientList.getViewAll().remove(viewAllObj);
+                        break;
                     }
-
-                    Intent i = new Intent(WaitingMainListActivity.this, AddNewPatientWebViewActivity.class);
-                    //  Intent i = new Intent(getActivity(), AddNewPatientActivity.class);
-                    i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
-                    i.putExtra(RescribeConstants.START_FROM, RescribeConstants.WAITING_LIST);
-                    startActivity(i);
-                    finish();
-                    //getActivity().startActivityForResult(i, ADD_PATIENT_REQUEST);
-
-                    dialog.cancel();
-                } else
-                    CommonMethods.showToast(WaitingMainListActivity.this, "Please select clinic location.");
+                }
             }
-        });
-
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.gravity = Gravity.CENTER;
-
-        dialog.getWindow().setAttributes(lp);
-        dialog.show();
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.setCancelable(true);
-    }*/
+        }
+    }
 
 }
