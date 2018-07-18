@@ -182,6 +182,7 @@
     <string name="normal">Normal Level :</string>
     <string name="moderate">Moderate Level :</string>
     <string name="severe">Severe Level :</string>
+    <string name="noncategory">Other Level :</string>
     <string name="please_select_patients">Please select patients</string>
     <string name="my_patients">My Patients</string>
     <string name="do_you_logout">Do you want to logout?</string>
