@@ -39,7 +39,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="vitals_name">#737373</color>
-    <color name="login_bg_color">#54d8c8</color>
+    <color name="login_bg_color">#2b93d0</color>
     <color name="accent">#FF4081</color>
     <color name="hint_color_my_appointment">#99ffffff</color>
     <color name="range_yellow">#ff9500</color>
@@ -68,4 +68,5 @@
     <color name="logo_color">#7f5b5b5b</color>
     <color name="clickHere">#3676a3</color>
     <color name="activity_background">#E4E4E4</color>
+    <color name="blue">#2b93d0</color>
 </resources>

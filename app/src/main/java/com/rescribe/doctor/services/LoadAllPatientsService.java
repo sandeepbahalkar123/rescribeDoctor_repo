@@ -86,7 +86,7 @@ public class LoadAllPatientsService extends Service {
 
                 mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mBuilder = new NotificationCompat.Builder(this);
-                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
                 Notification notification = mBuilder
                         .setContentTitle("Download all patients")

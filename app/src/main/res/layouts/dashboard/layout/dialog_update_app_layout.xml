@@ -47,7 +47,7 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/circular_shape_vital_bg"
                 android:padding="@dimen/dp20"
-                app:srcCompat="@drawable/logo" />
+                app:srcCompat="@mipmap/ic_launcher" />
 
         </FrameLayout>
 

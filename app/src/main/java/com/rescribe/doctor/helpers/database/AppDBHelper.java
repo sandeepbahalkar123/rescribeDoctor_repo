@@ -865,59 +865,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return cityAreaMap;
     }
 
-//    public ArrayList<PatientList> getOfflineAddedPatients() {
-//        SQLiteDatabase db = getReadableDatabase();
-//        String countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " where " + ADD_NEW_PATIENT.IS_SYNC + " = " + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER;
-//
-//        Cursor cursor = db.rawQuery(countQuery, null);
-//        ArrayList<PatientList> list = new ArrayList<>();
-//
-//        if (cursor.moveToFirst()) {
-//            while (!cursor.isAfterLast()) {
-//                PatientList patient = new PatientList();
-//
-//                patient.setPatientId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ID)));
-//
-//                String name = "";
-//                name += cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.FIRST_NAME));
-//                if (cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MIDDLE_NAME)) != null)
-//                    name += " " + cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MIDDLE_NAME));
-//
-//                if (cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.LAST_NAME)) != null)
-//                    name += " " + cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.LAST_NAME));
-//
-//                patient.setPatientName(name);
-//
-//                patient.setSalutation(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.SALUTATION)));
-//                patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));
-//                patient.setAge(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.AGE)));
-//                patient.setGender(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.GENDER)));
-//                patient.setOfflineReferenceID(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID)));
-//                patient.setClinicId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.CLINIC_ID)));
-//                patient.setPatientCity(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CITY_NAME)));
-//                patient.setPatientCityId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.CITY_ID)));
-//                patient.setDateOfBirth(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.DOB)));
-//                patient.setOutStandingAmount(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.OUTSTANDING_AMT)));
-//                patient.setPatientImageUrl(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.IMAGE_URL)));
-//                patient.setPatientEmail(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.EMAIL)));
-//
-//                //----------
-//                int anInt = cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.IS_SYNC));
-//                patient.setOfflinePatientSynced(anInt == ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER);
-//                //----------
-//                patient.setCreationDate(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
-//                patient.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.HOSPITALPATID)));
-//
-//                list.add(patient);
-//                cursor.moveToNext();
-//            }
-//        }
-//        cursor.close();
-//        db.close();
-//
-//        return list;
-//    }
-
     public ArrayList<PatientDetail> getOfflinePatientsToUpload() {
         SQLiteDatabase db = getReadableDatabase();
         String countQuery = "select * from " + ADD_NEW_PATIENT.TABLE_NAME + " where " + ADD_NEW_PATIENT.IS_SYNC + " like '%" + ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER + "%'";

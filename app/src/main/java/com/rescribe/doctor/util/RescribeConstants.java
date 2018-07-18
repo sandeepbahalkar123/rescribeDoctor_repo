@@ -6,12 +6,6 @@ package com.rescribe.doctor.util;
  */
 public class RescribeConstants {
 
-    public static final String RESCRIBE_LOG_FOLDER = "Rescribe_LOG";
-    public static final String RESCRIBE_LOG_FILE = "Rescribe_LOG_FILE.txt";
-
-    public static final String MT_TABLET = "TABLET";
-    public static final String MT_SYRUP = "SYRUP";
-    public static final String MT_OINTMENT = "OINTMENT";
     public static final String DD_MM_YYYY = "dd-MM-yyyy";
     public static final String YYYY_MM_DD = "yyyy-MM-dd";
     public static final String YES = "yes";
@@ -46,29 +40,12 @@ public class RescribeConstants {
     public static final String APPLICATION_FORM_DATA = "multipart/form-data";
     public static final String APPLICATION_URL_ENCODED = "application/x-www-form-urlencoded; charset=UTF-8";
     public static final String APPLICATION_JSON = "application/json; charset=utf-8";
-    //--- Request Params
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String LOGIN_SUCCESS = "LOGIN_SUCCESS";
-    public static final String CLIENT_ID_KEY = "client_id";
-    public static final String CLIENT_ID_VALUE = "334a059d82304f4e9892ee5932f81425";
-    public static final String TRUE = "true";
-    public static final String FALSE = "false";
-
-    public static final String APPOINTMENT_TIME = "appointment_time";
-    public static final String NOTIFICATION_TIME = "notification_time";
-    public static final String APPOINTMENT_DATE = "appointment_date";
-    public static final String NOTIFICATION_DATE = "notification_date";
     public static final String TIME = "time";
 
     // Connection codes
     public static final String MONTH = "month";
     public static final String YEAR = "year";
     public static final String DATE = "date";
-    public static final String MEDICINE_NAME = "medicine_name";
-    public static final String MEDICINE_SLOT = "edicine_slot";
-    public static final String MEDICINE_TYPE = "medicine_type";
-    public static final String NOTIFICATION_ID = "notification_id";
 
     public static final String APPOINTMENT_NOTIFICATION_ID = "appointment_notification_id";
     public static final String APPOINTMENT_MESSAGE = "appointment_message";
