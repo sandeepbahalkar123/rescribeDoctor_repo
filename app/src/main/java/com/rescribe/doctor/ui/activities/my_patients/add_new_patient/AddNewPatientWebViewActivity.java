@@ -368,7 +368,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                                 mReferredBy.setText(data.getDocName());
                                 mReferredEmail.setText(data.getDocEmail());
                                 mReferredPhone.setText("" + data.getDocPhone());
-
                                 mSelectedDoctorReference = data;
                             }
                         });
@@ -386,7 +385,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                                 mReferredBy.setText(data.getPatientName());
                                 mReferredEmail.setText(data.getPatientEmail());
                                 mReferredPhone.setText("" + data.getPatientPhone());
-
                                 mSelectedPatientReference = data;
                             }
                         });

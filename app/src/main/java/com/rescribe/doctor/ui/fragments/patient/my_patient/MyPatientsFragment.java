@@ -668,14 +668,14 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 break;
             case R.id.leftFab:
                 if (mDoctorLocationModel.size() == 1) {
-                    final Bundle b = new Bundle();
-                    b.putInt(RescribeConstants.CLINIC_ID, mDoctorLocationModel.get(0).getClinicId());
-                    b.putInt(RescribeConstants.CITY_ID, mDoctorLocationModel.get(0).getCityId());
-                    b.putString(RescribeConstants.CITY_NAME, mDoctorLocationModel.get(0).getCity());
-                    b.putString(RescribeConstants.LOCATION_ID, String.valueOf(mDoctorLocationModel.get(0).getLocationId()));
-                    Intent i = new Intent(getActivity(), AddNewPatientWebViewActivity.class);
-                    i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
-                    getActivity().startActivityForResult(i, ADD_PATIENT_REQUEST);
+                    final Bundle bundle = new Bundle();
+                    bundle.putInt(RescribeConstants.CLINIC_ID, mDoctorLocationModel.get(0).getClinicId());
+                    bundle.putInt(RescribeConstants.CITY_ID, mDoctorLocationModel.get(0).getCityId());
+                    bundle.putString(RescribeConstants.CITY_NAME, mDoctorLocationModel.get(0).getCity());
+                    bundle.putString(RescribeConstants.LOCATION_ID, String.valueOf(mDoctorLocationModel.get(0).getLocationId()));
+                    Intent intent = new Intent(getActivity(), AddNewPatientWebViewActivity.class);
+                    intent.putExtra(RescribeConstants.PATIENT_DETAILS, bundle);
+                    getActivity().startActivityForResult(intent, ADD_PATIENT_REQUEST);
                     CommonMethods.Log("DOC_ID", "" + Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
                 } else {
                     showDialogToSelectLocation(mDoctorLocationModel, getString(R.string.new_patients));
