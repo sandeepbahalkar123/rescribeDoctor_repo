@@ -86,7 +86,7 @@ public class LoadAllPatientsService extends Service {
 
                 mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mBuilder = new NotificationCompat.Builder(this);
-                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
 
                 Notification notification = mBuilder
                         .setContentTitle("Download all patients")
@@ -148,11 +148,7 @@ public class LoadAllPatientsService extends Service {
                                 restored(patientList.size());
                             } else {
                                 // add in database
-                                for (PatientList patientL : patientList) {
-                                    patientL.setOfflinePatientSynced(true);
-                                    patientL.setReferenceID("");
-                                    appDBHelper.addNewPatient(patientL);
-                                }
+                                appDBHelper.addNewPatient(patientList, true);
 
                                 if (patientList.size() < RECORD_COUNT) {
                                     // after add database

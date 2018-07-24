@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
+import com.rescribe.doctor.model.chat.history.ChatHistory;
 import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientAddressDetails;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
@@ -19,7 +20,6 @@ import com.rescribe.doctor.model.patient.doctor_patients.PatientReferenceDetails
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.model.request_patients.FilterParams;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
-import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.util.CommonMethods;
 
 import java.io.BufferedReader;
@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import static com.rescribe.doctor.services.MQTTService.DOCTOR;
 import static com.rescribe.doctor.services.MQTTService.PATIENT;
@@ -465,6 +466,46 @@ public class AppDBHelper extends SQLiteOpenHelper {
         //------
     }
 
+    public void insertChatMessage(List<ChatHistory> chatHistory) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        db.beginTransaction();
+
+        for (int index = chatHistory.size() - 1; index >= 0; index -= 1) {
+            ChatHistory chatH = chatHistory.get(index);
+            contentValues.put(CHAT_MESSAGES.MSG_ID, chatH.getChatId());
+            contentValues.put(CHAT_MESSAGES.MSG, chatH.getMsg());
+            contentValues.put(CHAT_MESSAGES.MSG_TIME, chatH.getMsgTime());
+            contentValues.put(CHAT_MESSAGES.SENDER, chatH.getSender());
+            contentValues.put(CHAT_MESSAGES.USER2ID, chatH.getUser2Id());
+            contentValues.put(CHAT_MESSAGES.USER1ID, chatH.getUser1Id());
+            contentValues.put(CHAT_MESSAGES.SENDER_NAME, chatH.getSenderName());
+            contentValues.put(CHAT_MESSAGES.SPECIALITY, chatH.getSpecialization());
+            contentValues.put(CHAT_MESSAGES.MSG_STATUS, chatH.getMsgStatus() == null ? SENT : chatH.getMsgStatus());
+            contentValues.put(CHAT_MESSAGES.SENDER_IMG_URL, chatH.getSenderImgUrl());
+            contentValues.put(CHAT_MESSAGES.FILE_URL, chatH.getFileUrl());
+            contentValues.put(CHAT_MESSAGES.FILE_TYPE, chatH.getFileType());
+            contentValues.put(CHAT_MESSAGES.UPLOAD_STATUS, FAILED);
+            contentValues.put(CHAT_MESSAGES.DOWNLOAD_STATUS, FAILED);
+            contentValues.put(CHAT_MESSAGES.READ_STATUS, READ);
+
+            contentValues.put(CHAT_MESSAGES.SALUTATION, chatH.getSalutation());
+            contentValues.put(CHAT_MESSAGES.RECEIVER_NAME, chatH.getReceiverName());
+            contentValues.put(CHAT_MESSAGES.RECEIVER_IMG_URL, chatH.getReceiverImgUrl());
+
+            if (getChatMessageCountByMessageId(chatH.getChatId()) == 0)
+                db.insert(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, null, contentValues);
+            else
+                db.update(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, contentValues, CHAT_MESSAGES.MSG_ID + " = ?", new String[]{chatH.getChatId()});
+        }
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
     public ArrayList<MQTTMessage> insertChatMessage(MQTTMessage mqttMessage) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -612,7 +653,79 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return db.rawQuery(countQuery, null);
     }
 
-    //-----store patient in db : start----
+
+    public void addNewPatient(ArrayList<PatientList> patientList, boolean isBackUp) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        db.beginTransaction();
+
+        for (PatientList patient : patientList) {
+            if (isBackUp) {
+                patient.setOfflinePatientSynced(true);
+                patient.setReferenceID("");
+            }
+
+            contentValues.put(ADD_NEW_PATIENT.PATIENT_ID, patient.getPatientId());
+            contentValues.put(ADD_NEW_PATIENT.SALUTATION, patient.getSalutation());
+            String patientName = patient.getPatientName().trim();
+
+            if (!patientName.isEmpty()) {
+                String[] split = patientName.split(" ");
+                contentValues.put(ADD_NEW_PATIENT.FIRST_NAME, split[0]);
+                if (split.length > 1) {
+                    if (split[1].trim().equalsIgnoreCase("|"))
+                        contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, "");
+                    else
+                        contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, split[1].trim());
+                }
+                if (split.length > 2)
+                    contentValues.put(ADD_NEW_PATIENT.LAST_NAME, split[2]);
+            }
+
+            contentValues.put(ADD_NEW_PATIENT.MOBILE_NO, patient.getPatientPhone());
+            contentValues.put(ADD_NEW_PATIENT.AGE, patient.getAge());
+            contentValues.put(ADD_NEW_PATIENT.GENDER, patient.getGender());
+            contentValues.put(ADD_NEW_PATIENT.REFERENCE_ID, patient.getReferenceID());
+            contentValues.put(ADD_NEW_PATIENT.CLINIC_ID, patient.getClinicId());
+            contentValues.put(ADD_NEW_PATIENT.CITY_ID, patient.getPatientCityId());
+            contentValues.put(ADD_NEW_PATIENT.CITY_NAME, patient.getPatientCity());
+            contentValues.put(ADD_NEW_PATIENT.DOB, patient.getDateOfBirth());
+            contentValues.put(ADD_NEW_PATIENT.OUTSTANDING_AMT, patient.getOutStandingAmount());
+            contentValues.put(ADD_NEW_PATIENT.IMAGE_URL, patient.getPatientImageUrl());
+            contentValues.put(ADD_NEW_PATIENT.EMAIL, patient.getPatientEmail());
+            contentValues.put(ADD_NEW_PATIENT.IS_SYNC, patient.isOfflinePatientSynced() ? ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER : ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER);
+            contentValues.put(ADD_NEW_PATIENT.CREATED_TIME_STAMP, patient.getCreationDate());
+            contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, patient.getHospitalPatId());
+            contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA, patient.getPatientArea());
+
+            //-----ADDRESS ---
+            PatientAddressDetails addressDetails = patient.getAddressDetails();
+            if (addressDetails != null) {
+                contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_LINE, addressDetails.getPatientAddress());
+                contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE, addressDetails.getPatientState());
+                contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY, addressDetails.getPatientCity());
+                contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA, addressDetails.getPatientArea());
+            }
+            //-----REFERENCE----
+            PatientReferenceDetails referedDetails = patient.getReferedDetails();
+            if (referedDetails != null) {
+                contentValues.put(ADD_NEW_PATIENT.REFFERED_TYPE_ID, referedDetails.getReferredTypeId());
+                contentValues.put(ADD_NEW_PATIENT.REFERENCE_NAME, referedDetails.getName());
+                contentValues.put(ADD_NEW_PATIENT.REFERENCE_EMAIL, referedDetails.getEmailId());
+                contentValues.put(ADD_NEW_PATIENT.REFERENCE_PHONE, referedDetails.getPhoneNumber());
+            }
+            //------------------
+
+            if (checkIsPatientExist(patient.getPatientId(), db) > 0)
+                db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?", new String[]{String.valueOf(patient.getPatientId())});
+            else db.insert(ADD_NEW_PATIENT.TABLE_NAME, null, contentValues);
+        }
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
     public long addNewPatient(PatientList newPatient) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -669,13 +782,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
         }
         //------------------
 
-        if (checkIsPatientExist(newPatient.getPatientId()) > 0)
+        if (checkIsPatientExist(newPatient.getPatientId(), db) > 0)
             return db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?", new String[]{String.valueOf(newPatient.getPatientId())});
         else return db.insert(ADD_NEW_PATIENT.TABLE_NAME, null, contentValues);
     }
 
-    private long checkIsPatientExist(int patientId) {
-        SQLiteDatabase db = getReadableDatabase();
+    private long checkIsPatientExist(int patientId, SQLiteDatabase db) {
         return DatabaseUtils.queryNumEntries(db, ADD_NEW_PATIENT.TABLE_NAME, ADD_NEW_PATIENT.PATIENT_ID + " = " + patientId);
     }
 

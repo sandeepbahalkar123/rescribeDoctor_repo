@@ -79,7 +79,7 @@ public class SyncOfflinePatients {
 
             mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mBuilder = new NotificationCompat.Builder(context);
-            Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+            Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);
 
             mBuilder.setContentTitle("Syncing patients")
                     .setTicker("Syncing")

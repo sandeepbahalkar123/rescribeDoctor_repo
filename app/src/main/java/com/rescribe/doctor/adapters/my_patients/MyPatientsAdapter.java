@@ -388,19 +388,11 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             mc.setSpannableString(searchText);
             mc.setSelected(selectedDoctorId.contains(mc.getHospitalPatId()));
             add(mc);
-            // add patient in sqlite while pagination.
-
-            if (mc.isOfflinePatientSynced()) {
-                mc.setOfflinePatientSynced(true);
-            } else {
-                mc.setOfflinePatientSynced(false);
-            }
-
-            // mc.setReferenceID("");
-            appDBHelper.addNewPatient(mc);
         }
 
         notifyDataSetChanged();
+
+        appDBHelper.addNewPatient(mcList, false);
     }
 
     public void clear() {

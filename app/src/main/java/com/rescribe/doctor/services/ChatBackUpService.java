@@ -87,7 +87,7 @@ public class ChatBackUpService extends Service {
 
                 mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mBuilder = new NotificationCompat.Builder(this);
-                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
 
                 Notification notification = mBuilder
                         .setContentTitle("Chat Backup")
@@ -182,40 +182,7 @@ public class ChatBackUpService extends Service {
                         ChatHistoryModel chatHistoryModel = new Gson().fromJson(response, ChatHistoryModel.class);
                         if (chatHistoryModel.getCommon().getStatusCode().equals(SUCCESS)) {
                             List<ChatHistory> chatHistory = chatHistoryModel.getHistoryData().getChatHistory();
-
-                            for (int index = chatHistory.size() - 1; index >= 0; index -= 1) {
-
-                                ChatHistory chatH = chatHistory.get(index);
-
-                                MQTTMessage messageL = new MQTTMessage();
-                                messageL.setMsgId(chatH.getChatId());
-                                messageL.setMsg(chatH.getMsg());
-                                messageL.setDocId(chatH.getUser1Id());
-                                messageL.setPatId(chatH.getUser2Id());
-                                messageL.setSender(chatH.getSender());
-
-                                messageL.setSenderName(chatH.getSenderName());
-                                messageL.setSenderImgUrl(chatH.getSenderImgUrl());
-
-                                messageL.setReceiverName(chatH.getReceiverName());
-                                messageL.setReceiverImgUrl(chatH.getReceiverImgUrl());
-
-                                messageL.setSpecialization(chatH.getSpecialization());
-                                messageL.setOnlineStatus(chatH.getOnlineStatus());
-                                messageL.setPaidStatus(chatH.getPaidStatus());
-                                messageL.setFileType(chatH.getFileType());
-                                messageL.setFileUrl(chatH.getFileUrl());
-                                messageL.setMsgTime(chatH.getMsgTime());
-                                messageL.setMsgStatus(chatH.getMsgStatus() == null ? SENT : chatH.getMsgStatus());
-                                messageL.setUploadStatus(FAILED);
-                                messageL.setDownloadStatus(FAILED);
-                                messageL.setSalutation(chatH.getSalutation());
-
-                                messageL.setReadStatus(READ);
-
-                                appDBHelper.insertChatMessage(messageL);
-                            }
-
+                            appDBHelper.insertChatMessage(chatHistory);
                             if (patientDataList.size() > patientIndex) {
                                 restoreMessages(patientDataList);
                             } else {
