@@ -55,7 +55,6 @@ import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_frag
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.PatientListViewDialogFragment;
 import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fragment.StateListViewDialogFragment;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
-import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
@@ -74,7 +73,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class AddNewPatientWebViewActivity extends AppCompatActivity implements HelperResponse {
@@ -635,9 +633,23 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 //// mSelectedReferenceTypeID 1:DOCTOR and 2: PATIENT
                 ref.setReferredTypeId(String.valueOf(mSelectedReferenceTypeID));
                 if (mSelectedReferenceTypeID == 1) {
-                    ref.setDocId(String.valueOf(mSelectedDoctorReference.getId()));
+                    if (mSelectedDoctorReference != null)
+                        ref.setDocId(String.valueOf(mSelectedDoctorReference.getId()));
+                    else {
+                        ref.setName("");
+                        ref.setPhoneNumber("");
+                        ref.setEmailId("");
+                        ref.setReferredTypeId("");
+                    }
                 } else if (mSelectedReferenceTypeID == 2) {
-                    ref.setPatientId(String.valueOf(mSelectedPatientReference.getPatientId()));
+                    if (mSelectedDoctorReference != null)
+                        ref.setPatientId(String.valueOf(mSelectedPatientReference.getPatientId()));
+                    else {
+                        ref.setName("");
+                        ref.setPhoneNumber("");
+                        ref.setEmailId("");
+                        ref.setReferredTypeId("");
+                    }
                 }
                 patientList.setReferedDetails(ref);
             } else {
