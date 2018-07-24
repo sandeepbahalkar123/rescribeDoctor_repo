@@ -55,7 +55,7 @@ import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
-import com.rescribe.doctor.util.Imageutils;
+import com.rescribe.doctor.util.ImageUtils;
 import com.rescribe.doctor.util.RescribeConstants;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -75,13 +75,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.rescribe.doctor.ui.activities.MapActivityShowDoctorLocation.ADDRESS;
-import static com.rescribe.doctor.util.Imageutils.FILEPATH;
+import static com.rescribe.doctor.util.ImageUtils.FILEPATH;
 
 /**
  * Created by jeetal on 16/2/18.
  */
 
-public class ProfileActivity extends BottomMenuActivity implements BottomMenuAdapter.OnBottomMenuClickListener, Imageutils.ImageAttachmentListener {
+public class ProfileActivity extends BottomMenuActivity implements BottomMenuAdapter.OnBottomMenuClickListener, ImageUtils.ImageAttachmentListener {
     private static final String TAG = "Profile";
     @BindView(R.id.backImageView)
     ImageView backImageView;
@@ -164,7 +164,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     private ArrayList<DoctorLocationModel> mArrayListDoctorLocationModel = new ArrayList<>();
     private DoctorLocationModel doctorLocationModel;
     private ArrayList<String> mServices = new ArrayList<>();
-    private Imageutils imageutils;
+    private ImageUtils imageutils;
     private String Url = Config.BASE_URL + Config.UPLOAD_PROFILE_PHOTO;
     private String authorizationString;
     private Device device;
@@ -184,7 +184,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     private void initialize() {
         mContext = ProfileActivity.this;
         ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
-        imageutils = new Imageutils(this);
+        imageutils = new ImageUtils(this);
         device = Device.getInstance(ProfileActivity.this);
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
         authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, ProfileActivity.this);

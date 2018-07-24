@@ -55,8 +55,7 @@ import static android.content.ContentValues.TAG;
 import static com.theartofdev.edmodo.cropper.CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE;
 
 @SuppressLint("SdCardPath")
-public class Imageutils {
-
+public class ImageUtils {
 
     private Context context;
     private Activity current_activity;
@@ -72,14 +71,14 @@ public class Imageutils {
     private Dialog dialog;
 
 
-    public Imageutils(Activity act) {
+    public ImageUtils(Activity act) {
 
         this.context = act;
         this.current_activity = act;
         imageAttachment_callBack = (ImageAttachmentListener) context;
     }
 
-    public Imageutils(Activity act, Fragment fragment, boolean isFragment) {
+    public ImageUtils(Activity act, Fragment fragment, boolean isFragment) {
 
         this.context = act;
         this.current_activity = act;
