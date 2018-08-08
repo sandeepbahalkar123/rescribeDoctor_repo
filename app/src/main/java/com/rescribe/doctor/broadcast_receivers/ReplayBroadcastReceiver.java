@@ -3,6 +3,7 @@ package com.rescribe.doctor.broadcast_receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.MQTTMessage;
@@ -83,7 +84,10 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements Help
             Intent intentService = new Intent(context, MQTTService.class);
             intentService.putExtra(SEND_MESSAGE, true);
             intentService.putExtra(MESSAGE_LIST, messageL);
-            context.startService(intentService);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                context.startForegroundService(intentService);
+            else
+                context.startService(intentService);
             NotificationHelper.cancel(context, recievedMessage.getPatId()); // Change
             appDBHelper.markAsAReadChatMessageByPatientId(recievedMessage.getPatId()); // Change
 

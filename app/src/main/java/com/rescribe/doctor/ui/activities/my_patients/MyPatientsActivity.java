@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
@@ -111,7 +112,10 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
                 downloadPatients.setVisibility(View.GONE);
                 Intent startIntentUpload = new Intent(mContext, LoadAllPatientsService.class);
                 startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
-                startService(startIntentUpload);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    startForegroundService(startIntentUpload);
+                else
+                    startService(startIntentUpload);
             } else {
                 downloadPatients.setVisibility(View.VISIBLE);
                 downloadPatients.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +124,10 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
                         if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
                             Intent startIntentUpload = new Intent(mContext, LoadAllPatientsService.class);
                             startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
-                            startService(startIntentUpload);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                                startForegroundService(startIntentUpload);
+                            else
+                                startService(startIntentUpload);
                             downloadPatients.setVisibility(View.GONE);
                         } else CommonMethods.showToast(mContext, getString(R.string.internet));
                     }

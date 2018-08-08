@@ -52,7 +52,6 @@ public class CityAndAreaDialogFragment extends DialogFragment implements IdAndVa
     RecyclerView mRecyclerView;
     @BindView(R.id.emptyListView)
     RelativeLayout mEmptyListView;
-    private ActionBar mActionBar;
     Context mContext;
     private String mHeader;
 
@@ -61,23 +60,20 @@ public class CityAndAreaDialogFragment extends DialogFragment implements IdAndVa
 
     private ArrayList<IdAndValueDataModel> mList = new ArrayList<>();
     private int mStateID;
-    private int mCityID;
     private IdAndValueDataAdapter mIdAndValueDataAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.common_recycler_view_with_searchtextview, container);
-
         ButterKnife.bind(this, rootView);
-
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         Bundle arguments = getArguments();
         if (arguments != null) {
             mHeader = arguments.getString(RescribeConstants.TITLE);
             mStateID = arguments.getInt(RescribeConstants.STATE_ID, -1);
-            mCityID = arguments.getInt(RescribeConstants.CITY_ID, -1);
+//            mCityID = arguments.getInt(RescribeConstants.CITY_ID, -1);
             ArrayList<IdAndValueDataModel> parcelableArrayList = arguments.getParcelableArrayList(RescribeConstants.AREA_LIST);
             if (parcelableArrayList != null)
                 mList.addAll(parcelableArrayList);
@@ -127,6 +123,7 @@ public class CityAndAreaDialogFragment extends DialogFragment implements IdAndVa
                 Cursor cursor = dbHelper.getData(CitySyncJob.TAG);
                 cursor.moveToFirst();
                 StateAndCityBaseModel stateAndCityBaseModel = gson.fromJson(cursor.getString(cursor.getColumnIndex(AppDBHelper.COLUMN_DATA)), StateAndCityBaseModel.class);
+                cursor.close();
 
                 if (mHeader.equalsIgnoreCase(getString(R.string.state))) {
                     ArrayList<StateDetailsModel> stateDetailsMainList = stateAndCityBaseModel.getCityDetailsDataModel().getStateDetailsMainList();

@@ -3,6 +3,7 @@ package com.rescribe.doctor.broadcast_receivers;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import com.google.gson.Gson;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
@@ -57,7 +58,6 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
 
             String prefix[] = uploadInfo.getUploadId().split("_");
             if (prefix[0].equals(doctorId)) {
-
                 MQTTMessage mqttMessage = instance.getChatMessageByMessageId(uploadInfo.getUploadId());
 
                 if (mqttMessage != null) {
@@ -73,7 +73,10 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
                     Intent intentService = new Intent(context, MQTTService.class);
                     intentService.putExtra(SEND_MESSAGE, true);
                     intentService.putExtra(MESSAGE_LIST, mqttMessage);
-                    context.startService(intentService);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        context.startForegroundService(intentService);
+                    else
+                        context.startService(intentService);
                 }
             }
 

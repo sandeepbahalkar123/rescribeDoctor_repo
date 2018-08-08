@@ -53,12 +53,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.chat.ChatAdapter;
 import com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.StatusInfo;
+import com.rescribe.doctor.model.chat.uploadfile.ChatFileUploadModel;
 import com.rescribe.doctor.model.patient.patient_connect.PatientData;
 import com.rescribe.doctor.notification.NotificationHelper;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -220,7 +222,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
     private boolean hidden = true;
     private String searchedMessageString;
     private int scrollPosition = -1;
-    private String patientName = "";
     private int mHospitalPatId;
     private int preSize;
     private int mClinicId;
@@ -263,7 +264,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                             if (chatAdapter != null) {
                                 mqttMessages.add(message);
                                 chatAdapter.notifyItemInserted(mqttMessages.size() - 1);
-                                chatRecyclerView.smoothScrollToPosition(mqttMessages.size() - 1);
+                                chatRecyclerView.scrollToPosition(mqttMessages.size() - 1);
                             }
                         } else {
                             // Other user message
@@ -392,9 +393,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
     // Uploading
     private Device device;
-    private String Url;
-    private String authorizationString;
-    private UploadNotificationConfig uploadNotificationConfig;
     private DownloadManager downloadManager;
     private String mPatientsDetails = "";
 
@@ -454,9 +452,9 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         Intent gotIntent = getIntent();
 
-            mPatientsDetails = gotIntent.getStringExtra(RescribeConstants.PATIENT_DETAILS);
-            mHospitalPatId = gotIntent.getIntExtra(RescribeConstants.PATIENT_HOS_PAT_ID, 0);
-            mClinicId = gotIntent.getIntExtra(RescribeConstants.CLINIC_ID, 0);
+        mPatientsDetails = gotIntent.getStringExtra(RescribeConstants.PATIENT_DETAILS);
+        mHospitalPatId = gotIntent.getIntExtra(RescribeConstants.PATIENT_HOS_PAT_ID, 0);
+        mClinicId = gotIntent.getIntExtra(RescribeConstants.CLINIC_ID, 0);
 
         if (gotIntent.getAction() != null) {
             if (gotIntent.getAction().equals(REPLY_ACTION)) {
@@ -613,8 +611,8 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 @Override
                 public void run() {
                     if (scrollPosition == -1)
-                        chatRecyclerView.smoothScrollToPosition(mqttMessages.size() - 1);
-                    else chatRecyclerView.smoothScrollToPosition(scrollPosition);
+                        chatRecyclerView.scrollToPosition(mqttMessages.size() - 1);
+                    else chatRecyclerView.scrollToPosition(scrollPosition);
                 }
             }, mqttMessages.size() > 500 ? 200 : 100);
         }
@@ -947,12 +945,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         // Uploading
         device = Device.getInstance(ChatActivity.this);
-        Url = Config.BASE_URL + Config.CHAT_FILE_UPLOAD;
-        authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, ChatActivity.this);
-        uploadNotificationConfig = new UploadNotificationConfig();
-        uploadNotificationConfig.setTitleForAllStatuses("File Uploading");
-        uploadNotificationConfig.setIconColorForAllStatuses(Color.parseColor("#04abdf"));
-        uploadNotificationConfig.setClearOnActionForAllStatuses(true);
         UploadService.UPLOAD_POOL_SIZE = 10;
     }
 
@@ -991,6 +983,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 ChatActivityPermissionsDispatcher.onPickPhotoWithCheck(ChatActivity.this);
                 break;
             case R.id.consultationLayout:
+                String patientName = "";
                 if (chatList.getSalutation() != 0)
                     patientName = RescribeConstants.SALUTATION[chatList.getSalutation() - 1] + toCamelCase(chatList.getPatientName());
                 else patientName = toCamelCase(chatList.getPatientName());
@@ -1049,7 +1042,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                         messageType.setText("");
                         mqttMessages.add(messageL);
                         chatAdapter.notifyItemInserted(mqttMessages.size() - 1);
-                        chatRecyclerView.smoothScrollToPosition(mqttMessages.size() - 1);
+                        chatRecyclerView.scrollToPosition(mqttMessages.size() - 1);
                     }
                 }
                 break;
@@ -1197,14 +1190,13 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
             mqttService.passMessage(messageL);
             mqttMessages.add(messageL);
             chatAdapter.notifyItemInserted(mqttMessages.size() - 1);
-            chatRecyclerView.smoothScrollToPosition(mqttMessages.size() - 1);
+            chatRecyclerView.scrollToPosition(mqttMessages.size() - 1);
         }
     }
 
     private void uploadFiles(ArrayList<String> files, String fileType) {
         int startPosition = mqttMessages.size() + 1;
         for (String file : files) {
-
             String fileForUpload = copyFile(CommonMethods.getFilePath(file), CommonMethods.getFileNameFromPath(file), filesUploadFolder);
 
             MQTTMessage messageL = new MQTTMessage();
@@ -1217,25 +1209,19 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
             String generatedId = docId + "_" + mqttMessages.size() + System.nanoTime();
 
             messageL.setMsgId(generatedId);
-
             messageL.setFileUrl(fileForUpload);
             messageL.setFileType(fileType);
-
             messageL.setDocId(Integer.parseInt(docId));
             messageL.setPatId(chatList.getId());
             messageL.setSenderName(docName);
             messageL.setOnlineStatus(RescribeConstants.USER_STATUS.ONLINE);
             messageL.setSenderImgUrl(imageUrl);
-
             messageL.setSalutation(chatList.getSalutation());
             messageL.setReceiverName(chatList.getPatientName());
             messageL.setReceiverImgUrl(chatList.getImageUrl());
-
             messageL.setSpecialization(speciality);
             messageL.setPaidStatus(FREE);
-
             messageL.setMsgStatus(PENDING);
-
             messageL.setSender(DOCTOR);
 
             // 2017-10-13 13:08:07
@@ -1249,7 +1235,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         if (chatAdapter != null) {
             chatAdapter.notifyItemRangeInserted(startPosition, files.size());
-            chatRecyclerView.smoothScrollToPosition(mqttMessages.size() - 1);
+            chatRecyclerView.scrollToPosition(mqttMessages.size() - 1);
         }
     }
 
@@ -1301,7 +1287,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    chatRecyclerView.smoothScrollToPosition(mqttMessages.size() - 1);
+                    chatRecyclerView.scrollToPosition(mqttMessages.size() - 1);
                     CommonMethods.Log(TAG, "Scrolled");
                 }
             }, 100);
@@ -1414,16 +1400,20 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         try {
 
-            MultipartUploadRequest uploadRequest = new MultipartUploadRequest(ChatActivity.this, String.valueOf(mqttMessage.getMsgId()), Url)
+            UploadNotificationConfig uploadNotificationConfig = new UploadNotificationConfig();
+            uploadNotificationConfig.setTitleForAllStatuses("File Uploading");
+            uploadNotificationConfig.setIconColorForAllStatuses(Color.parseColor("#04abdf"));
+//            uploadNotificationConfig.setClearOnActionForAllStatuses(true);
+
+            MultipartUploadRequest uploadRequest = new MultipartUploadRequest(ChatActivity.this, String.valueOf(mqttMessage.getMsgId()), Config.BASE_URL + Config.CHAT_FILE_UPLOAD)
                     .setNotificationConfig(uploadNotificationConfig)
                     .setMaxRetries(RescribeConstants.MAX_RETRIES)
-
-                    .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
+                    .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, ChatActivity.this))
                     .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
                     .addHeader(RescribeConstants.OS, device.getOS())
                     .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
                     .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
-
+                    .addHeader("patientId", "" + mqttMessage.getPatId())
                     .addFileToUpload(mqttMessage.getFileUrl(), "chatDoc");
 
             uploadRequest.startUpload();
@@ -1593,7 +1583,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         @Override
         public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-
             CommonMethods.Log(TAG, "onCompleted " + serverResponse.getBodyAsString());
 
             String prefix[] = uploadInfo.getUploadId().split("_");
@@ -1601,6 +1590,20 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 int position = getPositionById(uploadInfo.getUploadId());
                 mqttMessages.get(position).setUploadStatus(COMPLETED);
                 chatAdapter.notifyItemChanged(position);
+
+                MQTTMessage mqttMessage = appDBHelper.getChatMessageByMessageId(uploadInfo.getUploadId());
+
+                if (mqttMessage != null) {
+                    String response = serverResponse.getBodyAsString();
+                    ChatFileUploadModel chatFileUploadModel = new Gson().fromJson(response, ChatFileUploadModel.class);
+
+                    String fileUrl = chatFileUploadModel.getData().getDocUrl();
+                    // send via mqtt
+
+                    mqttMessage.setFileUrl(fileUrl);
+                    mqttMessage.setUploadStatus(COMPLETED);
+                    mqttService.passMessage(mqttMessage);
+                }
             }
         }
 

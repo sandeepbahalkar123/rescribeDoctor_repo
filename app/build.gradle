@@ -90,7 +90,6 @@ dependencies {
 
     compile project(':materialdrawer') // For drawer layout
     compile project(':filepicker')
-    compile project(':uploadservice')
     compile project(':slideview')
     compile project(':crystalrangeseekbar')
     compile project(':fabmenu')
@@ -132,6 +131,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
         transitive = true;
     }
+
+    compile "net.gotev:uploadservice:3.4.2"
 
     //job creator for latest version instead services
     implementation 'com.evernote:android-job:1.2.5'

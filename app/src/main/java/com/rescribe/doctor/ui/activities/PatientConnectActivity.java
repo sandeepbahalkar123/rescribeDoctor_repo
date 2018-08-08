@@ -9,26 +9,18 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.util.Log;
-
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-
 import android.view.Window;
 import android.widget.Button;
-
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -179,7 +171,10 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
                     public void onClick(View v) {
                         Intent startIntentUpload = new Intent(PatientConnectActivity.this, ChatBackUpService.class);
                         startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
-                        startService(startIntentUpload);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                            startForegroundService(startIntentUpload);
+                        else
+                            startService(startIntentUpload);
                         dialog.dismiss();
                         customProgressDialog.show();
                     }

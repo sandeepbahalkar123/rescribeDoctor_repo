@@ -56,6 +56,7 @@ import rx.functions.Func1;
 
 import static com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver.MESSAGE_LIST;
 import static com.rescribe.doctor.util.Config.BROKER;
+import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.PENDING;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.REACHED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.READ;
@@ -359,8 +360,16 @@ public class MQTTService extends Service {
             if (mqttClient.isConnected() && RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, mContext).equals(RescribeConstants.YES)) {
                 mqttClient.publish(TOPIC[INTERNET_TOPIC], message);
                 ArrayList<MQTTMessage> chatMessageByMessageStatus = appDBHelper.getChatMessageByMessageStatus(PENDING);
-                for (MQTTMessage mqttMessage : chatMessageByMessageStatus)
-                    passMessage(mqttMessage);
+                for (MQTTMessage mqttMessage : chatMessageByMessageStatus) {
+                    if (mqttMessage.getFileType().isEmpty())
+                        passMessage(mqttMessage);
+                    else {
+                        if (mqttMessage.getUploadStatus() == COMPLETED)
+                            passMessage(mqttMessage);
+                        else
+                            Log.d(TAG, "Retry Upload wich files are not uploaded successfully and resend it");
+                    }
+                }
             } else
                 mqttClient.reconnect();
             CommonMethods.Log("passInternetStatus: ", content);

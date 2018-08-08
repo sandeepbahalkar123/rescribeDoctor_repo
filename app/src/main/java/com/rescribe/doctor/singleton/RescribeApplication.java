@@ -9,9 +9,12 @@ import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.JobManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.rescribe.doctor.BuildConfig;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.services.job_creator_download_cities.AppJobCreator;
+
+import net.gotev.uploadservice.UploadService;
 
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
@@ -34,8 +37,6 @@ public class RescribeApplication extends MultiDexApplication {
         SHOW_UPDATE_DIALOG_ON_SKIPPED = showUpdateDialogOnSkipped;
     }
 
-
-
     public static Typeface get(Context c, String name) {
         synchronized (cache) {
             if (!cache.containsKey(name)) {
@@ -51,15 +52,13 @@ public class RescribeApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        //------------
         MultiDex.install(this);
+        UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
         AppDBHelper.getInstance(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 //        new NukeSSLCerts().nuke(); // disable all ssl certificates (dangerous)
-        //--------------
         JobManager.create(this).addJobCreator(new AppJobCreator());
-
     }
     public static ArrayList<DoctorLocationModel> getDoctorLocationModels() {
         return doctorLocationModels;
