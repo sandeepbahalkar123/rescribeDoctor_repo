@@ -1,6 +1,7 @@
 package com.rescribe.doctor.services;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -8,7 +9,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -20,7 +24,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
-import com.rescribe.doctor.model.chat.MQTTMessage;
 import com.rescribe.doctor.model.chat.history.ChatHistory;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
 import com.rescribe.doctor.model.patient.patient_connect.ChatPatientConnectModel;
@@ -33,20 +36,16 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.android.volley.Request.Method.GET;
-import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
-import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.READ;
-import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.SENT;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class ChatBackUpService extends Service {
+    private static final String CHANNEL_CHAT_BACKUP = "chat_backup";
     public static boolean RUNNING = false;
 
     private static final String LOG_TAG = "ChatBackUpService";
@@ -63,6 +62,32 @@ public class ChatBackUpService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Intent notificationIntent = new Intent(this, PatientConnectActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+
+        mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel();
+            mBuilder = new NotificationCompat.Builder(this, CHANNEL_CHAT_BACKUP);
+        } else
+            mBuilder = new NotificationCompat.Builder(this);
+
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+
+        Notification notification = mBuilder
+                .setContentTitle("Chat Backup")
+                .setTicker("Restoring messages")
+                .setContentText("Restoring messages")
+                .setSmallIcon(R.drawable.logosmall)
+                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setContentIntent(pendingIntent).build();
+
+        startForeground(RescribeConstants.FOREGROUND_SERVICE, notification);
         appDBHelper = new AppDBHelper(this);
     }
 
@@ -74,36 +99,29 @@ public class ChatBackUpService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
-
         if (intent.getAction() != null) {
             if (intent.getAction().equals(RescribeConstants.STARTFOREGROUND_ACTION)) {
-
                 Log.i(LOG_TAG, "Received Start Foreground Intent ");
-                Intent notificationIntent = new Intent(this, PatientConnectActivity.class);
-                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                        notificationIntent, 0);
-
-                mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mBuilder = new NotificationCompat.Builder(this);
-                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
-
-                Notification notification = mBuilder
-                        .setContentTitle("Chat Backup")
-                        .setTicker("Restoring messages")
-                        .setContentText("Restoring messages")
-                        .setSmallIcon(R.drawable.logosmall)
-                        .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                        .setContentIntent(pendingIntent).build();
-
-                startForeground(RescribeConstants.FOREGROUND_SERVICE, notification);
-
                 // Start Downloading
                 request();
             }
         } else stopSelf();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private void createChannel() {
+        // Create the channel object with the unique ID CONNECT_CHANNEL
+        NotificationChannel connectChannel = new NotificationChannel(
+                CHANNEL_CHAT_BACKUP, "SYNC Patients",
+                NotificationManager.IMPORTANCE_DEFAULT);
+
+        // Configure the channel's initial settings
+        connectChannel.setLightColor(Color.GREEN);
+        connectChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
+        // Submit the notification channel object to the notification manager
+        mNotifyManager.createNotificationChannel(connectChannel);
     }
 
     private void request() {

@@ -3,7 +3,7 @@ package com.rescribe.doctor.broadcast_receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.support.v4.content.ContextCompat;
 
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.chat.MQTTMessage;
@@ -21,8 +21,6 @@ import static com.rescribe.doctor.ui.activities.PatientConnectActivity.FREE;
 
 public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements HelperResponse*/ {
     public static final String MESSAGE_LIST = "message_list";
-    private MQTTMessage recievedMessage;
-    private AppDBHelper appDBHelper;
 
     public static Intent getReplyMessageIntent(Context context, MQTTMessage MQTTMessage) {
         Intent intent = new Intent(context, ReplayBroadcastReceiver.class);
@@ -40,8 +38,8 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements Help
             // do whatever you want with the message. Send to the server or add to the db.
             // for this tutorial, we'll just show it in a toast;
             CharSequence message = MQTTService.getReplyMessage(intent);
-            appDBHelper = new AppDBHelper(context);
-            recievedMessage = intent.getParcelableExtra(MESSAGE_LIST);
+            AppDBHelper appDBHelper = new AppDBHelper(context);
+            MQTTMessage recievedMessage = intent.getParcelableExtra(MESSAGE_LIST);
 
             MQTTMessage messageL = new MQTTMessage();
             messageL.setTopic(MQTTService.TOPIC[MESSAGE_TOPIC]);
@@ -75,47 +73,14 @@ public class ReplayBroadcastReceiver extends BroadcastReceiver /*implements Help
             String msgTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
             messageL.setMsgTime(msgTime);
 
-            // send msg by http api
-
-//            ChatHelper chatHelper = new ChatHelper(context, ReplayBroadcastReceiver.this);
-//            chatHelper.sendMsgToPatient(messageL);
-
             // send via mqtt
             Intent intentService = new Intent(context, MQTTService.class);
             intentService.putExtra(SEND_MESSAGE, true);
             intentService.putExtra(MESSAGE_LIST, messageL);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                context.startForegroundService(intentService);
-            else
-                context.startService(intentService);
+            ContextCompat.startForegroundService(context, intentService);
             NotificationHelper.cancel(context, recievedMessage.getPatId()); // Change
             appDBHelper.markAsAReadChatMessageByPatientId(recievedMessage.getPatId()); // Change
 
         }
     }
-
-   /* @Override
-    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (customResponse instanceof SendMessageModel) {
-            if (recievedMessage != null) {
-                NotificationHelper.cancel(context, recievedMessage.getPatId()); // Change
-                appDBHelper.deleteUnreadMessage(recievedMessage.getPatId()); // Change
-            }
-        }
-    }
-
-    @Override
-    public void onParseError(String mOldDataTag, String errorMessage) {
-
-    }
-
-    @Override
-    public void onServerError(String mOldDataTag, String serverErrorMessage) {
-
-    }
-
-    @Override
-    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
-
-    }*/
 }

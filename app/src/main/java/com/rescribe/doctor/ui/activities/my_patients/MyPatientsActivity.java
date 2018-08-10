@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -30,7 +30,6 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -112,10 +111,7 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
                 downloadPatients.setVisibility(View.GONE);
                 Intent startIntentUpload = new Intent(mContext, LoadAllPatientsService.class);
                 startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    startForegroundService(startIntentUpload);
-                else
-                    startService(startIntentUpload);
+                ContextCompat.startForegroundService(mContext, startIntentUpload);
             } else {
                 downloadPatients.setVisibility(View.VISIBLE);
                 downloadPatients.setOnClickListener(new View.OnClickListener() {
@@ -124,10 +120,7 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
                         if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
                             Intent startIntentUpload = new Intent(mContext, LoadAllPatientsService.class);
                             startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                                startForegroundService(startIntentUpload);
-                            else
-                                startService(startIntentUpload);
+                            ContextCompat.startForegroundService(mContext, startIntentUpload);
                             downloadPatients.setVisibility(View.GONE);
                         } else CommonMethods.showToast(mContext, getString(R.string.internet));
                     }

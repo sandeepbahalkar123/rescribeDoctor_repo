@@ -1,6 +1,9 @@
 package com.rescribe.doctor.services;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -13,6 +16,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 import android.util.Log;
 
@@ -102,14 +106,22 @@ public class MQTTService extends Service {
     private SyncOfflineRecords syncOfflineRecords = new SyncOfflineRecords();
     private SyncOfflinePatients syncOfflinePatients = new SyncOfflinePatients();
     private NotificationHelper notificationHelper;
+    private NotificationManager mNotificationManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = this;
         notificationHelper = new NotificationHelper(mContext);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Notification notification = new NotificationCompat.Builder(this, NotificationHelper.CONNECT_CHANNEL)
+                    .setContentTitle("Patient Connect")
+                    .setContentText("Chat with Patient").build();
+            startForeground(1981, notification);
+        }
+
         syncOfflineRecords.onCreate(mContext);
-        syncOfflinePatients.onCreate(mContext);
+        syncOfflinePatients.onCreate(mContext, getNotificationManager());
         initRxNetwork();
         appDBHelper = new AppDBHelper(mContext);
 
@@ -121,6 +133,21 @@ public class MQTTService extends Service {
         } catch (MqttException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Get the notification mNotificationManager.
+     * <p>
+     * <p>Utility method as this helper works with it a lot.
+     *
+     * @return The system service NotificationManager
+     */
+    private NotificationManager getNotificationManager() {
+        if (mNotificationManager == null) {
+            mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        return mNotificationManager;
     }
 
     private void initRxNetwork() {

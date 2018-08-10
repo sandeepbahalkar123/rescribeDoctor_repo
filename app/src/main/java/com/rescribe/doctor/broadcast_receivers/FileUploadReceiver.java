@@ -3,7 +3,7 @@ package com.rescribe.doctor.broadcast_receivers;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.support.v4.content.ContextCompat;
 
 import com.google.gson.Gson;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
@@ -56,29 +56,26 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
 
         String doctorId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, context);
 
-            String prefix[] = uploadInfo.getUploadId().split("_");
-            if (prefix[0].equals(doctorId)) {
-                MQTTMessage mqttMessage = instance.getChatMessageByMessageId(uploadInfo.getUploadId());
+        String prefix[] = uploadInfo.getUploadId().split("_");
+        if (prefix[0].equals(doctorId)) {
+            MQTTMessage mqttMessage = instance.getChatMessageByMessageId(uploadInfo.getUploadId());
 
-                if (mqttMessage != null) {
-                    String response = serverResponse.getBodyAsString();
-                    ChatFileUploadModel chatFileUploadModel = gson.fromJson(response, ChatFileUploadModel.class);
+            if (mqttMessage != null) {
+                String response = serverResponse.getBodyAsString();
+                ChatFileUploadModel chatFileUploadModel = gson.fromJson(response, ChatFileUploadModel.class);
 
-                    String fileUrl = chatFileUploadModel.getData().getDocUrl();
-                    // send via mqtt
+                String fileUrl = chatFileUploadModel.getData().getDocUrl();
+                // send via mqtt
 
-                    mqttMessage.setFileUrl(fileUrl);
-                    mqttMessage.setUploadStatus(COMPLETED);
+                mqttMessage.setFileUrl(fileUrl);
+                mqttMessage.setUploadStatus(COMPLETED);
 
-                    Intent intentService = new Intent(context, MQTTService.class);
-                    intentService.putExtra(SEND_MESSAGE, true);
-                    intentService.putExtra(MESSAGE_LIST, mqttMessage);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        context.startForegroundService(intentService);
-                    else
-                        context.startService(intentService);
-                }
+                Intent intentService = new Intent(context, MQTTService.class);
+                intentService.putExtra(SEND_MESSAGE, true);
+                intentService.putExtra(MESSAGE_LIST, mqttMessage);
+                ContextCompat.startForegroundService(context, intentService);
             }
+        }
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(uploadInfo.getNotificationID());

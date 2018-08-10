@@ -1,11 +1,14 @@
 package com.rescribe.doctor.services;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -46,6 +49,7 @@ public class SyncOfflinePatients {
     public static final String PATIENT_SYNC_LIST = "SyncList";
     private static final String LOG_TAG = "SyncOfflinePatients";
     private static final int SYNC_NOTIFICATION_ID = 122;
+    private static final String CHANNEL_SYNC_PATIENT = "SYNC_patient";
 
     private Context context;
     private AppDBHelper appDBHelper;
@@ -57,10 +61,25 @@ public class SyncOfflinePatients {
     SyncOfflinePatients() {
     }
 
-    void onCreate(Context mContext) {
+    void onCreate(Context mContext, NotificationManager notificationManager) {
         this.context = mContext;
         appDBHelper = new AppDBHelper(context);
         gson = new Gson();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            // Create the channel object with the unique ID CONNECT_CHANNEL
+            NotificationChannel connectChannel = new NotificationChannel(
+                    CHANNEL_SYNC_PATIENT, "SYNC Patients",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+
+            // Configure the channel's initial settings
+            connectChannel.setLightColor(Color.GREEN);
+            connectChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
+            // Submit the notification channel object to the notification manager
+            notificationManager.createNotificationChannel(connectChannel);
+        }
+
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, mContext).equals(RescribeConstants.YES))
             check();
     }
@@ -78,7 +97,7 @@ public class SyncOfflinePatients {
                     notificationIntent, 0);
 
             mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            mBuilder = new NotificationCompat.Builder(context);
+            mBuilder = new NotificationCompat.Builder(context, CHANNEL_SYNC_PATIENT);
             Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);
 
             mBuilder.setContentTitle("Syncing patients")

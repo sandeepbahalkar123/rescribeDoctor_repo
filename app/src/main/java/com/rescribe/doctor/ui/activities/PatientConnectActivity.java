@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.util.Log;
@@ -171,10 +171,7 @@ public class PatientConnectActivity extends AppCompatActivity implements HelperR
                     public void onClick(View v) {
                         Intent startIntentUpload = new Intent(PatientConnectActivity.this, ChatBackUpService.class);
                         startIntentUpload.setAction(RescribeConstants.STARTFOREGROUND_ACTION);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                            startForegroundService(startIntentUpload);
-                        else
-                            startService(startIntentUpload);
+                        ContextCompat.startForegroundService(PatientConnectActivity.this, startIntentUpload);
                         dialog.dismiss();
                         customProgressDialog.show();
                     }

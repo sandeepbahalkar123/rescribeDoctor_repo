@@ -1,6 +1,7 @@
 package com.rescribe.doctor.services;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -8,7 +9,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -44,6 +48,7 @@ import static com.rescribe.doctor.util.Config.GET_PATIENTS_SYNC;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class LoadAllPatientsService extends Service {
+    private static final String CHANNEL_PATIENT_DOWNLOAD = "patient_download";
     public static boolean RUNNING = false;
 
     private static final String LOG_TAG = "LoadAllPatientsService";
@@ -61,6 +66,32 @@ public class LoadAllPatientsService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Intent notificationIntent = new Intent(this, MyPatientsActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+
+        mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel();
+            mBuilder = new NotificationCompat.Builder(this, CHANNEL_PATIENT_DOWNLOAD);
+        } else
+            mBuilder = new NotificationCompat.Builder(this);
+
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+
+        Notification notification = mBuilder
+                .setContentTitle("Download all patients")
+                .setTicker("Downloading")
+                .setContentText("Downloading patients")
+                .setSmallIcon(R.drawable.logosmall)
+                .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setContentIntent(pendingIntent).build();
+
+        startForeground(RescribeConstants.FOREGROUND_SERVICE, notification);
+
         appDBHelper = new AppDBHelper(this);
         gson = new Gson();
     }
@@ -76,33 +107,27 @@ public class LoadAllPatientsService extends Service {
 
         if (intent.getAction() != null) {
             if (intent.getAction().equals(RescribeConstants.STARTFOREGROUND_ACTION)) {
-
                 Log.i(LOG_TAG, "Received Start Foreground Intent ");
-                Intent notificationIntent = new Intent(this, MyPatientsActivity.class);
-                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                        notificationIntent, 0);
-
-                mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mBuilder = new NotificationCompat.Builder(this);
-                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
-
-                Notification notification = mBuilder
-                        .setContentTitle("Download all patients")
-                        .setTicker("Downloading")
-                        .setContentText("Downloading patients")
-                        .setSmallIcon(R.drawable.logosmall)
-                        .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                        .setContentIntent(pendingIntent).build();
-
-                startForeground(RescribeConstants.FOREGROUND_SERVICE, notification);
-
                 // Start Downloading
                 request(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, LoadAllPatientsService.this));
             }
         } else stopSelf();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private void createChannel() {
+        // Create the channel object with the unique ID CONNECT_CHANNEL
+        NotificationChannel connectChannel = new NotificationChannel(
+                CHANNEL_PATIENT_DOWNLOAD, "SYNC Patients",
+                NotificationManager.IMPORTANCE_DEFAULT);
+
+        // Configure the channel's initial settings
+        connectChannel.setLightColor(Color.GREEN);
+        connectChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
+        // Submit the notification channel object to the notification manager
+        mNotifyManager.createNotificationChannel(connectChannel);
     }
 
     private void request(final boolean isDownloaded) {

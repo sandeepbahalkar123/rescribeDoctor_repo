@@ -70,7 +70,10 @@ public class NotificationHelper extends ContextWrapper {
 
     public NotificationHelper(Context context) {
         super(context);
+        createChannel();
+    }
 
+    public void createChannel() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             // Create the channel object with the unique ID CONNECT_CHANNEL
             NotificationChannel connectChannel = new NotificationChannel(
@@ -93,7 +96,7 @@ public class NotificationHelper extends ContextWrapper {
      *
      * @return The system service NotificationManager
      */
-    private NotificationManager getNotificationManager() {
+    public NotificationManager getNotificationManager() {
         if (mNotificationManager == null) {
             mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -194,7 +197,7 @@ public class NotificationHelper extends ContextWrapper {
                         .setAllowGeneratedReplies(true)
                         .build();
 
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CONNECT_CHANNEL)
 
                 // Set appropriate defaults for the notification light, sound,
                 // and vibration.

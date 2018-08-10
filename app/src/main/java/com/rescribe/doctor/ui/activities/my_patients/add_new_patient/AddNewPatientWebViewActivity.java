@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
@@ -737,10 +737,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
                         // start service if closed
                         Intent intentMQTT = new Intent(this, MQTTService.class);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                            startForegroundService(intentMQTT);
-                        else
-                            startService(intentMQTT);
+                        ContextCompat.startForegroundService(mContext, intentMQTT);
 
                         Bundle bundle = new Bundle();
                         String replace = mAddedPatientListData.getPatientName().replace("|", "");
