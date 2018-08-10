@@ -74,6 +74,7 @@ public class MQTTService extends Service {
     public static final String SEND_MESSAGE = "send_message";
     public static final String STATUS_INFO = "status_info";
     public static final String TOPIC_KEY = "topic_key";
+    private static final int CONNECT_FOREGROUND_ID = 98723733;
 
     private static int currentChatUser = -1;
     private static final String TAG = "MQTTService";
@@ -117,7 +118,7 @@ public class MQTTService extends Service {
             Notification notification = new NotificationCompat.Builder(this, NotificationHelper.CONNECT_CHANNEL)
                     .setContentTitle("Patient Connect")
                     .setContentText("Chat with Patient").build();
-            startForeground(1981, notification);
+            startForeground(CONNECT_FOREGROUND_ID, notification);
         }
 
         syncOfflineRecords.onCreate(mContext);
