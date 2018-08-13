@@ -96,10 +96,10 @@ public class PatientDataViewAllProvider extends AbstractDataProvider {
     @Override
     public void removeItem(int position) {
         //noinspection UnnecessaryLocalVariable
-        final ConcreteData removedItem = mData.remove(position);
-
-        mLastRemovedData = removedItem;
-        mLastRemovedPosition = position;
+        if (mData.size() > position) {
+            mLastRemovedData = mData.remove(position);
+            mLastRemovedPosition = position;
+        }
     }
 
     @Override

@@ -111,10 +111,10 @@ public class PatientDataActiveWaitingListProvider extends AbstractDataProvider {
     @Override
     public void removeItem(int position) {
         //noinspection UnnecessaryLocalVariable
-        final ConcreteActiveData removedItem = mData.remove(position);
-
-        mLastRemovedData = removedItem;
-        mLastRemovedPosition = position;
+        if (mData.size() > position) {
+            mLastRemovedData = mData.remove(position);
+            mLastRemovedPosition = position;
+        }
     }
 
 
