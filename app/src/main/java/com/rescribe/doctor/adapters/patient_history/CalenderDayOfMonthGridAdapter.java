@@ -37,10 +37,8 @@ import butterknife.ButterKnife;
 public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<CalenderDayOfMonthGridAdapter.ListViewHolder> {
 
     private final OnDayClickListener mListener;
-
     private Context mContext;
     private ArrayList<PatientHistoryInfo> mDays;
-    public boolean longPressed;
     private SimpleDateFormat mDateFormat;
 
     public CalenderDayOfMonthGridAdapter(Context mContext, ArrayList<PatientHistoryInfo> days, OnDayClickListener listener) {
@@ -54,7 +52,6 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
     public ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_doctor_list_layout, parent, false);
-
         return new ListViewHolder(itemView);
     }
 
@@ -90,16 +87,14 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
             holder.sideBarView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.statusbar));
         }
 
-        String opdLabel = patientHistoryInfoObject.getOpdLabel();
-        String opdLabelToShow = opdLabel.substring(0, 1).toUpperCase() + opdLabel.substring(1);
-        holder.doctorName.setText(opdLabelToShow);
+        holder.doctorName.setText(CommonMethods.toCamelCase(patientHistoryInfoObject.getOpdLabel()));
 
         //------------
         String opdValue = patientHistoryInfoObject.getOpdValue();
         holder.doctorAddress.setText(CommonMethods.stripExtension(opdValue));
         //--------
         //------ set View more text //---------
-        if (opdValue.trim().length() == 0) {
+        if (opdValue.trim().isEmpty()) {
             SpannableString viweMoreText = new SpannableString(mContext.getString(R.string.add_record).toUpperCase(Locale.US));
             viweMoreText.setSpan(new UnderlineSpan(), 0, viweMoreText.length(), 0);
             holder.viewMore.setText(viweMoreText);
@@ -110,7 +105,6 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         }
         //------ set View more text //---------
         holder.time.setText(CommonMethods.formatDateTime(patientHistoryInfoObject.getOpdTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
-
 
         if (position == 0) {
             holder.circularBulletMainElement.setVisibility(View.VISIBLE);
@@ -127,12 +121,9 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
         holder.viewMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate(), String.valueOf(patientHistoryInfoObject.getOpdId()), patientHistoryInfoObject.getOpdTime());
             }
         });
-
-
     }
 
     @Override

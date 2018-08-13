@@ -37,7 +37,6 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.investigation.Image;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.services.MQTTService;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -104,16 +103,11 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     private AppDBHelper appDBHelper;
     private Device device;
     private String authorizationString;
-    private String month;
-    private String year;
-    private String patientName = "";
-    private String patientInfo = "";
     private String Url;
     private String mHospitalPatId;
     private String mLocationId;
     private int mHospitalId;
     private String mOpdtime;
-    private String currentOpdTime;
     private boolean openCameraDirect;
     private int imageSize;
     private int dimension20PixelSize;
@@ -248,8 +242,8 @@ public class SelectedRecordsActivity extends AppCompatActivity {
         addImageView.setVisibility(View.GONE);
         mAddImageViewRightFab.setVisibility(View.VISIBLE);
 
-        patientName = getIntent().getStringExtra(RescribeConstants.PATIENT_NAME);
-        patientInfo = getIntent().getStringExtra(RescribeConstants.PATIENT_INFO);
+        String patientName = getIntent().getStringExtra(RescribeConstants.PATIENT_NAME);
+        String patientInfo = getIntent().getStringExtra(RescribeConstants.PATIENT_INFO);
         mOpdtime = getIntent().getStringExtra(RescribeConstants.OPD_TIME);
         opdId = getIntent().getStringExtra(RescribeConstants.OPD_ID);
 
@@ -261,8 +255,6 @@ public class SelectedRecordsActivity extends AppCompatActivity {
         device = Device.getInstance(SelectedRecordsActivity.this);
 
         Url = Config.BASE_URL + Config.MY_RECORDS_UPLOAD;
-//        Url = "http://192.168.0.115:8000/" + Config.MY_RECORDS_UPLOAD;
-
         authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, SelectedRecordsActivity.this);
 
         UploadService.UPLOAD_POOL_SIZE = 10;
@@ -278,18 +270,16 @@ public class SelectedRecordsActivity extends AppCompatActivity {
         String timeToShow = CommonMethods.formatDateTime(visitDate, RescribeConstants.DATE_PATTERN.MMM_YY,
                 RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE).toLowerCase();
         String[] timeToShowSpilt = timeToShow.split(",");
-        month = timeToShowSpilt[0].substring(0, 1).toUpperCase() + timeToShowSpilt[0].substring(1);
-        year = timeToShowSpilt.length == 2 ? timeToShowSpilt[1] : "";
+        String month = timeToShowSpilt[0].substring(0, 1).toUpperCase() + timeToShowSpilt[0].substring(1);
+        String year = timeToShowSpilt.length == 2 ? timeToShowSpilt[1] : "";
         Date date = CommonMethods.convertStringToDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        timeToShow = timeToShow.substring(0, 1).toUpperCase() + timeToShow.substring(1);
         String toDisplay = cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + month + "'" + year;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             dateTextview.setText(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
-        } else {
+        else
             dateTextview.setText(Html.fromHtml(toDisplay));
-        }
 
     }
 
@@ -339,7 +329,6 @@ public class SelectedRecordsActivity extends AppCompatActivity {
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onPickDoc() {
-//        String[] documents = {".doc", ".docx", ".odt", ".pdf", ".xls", ".xlsx", ".ods", ".ppt", ".pptx"};
         String[] documents = {".pdf", ".png", ".jpeg", ".jpg"};
         if (imagePaths.size() == MAX_ATTACHMENT_COUNT)
             Toast.makeText(this, "Cannot select more than " + MAX_ATTACHMENT_COUNT + " documents", Toast.LENGTH_SHORT).show();
@@ -428,10 +417,6 @@ public class SelectedRecordsActivity extends AppCompatActivity {
 
                         appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath(), mAptId);
                     }
-//                    CommonMethods.showToast(this, getString(R.string.uploading));
-
-//                    Intent i = new Intent(this, MQTTService.class);
-//                    startService(i);
                     onBackPressed();
                 }
                 break;
@@ -449,11 +434,12 @@ public class SelectedRecordsActivity extends AppCompatActivity {
 
             UploadNotificationConfig uploadConfig = getUploadConfig(this);
 
-            if (mOpdtime.equals("")) {
+            String currentOpdTime;
+            if (mOpdtime.equals(""))
                 currentOpdTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss);
-            } else {
+            else
                 currentOpdTime = mOpdtime;
-            }
+
             String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
 
             MultipartUploadRequest uploadRequest = new MultipartUploadRequest(SelectedRecordsActivity.this, uploadId, Url)
@@ -464,7 +450,6 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                     .addHeader(RescribeConstants.OS, device.getOS())
                     .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
                     .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
-
                     .addHeader("patientid", patientId)
                     .addHeader("docid", String.valueOf(docId))
                     .addHeader("opddate", visitDateToPass)
@@ -478,62 +463,18 @@ public class SelectedRecordsActivity extends AppCompatActivity {
 
             String docCaption;
 
-            if (!image.getParentCaption().isEmpty()) {
+            if (!image.getParentCaption().isEmpty())
                 docCaption = image.getParentCaption();
-            } else
+            else
                 docCaption = CommonMethods.stripExtension(CommonMethods.getFileNameFromPath(image.getImagePath()));
 
             uploadRequest.addHeader("captionname", docCaption);
-
             uploadConfig.getProgress().message = uploadConfig.getProgress().message.replace("record", docCaption);
             uploadRequest.setNotificationConfig(uploadConfig);
-
             uploadRequest.startUpload();
 
         } catch (FileNotFoundException | MalformedURLException e) {
             e.printStackTrace();
         }
-
-        //  appDBHelper.insertMyRecordsData(uploadId, RescribeConstants.UPLOADING, new Gson().toJson(image), docId, opdId, visitDate);
     }
-
-    /*@Override
-    protected void onResume() {
-        super.onResume();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(DOC_UPLOAD);
-        registerReceiver(receiver, intentFilter);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(receiver);
-    }
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (intent.getAction() != null) {
-                if (intent.getAction().equals(DOC_UPLOAD)) {
-
-                   *//*
-                    String isFailed = intent.getStringExtra(STATUS);
-
-                    if (imagePaths.size() == count) {
-                        allDone();
-                    }
-
-                    if (!isFailed) {
-
-                    } else {
-
-                    }*//*
-                }
-            }
-        }
-    };*/
-
-
 }

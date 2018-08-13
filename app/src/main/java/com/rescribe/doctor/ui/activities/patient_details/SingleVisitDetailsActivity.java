@@ -95,7 +95,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String mHospitalPatId;
     private String mOpdTime;
     private PatientDetailHelper mSingleVisitDetailHelper;
-    private boolean isAllAttachmentDeleted = false;
+    private boolean isAttachmentDeleted = false;
     private int mAptId;
 
 
@@ -197,7 +197,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DELETE_PATIENT_OPD_ATTCHMENTS)) {
             CommonBaseModelContainer common = (CommonBaseModelContainer) customResponse;
             if (common.getCommonRespose().isSuccess()) {
-                isAllAttachmentDeleted = mSingleVisitAdapter.removeSelectedAttachmentFromList();
+                isAttachmentDeleted = mSingleVisitAdapter.removeSelectedAttachmentFromList();
                 if (mSingleVisitAdapter.getListDataList().size() == 1) {
                     if (mSingleVisitAdapter.getListDataList().get(0).getCaseDetailName().equals(PAIN_SCALE)) {
                         mSingleVisitAdapter.getListDataList().remove(0);
@@ -407,12 +407,6 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
-               /* if (isAllAttachmentDeleted) {
-                    Intent output = new Intent();
-                    output.putExtra("SINGLE_PAGE_ADAPTER", isAllAttachmentDeleted);
-                    setResult(RESULT_OK, output);
-                }
-                finish();*/
                 onBackPressed();
                 break;
             case R.id.userInfoTextView:
@@ -438,9 +432,9 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     @Override
     public void onBackPressed() {
-        if (isAllAttachmentDeleted || mIsDocUploaded) {
+        if (isAttachmentDeleted || mIsDocUploaded) {
             Intent output = new Intent();
-            output.putExtra("SINGLE_PAGE_ADAPTER", isAllAttachmentDeleted);
+            output.putExtra("SINGLE_PAGE_ADAPTER", isAttachmentDeleted);
             setResult(RESULT_OK, output);
         }
         super.onBackPressed();

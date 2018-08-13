@@ -46,7 +46,7 @@ import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 
 public class WaitingMainListActivity extends AppCompatActivity implements HelperResponse {
 
-    public static final int RESULT_CLOSE_ACTIVITY_WAITING_LIST = 040;
+    public static final int RESULT_CLOSE_ACTIVITY_WAITING_LIST = 404;
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -71,7 +71,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
     public ArrayList<WaitingclinicList> mWaitingClinicList;
     private AppointmentHelper mAppointmentHelper;
     private ViewPagerAdapter mViewPagerAdapter;
-    public int receivedLocationID;
+    public int receivedLocationID = -1;
     private ViewAllPatientListFragment viewAllPatientListFragment;
     private ActivePatientListFragment activePatientListFragment;
 
@@ -134,7 +134,6 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         if (customResponse != null) {
             WaitingListBaseModel waitingListBaseModel = (WaitingListBaseModel) customResponse;
             mWaitingClinicList = waitingListBaseModel.getWaitingListDataModel().getWaitingclinicList();
-
             // pass data to fragment
             activePatientListFragment.init();
             viewAllPatientListFragment.init();

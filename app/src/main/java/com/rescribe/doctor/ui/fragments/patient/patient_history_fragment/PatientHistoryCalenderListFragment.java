@@ -1,6 +1,5 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_history_fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,9 +12,6 @@ import android.view.ViewGroup;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_history.CalenderDayOfMonthGridAdapter;
 import com.rescribe.doctor.helpers.patient_detail.PatientDetailHelper;
-import com.rescribe.doctor.model.login.Year;
-import com.rescribe.doctor.model.my_records.MyRecordInfoAndReports;
-import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
 import com.rescribe.doctor.model.patient.patient_history.YearsMonthsData;
 import com.rescribe.doctor.ui.activities.patient_details.SingleVisitDetailsActivity;
@@ -42,14 +38,10 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
     private static int mAptId;
     @BindView(R.id.calenderDays)
     RecyclerView mCalenderDays;
-    private Context mContext;
     private ArrayList<String> mMonthName;
     private String mYear;
     private ArrayList<PatientHistoryInfo> formattedDoctorList;
-    private ArrayList<DatesData> mDateListForAdapter;
-    private boolean mIsLongPressed;
     public CalenderDayOfMonthGridAdapter mCalenderDayOfMonthGridAdapter;
-    private ArrayList<DatesData> mAdapterListToNotifyOnBackPress;
     private static String patientID;
 
     public PatientHistoryCalenderListFragment() {
@@ -62,8 +54,6 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         // Inflate the layout for this fragment
         View mRootView = inflater.inflate(R.layout.patient_history_calender_view, container, false);
         ButterKnife.bind(this, mRootView);
-
-        mContext = inflater.getContext();
 
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -112,7 +102,6 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         intent.putExtra(RescribeConstants.DATE, visitDate);
         intent.putExtra(RescribeConstants.OPD_TIME, opdTime);
         getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
-
     }
 
     // To find nique status from list, and set list in recycleview of parent fragment.
@@ -125,25 +114,18 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
 
 
     private void setGridViewAdapter() {
-
         PatientHistoryListFragmentContainer parentFragment = (PatientHistoryListFragmentContainer) getParentFragment();
-
         PatientDetailHelper parentPatientDetailHelper = parentFragment.getParentPatientDetailHelper();
         if (parentPatientDetailHelper != null) {
             Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedPatientHistoryInfo = parentPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
-            if (yearWiseSortedPatientHistoryInfo.size() != 0) {
+            if (!yearWiseSortedPatientHistoryInfo.isEmpty()) {
                 Map<String, ArrayList<PatientHistoryInfo>> monthArrayListHashMap = yearWiseSortedPatientHistoryInfo.get(mYear);
                 if (monthArrayListHashMap != null) {
-
-                    //---------
-                    for (String month :
-                            mMonthName) {
-                        if (formattedDoctorList == null) {
+                    for (String month : mMonthName) {
+                        if (formattedDoctorList == null)
                             formattedDoctorList = new ArrayList<>();
-                        }
                         formattedDoctorList.addAll(monthArrayListHashMap.get(month));
                     }
-                    //---------
 
                     if (formattedDoctorList != null) {
                         Collections.sort(formattedDoctorList, new DateWiseComparator());
@@ -154,10 +136,8 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
                         mCalenderDays.setAdapter(mCalenderDayOfMonthGridAdapter);
                     }
 
-                    //setOPDStatusGridViewAdapter(parentFragment, formattedDoctorList);
                 }
             }
         }
     }
-
 }

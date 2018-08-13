@@ -62,7 +62,7 @@ public class PatientDetailHelper implements ConnectionListener {
 
                         if (patientHistoryInfoMonthContainer != null) {
                             Map<String, ArrayList<PatientHistoryInfo>> monthWiseSortedPatientHistory = patientHistoryInfoMonthContainer.getMonthWiseSortedPatientHistory();
-                            if (monthWiseSortedPatientHistory.size() > 0)
+                            if (!monthWiseSortedPatientHistory.isEmpty())
                                 yearWiseSortedPatientHistoryInfo.put(patientHistoryInfoMonthContainer.getYear(), monthWiseSortedPatientHistory);
                         }
                         mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
@@ -107,20 +107,6 @@ public class PatientDetailHelper implements ConnectionListener {
         String docId = (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
         mConnectionFactory.setUrl(Config.ONE_DAY_VISIT_URL + opdId + "&patientId=" + patientID + "&docId=" + docId + "&appName=doctor");
         mConnectionFactory.createConnection(RescribeConstants.TASK_ONE_DAY_VISIT);
-       /* try {
-            InputStream is = mContext.getAssets().open("patient_details.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
-
-            CaseDetailsModel data = new Gson().fromJson(json, CaseDetailsModel.class);
-            onResponse(ConnectionListener.RESPONSE_OK,data,RescribeConstants.TASK_ONE_DAY_VISIT);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
     }
 
     public void doGetPatientHistory(String patientID, String year, boolean getPatientInfo, String hospitalPatid) {

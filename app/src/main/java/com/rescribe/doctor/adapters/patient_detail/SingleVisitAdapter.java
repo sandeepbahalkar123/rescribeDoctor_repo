@@ -27,9 +27,8 @@ import com.rescribe.doctor.model.case_details.PatientHistory;
 import com.rescribe.doctor.model.case_details.Range;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.case_details.Vital;
-import com.rescribe.doctor.ui.activities.zoom_images.MultipleImageWithSwipeAndZoomActivity;
-import com.rescribe.doctor.ui.activities.zoom_images.ZoomImageViewActivity;
 import com.rescribe.doctor.ui.activities.patient_details.WebViewActivity;
+import com.rescribe.doctor.ui.activities.zoom_images.MultipleImageWithSwipeAndZoomActivity;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -39,7 +38,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import droidninja.filepicker.views.SmoothCheckBox;
 
 import static com.rescribe.doctor.util.CommonMethods.stripExtension;
 
@@ -266,7 +264,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             });
 
             if (mListDataHeader.get(groupPosition).getVitals().get(mPosition).getUnitName().equals(mContext.getString(R.string.bp))) {
-               String category = mListDataHeader.get(groupPosition).getVitals().get(mPosition).getCategory();
+                String category = mListDataHeader.get(groupPosition).getVitals().get(mPosition).getCategory();
                 String[] categoryForBp = category.split(":");
                 categoryForBpMax = categoryForBp[0];
                 categoryForBpMin = categoryForBp.length == 2 ? categoryForBp[1] : "";
@@ -351,11 +349,10 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                     @Override
                     public void onClick(View v) {
                         CheckBox c = (CheckBox) v;
-                        if (c.isChecked()) {
+                        if (c.isChecked())
                             mSelectedAttachmentToDelete.add((VisitCommonData) v.getTag());
-                        } else {
+                        else
                             mSelectedAttachmentToDelete.remove((VisitCommonData) v.getTag());
-                        }
                     }
                 });
             } else {
@@ -632,11 +629,11 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                     }
                     //--------
 
-                }  else if (mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ALLERGIES)) {
-                    String text = stripExtension(mVisitDetailList.get(0).getName()+" - "+mVisitDetailList.get(0).getMedicinename()+" - "+mVisitDetailList.get(0).getRemarks());
+                } else if (mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ALLERGIES)) {
+                    String text = stripExtension(mVisitDetailList.get(0).getName() + " - " + mVisitDetailList.get(0).getMedicinename() + " - " + mVisitDetailList.get(0).getRemarks());
                     groupViewHolder.mDetailFirstPoint.setText(text);
 
-                }else if (mVisitDetailList.size() > 1) {
+                } else if (mVisitDetailList.size() > 1) {
                     int length = mVisitDetailList.get(0).getName().length();
                     String text = mVisitDetailList.get(0).getName().substring(0, length < TEXT_LIMIT ? length - 1 : TEXT_LIMIT - 1) + "...";
                     groupViewHolder.mDetailFirstPoint.setText(text);
@@ -653,7 +650,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         groupViewHolder.mDeleteAttachments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mSelectedAttachmentToDelete.size() != 0) {
+                if (!mSelectedAttachmentToDelete.isEmpty()) {
                     selectedAttachmentToDeleteGroupPosition = (Integer) v.getTag();
                     if (groupViewHolder.mDeleteAttachments.getVisibility() == View.VISIBLE) {
                         deleteAttachmentsListener.deleteAttachments(mSelectedAttachmentToDelete);
@@ -793,7 +790,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                             severeBpMaxRange.setText(severe);
 
                         }
-                    }else{
+                    } else {
                         if (noncategory.equals("")) {
                             String finalString = getSortedRangeValues(rangeList.get(i).getCategory(), rangeList.get(i).getOperator(), rangeList.get(i).getValue(), rangeList.get(i).getMin(), rangeList.get(i).getMax());
                             noncategory += finalString;
@@ -838,7 +835,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                             severeSubTypeRange.setText(severeBpmin);
 
                         }
-                    }else{
+                    } else {
                         if (noncategoryBpMin.equals("")) {
                             String finalString = getSortedRangeValues(rangeList.get(i).getCategory(), rangeList.get(i).getOperator(), rangeList.get(i).getValue(), rangeList.get(i).getMin(), rangeList.get(i).getMax());
                             noncategoryBpMin += finalString;
@@ -884,7 +881,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                         severeSubTypeRange.setText(severeBpNull);
 
                     }
-                }else{
+                } else {
                     if (noncategoryBpNull.equals("")) {
                         String finalString = getSortedRangeValues(rangeList.get(i).getCategory(), rangeList.get(i).getOperator(), rangeList.get(i).getValue(), rangeList.get(i).getMin(), rangeList.get(i).getMax());
                         noncategoryBpNull += finalString;
@@ -1050,11 +1047,11 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             range = min + mContext.getString(R.string.dash) + max;
         } else if (category.equalsIgnoreCase(mContext.getString(R.string.severeRange)) && operator.equalsIgnoreCase(mContext.getString(R.string.greater))) {
             range = mContext.getString(R.string.greater_than_sign) + value;
-        } else if ( (!category.equalsIgnoreCase(mContext.getString(R.string.normalRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.moderateRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.severeRange)) )  && operator.equalsIgnoreCase(mContext.getString(R.string.less))) {
+        } else if ((!category.equalsIgnoreCase(mContext.getString(R.string.normalRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.moderateRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.severeRange))) && operator.equalsIgnoreCase(mContext.getString(R.string.less))) {
             range = mContext.getString(R.string.less_than_sign) + value;
-        } else if ((!category.equalsIgnoreCase(mContext.getString(R.string.normalRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.moderateRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.severeRange)) ) && operator.equalsIgnoreCase(mContext.getString(R.string.equal))) {
+        } else if ((!category.equalsIgnoreCase(mContext.getString(R.string.normalRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.moderateRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.severeRange))) && operator.equalsIgnoreCase(mContext.getString(R.string.equal))) {
             range = min + mContext.getString(R.string.dash) + max;
-        } else if ((!category.equalsIgnoreCase(mContext.getString(R.string.normalRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.moderateRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.severeRange)) ) && operator.equalsIgnoreCase(mContext.getString(R.string.greater))) {
+        } else if ((!category.equalsIgnoreCase(mContext.getString(R.string.normalRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.moderateRange)) || !category.equalsIgnoreCase(mContext.getString(R.string.severeRange))) && operator.equalsIgnoreCase(mContext.getString(R.string.greater))) {
             range = mContext.getString(R.string.greater_than_sign) + value;
         }
 
@@ -1072,7 +1069,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
     }
 
     public boolean removeSelectedAttachmentFromList() {
-        boolean isAllAttachmentDeleted = false;
+        boolean isAttachmentDeleted = false;
         PatientHistory patientHistory = mListDataHeader.get(selectedAttachmentToDeleteGroupPosition);
         if (patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS)) {
             List<VisitCommonData> commonData = patientHistory.getCommonData();
@@ -1080,23 +1077,23 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                     mSelectedAttachmentToDelete) {
                 int position = -1;
                 for (int i = 0; i < commonData.size(); i++) {
-                    if (objToRemove.getId() == commonData.get(i).getId()) {
+                    if (objToRemove.getId().equals(commonData.get(i).getId())) {
                         position = i;
                         break;
                     }
                 }
-                if (position != -1)
+                if (position != -1) {
                     commonData.remove(position);
+                    isAttachmentDeleted = true;
+                }
             }
 
-            if (commonData.isEmpty()) {
+            if (commonData.isEmpty())
                 mListDataHeader.remove(patientHistory);
-                isAllAttachmentDeleted = true;
-            }
         }
         mSelectedAttachmentToDelete.clear();
         mShowDeleteCheckbox = false;
         notifyDataSetChanged();
-        return isAllAttachmentDeleted;
+        return isAttachmentDeleted;
     }
 }
