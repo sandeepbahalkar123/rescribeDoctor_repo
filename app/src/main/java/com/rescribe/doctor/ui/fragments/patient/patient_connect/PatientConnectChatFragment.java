@@ -56,7 +56,7 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
     RelativeLayout mEmptyListView;
     Unbinder unbinder;
     @BindView(R.id.leftFab)
-    FloatingActionButton f;
+    FloatingActionButton leftFab;
     @BindView(R.id.nestedScrollView)
     NestedScrollView nestedScrollView;
 
@@ -164,6 +164,8 @@ public class PatientConnectChatFragment extends Fragment implements HelperRespon
 //                    cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.UPLOAD_STATUS));
 //                    cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.DOWNLOAD_STATUS));
 //                    cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.READ_STATUS));
+
+                patientData.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(AppDBHelper.CHAT_MESSAGES.HOSPITALPATID)));
 
                 mReceivedPatientDataList.add(patientData);
                 cursor.moveToNext();

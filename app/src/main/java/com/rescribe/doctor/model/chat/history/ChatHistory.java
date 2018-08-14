@@ -71,6 +71,10 @@ public class ChatHistory implements Parcelable {
     @Expose
     private String msgId;
 
+    @SerializedName("hospitalPatId")
+    @Expose
+    private int hospitalPatId;
+
     // Added End
 
     public final static Creator<ChatHistory> CREATOR = new Creator<ChatHistory>() {
@@ -104,6 +108,8 @@ public class ChatHistory implements Parcelable {
             instance.msgStatus = ((String) in.readValue((String.class.getClassLoader())));
 
             instance.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
+
+            instance.hospitalPatId = ((int) in.readValue((int.class.getClassLoader())));
 
             return instance;
         }
@@ -260,6 +266,14 @@ public class ChatHistory implements Parcelable {
         this.salutation = salutation;
     }
 
+    public int getHospitalPatId() {
+        return hospitalPatId;
+    }
+
+    public void setHospitalPatId(int hospitalPatId) {
+        this.hospitalPatId = hospitalPatId;
+    }
+
     // End Added
 
     public void writeToParcel(Parcel dest, int flags) {
@@ -284,6 +298,8 @@ public class ChatHistory implements Parcelable {
 
         dest.writeValue(msgStatus);
         dest.writeValue(salutation);
+
+        dest.writeValue(hospitalPatId);
     }
 
     public int describeContents() {

@@ -39,6 +39,10 @@ public class PatientData implements Parcelable, CustomResponse {
     private Integer salutation = 0;
     private String lastChat;
 
+    @SerializedName("hospitalPatId")
+    @Expose
+    private int hospitalPatId;
+
     public Integer getId() {
         return patientId;
     }
@@ -103,6 +107,14 @@ public class PatientData implements Parcelable, CustomResponse {
         this.lastChat = lastChat;
     }
 
+    public int getHospitalPatId() {
+        return hospitalPatId;
+    }
+
+    public void setHospitalPatId(int hospitalPatId) {
+        this.hospitalPatId = hospitalPatId;
+    }
+
     public final static Creator<PatientData> CREATOR = new Creator<PatientData>() {
         @SuppressWarnings({
                 "unchecked"
@@ -116,6 +128,7 @@ public class PatientData implements Parcelable, CustomResponse {
             instance.lastChatTime = ((String) in.readValue((String.class.getClassLoader())));
             instance.unreadMessages = ((int) in.readValue((Integer.class.getClassLoader())));
             instance.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
+            instance.hospitalPatId = ((int) in.readValue((Integer.class.getClassLoader())));
             return instance;
         }
 
@@ -134,6 +147,7 @@ public class PatientData implements Parcelable, CustomResponse {
         dest.writeValue(lastChatTime);
         dest.writeValue(unreadMessages);
         dest.writeValue(salutation);
+        dest.writeValue(hospitalPatId);
     }
 
     public int describeContents() {

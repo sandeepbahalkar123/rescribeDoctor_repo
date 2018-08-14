@@ -177,6 +177,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ChatActivity.class);
                 intent.putExtra(RescribeConstants.PATIENT_INFO, doctorConnectChatModel);
+                intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, doctorConnectChatModel.getHospitalPatId());
                 intent.putExtra(IS_CALL_FROM_MY_PATIENTS, true);
                 ((Activity) mContext).startActivityForResult(intent, PATIENT_CONNECT_REQUEST);
             }

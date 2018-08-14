@@ -424,6 +424,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String SALUTATION = "salutation";
         String RECEIVER_NAME = "receiverName";
         String RECEIVER_IMG_URL = "receiverImgUrl";
+
+        String HOSPITALPATID = "hospitalPatId";
     }
 
     public interface ADD_NEW_PATIENT {
@@ -494,6 +496,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
             contentValues.put(CHAT_MESSAGES.SALUTATION, chatH.getSalutation());
             contentValues.put(CHAT_MESSAGES.RECEIVER_NAME, chatH.getReceiverName());
             contentValues.put(CHAT_MESSAGES.RECEIVER_IMG_URL, chatH.getReceiverImgUrl());
+
+            contentValues.put(CHAT_MESSAGES.HOSPITALPATID, chatH.getHospitalPatId());
 
             if (getChatMessageCountByMessageId(chatH.getChatId()) == 0)
                 db.insert(CHAT_MESSAGES.CHAT_MESSAGES_TABLE, null, contentValues);
