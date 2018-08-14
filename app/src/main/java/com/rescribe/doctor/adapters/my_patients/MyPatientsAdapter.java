@@ -54,21 +54,15 @@ import static com.rescribe.doctor.util.RescribeConstants.PATIENT_HOS_PAT_ID;
 public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.ListViewHolder> /*implements Filterable*/ {
 
     private Context mContext;
-    //    private ArrayList<PatientList> mDataList = new ArrayList<>();
     private ArrayList<PatientList> mDataList;
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
     private boolean isClickOnPatientDetailsRequired;
-    //    private ArrayList<PatientList> mListToShowAfterFilter;
     private AppDBHelper appDBHelper;
 
     public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
-//        this.mListToShowAfterFilter = dataList;
-//        mDataList.addAll(dataList);
-
         this.mDataList = dataList;
         removeDuplicateElements();
-
         this.mContext = mContext;
         appDBHelper = new AppDBHelper(mContext);
         this.mOnDownArrowClicked = mOnDownArrowClicked;
@@ -175,36 +169,29 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         }
         if (patientObject.getAge() != null && !RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getAge())) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);
-
             finalStringForAgeNGender = patientObject.getAge() + " " + yearsString;
             holder.patientAgeTextView.setText(finalStringForAgeNGender);
-
         } else if (patientObject.getDateOfBirth() != null && !RescribeConstants.BLANK.equalsIgnoreCase(patientObject.getDateOfBirth())) {
             holder.patientAgeTextView.setVisibility(View.VISIBLE);
             String getTodayDate = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             String getBirthdayDate = patientObject.getDateOfBirth();
             DateTime todayDateTime = CommonMethods.convertToDateTime(getTodayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
             DateTime birthdayDateTime = CommonMethods.convertToDateTime(getBirthdayDate, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-
             finalStringForAgeNGender = CommonMethods.displayAgeAnalysis(todayDateTime, birthdayDateTime) + " " + yearsString;
             holder.patientAgeTextView.setText(finalStringForAgeNGender);
-        } else {
+        } else
             holder.patientAgeTextView.setVisibility(View.GONE);
-        }
 
-
-        //------------
 
         holder.outstandingAmountTextView.setText(mContext.getString(R.string.outstanding_amount) + " ");
         if (patientObject.getOutStandingAmount().equals("0.00") || patientObject.getOutStandingAmount().equals("0.0") || patientObject.getOutStandingAmount().equals("0")) {
             holder.payableAmountTextView.setText(" " + mContext.getString(R.string.nil));
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
-
         } else {
             holder.payableAmountTextView.setText(" Rs." + patientObject.getOutStandingAmount() + "/-");
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
-
         }
+
         holder.chatImageView.setVisibility(View.VISIBLE);
         TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, patientObject.getPatientName());
         RequestOptions requestOptions = new RequestOptions();
@@ -363,7 +350,6 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
     public void add(PatientList mc) {
         mDataList.add(mc);
-//        mListToShowAfterFilter.add(mc);
         removeDuplicateElements();
         notifyItemInserted(mDataList.size() - 1);
     }
@@ -378,8 +364,6 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
         mDataList.clear();
         mDataList.addAll(map.values());
-//        mListToShowAfterFilter.clear();
-//        mListToShowAfterFilter.addAll(map.values());
     }
 
     public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
@@ -398,48 +382,4 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     public void clear() {
         mDataList.clear();
     }
-
-   /* @Override
-    public Filter getFilter() {
-
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                String charString = charSequence.toString().toLowerCase();
-                mDataList.clear();
-
-                if (charString.isEmpty()) {
-                    for (PatientList patList : mListToShowAfterFilter) {
-                        patList.setSpannableString("");
-                        mDataList.add(patList);
-                    }
-                } else {
-                    for (PatientList patientListObject : mListToShowAfterFilter) {
-                        if (patientListObject.getPatientName().toLowerCase().contains(charString)
-                                || patientListObject.getPatientPhone().contains(charString)
-                                || String.valueOf(patientListObject.getPatientId()).contains(charString)) {
-
-                            patientListObject.setSpannableString(charString);
-                            mDataList.add(patientListObject);
-                        }
-                    }
-                }
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = mDataList;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                mDataList = (ArrayList<PatientList>) filterResults.values;
-                if (mDataList.isEmpty())
-                    mOnDownArrowClicked.onRecordFound(true);
-                else
-                    mOnDownArrowClicked.onRecordFound(false);
-
-                notifyDataSetChanged();
-            }
-        };
-    }*/
 }

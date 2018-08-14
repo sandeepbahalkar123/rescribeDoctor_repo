@@ -48,6 +48,7 @@ import static com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddN
  */
 @RuntimePermissions
 public class MyPatientsActivity extends AppCompatActivity implements DrawerForMyPatients.OnDrawerInteractionListener {
+
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -64,7 +65,6 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
     DrawerLayout drawerLayout;
     @BindView(R.id.emptyListView)
     RelativeLayout emptyListView;
-
     @BindView(R.id.downloadPatients)
     ImageView downloadPatients;
 

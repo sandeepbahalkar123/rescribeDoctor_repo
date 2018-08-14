@@ -73,11 +73,10 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
             toDisplay = toDisplay + "\n" + mContext.getString(R.string.just_now);
         }
         //------
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             holder.date.setText(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
-        } else {
+         else
             holder.date.setText(Html.fromHtml(toDisplay));
-        }
 
         if (position % 2 == 0) {
             holder.parentDataContainer.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bg_white_color));

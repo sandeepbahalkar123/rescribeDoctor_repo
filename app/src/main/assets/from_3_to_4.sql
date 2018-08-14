@@ -1,0 +1,3 @@
+BEGIN TRANSACTION;
+ALTER TABLE "chat_messages" ADD `hospitalPatId` INTEGER;
+COMMIT;

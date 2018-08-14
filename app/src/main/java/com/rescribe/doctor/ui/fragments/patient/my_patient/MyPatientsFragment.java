@@ -106,6 +106,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     RecyclerView recyclerViewBottom;
     @BindView(R.id.searchEditText)
     EditTextWithDeleteButton searchEditText;
+
     private Unbinder unbinder;
     private MyPatientsAdapter mMyPatientsAdapter;
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
