@@ -27,6 +27,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
+
 public class PatientDetailHelper implements ConnectionListener {
 
     private String TAG = this.getClass().getName();
@@ -55,17 +57,18 @@ public class PatientDetailHelper implements ConnectionListener {
                         mHelperResponseManager.onSuccess(mOldDataTag, model.getData());
                         break;
                     case RescribeConstants.TASK_PATIENT_HISTORY: {
-
                         PatientHistoryBaseModel newBaseModel = (PatientHistoryBaseModel) customResponse;
-                        PatientHistoryDataModel dataModel = newBaseModel.getPatientHistoryDataModel();
-                        PatientHistoryInfoMonthContainer patientHistoryInfoMonthContainer = dataModel.getPatientHistoryInfoMonthContainer();
-
-                        if (patientHistoryInfoMonthContainer != null) {
-                            Map<String, ArrayList<PatientHistoryInfo>> monthWiseSortedPatientHistory = patientHistoryInfoMonthContainer.getMonthWiseSortedPatientHistory();
-                            if (!monthWiseSortedPatientHistory.isEmpty())
-                                yearWiseSortedPatientHistoryInfo.put(patientHistoryInfoMonthContainer.getYear(), monthWiseSortedPatientHistory);
-                        }
-                        mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
+                        if (newBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {
+                            PatientHistoryDataModel dataModel = newBaseModel.getPatientHistoryDataModel();
+                            PatientHistoryInfoMonthContainer patientHistoryInfoMonthContainer = dataModel.getPatientHistoryInfoMonthContainer();
+                            if (patientHistoryInfoMonthContainer != null) {
+                                Map<String, ArrayList<PatientHistoryInfo>> monthWiseSortedPatientHistory = patientHistoryInfoMonthContainer.getMonthWiseSortedPatientHistory();
+                                if (!monthWiseSortedPatientHistory.isEmpty())
+                                    yearWiseSortedPatientHistoryInfo.put(patientHistoryInfoMonthContainer.getYear(), monthWiseSortedPatientHistory);
+                            }
+                            mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
+                        } else
+                            CommonMethods.showToast(mContext, newBaseModel.getCommon().getStatusMessage());
                     }
                     break;
                     default:

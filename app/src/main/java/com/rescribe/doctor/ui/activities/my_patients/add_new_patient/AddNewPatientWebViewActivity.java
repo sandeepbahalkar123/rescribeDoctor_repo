@@ -157,20 +157,14 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private int hospitalId;
     private boolean isCalled = false;
     private String locationID;
-    private int docID;
     private int cityID;
     private String cityName;
     private Context mContext;
     private boolean mAddPatientOfflineSetting;
     private PatientList mAddedPatientListData;
-    //----
     private String mDoOperationTaskID = null;
     private int mAddNewPatientSelectedOption = -1;
-    //------
     private AppointmentHelper mAppointmentHelper;
-
-
-    //--------
     int mSelectedSalutationOfPatient = 1;
     int mSelectedStateID = -1;
     int mSelectedCityID = -1;
@@ -205,7 +199,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         locationID = extras.getString(RescribeConstants.LOCATION_ID);
         cityID = extras.getInt(RescribeConstants.CITY_ID);
         cityName = extras.getString(RescribeConstants.CITY_NAME);
-        docID = Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this));
+        int docID = Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this));
         //--------
         String urlData = Config.ADD_NEW_PATIENT_WEB_URL + docID + "/" +
                 hospitalId + "/" + locationID + "/" + cityID;
@@ -584,17 +578,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             message = getString(R.string.reference_id_input_err_msg);
             CommonMethods.showToast(this, message);
         }
-       /*
-        else if (refName.isEmpty() && mReferenceDetailLayout.getVisibility() == View.VISIBLE) {
-            message = enter + getString(R.string.first_name).toLowerCase(Locale.US);
-            CommonMethods.showToast(this, message);
-        } else if (mReferenceDetailLayout.getVisibility() == View.VISIBLE && (refMob.trim().length() < 10) || !(refMob.trim().startsWith("6") || refMob.trim().startsWith("7") || refMob.trim().startsWith("8") || refMob.trim().startsWith("9"))) {
-            message = getString(R.string.err_invalid_mobile_no);
-            CommonMethods.showToast(this, message);
-        } else if (mReferenceDetailLayout.getVisibility() == View.VISIBLE && !CommonMethods.isValidEmail(refEmail)) {
-            message = getString(R.string.err_email_invalid);
-            CommonMethods.showToast(this, message);
-        }*/
 
         else {
             patientList = new PatientList();
@@ -706,9 +689,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             return true;
         } else {
             String expression = "^[a-z_A-Z0-9]*$";
-            CharSequence inputStr = str;
             Pattern pattern = Pattern.compile(expression);
-            Matcher matcher = pattern.matcher(inputStr);
+            Matcher matcher = pattern.matcher(str);
             if (matcher.matches()) {
                 isValid = true;
             }
@@ -785,7 +767,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
                     }
                 }
-
 
                 break;
             case RescribeConstants.TASK_ADD_TO_WAITING_LIST: {
