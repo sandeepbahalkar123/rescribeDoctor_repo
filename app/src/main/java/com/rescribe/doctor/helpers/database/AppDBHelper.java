@@ -49,7 +49,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "MyRescribe.sqlite";
     private static final String DB_PATH_SUFFIX = "/data/data/com.rescribe.doctor/databases/"; // Change
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
 
     //this is globle table to save data of any APIs response.
     public static final String APP_DATA_TABLE = "PrescriptionData";

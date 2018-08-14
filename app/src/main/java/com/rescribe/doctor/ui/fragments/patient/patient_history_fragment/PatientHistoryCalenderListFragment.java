@@ -124,7 +124,8 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
                     for (String month : mMonthName) {
                         if (formattedDoctorList == null)
                             formattedDoctorList = new ArrayList<>();
-                        formattedDoctorList.addAll(monthArrayListHashMap.get(month));
+                        if (monthArrayListHashMap.get(month) != null)
+                            formattedDoctorList.addAll(monthArrayListHashMap.get(month));
                     }
 
                     if (formattedDoctorList != null) {

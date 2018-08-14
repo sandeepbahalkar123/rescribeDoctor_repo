@@ -118,7 +118,7 @@ public class CalenderDayOfMonthGridAdapter extends RecyclerView.Adapter<Calender
             holder.circularBulletChildElement.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.dark_blue_circle));
         }
 
-        holder.viewMore.setOnClickListener(new View.OnClickListener() {
+        holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onClickOFLayout(patientHistoryInfoObject.getVisitDate(), String.valueOf(patientHistoryInfoObject.getOpdId()), patientHistoryInfoObject.getOpdTime());
