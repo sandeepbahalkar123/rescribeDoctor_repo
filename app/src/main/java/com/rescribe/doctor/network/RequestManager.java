@@ -455,6 +455,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
                     Intent intentObj = new Intent(mContext, LoginSignUpActivity.class);
                     mContext.startActivity(intentObj);
+                    ((AppCompatActivity) mContext).finishAffinity();
                 } else {
                     CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
                 }
