@@ -98,6 +98,7 @@ public class RescribeConstants {
     public static final String TASK_GET_STATE_TO_ADD_NEW_PATIENT = RescribeConstants.BLANK + 43;
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
+    public static final Integer INVALID_LOGIN_PASSWORD = 404;
 
     public static final String TAKEN_DATE = "takenDate";
 

@@ -6,6 +6,7 @@ package com.rescribe.doctor.network;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -64,6 +65,7 @@ import com.rescribe.doctor.model.waiting_list.WaitingListBaseModel;
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
+import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
@@ -79,6 +81,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
+import static com.rescribe.doctor.util.RescribeConstants.INVALID_LOGIN_PASSWORD;
 
 public class RequestManager extends ConnectRequest implements Connector, RequestTimer.RequestTimerListener {
     private final String TAG = this.getClass().getName();
@@ -448,6 +451,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
 
                     mHeaderParams.put(RescribeConstants.AUTHORIZATION_TOKEN, loginModel.getDoctorLoginData().getAuthToken());
                     connect();
+                }else if (!loginModel.getCommon().isSuccess() && loginModel.getCommon().getStatusCode().equals(INVALID_LOGIN_PASSWORD)){
+                    CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
+                    Intent intentObj = new Intent(mContext, LoginSignUpActivity.class);
+                    mContext.startActivity(intentObj);
                 } else {
                     CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
                 }
