@@ -62,7 +62,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
-
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 
 /**
@@ -168,6 +167,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     }
 
     private void setClinicListSpinner() {
+        int allIndex = clinicListSpinner.getSelectedItemPosition();
         setSpinnerValues(0);
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -189,10 +189,12 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             }
         }
 
+        if (mParentActivity.receivedLocationID == -1 && clinicListSpinner.getCount() > allIndex)
+            clinicListSpinner.setSelection(allIndex);
     }
 
-    private void setSpinnerValues(int i) {
-        WaitingclinicList waitingclinicList = mParentActivity.mWaitingClinicList.get(i);
+    private void setSpinnerValues(int index) {
+        WaitingclinicList waitingclinicList = mParentActivity.mWaitingClinicList.get(index);
         mLocationId = waitingclinicList.getLocationId();
         mClinicID = waitingclinicList.getClinicId();
         waitingPatientTempList = waitingclinicList.getWaitingPatientList();

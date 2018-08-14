@@ -62,7 +62,6 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
-import static com.rescribe.doctor.util.RescribeConstants.LOCATION_ID;
 
 /**
  * Created by jeetal on 22/2/18.
@@ -174,6 +173,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     }
 
     private void setClinicListSpinner() {
+        int activeIndex = clinicListSpinner.getSelectedItemPosition();
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -209,6 +209,9 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 break;
             }
         }
+
+        if (mParentActivity.receivedLocationID == -1 && clinicListSpinner.getCount() > activeIndex)
+            clinicListSpinner.setSelection(activeIndex);
     }
 
     public static ActivePatientListFragment newInstance() {
