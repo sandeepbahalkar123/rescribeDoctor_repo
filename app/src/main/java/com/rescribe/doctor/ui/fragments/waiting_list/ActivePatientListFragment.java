@@ -126,6 +126,8 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     }
 
     public void init() {
+        int activeIndex = clinicListSpinner.getSelectedItemPosition();
+
         if (mParentActivity.mWaitingClinicList != null) {
             if (mParentActivity.mWaitingClinicList.size() > 1) {
                 clinicListSpinner.setVisibility(View.VISIBLE);
@@ -167,13 +169,12 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
             }
 
             if (!mParentActivity.mWaitingClinicList.isEmpty())
-                setClinicListSpinner();
+                setClinicListSpinner(activeIndex);
         }
 
     }
 
-    private void setClinicListSpinner() {
-        int activeIndex = clinicListSpinner.getSelectedItemPosition();
+    private void setClinicListSpinner(int activeIndex) {
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -210,9 +211,12 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
             }
         }
 
-        if (mParentActivity.receivedLocationID == -1 && clinicListSpinner.getCount() > activeIndex)
+        if (mParentActivity.receivedLocationID == -1 && clinicListSpinner.getCount() > activeIndex && activeIndex != -1)
             clinicListSpinner.setSelection(activeIndex);
     }
+
+
+
 
     public static ActivePatientListFragment newInstance() {
         return new ActivePatientListFragment();

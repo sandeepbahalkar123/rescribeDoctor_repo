@@ -128,6 +128,8 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     }
 
     public void init() {
+        int allIndex = clinicListSpinner.getSelectedItemPosition();
+
         if (mParentActivity.mWaitingClinicList != null) {
             if (mParentActivity.mWaitingClinicList.size() > 1) {
                 clinicListSpinner.setVisibility(View.VISIBLE);
@@ -161,13 +163,12 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             }
 
             if (!mParentActivity.mWaitingClinicList.isEmpty())
-                setClinicListSpinner();
+                setClinicListSpinner(allIndex);
         }
 
     }
 
-    private void setClinicListSpinner() {
-        int allIndex = clinicListSpinner.getSelectedItemPosition();
+    private void setClinicListSpinner(int allIndex) {
         setSpinnerValues(0);
         clinicListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -189,7 +190,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
             }
         }
 
-        if (mParentActivity.receivedLocationID == -1 && clinicListSpinner.getCount() > allIndex)
+        if (mParentActivity.receivedLocationID == -1 && clinicListSpinner.getCount() > allIndex && allIndex != -1)
             clinicListSpinner.setSelection(allIndex);
     }
 
