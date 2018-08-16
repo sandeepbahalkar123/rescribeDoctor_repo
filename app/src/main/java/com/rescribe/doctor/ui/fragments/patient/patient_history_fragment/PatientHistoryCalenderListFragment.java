@@ -36,13 +36,14 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
     private static String patientInfo;
     private static String mHospitalPatId;
     private static int mAptId;
-    @BindView(R.id.calenderDays)
-    RecyclerView mCalenderDays;
+    private static String patientID;
     private ArrayList<String> mMonthName;
     private String mYear;
     private ArrayList<PatientHistoryInfo> formattedDoctorList;
     public CalenderDayOfMonthGridAdapter mCalenderDayOfMonthGridAdapter;
-    private static String patientID;
+
+    @BindView(R.id.calenderDays)
+    RecyclerView mCalenderDays;
 
     public PatientHistoryCalenderListFragment() {
         // Required empty public constructor

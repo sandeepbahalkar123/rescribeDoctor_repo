@@ -453,9 +453,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     connect();
                 }else if (!loginModel.getCommon().isSuccess() && loginModel.getCommon().getStatusCode().equals(INVALID_LOGIN_PASSWORD)){
                     CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
-                    Intent intentObj = new Intent(mContext, LoginSignUpActivity.class);
-                    mContext.startActivity(intentObj);
-                    ((AppCompatActivity) mContext).finishAffinity();
+                    CommonMethods.logout(mContext, dbHelper);
                 } else {
                     CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
                 }

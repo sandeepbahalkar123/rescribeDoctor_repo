@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -29,9 +30,14 @@ import android.widget.Toast;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.interfaces.CheckIpConnection;
 import com.rescribe.doctor.interfaces.DatePickerDialogListener;
 import com.rescribe.doctor.model.patient.patient_history.DatesData;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
+
+import net.gotev.uploadservice.UploadService;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -925,6 +931,63 @@ public class CommonMethods {
             datesDataList.add(datesData);
         }
         return datesDataList;
+    }
+
+    public static void logout(Context mContext, AppDBHelper appDBHelper) {
+
+        // cancel all uploadings.
+        UploadService.stopAllUploads();
+
+        String mobileNoGmail = "";
+        String passwordGmail = "";
+        String mobileNoFacebook = "";
+        String passwordFacebook = "";
+        String gmailLogin = "";
+        String facebookLogin = "";
+        int version_code;
+        boolean isLaterClicked;
+        boolean isSkippedClicked;
+
+        appDBHelper.deleteDatabase();
+
+        //Logout functionality
+        if (RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext).equalsIgnoreCase(mContext.getString(R.string.login_with_gmail))) {
+            gmailLogin = RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext);
+            mobileNoGmail = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL, mContext);
+            passwordGmail = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL, mContext);
+        }
+
+        if (RescribePreferencesManager.getString(RescribeConstants.FACEBOOK_LOGIN, mContext).equalsIgnoreCase(mContext.getString(R.string.login_with_facebook))) {
+            facebookLogin = RescribePreferencesManager.getString(RescribeConstants.FACEBOOK_LOGIN, mContext);
+            mobileNoFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_FACEBOOK, mContext);
+            passwordFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, mContext);
+        }
+
+        version_code = RescribePreferencesManager.getInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, mContext);
+        isLaterClicked = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, mContext);
+        isSkippedClicked = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, mContext);
+        RescribePreferencesManager.clearSharedPref(mContext);
+
+        RescribePreferencesManager.putInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, version_code, mContext);
+        RescribePreferencesManager.putString(RescribeConstants.GMAIL_LOGIN, gmailLogin, mContext);
+        if (isLaterClicked) {
+            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, RescribeConstants.YES, mContext);
+        }
+        if (isSkippedClicked) {
+            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, RescribeConstants.NO, mContext);
+        }
+        RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, isSkippedClicked, mContext);
+        RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, isLaterClicked, mContext);
+        RescribePreferencesManager.putString(RescribeConstants.FACEBOOK_LOGIN, facebookLogin, mContext);
+        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL, mobileNoGmail, mContext);
+        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL, passwordGmail, mContext);
+        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_FACEBOOK, mobileNoFacebook, mContext);
+        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, passwordFacebook, mContext);
+        RescribePreferencesManager.putString(mContext.getString(R.string.logout), "" + 1, mContext);
+
+        Intent intent = new Intent(mContext, LoginSignUpActivity.class);
+        mContext.startActivity(intent);
+        ((AppCompatActivity) mContext).finishAffinity();
     }
 }
 

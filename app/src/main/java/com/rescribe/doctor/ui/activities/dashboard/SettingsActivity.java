@@ -30,6 +30,7 @@ import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
 import com.rescribe.doctor.ui.activities.ProfileActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.SwitchButton;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import net.gotev.uploadservice.UploadService;
@@ -204,73 +205,11 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         dialog.show();
     }
 
-
-    private void logout() {
-
-        // cancel all uploadings.
-        UploadService.stopAllUploads();
-
-        String mobileNoGmail = "";
-        String passwordGmail = "";
-        String mobileNoFacebook = "";
-        String passwordFacebook = "";
-        String gmailLogin = "";
-        String facebookLogin = "";
-        int version_code;
-        boolean isLaterClicked;
-        boolean isSkippedClicked;
-
-        appDBHelper.deleteDatabase();
-
-        //Logout functionality
-        if (RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_gmail))) {
-            gmailLogin = RescribePreferencesManager.getString(RescribeConstants.GMAIL_LOGIN, mContext);
-            mobileNoGmail = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL, mContext);
-            passwordGmail = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL, mContext);
-        }
-
-        if (RescribePreferencesManager.getString(RescribeConstants.FACEBOOK_LOGIN, mContext).equalsIgnoreCase(getString(R.string.login_with_facebook))) {
-            facebookLogin = RescribePreferencesManager.getString(RescribeConstants.FACEBOOK_LOGIN, mContext);
-            mobileNoFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_FACEBOOK, mContext);
-            passwordFacebook = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, mContext);
-        }
-
-        version_code = RescribePreferencesManager.getInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, mContext);
-        isLaterClicked = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, mContext);
-        isSkippedClicked = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, mContext);
-        RescribePreferencesManager.clearSharedPref(mContext);
-
-        RescribePreferencesManager.putInt(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.VERSION_CODE_FROM_SERVER, version_code, mContext);
-        RescribePreferencesManager.putString(RescribeConstants.GMAIL_LOGIN, gmailLogin, mContext);
-        if (isLaterClicked) {
-            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, RescribeConstants.YES, mContext);
-        }
-        if (isSkippedClicked) {
-            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SHOW_UPDATE_DIALOG, RescribeConstants.NO, mContext);
-        }
-        RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isSkippedClicked, isSkippedClicked, mContext);
-        RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.isLaterClicked, isLaterClicked, mContext);
-        RescribePreferencesManager.putString(RescribeConstants.FACEBOOK_LOGIN, facebookLogin, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_GMAIL, mobileNoGmail, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_GMAIL, passwordGmail, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.MOBILE_NUMBER_FACEBOOK, mobileNoFacebook, mContext);
-        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD_FACEBOOK, passwordFacebook, mContext);
-        RescribePreferencesManager.putString(getString(R.string.logout), "" + 1, mContext);
-
-
-        Intent intent = new Intent(mContext, LoginSignUpActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
-    }
-
-
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
         if (mOldDataTag.equals(RescribeConstants.LOGOUT))
-            if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, mContext).equalsIgnoreCase(RescribeConstants.BLANK)) {
-                logout();
-            }
+            if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.IS_EXIT, mContext).equalsIgnoreCase(RescribeConstants.BLANK))
+                CommonMethods.logout(mContext, appDBHelper);
     }
 
     @Override
