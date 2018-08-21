@@ -52,7 +52,6 @@ public class RescribeApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        MultiDex.install(this);
         UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
         AppDBHelper.getInstance(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
