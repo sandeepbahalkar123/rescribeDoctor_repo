@@ -108,17 +108,17 @@ dependencies {
     compile 'joda-time:joda-time:2.9.9'
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.mcxiaoke.volley:library:1.0.19'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support.constraint:constraint-layout:1.1.2'
     compile 'com.facebook.android:facebook-android-sdk:4.23.+'
-    compile 'com.android.support:multidex:1.0.2'
-    compile 'com.jakewharton:butterknife:8.6.0'
+    compile 'com.android.support:multidex:1.0.3'
+    compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.3.1'
 //    compile 'com.tonyodev.fetch:fetch:1.1.3'
     testCompile 'junit:junit:4.12'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.4.0'
 
     compile('com.github.ozodrukh:CircularReveal:1.1.1@aar') {
@@ -137,18 +137,6 @@ dependencies {
     //job creator for latest version instead services
     implementation 'com.evernote:android-job:1.2.5'
 
-}
-//apply plugin: 'com.google.gms.google-services'
-
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        def requested = details.requested
-        if (requested.group == 'com.android.support') {
-            if (!requested.name.startsWith("multidex")) {
-                details.useVersion "${project.ANDROID_SUPPORT_LIBRARY_VERSION}"
-            }
-        }
-    }
 }
 
 task customFindbugs(type: FindBugs) {

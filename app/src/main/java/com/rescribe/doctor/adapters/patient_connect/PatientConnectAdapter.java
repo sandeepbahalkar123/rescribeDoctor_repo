@@ -142,7 +142,7 @@ public class PatientConnectAdapter extends RecyclerView.Adapter<PatientConnectAd
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.dontAnimate();
             requestOptions.override(100, 100);
-            requestOptions.transform(new CircleCrop(holder.imageOfDoctor.getContext()));
+            requestOptions.transform(new CircleCrop());
             requestOptions.placeholder(drawable);
             requestOptions.error(drawable);
             Glide.with(holder.imageOfDoctor.getContext())
