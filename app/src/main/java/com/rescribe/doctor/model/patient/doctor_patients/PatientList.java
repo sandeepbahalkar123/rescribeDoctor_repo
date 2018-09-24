@@ -54,7 +54,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
 
     @SerializedName("patInfoFlag")
     @Expose
-    private String patInfoFlag;
+    private String patInfoFlag = "";
 
     @SerializedName("hospitalPatId")
     @Expose
