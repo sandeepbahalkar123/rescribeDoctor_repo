@@ -36,7 +36,6 @@ import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.requestmodel.login.SignUpRequestModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.fragments.login.LoginFragment;
-import com.rescribe.doctor.ui.fragments.login.SignUpFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -54,7 +53,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by jeetal on 18/8/17.
  */
 @RuntimePermissions
-public class LoginSignUpActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, LoginFragment.OnFragmentInteractionListener, SignUpFragment.OnFragmentInteractionListener, HelperResponse {
+public class LoginSignUpActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, LoginFragment.OnFragmentInteractionListener, HelperResponse {
     private final String TAG = this.getClass().getName();
     @BindView(R.id.container)
     FrameLayout container;
@@ -64,7 +63,6 @@ public class LoginSignUpActivity extends AppCompatActivity implements GoogleApiC
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 007;
     private static final int REQUEST_PERMISSIONS = 001;
-    private LoginFragment loginFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +83,7 @@ public class LoginSignUpActivity extends AppCompatActivity implements GoogleApiC
     private void init() {
         mContext = LoginSignUpActivity.this;
         //Fragment  login is loaded in LoginSignUpActivity , Facebook and google Login click is handled in LoginSignUpActivity
-        loginFragment = new LoginFragment();
+        LoginFragment loginFragment = new LoginFragment();
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, loginFragment);

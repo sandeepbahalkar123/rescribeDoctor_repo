@@ -29,7 +29,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -49,12 +48,11 @@
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".ui.activities.HomePageActivity"
@@ -71,7 +69,6 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ui.activities.MapActivityShowDoctorLocation"
             android:configChanges="orientation|keyboard|screenSize"
@@ -110,14 +107,12 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ui.activities.book_appointment.SelectSlotToBookAppointmentBaseActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ui.activities.LoginSignUpActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -148,11 +143,9 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".ui.fragments.patient.my_patient.SendSmsPatientActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -175,7 +168,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ui.activities.my_patients.patient_history.PatientHistoryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -265,7 +257,6 @@
             android:label="@string/title_activity_location_picker"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ui.activities.ConnectSplashActivity"
             android:configChanges="orientation|keyboard|screenSize"
@@ -276,6 +267,14 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="8851ad6fd63975db848f308a0298d6c942f63d6b" />
+
+        <activity
+            android:name=".ui.activities.ChangePasswordActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:label="@string/change_password"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

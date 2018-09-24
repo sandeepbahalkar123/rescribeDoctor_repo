@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,15 +26,12 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
-import com.rescribe.doctor.services.job_creator_download_cities.CitySyncJob;
-import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
+import com.rescribe.doctor.ui.activities.ChangePasswordActivity;
 import com.rescribe.doctor.ui.activities.ProfileActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.SwitchButton;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
-
-import net.gotev.uploadservice.UploadService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,14 +51,6 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
     CustomTextView userInfoTextView;
     @BindView(R.id.dateTextview)
     CustomTextView dateTextview;
-    @BindView(R.id.menuIcon)
-    ImageView menuIcon;
-    @BindView(R.id.logout)
-    CustomTextView logout;
-    @BindView(R.id.dashboardArrowIcon)
-    ImageView dashboardArrowIcon;
-    @BindView(R.id.selectMenuLayout)
-    RelativeLayout selectMenuLayout;
     @BindView(R.id.addPatientRadioSwitch)
     SwitchButton mAddPatientRadioSwitch;
     //--------
@@ -68,6 +58,10 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
     SwitchButton addressDetailSwitch;
     @BindView(R.id.referenceDetailSwitch)
     SwitchButton referenceDetailSwitch;
+
+    @BindView(R.id.changePasswordButton)
+    Button changePasswordButton;
+
     //--------
     @BindView(R.id.showOtherSettingForOfflinePatient)
     LinearLayout mShowOtherSettingForOfflinePatient;
@@ -157,14 +151,19 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         super.onBackPressed();
     }
 
-    @OnClick({R.id.backImageView, R.id.selectMenuLayout})
+    @OnClick({R.id.backImageView, R.id.logoutButton, R.id.changePasswordButton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
                 finish();
                 break;
-            case R.id.selectMenuLayout:
+            case R.id.logoutButton:
                 showLogoutDialog();
+                break;
+            case R.id.changePasswordButton:
+                // change password
+                Intent intentChangePassword = new Intent(this, ChangePasswordActivity.class);
+                startActivity(intentChangePassword);
                 break;
         }
     }

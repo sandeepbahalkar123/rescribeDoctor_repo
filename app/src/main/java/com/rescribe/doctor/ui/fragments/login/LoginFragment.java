@@ -23,6 +23,7 @@ import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.job_creator_download_cities.CitySyncJob;
+import com.rescribe.doctor.ui.activities.ChangePasswordActivity;
 import com.rescribe.doctor.ui.activities.ForgotPasswordWebViewActivity;
 import com.rescribe.doctor.ui.activities.HomePageActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -55,13 +56,9 @@ public class LoginFragment extends Fragment implements HelperResponse {
     Button btnLogin;
     @BindView(R.id.forgotPasswordView)
     CustomTextView forgotPasswordView;
-    @BindView(R.id.signup)
-    CustomTextView signup;
+    @BindView(R.id.changePassword)
+    CustomTextView changePassword;
     Unbinder unbinder;
-    @BindView(R.id.loginUpWithFacebook)
-    ImageView loginUpWithFacebook;
-    @BindView(R.id.loginUpWithGmail)
-    ImageView loginUpWithGmail;
     private OnFragmentInteractionListener mListener;
     private final String TAG = this.getClass().getName();
 
@@ -109,18 +106,9 @@ public class LoginFragment extends Fragment implements HelperResponse {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.btnOtp, R.id.btn_login, R.id.forgotPasswordView, R.id.signup, R.id.loginUpWithFacebook, R.id.loginUpWithGmail})
+    @OnClick({R.id.btn_login, R.id.forgotPasswordView, R.id.changePassword})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btnOtp:
-                //input mobile no and click on otp button ,TASK_LOGIN_WITH_OTP is used
-                // TODO  NOT CONFIRMED ABOUT THIS IMPLEMENTATION RIGHT NOW, HENCE COMMENTED.
-              /*  String mobile = editTextEmailID.getText().toString();
-                if (!validatePhoneNo(mobile)) {
-                    LoginHelper loginHelper = new LoginHelper(getActivity(), this);
-                    loginHelper.doLoginByOTP(mobile);
-                }*/
-                break;
             case R.id.btn_login:
                 // input mobileNo and password on click of Login buttton , TASK_LOGIN is used
                 String email = editTextEmailID.getText().toString();
@@ -136,22 +124,12 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 startActivity(intent);
 
                 break;
-            case R.id.signup:
-                //on click of signup , Signup fragment is loaded here.
-                SignUpFragment signupFragment = new SignUpFragment();
-                FragmentManager supportFragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.container, signupFragment);
-                fragmentTransaction.addToBackStack("SignUpFragment");
-                fragmentTransaction.commit();
-                break;
-            case R.id.loginUpWithFacebook:
-                //Onclick of Facebook button logic immplemented in LoginSignupActivity
-                mListener.onClickFacebook(getString(R.string.log_in));
-                break;
-            case R.id.loginUpWithGmail:
-                //Onclick of gmail button logic immplemented in LoginSignupActivity
-                mListener.onClickGoogle(getString(R.string.log_in));
+            case R.id.changePassword:
+
+                // change password
+                Intent intentChangePassword = new Intent(getActivity(), ChangePasswordActivity.class);
+                startActivity(intentChangePassword);
+
                 break;
         }
     }

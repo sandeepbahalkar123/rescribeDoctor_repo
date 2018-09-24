@@ -8,13 +8,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.ui.fragments.login.ForgotPassword;
-import com.rescribe.doctor.ui.fragments.login.OTPConfirmationForSignUp;
-import com.rescribe.doctor.ui.fragments.login.OtpConfirmationForLogin;
-import com.rescribe.doctor.ui.fragments.login.SocialLoginInputMobileForConfirmation;
 
 import java.io.Serializable;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -26,8 +25,8 @@ public class AppGlobalContainerActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName();
     @BindView(R.id.blankContainer)
     FrameLayout mBlankContainer;
-    private ActionBar mActionBar;
     Context mContext;
+    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public class AppGlobalContainerActivity extends AppCompatActivity {
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
         String header = getIntent().getStringExtra(getString(R.string.title));
-        loadFragment(getIntent().getStringExtra(getString(R.string.type)), getIntent().getSerializableExtra(getString(R.string.details)), header);
+        loadFragment(getIntent().getSerializableExtra(getString(R.string.details)), header);
 
     }
 
@@ -48,8 +47,8 @@ public class AppGlobalContainerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void loadFragment(String type, Serializable serializableExtra, String header) {
-          //When ever this activity will be called respective function fragement will be loaded for eg .Forgotpassword according to type set through intent
+    public void loadFragment(Serializable serializableExtra, String header) {
+        //When ever this activity will be called respective function fragement will be loaded for eg .Forgotpassword according to type set through intent
         mActionBar.setTitle(header);
 
         FragmentManager supportFragmentManager = getSupportFragmentManager();
@@ -59,28 +58,10 @@ public class AppGlobalContainerActivity extends AppCompatActivity {
             b.putSerializable(getString(R.string.details), serializableExtra);
         }
 
-        if (type.equalsIgnoreCase(getString(R.string.enter_otp))) {
-            OTPConfirmationForSignUp otpConfirmationForSignUp = new OTPConfirmationForSignUp();
-            otpConfirmationForSignUp.setArguments(b);
-            fragmentTransaction.replace(R.id.blankContainer, otpConfirmationForSignUp);
-        } else if (type.equalsIgnoreCase(getString(R.string.login_with_facebook))) {
-            SocialLoginInputMobileForConfirmation socialLoginInputMobileForConfirmation = new SocialLoginInputMobileForConfirmation();
-            socialLoginInputMobileForConfirmation.setArguments(b);
-            fragmentTransaction.replace(R.id.blankContainer, socialLoginInputMobileForConfirmation);
-        } else if (type.equalsIgnoreCase(getString(R.string.login_with_gmail))) {
-            SocialLoginInputMobileForConfirmation socialLoginInputMobileForConfirmation = new SocialLoginInputMobileForConfirmation();
-            socialLoginInputMobileForConfirmation.setArguments(b);
-            fragmentTransaction.replace(R.id.blankContainer, socialLoginInputMobileForConfirmation);
+        ForgotPassword forgotPassword = new ForgotPassword();
+        forgotPassword.setArguments(b);
+        fragmentTransaction.replace(R.id.blankContainer, forgotPassword);
 
-        } else if (type.equalsIgnoreCase(getString(R.string.forgot_password))) {
-            ForgotPassword forgotPassword = new ForgotPassword();
-            forgotPassword.setArguments(b);
-            fragmentTransaction.replace(R.id.blankContainer, forgotPassword);
-        }
-        else if(type.equalsIgnoreCase(getString(R.string.enter_otp_for_login))){
-            OtpConfirmationForLogin otpConfirmationForLogin = new OtpConfirmationForLogin();
-            fragmentTransaction.replace(R.id.blankContainer, otpConfirmationForLogin);
-        }
         fragmentTransaction.commit();
     }
 }

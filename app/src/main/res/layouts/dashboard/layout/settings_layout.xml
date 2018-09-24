@@ -38,7 +38,7 @@
 
                 <com.rescribe.doctor.ui.customesViews.CustomTextView
                     android:id="@+id/textName"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center|left"
@@ -78,8 +78,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp56"
-                    android:paddingRight="@dimen/dp10"
-                    android:paddingLeft="@dimen/dp35">
+                    android:paddingLeft="@dimen/dp35"
+                    android:paddingRight="@dimen/dp10">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/addressDetailCheckbox"
@@ -111,10 +111,10 @@
                     android:background="@color/divider" />
 
                 <RelativeLayout
-                    android:paddingRight="@dimen/dp10"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp56"
-                    android:paddingLeft="@dimen/dp35">
+                    android:paddingLeft="@dimen/dp35"
+                    android:paddingRight="@dimen/dp10">
 
                     <com.rescribe.doctor.ui.customesViews.CustomTextView
                         android:id="@+id/referenceDetailCheckbox"
@@ -152,60 +152,47 @@
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp16"
             android:layout_weight="1"
             android:gravity="center|left"
             android:paddingLeft="@dimen/dp17"
+            android:paddingStart="@dimen/dp17"
             android:text="@string/other"
             android:textAllCaps="true"
             android:textColor="@color/Gray"
             android:textSize="@dimen/sp16"
             app:customFont="@string/roboto_regular" />
 
-        <RelativeLayout
-            android:id="@+id/selectMenuLayout"
+        <Button
+            android:id="@+id/changePasswordButton"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp56"
-            android:layout_marginTop="@dimen/dp5"
             android:background="@color/white"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/dp35"
-            android:paddingRight="@dimen/dp10">
+            android:fontFamily="@font/roboto_medium"
+            android:gravity="start|center_vertical"
+            android:paddingEnd="@dimen/dp35"
+            android:paddingStart="@dimen/dp35"
+            android:text="@string/change_password"
+            android:textAllCaps="false"
+            android:textColor="@color/tagColor"
+            android:textSize="@dimen/sp16" />
 
-            <ImageView
-                android:id="@+id/menuIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginStart="@dimen/dp10"
-                android:adjustViewBounds="true"
-                android:padding="@dimen/dp10"
-                android:visibility="gone"
-                app:srcCompat="@drawable/dashboard_arrow" />
-
-            <com.rescribe.doctor.ui.customesViews.CustomTextView
-                android:id="@+id/logout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/logout"
-                android:textColor="@color/tagColor"
-                android:textSize="@dimen/sp16"
-                app:customFont="@string/roboto_medium" />
-
-            <ImageView
-                android:id="@+id/dashboardArrowIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="18dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-
-                app:srcCompat="@drawable/layer_5" />
-
-        </RelativeLayout>
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp56"
+            android:background="@color/white"
+            android:drawableEnd="@drawable/layer_5"
+            android:drawableRight="@drawable/layer_5"
+            android:fontFamily="@font/roboto_medium"
+            android:gravity="start|center_vertical"
+            android:paddingEnd="@dimen/dp35"
+            android:paddingStart="@dimen/dp35"
+            android:text="@string/logout"
+            android:textAllCaps="false"
+            android:textColor="@color/tagColor"
+            android:textSize="@dimen/sp16" />
 
     </LinearLayout>
 
