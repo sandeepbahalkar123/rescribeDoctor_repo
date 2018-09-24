@@ -467,21 +467,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         LoginModel loginModel = gson.fromJson(data, LoginModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, loginModel, mOldDataTag);
                         break;
-                    case RescribeConstants.TASK_LOGIN_WITH_PASSWORD: //This is for get archived list
-                        LoginModel loginWithPasswordModel = new Gson().fromJson(data, LoginModel.class);
-                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, loginWithPasswordModel, mOldDataTag);
+                    case RescribeConstants.CHANGE_PASSWORD: //This is for get archived list
+                        CommonBaseModelContainer commonBaseModelContainer = new Gson().fromJson(data, CommonBaseModelContainer.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, commonBaseModelContainer, mOldDataTag);
                         break;
-                    case RescribeConstants.TASK_LOGIN_WITH_OTP: //This is for get archived list
-                        LoginModel loginWithOtpModel = new Gson().fromJson(data, LoginModel.class);
-                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, loginWithOtpModel, mOldDataTag);
-                        break;
-                    case RescribeConstants.TASK_SIGN_UP: //This is for get sign-up
-                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, new Gson().fromJson(data, SignUpModel.class), mOldDataTag);
-                        break;
-                    case RescribeConstants.TASK_VERIFY_SIGN_UP_OTP: //This is for to verify sign-up otp
-                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, new Gson().fromJson(data, LoginModel.class), mOldDataTag);
-                        break;
-
                     case RescribeConstants.TASK_DOCTOR_CONNECT_CHAT: //This is for get archived list
                         DoctorConnectChatBaseModel doctorConnectChatBaseModel = new Gson().fromJson(data, DoctorConnectChatBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, doctorConnectChatBaseModel, mOldDataTag);

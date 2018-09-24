@@ -8,6 +8,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.login.LoginHelper;
+import com.rescribe.doctor.interfaces.CustomResponse;
+import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.CommonBaseModelContainer;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 
@@ -15,7 +19,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ChangePasswordActivity extends AppCompatActivity {
+import static com.rescribe.doctor.util.RescribeConstants.CHANGE_PASSWORD;
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
+
+public class ChangePasswordActivity extends AppCompatActivity implements HelperResponse {
 
     @BindView(R.id.oldPasswordEditText)
     EditText oldPasswordEditText;
@@ -29,6 +36,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     ImageView backImageView;
     @BindView(R.id.titleTextView)
     CustomTextView titleTextView;
+    private LoginHelper loginHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         backImageView.setVisibility(View.GONE);
         titleTextView.setText(getString(R.string.change_password));
+        loginHelper = new LoginHelper(this, this);
     }
 
     @OnClick(R.id.okButton)
@@ -74,10 +83,34 @@ public class ChangePasswordActivity extends AppCompatActivity {
             return;
         }
 
-        callChangePasswordApi();
+        loginHelper.changePassword(oldPasswordEditText.getText().toString(), newPasswordEditText.getText().toString());
     }
 
-    private void callChangePasswordApi() {
+    @Override
+    public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        if (CHANGE_PASSWORD.equals(mOldDataTag)){
+            if (customResponse instanceof CommonBaseModelContainer){
+                CommonBaseModelContainer commonBaseModelContainer = (CommonBaseModelContainer) customResponse;
+                if (commonBaseModelContainer.getCommonRespose().getStatusCode().equals(SUCCESS))
+                    onBackPressed();
+
+                CommonMethods.showToast(this, commonBaseModelContainer.getCommonRespose().getStatusMessage());
+            }
+        }
+    }
+
+    @Override
+    public void onParseError(String mOldDataTag, String errorMessage) {
+
+    }
+
+    @Override
+    public void onServerError(String mOldDataTag, String serverErrorMessage) {
+
+    }
+
+    @Override
+    public void onNoConnectionError(String mOldDataTag, String serverErrorMessage) {
 
     }
 }

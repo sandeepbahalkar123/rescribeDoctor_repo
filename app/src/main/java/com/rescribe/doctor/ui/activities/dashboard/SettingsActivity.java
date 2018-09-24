@@ -53,12 +53,10 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
     CustomTextView dateTextview;
     @BindView(R.id.addPatientRadioSwitch)
     SwitchButton mAddPatientRadioSwitch;
-    //--------
     @BindView(R.id.addressDetailSwitch)
     SwitchButton addressDetailSwitch;
     @BindView(R.id.referenceDetailSwitch)
     SwitchButton referenceDetailSwitch;
-
     @BindView(R.id.changePasswordButton)
     Button changePasswordButton;
 

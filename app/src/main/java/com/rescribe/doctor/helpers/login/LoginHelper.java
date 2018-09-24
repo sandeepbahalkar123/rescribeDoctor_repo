@@ -6,7 +6,9 @@ import com.android.volley.Request;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.CommonBaseModelContainer;
 import com.rescribe.doctor.model.login.ActiveRequest;
+import com.rescribe.doctor.model.login.ChangePasswordRequest;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.login.SignUpModel;
 import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
@@ -14,6 +16,7 @@ import com.rescribe.doctor.model.requestmodel.login.SignUpRequestModel;
 import com.rescribe.doctor.model.requestmodel.login.SignUpVerifyOTPRequestModel;
 import com.rescribe.doctor.network.ConnectRequest;
 import com.rescribe.doctor.network.ConnectionFactory;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -23,9 +26,9 @@ import com.rescribe.doctor.util.RescribeConstants;
  */
 
 public class LoginHelper implements ConnectionListener {
-    String TAG = this.getClass().getName();
-    Context mContext;
-    HelperResponse mHelperResponseManager;
+    private String TAG = this.getClass().getName();
+    private Context mContext;
+    private HelperResponse mHelperResponseManager;
 
     public LoginHelper(Context context, HelperResponse loginActivity) {
         this.mContext = context;
@@ -44,17 +47,7 @@ public class LoginHelper implements ConnectionListener {
                         LoginModel loginModel = (LoginModel) customResponse;
                         mHelperResponseManager.onSuccess(mOldDataTag, loginModel);
                         break;
-                    case RescribeConstants.TASK_SIGN_UP:
-                        SignUpModel signUpModel = (SignUpModel) customResponse;
-                        mHelperResponseManager.onSuccess(mOldDataTag, signUpModel);
-                        break;
-                    case RescribeConstants.TASK_VERIFY_SIGN_UP_OTP:
-                        mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                        break;
-                    case RescribeConstants.TASK_LOGIN_WITH_PASSWORD:
-                        mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
-                        break;
-                    case RescribeConstants.TASK_LOGIN_WITH_OTP:
+                    case RescribeConstants.CHANGE_PASSWORD:
                         mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                         break;
                     case RescribeConstants.LOGOUT:
@@ -99,35 +92,6 @@ public class LoginHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_LOGIN);
     }
 
-    //Do login using Otp
-    public void doLoginByOTP(String otp) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_LOGIN_WITH_OTP, Request.Method.POST, true);
-        mConnectionFactory.setHeaderParams();
-        LoginRequestModel loginRequestModel = new LoginRequestModel();
-        //    loginRequestModel.setMobileNumber(otp);  TODO NOT CONFIRMED ABOUT THIS.
-        mConnectionFactory.setPostParams(loginRequestModel);
-        mConnectionFactory.setUrl(Config.LOGIN_WITH_OTP_URL);
-        mConnectionFactory.createConnection(RescribeConstants.TASK_LOGIN_WITH_OTP);
-    }
-
-    //Verify Otp sent
-    public void doVerifyGeneratedSignUpOTP(SignUpVerifyOTPRequestModel requestModel) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_VERIFY_SIGN_UP_OTP, Request.Method.POST, false);
-        mConnectionFactory.setHeaderParams();
-        mConnectionFactory.setPostParams(requestModel);
-        mConnectionFactory.setUrl(Config.VERIFY_SIGN_UP_OTP);
-        mConnectionFactory.createConnection(RescribeConstants.TASK_VERIFY_SIGN_UP_OTP);
-    }
-
-    //SignUp
-    public void doSignUp(SignUpRequestModel signUpRequestModel) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_SIGN_UP, Request.Method.POST, false);
-        mConnectionFactory.setHeaderParams();
-        mConnectionFactory.setPostParams(signUpRequestModel);
-        mConnectionFactory.setUrl(Config.SIGN_UP_URL);
-        mConnectionFactory.createConnection(RescribeConstants.TASK_SIGN_UP);
-    }
-
     // Logout
     public void doLogout(ActiveRequest activeRequest) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.LOGOUT, Request.Method.POST, false);
@@ -144,5 +108,18 @@ public class LoginHelper implements ConnectionListener {
         mConnectionFactory.setPostParams(activeRequest);
         mConnectionFactory.setUrl(Config.ACTIVE);
         mConnectionFactory.createConnection(RescribeConstants.ACTIVE_STATUS);
+    }
+
+    public void changePassword(String oldPassword, String newPassword) {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setCurrentPassword(oldPassword);
+        changePasswordRequest.setNewPassword(newPassword);
+        changePasswordRequest.setConfirmPassword(newPassword);
+        changePasswordRequest.setDocId(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.CHANGE_PASSWORD, Request.Method.POST, false);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setPostParams(changePasswordRequest);
+        mConnectionFactory.setUrl(Config.CHANGE_PASSWORD);
+        mConnectionFactory.createConnection(RescribeConstants.CHANGE_PASSWORD);
     }
 }
