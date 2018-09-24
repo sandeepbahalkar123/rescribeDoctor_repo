@@ -169,6 +169,20 @@
                     android:visibility="gone"
                     app:customFont="@string/roboto_medium"
                     tools:text="OPD Completed" />
+
+                <com.rescribe.doctor.ui.customesViews.CustomTextView
+                    android:id="@+id/patientClinic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingEnd="@dimen/dp4"
+                    android:paddingRight="@dimen/dp4"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp12"
+                    android:visibility="gone"
+                    app:customFont="@string/roboto_medium"
+                    tools:text="OPD Completed" />
             </LinearLayout>
 
             <CheckBox

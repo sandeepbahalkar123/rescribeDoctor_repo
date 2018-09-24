@@ -53,9 +53,9 @@ import static com.rescribe.doctor.util.RescribeConstants.PATIENT_HOS_PAT_ID;
 
 public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.ListViewHolder> /*implements Filterable*/ {
 
+    public boolean isLongPressed;
     private Context mContext;
     private ArrayList<PatientList> mDataList;
-    public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
     private boolean isClickOnPatientDetailsRequired;
     private AppDBHelper appDBHelper;
@@ -86,6 +86,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         String area = patientObject.getPatientArea().isEmpty() ? "" : (patientObject.getPatientCity().isEmpty() ? patientObject.getPatientArea() : patientObject.getPatientArea() + ", ");
         holder.patientClinicAddress.setText(CommonMethods.toCamelCase(area + patientObject.getPatientCity()));
         String patientName = "";
+
+        if (patientObject.getHospitalName() == null || patientObject.getHospitalName().isEmpty())
+            holder.patientClinic.setVisibility(View.GONE);
+        else {
+            holder.patientClinic.setVisibility(View.VISIBLE);
+            holder.patientClinic.setText(patientObject.getHospitalName());
+        }
 
         if (patientObject.getSalutation() != 0)
             patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
@@ -279,6 +286,61 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         return mDataList;
     }
 
+    public boolean isLongPressed() {
+        return isLongPressed;
+    }
+
+    public void setLongPressed(boolean longPressed) {
+        isLongPressed = longPressed;
+    }
+
+    public void add(PatientList mc) {
+        mDataList.add(mc);
+        removeDuplicateElements();
+        notifyItemInserted(mDataList.size() - 1);
+    }
+
+    // this is added to remove duplicate patients from list based on patientID.
+    private void removeDuplicateElements() {
+        Map<Integer, PatientList> map = new LinkedHashMap<>();
+        for (PatientList ays : mDataList) {
+            map.put(ays.getHospitalPatId(), ays);
+        }
+
+        mDataList.clear();
+        mDataList.addAll(map.values());
+    }
+
+    public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
+
+        for (PatientList mc : mcList) {
+            mc.setSpannableString(searchText);
+            mc.setSelected(selectedDoctorId.contains(mc.getHospitalPatId()));
+            add(mc);
+        }
+
+        notifyDataSetChanged();
+
+        appDBHelper.addNewPatient(mcList, false);
+    }
+
+    public void clear() {
+        mDataList.clear();
+    }
+
+    public interface OnDownArrowClicked {
+
+        void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
+
+        void onCheckUncheckRemoveSelectAllSelection(boolean ischecked, PatientList patientObject);
+
+        void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired);
+
+        void onPhoneNoClick(String patientPhone);
+
+        void onRecordFound(boolean isListEmpty);
+    }
+
     static class ListViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.bluelineImageView)
         ImageView bluelineImageView;
@@ -314,6 +376,10 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         LinearLayout cardView;
         @BindView(R.id.patientClinicAddress)
         CustomTextView patientClinicAddress;
+
+        @BindView(R.id.patientClinic)
+        CustomTextView patientClinic;
+
         @BindView(R.id.patientDetailsClickLinearLayout)
         RelativeLayout patientDetailsClickLinearLayout;
 
@@ -324,62 +390,5 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             ButterKnife.bind(this, view);
             this.view = view;
         }
-    }
-
-    public boolean isLongPressed() {
-        return isLongPressed;
-    }
-
-    public void setLongPressed(boolean longPressed) {
-        isLongPressed = longPressed;
-    }
-
-    public interface OnDownArrowClicked {
-
-        void onLongPressOpenBottomMenu(boolean isLongPressed, int groupPosition);
-
-        void onCheckUncheckRemoveSelectAllSelection(boolean ischecked, PatientList patientObject);
-
-        void onClickOfPatientDetails(PatientList patientListObject, String text, boolean isClickOnPatientDetailsRequired);
-
-        void onPhoneNoClick(String patientPhone);
-
-        void onRecordFound(boolean isListEmpty);
-    }
-
-
-    public void add(PatientList mc) {
-        mDataList.add(mc);
-        removeDuplicateElements();
-        notifyItemInserted(mDataList.size() - 1);
-    }
-
-
-    // this is added to remove duplicate patients from list based on patientID.
-    private void removeDuplicateElements() {
-        Map<Integer, PatientList> map = new LinkedHashMap<>();
-        for (PatientList ays : mDataList) {
-            map.put(ays.getHospitalPatId(), ays);
-        }
-
-        mDataList.clear();
-        mDataList.addAll(map.values());
-    }
-
-    public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
-
-        for (PatientList mc : mcList) {
-            mc.setSpannableString(searchText);
-            mc.setSelected(selectedDoctorId.contains(mc.getHospitalPatId()));
-            add(mc);
-        }
-
-        notifyDataSetChanged();
-
-        appDBHelper.addNewPatient(mcList, false);
-    }
-
-    public void clear() {
-        mDataList.clear();
     }
 }

@@ -47,6 +47,15 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     @SerializedName("clinicName")
     @Expose
     private String clinicName;
+
+    @SerializedName("hospitalName")
+    @Expose
+    private String hospitalName;
+
+    @SerializedName("patInfoFlag")
+    @Expose
+    private String patInfoFlag;
+
     @SerializedName("hospitalPatId")
     @Expose
     private Integer hospitalPatId;
@@ -120,6 +129,10 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
         this.clinicId = ((int) in.readValue((int.class.getClassLoader())));
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
+
+        this.hospitalName = ((String) in.readValue((String.class.getClassLoader())));
+        this.patInfoFlag = ((String) in.readValue((String.class.getClassLoader())));
+
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientCityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
@@ -251,6 +264,22 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.clinicName = clinicName;
     }
 
+    public String getHospitalName() {
+        return hospitalName;
+    }
+
+    public void setHospitalName(String hospitalName) {
+        this.hospitalName = hospitalName;
+    }
+
+    public String getPatInfoFlag() {
+        return patInfoFlag;
+    }
+
+    public void setPatInfoFlag(String patInfoFlag) {
+        this.patInfoFlag = patInfoFlag;
+    }
+
     public Integer getHospitalPatId() {
         return hospitalPatId;
     }
@@ -300,6 +329,10 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         dest.writeValue(patientEmail);
         dest.writeValue(clinicId);
         dest.writeValue(clinicName);
+
+        dest.writeValue(hospitalName);
+        dest.writeValue(patInfoFlag);
+
         dest.writeValue(hospitalPatId);
         dest.writeValue(patientCityId);
         dest.writeValue(patientCity);

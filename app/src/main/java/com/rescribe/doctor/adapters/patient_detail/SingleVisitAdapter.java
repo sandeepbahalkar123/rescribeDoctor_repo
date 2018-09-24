@@ -42,18 +42,16 @@ import butterknife.ButterKnife;
 import static com.rescribe.doctor.util.CommonMethods.stripExtension;
 
 public class SingleVisitAdapter extends BaseExpandableListAdapter {
-    private OnDeleteAttachments deleteAttachmentsListener;
-    private int mPosition = 0;
-    private Context mContext;
-
     public static final String CHILD_TYPE_VITALS = "vital";
     public static final String CHILD_TYPE_ATTACHMENTS = "attachment";
     public static final String CHILD_TYPE_ANNOTATION = "annotation";
+    public static final int TEXT_LIMIT = 33;
     private static final String CHILD_TYPE_ALLERGIES = "allergie";
     private static final String CHILD_TYPE_PRESCRIPTIONS = "prescription";
-
+    private OnDeleteAttachments deleteAttachmentsListener;
+    private int mPosition = 0;
+    private Context mContext;
     private List<PatientHistory> mListDataHeader = new ArrayList<>(); // header titles
-    public static final int TEXT_LIMIT = 33;
     // To send all attachments to next screen(viewpager)
     private List<VisitCommonData> mListDataHeaderAllAttachmentCommonDataList;
     //---- Delete attachment functionality
@@ -70,11 +68,25 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             List<VisitCommonData> commonData = listDataHeader.get(i).getCommonData();
             List<Vital> commonDatasVitals = listDataHeader.get(i).getVitals();
             if (commonData != null) {
-                if (commonData.size() > 0) {
+                if (!commonData.isEmpty()) {
+                    mListDataHeader.add(listDataHeader.get(i));
+                } else if (listDataHeader.get(i).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ALLERGIES)) {
+                    List<VisitCommonData> common = new ArrayList<>();
+                    VisitCommonData visitCommonData = new VisitCommonData();
+                    visitCommonData.setDosage("");
+                    visitCommonData.setId(0);
+                    visitCommonData.setMedicineTypeName("");
+                    visitCommonData.setMedicinename("");
+                    visitCommonData.setName("No Allergies Found");
+                    visitCommonData.setRemarks("");
+                    visitCommonData.setVitalValue("");
+                    visitCommonData.setUrl("");
+                    common.add(visitCommonData);
+                    listDataHeader.get(i).setCommonData(common);
                     mListDataHeader.add(listDataHeader.get(i));
                 }
             } else if (commonDatasVitals != null) {
-                if (commonDatasVitals.size() > 0) {
+                if (!commonDatasVitals.isEmpty()) {
                     VisitCommonData commonVitals = new VisitCommonData();
                     commonVitals.setId(0);
                     commonVitals.setVitalValue(listDataHeader.get(i).getVitals().get(0).getUnitValue());
@@ -213,25 +225,6 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             childViewHolder.divider.setVisibility(View.GONE);
 
         return convertView;
-    }
-
-    class ChildViewHolder {
-
-        @BindView(R.id.divider)
-        View divider;
-
-        @BindView(R.id.table)
-        LinearLayout tableLayout;
-
-        @BindView(R.id.textView_name)
-        TextView textView_name;
-
-        @BindView(R.id.items_layout)
-        LinearLayout itemsLayout;
-
-        ChildViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
     }
 
     // Created dynamic grid function to list of  vitals
@@ -631,7 +624,12 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                     //--------
 
                 } else if (mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ALLERGIES)) {
-                    String text = stripExtension(mVisitDetailList.get(0).getName() + " - " + mVisitDetailList.get(0).getMedicinename() + " - " + mVisitDetailList.get(0).getRemarks());
+                    String textToShow = mVisitDetailList.get(0).getName();
+                    if (!mVisitDetailList.get(0).getMedicinename().isEmpty())
+                        textToShow += "-" + mVisitDetailList.get(0).getMedicinename();
+                    if (!mVisitDetailList.get(0).getRemarks().isEmpty())
+                        textToShow += "-" + mVisitDetailList.get(0).getRemarks();
+                    String text = stripExtension(textToShow);
                     groupViewHolder.mDetailFirstPoint.setText(text);
 
                 } else if (mVisitDetailList.size() > 1) {
@@ -664,7 +662,6 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
-
     @Override
     public boolean hasStableIds() {
         return false;
@@ -673,28 +670,6 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
-    }
-
-    class GroupViewHolder {
-        //---------
-
-        @BindView(R.id.viewDetailHeaderLabel)
-        TextView lblListHeader;
-        @BindView(R.id.viewDetailIcon)
-        ImageView mViewDetailIcon;
-        @BindView(R.id.headergroupDivider)
-        View mHeadergroupDivider;
-        @BindView(R.id.adapter_divider_top)
-        View mDivider;
-        @BindView(R.id.detailFirstPoint)
-        TextView mDetailFirstPoint;
-        @BindView(R.id.deleteAttachments)
-        ImageView mDeleteAttachments;
-
-        GroupViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
-
     }
 
     public String setStringLength(String t) {
@@ -1063,12 +1038,6 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         return mListDataHeader;
     }
 
-
-    public interface OnDeleteAttachments {
-        public void deleteAttachments(HashSet<VisitCommonData> list);
-
-    }
-
     public boolean removeSelectedAttachmentFromList() {
         boolean isAttachmentDeleted = false;
         PatientHistory patientHistory = mListDataHeader.get(selectedAttachmentToDeleteGroupPosition);
@@ -1096,5 +1065,51 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         mShowDeleteCheckbox = false;
         notifyDataSetChanged();
         return isAttachmentDeleted;
+    }
+
+    public interface OnDeleteAttachments {
+        public void deleteAttachments(HashSet<VisitCommonData> list);
+
+    }
+
+    class ChildViewHolder {
+
+        @BindView(R.id.divider)
+        View divider;
+
+        @BindView(R.id.table)
+        LinearLayout tableLayout;
+
+        @BindView(R.id.textView_name)
+        TextView textView_name;
+
+        @BindView(R.id.items_layout)
+        LinearLayout itemsLayout;
+
+        ChildViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
+    }
+
+    class GroupViewHolder {
+        //---------
+
+        @BindView(R.id.viewDetailHeaderLabel)
+        TextView lblListHeader;
+        @BindView(R.id.viewDetailIcon)
+        ImageView mViewDetailIcon;
+        @BindView(R.id.headergroupDivider)
+        View mHeadergroupDivider;
+        @BindView(R.id.adapter_divider_top)
+        View mDivider;
+        @BindView(R.id.detailFirstPoint)
+        TextView mDetailFirstPoint;
+        @BindView(R.id.deleteAttachments)
+        ImageView mDeleteAttachments;
+
+        GroupViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
+
     }
 }

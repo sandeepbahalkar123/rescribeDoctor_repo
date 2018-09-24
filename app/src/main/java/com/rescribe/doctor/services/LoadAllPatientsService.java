@@ -49,6 +49,7 @@ import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class LoadAllPatientsService extends Service {
     private static final String CHANNEL_PATIENT_DOWNLOAD = "patient_download";
+    private static final String TAG = "LOAD_ALL_PATIENT";
     public static boolean RUNNING = false;
 
     private static final String LOG_TAG = "LoadAllPatientsService";
@@ -165,6 +166,7 @@ public class LoadAllPatientsService extends Service {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        CommonMethods.Log(TAG, response.toString());
                         MyPatientBaseModel myPatientBaseModel = gson.fromJson(response.toString(), MyPatientBaseModel.class);
                         if (myPatientBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {
                             ArrayList<PatientList> patientList = myPatientBaseModel.getPatientDataModel().getPatientList();

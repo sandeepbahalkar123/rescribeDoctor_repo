@@ -1,0 +1,3 @@
+BEGIN TRANSACTION;
+ALTER TABLE "addNewPatient" ADD `hospitalName` TEXT;
+COMMIT;

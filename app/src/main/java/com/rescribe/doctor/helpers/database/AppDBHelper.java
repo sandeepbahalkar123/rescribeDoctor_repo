@@ -49,7 +49,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "MyRescribe.sqlite";
     private static final String DB_PATH_SUFFIX = "/data/data/com.rescribe.doctor/databases/"; // Change
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
 
     //this is globle table to save data of any APIs response.
     public static final String APP_DATA_TABLE = "PrescriptionData";
@@ -447,6 +447,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String IS_SYNC = "isSync";
         String CREATED_TIME_STAMP = "createdTimeStamp";
         String HOSPITALPATID = "hospitalPatId";
+        String HOSPITAL_NAME = "hospitalName";
         String CLINIC_ID = "clinicID";
         String CITY_ID = "cityId";
         String CITY_NAME = "city";
@@ -664,65 +665,74 @@ public class AppDBHelper extends SQLiteOpenHelper {
         db.beginTransaction();
 
         for (PatientList patient : patientList) {
-            if (isBackUp) {
-                patient.setOfflinePatientSynced(true);
-                patient.setReferenceID("");
-            }
 
-            contentValues.put(ADD_NEW_PATIENT.PATIENT_ID, patient.getPatientId());
-            contentValues.put(ADD_NEW_PATIENT.SALUTATION, patient.getSalutation());
-            String patientName = patient.getPatientName().trim();
+            if (isBackUp && patient.getPatInfoFlag().equalsIgnoreCase("remove")) {
+                db.delete(ADD_NEW_PATIENT.TABLE_NAME,
+                        ADD_NEW_PATIENT.PATIENT_ID + " = ? ",
+                        new String[]{Integer.toString(patient.getPatientId())});
+            } else {
 
-            if (!patientName.isEmpty()) {
-                String[] split = patientName.split(" ");
-                contentValues.put(ADD_NEW_PATIENT.FIRST_NAME, split[0]);
-                if (split.length > 1) {
-                    if (split[1].trim().equalsIgnoreCase("|"))
-                        contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, "");
-                    else
-                        contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, split[1].trim());
+                if (isBackUp) {
+                    patient.setOfflinePatientSynced(true);
+                    patient.setReferenceID("");
                 }
-                if (split.length > 2)
-                    contentValues.put(ADD_NEW_PATIENT.LAST_NAME, split[2]);
-            }
 
-            contentValues.put(ADD_NEW_PATIENT.MOBILE_NO, patient.getPatientPhone());
-            contentValues.put(ADD_NEW_PATIENT.AGE, patient.getAge());
-            contentValues.put(ADD_NEW_PATIENT.GENDER, patient.getGender());
-            contentValues.put(ADD_NEW_PATIENT.REFERENCE_ID, patient.getReferenceID());
-            contentValues.put(ADD_NEW_PATIENT.CLINIC_ID, patient.getClinicId());
-            contentValues.put(ADD_NEW_PATIENT.CITY_ID, patient.getPatientCityId());
-            contentValues.put(ADD_NEW_PATIENT.CITY_NAME, patient.getPatientCity());
-            contentValues.put(ADD_NEW_PATIENT.DOB, patient.getDateOfBirth());
-            contentValues.put(ADD_NEW_PATIENT.OUTSTANDING_AMT, patient.getOutStandingAmount());
-            contentValues.put(ADD_NEW_PATIENT.IMAGE_URL, patient.getPatientImageUrl());
-            contentValues.put(ADD_NEW_PATIENT.EMAIL, patient.getPatientEmail());
-            contentValues.put(ADD_NEW_PATIENT.IS_SYNC, patient.isOfflinePatientSynced() ? ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER : ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER);
-            contentValues.put(ADD_NEW_PATIENT.CREATED_TIME_STAMP, patient.getCreationDate());
-            contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, patient.getHospitalPatId());
-            contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA, patient.getPatientArea());
+                contentValues.put(ADD_NEW_PATIENT.PATIENT_ID, patient.getPatientId());
+                contentValues.put(ADD_NEW_PATIENT.SALUTATION, patient.getSalutation());
+                String patientName = patient.getPatientName().trim();
 
-            //-----ADDRESS ---
-            PatientAddressDetails addressDetails = patient.getAddressDetails();
-            if (addressDetails != null) {
-                contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_LINE, addressDetails.getPatientAddress());
-                contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE, addressDetails.getPatientState());
-                contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY, addressDetails.getPatientCity());
-                contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA, addressDetails.getPatientArea());
-            }
-            //-----REFERENCE----
-            PatientReferenceDetails referedDetails = patient.getReferedDetails();
-            if (referedDetails != null) {
-                contentValues.put(ADD_NEW_PATIENT.REFFERED_TYPE_ID, referedDetails.getReferredTypeId());
-                contentValues.put(ADD_NEW_PATIENT.REFERENCE_NAME, referedDetails.getName());
-                contentValues.put(ADD_NEW_PATIENT.REFERENCE_EMAIL, referedDetails.getEmailId());
-                contentValues.put(ADD_NEW_PATIENT.REFERENCE_PHONE, referedDetails.getPhoneNumber());
-            }
-            //------------------
+                if (!patientName.isEmpty()) {
+                    String[] split = patientName.split(" ");
+                    contentValues.put(ADD_NEW_PATIENT.FIRST_NAME, split[0]);
+                    if (split.length > 1) {
+                        if (split[1].trim().equalsIgnoreCase("|"))
+                            contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, "");
+                        else
+                            contentValues.put(ADD_NEW_PATIENT.MIDDLE_NAME, split[1].trim());
+                    }
+                    if (split.length > 2)
+                        contentValues.put(ADD_NEW_PATIENT.LAST_NAME, split[2]);
+                }
 
-            if (checkIsPatientExist(patient.getPatientId(), db) > 0)
-                db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?", new String[]{String.valueOf(patient.getPatientId())});
-            else db.insert(ADD_NEW_PATIENT.TABLE_NAME, null, contentValues);
+                contentValues.put(ADD_NEW_PATIENT.MOBILE_NO, patient.getPatientPhone());
+                contentValues.put(ADD_NEW_PATIENT.AGE, patient.getAge());
+                contentValues.put(ADD_NEW_PATIENT.GENDER, patient.getGender());
+                contentValues.put(ADD_NEW_PATIENT.REFERENCE_ID, patient.getReferenceID());
+                contentValues.put(ADD_NEW_PATIENT.CLINIC_ID, patient.getClinicId());
+                contentValues.put(ADD_NEW_PATIENT.CITY_ID, patient.getPatientCityId());
+                contentValues.put(ADD_NEW_PATIENT.CITY_NAME, patient.getPatientCity());
+                contentValues.put(ADD_NEW_PATIENT.DOB, patient.getDateOfBirth());
+                contentValues.put(ADD_NEW_PATIENT.OUTSTANDING_AMT, patient.getOutStandingAmount());
+                contentValues.put(ADD_NEW_PATIENT.IMAGE_URL, patient.getPatientImageUrl());
+                contentValues.put(ADD_NEW_PATIENT.EMAIL, patient.getPatientEmail());
+                contentValues.put(ADD_NEW_PATIENT.IS_SYNC, patient.isOfflinePatientSynced() ? ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER : ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER);
+                contentValues.put(ADD_NEW_PATIENT.CREATED_TIME_STAMP, patient.getCreationDate());
+                contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, patient.getHospitalPatId());
+                contentValues.put(ADD_NEW_PATIENT.HOSPITAL_NAME, patient.getHospitalName());
+                contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA, patient.getPatientArea());
+
+                //-----ADDRESS ---
+                PatientAddressDetails addressDetails = patient.getAddressDetails();
+                if (addressDetails != null) {
+                    contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_LINE, addressDetails.getPatientAddress());
+                    contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE, addressDetails.getPatientState());
+                    contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY, addressDetails.getPatientCity());
+                    contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA, addressDetails.getPatientArea());
+                }
+                //-----REFERENCE----
+                PatientReferenceDetails referedDetails = patient.getReferedDetails();
+                if (referedDetails != null) {
+                    contentValues.put(ADD_NEW_PATIENT.REFFERED_TYPE_ID, referedDetails.getReferredTypeId());
+                    contentValues.put(ADD_NEW_PATIENT.REFERENCE_NAME, referedDetails.getName());
+                    contentValues.put(ADD_NEW_PATIENT.REFERENCE_EMAIL, referedDetails.getEmailId());
+                    contentValues.put(ADD_NEW_PATIENT.REFERENCE_PHONE, referedDetails.getPhoneNumber());
+                }
+                //------------------
+
+                if (checkIsPatientExist(patient.getPatientId(), db) > 0)
+                    db.update(ADD_NEW_PATIENT.TABLE_NAME, contentValues, ADD_NEW_PATIENT.PATIENT_ID + " = ?", new String[]{String.valueOf(patient.getPatientId())});
+                else db.insert(ADD_NEW_PATIENT.TABLE_NAME, null, contentValues);
+            }
         }
 
         db.setTransactionSuccessful();
@@ -766,6 +776,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(ADD_NEW_PATIENT.IS_SYNC, newPatient.isOfflinePatientSynced() ? ADD_NEW_PATIENT.IS_SYNC_WITH_SERVER : ADD_NEW_PATIENT.IS_NOT_SYNC_WITH_SERVER);
         contentValues.put(ADD_NEW_PATIENT.CREATED_TIME_STAMP, newPatient.getCreationDate());
         contentValues.put(ADD_NEW_PATIENT.HOSPITALPATID, newPatient.getHospitalPatId());
+        contentValues.put(ADD_NEW_PATIENT.HOSPITAL_NAME, newPatient.getHospitalName());
         contentValues.put(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA, newPatient.getPatientArea());
 
         //-----ADDRESS ---
@@ -920,6 +931,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 patient.setCreationDate(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.CREATED_TIME_STAMP)));
                 patient.setHospitalPatId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.HOSPITALPATID)));
 
+                patient.setHospitalName(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.HOSPITAL_NAME)));
 
                 //-----ADDRESS ---
                 PatientAddressDetails addressDetails = new PatientAddressDetails();

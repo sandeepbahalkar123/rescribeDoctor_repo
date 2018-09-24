@@ -11,8 +11,6 @@ public class Config {
     public static final String TOKEN_TYPE = "Bearer";
     public static final String LOGIN_URL = "authApi/authenticate/doctorLogin";
     public static final String CHANGE_PASSWORD = "authApi/authenticate/changePassword";
-    public static final String VERIFY_SIGN_UP_OTP = "authApi/authenticate/verifyOTP";
-    public static final String SIGN_UP_URL = "authApi/authenticate/signUp";
     public static final String ONE_DAY_VISIT_URL = "api/patient/getPatientOneDayVisit?opdId=";
     public static final String GET_MY_APPOINTMENTS_LIST = "doctor/api/appointment/getAppointmentList";
     public static final String GET_SMS_TEMPLATE = "doctor/api/appointment/getDoctorSmsTemplate?docId=";
