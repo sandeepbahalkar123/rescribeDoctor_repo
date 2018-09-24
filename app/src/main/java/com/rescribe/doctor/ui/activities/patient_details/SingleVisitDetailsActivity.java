@@ -43,6 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_ANNOTATION;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_ATTACHMENTS;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_VITALS;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.TEXT_LIMIT;
@@ -158,7 +159,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 if (childObject.size() == 1) {
 
                     boolean flag = true;
-                    if (listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_VITALS))
+                    if (listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_VITALS))
                         flag = false;
 
                     if (flag) {

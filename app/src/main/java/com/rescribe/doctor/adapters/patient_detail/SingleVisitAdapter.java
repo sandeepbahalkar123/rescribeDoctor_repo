@@ -48,6 +48,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
     public static final String CHILD_TYPE_VITALS = "vital";
     public static final String CHILD_TYPE_ATTACHMENTS = "attachment";
+    public static final String CHILD_TYPE_ANNOTATION = "annotation";
     private static final String CHILD_TYPE_ALLERGIES = "allergie";
     private static final String CHILD_TYPE_PRESCRIPTIONS = "prescription";
 
@@ -143,7 +144,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 } else count++;
             }
 
-        } else if (headerName.contains(CHILD_TYPE_ATTACHMENTS)) {
+        } else if (headerName.contains(CHILD_TYPE_ATTACHMENTS) || headerName.contains(CHILD_TYPE_ANNOTATION)) {
 
             childViewHolder.tableLayout.setVisibility(View.VISIBLE);
             childViewHolder.itemsLayout.setVisibility(View.GONE);
@@ -505,7 +506,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (this.mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || this.mListDataHeader.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_VITALS))
+        if (this.mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || this.mListDataHeader.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_VITALS) || this.mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION))
             return 1;
         else
             return (this.mListDataHeader.get(groupPosition).getCommonData())
@@ -613,7 +614,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                         } else {
                             groupViewHolder.mDetailFirstPoint.setText(mVisitDetailList.get(0).getName() + "...");
                         }
-                } else if (mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS)) {
+                } else if (mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION)) {
 
                     String text = stripExtension(mVisitDetailList.get(0).getName());
                     if (text.length() > TEXT_LIMIT)
@@ -1071,7 +1072,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
     public boolean removeSelectedAttachmentFromList() {
         boolean isAttachmentDeleted = false;
         PatientHistory patientHistory = mListDataHeader.get(selectedAttachmentToDeleteGroupPosition);
-        if (patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS)) {
+        if (patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION)) {
             List<VisitCommonData> commonData = patientHistory.getCommonData();
             for (VisitCommonData objToRemove :
                     mSelectedAttachmentToDelete) {
