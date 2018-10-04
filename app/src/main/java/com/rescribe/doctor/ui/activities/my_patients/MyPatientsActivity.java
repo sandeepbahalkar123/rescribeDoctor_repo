@@ -8,6 +8,8 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +26,7 @@ import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.LoadAllPatientsService;
 import com.rescribe.doctor.services.SyncOfflinePatients;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.fragments.book_appointment.CoachFragment;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.DrawerForMyPatients;
 import com.rescribe.doctor.ui.fragments.patient.my_patient.MyPatientsFragment;
 import com.rescribe.doctor.util.CommonMethods;
@@ -67,6 +70,8 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
     RelativeLayout emptyListView;
     @BindView(R.id.downloadPatients)
     ImageView downloadPatients;
+    @BindView(R.id.coachmarkContainer)
+    FrameLayout coachmarkContainer;
 
     private Context mContext;
     private MyPatientsFragment mMyPatientsFragment;
@@ -103,6 +108,16 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
 
         mMyPatientsFragment = MyPatientsFragment.newInstance(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyPatientsFragment).commit();
+
+        String coachMarkStatus = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_ALL_PATIENT_DOWNLOAD, mContext);
+        if (!coachMarkStatus.equals(RescribeConstants.YES)) {
+            coachmarkContainer.setVisibility(View.VISIBLE);
+            FragmentManager supportFragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.coachmarkContainer, CoachFragment.newInstance());
+            fragmentTransaction.addToBackStack("Coach");
+            fragmentTransaction.commit();
+        }
 
         boolean isPatientDownloaded = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, this);
 
@@ -229,4 +244,9 @@ public class MyPatientsActivity extends AppCompatActivity implements DrawerForMy
             }
         }
     };
+
+    public void hideCoachmarkContainer() {
+        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_ALL_PATIENT_DOWNLOAD, RescribeConstants.YES, mContext);
+        coachmarkContainer.setVisibility(View.GONE);
+    }
 }

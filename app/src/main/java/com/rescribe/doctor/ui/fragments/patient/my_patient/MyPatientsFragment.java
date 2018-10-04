@@ -1,6 +1,7 @@
 package com.rescribe.doctor.ui.fragments.patient.my_patient;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -140,15 +141,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         View mRootView = inflater.inflate(R.layout.my_appointments_layout, container, false);
         //  hideSoftKeyboard();
         unbinder = ButterKnife.bind(this, mRootView);
-
-        String coachMarkStatus = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_ALL_PATIENT_DOWNLOAD, getActivity());
-        if (!coachMarkStatus.equals(RescribeConstants.YES)) {
-            FragmentManager supportFragmentManager = getActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.coachmarkContainer, CoachFragment.newInstance());
-            fragmentTransaction.addToBackStack("Coach");
-            fragmentTransaction.commit();
-        }
         init();
         return mRootView;
 

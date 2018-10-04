@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
 import com.rescribe.doctor.util.RescribeConstants;
 
 public class CoachFragment extends Fragment {
@@ -35,7 +36,8 @@ public class CoachFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getActivity().getSupportFragmentManager().popBackStack();
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_ALL_PATIENT_DOWNLOAD, RescribeConstants.YES, getActivity());
+                if (getActivity() instanceof MyPatientsActivity)
+                    ((MyPatientsActivity) getActivity()).hideCoachmarkContainer();
             }
         });
         return rootView;

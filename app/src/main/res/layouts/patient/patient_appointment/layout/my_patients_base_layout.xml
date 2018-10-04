@@ -17,6 +17,14 @@
         android:fitsSystemWindows="true"
         android:orientation="vertical" />
 
+    <include layout="@layout/common_no_records_found" />
+
+    <FrameLayout
+        android:id="@+id/coachmarkContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
     <FrameLayout
         android:id="@+id/nav_view"
         android:layout_width="@dimen/drawer_width"
@@ -24,12 +32,5 @@
         android:layout_gravity="end"
         android:background="@color/white"
         android:fitsSystemWindows="true" />
-
-    <include layout="@layout/common_no_records_found" />
-
-    <FrameLayout
-        android:id="@+id/coachmarkContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
 </android.support.v4.widget.DrawerLayout>
