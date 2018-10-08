@@ -220,11 +220,12 @@
             android:name=".broadcast_receivers.ReplayBroadcastReceiver"
             android:enabled="true"
             android:exported="false" />
+
         <receiver
             android:name=".broadcast_receivers.FileUploadReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="net.gotev.uploadservice.broadcast.status" />
+                <action android:name="com.rescribe.doctor.uploadservice.broadcast.status" />
             </intent-filter>
         </receiver>
 

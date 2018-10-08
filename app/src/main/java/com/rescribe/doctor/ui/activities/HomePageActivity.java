@@ -464,7 +464,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 if (mDashboardBaseModel.getCommon().isSuccess()) {
                     mDashboardDetails = new DashboardDetails();
                     mDashboardDetails = mDashboardBaseModel.getDashboarddataModel().getDashboardDetails();
-                    if (mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList().size() > 0) {
+                    if (!mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList().isEmpty()) {
                         todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayFollowUpCount() + "");
                         todayNewAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayNewPatientCount() + "");
                         todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount() + "");
@@ -480,19 +480,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         // inflate MyPatientsActivity layout
                         setLayoutForMyPatients();
 
-                    } else if (mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().size() > 0) {
-                        todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
-                        todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
-                        todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayWaitingCount() + "");
-                        todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
-                        todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
-                        todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
-                        hostViewsLayout.removeAllViews();
-                        setLayoutForWaitingListIfAppointmentListEmpty();
-                        // inflate patientConnect layout
-                        setLayoutForPatientConnect();
-                        // inflate MyPatientsActivity layout
-                        setLayoutForMyPatients();
                     } else {
                         hostViewsLayout.removeAllViews();
                         todayFollowAppointmentCount.setText("0");
