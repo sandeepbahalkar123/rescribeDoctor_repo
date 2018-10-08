@@ -19,6 +19,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -441,7 +442,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                 currentOpdTime = mOpdtime;
 
             String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-
+            Log.e("Url", Url);
             MultipartUploadRequest uploadRequest = new MultipartUploadRequest(SelectedRecordsActivity.this, uploadId, Url)
                     .setUtf8Charset()
                     .setMaxRetries(RescribeConstants.MAX_RETRIES)
@@ -459,6 +460,8 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                     .addHeader("hospitalpatid", mHospitalPatId)
                     .addHeader("locationid", mLocationId)
                     .addHeader("aptid", String.valueOf(mAptId))
+
+
                     .addFileToUpload(image.getImagePath(), "attachment");
 
             String docCaption;

@@ -87,7 +87,7 @@ public class LoadAllPatientsService extends Service {
                 .setContentTitle("Download all patients")
                 .setTicker("Downloading")
                 .setContentText("Downloading patients")
-                .setSmallIcon(R.drawable.logosmall)
+                .setSmallIcon(R.drawable.logo)
                 .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent).build();
 
@@ -139,6 +139,7 @@ public class LoadAllPatientsService extends Service {
         mBuilder.setContentText("Downloading patients")
                 // Removes the progress bar
                 .setProgress(0, 0, true);
+
         mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
 
         RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();

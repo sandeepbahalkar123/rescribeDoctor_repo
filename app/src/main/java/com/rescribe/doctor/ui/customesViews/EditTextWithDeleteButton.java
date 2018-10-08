@@ -10,7 +10,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -101,10 +100,11 @@ public class EditTextWithDeleteButton extends LinearLayout {
             @Override
             public void onClick(View v) {
 
-                if (mClearButtonClickedInEditTextListener != null)
-                    mClearButtonClickedInEditTextListener.onClearButtonClicked();
-
-                editText.setText("");
+                if (!editText.getText().toString().isEmpty()) {
+                    if (mClearButtonClickedInEditTextListener != null)
+                        mClearButtonClickedInEditTextListener.onClearButtonClicked();
+                    editText.setText("");
+                }
             }
         });
     }

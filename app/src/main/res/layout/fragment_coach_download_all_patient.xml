@@ -1,17 +1,22 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent">
 
     <com.rescribe.doctor.ui.customesViews.JCropImageView
         android:id="@+id/coachmark"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:background="@drawable/coachmark_download_all_patient"
         app:cropAlign="top"
         app:cropType="fit_width"
         app:srcCompat="@drawable/coachmark_download_all_patient" />
 
-</FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#df000000"/>
+
+</LinearLayout>

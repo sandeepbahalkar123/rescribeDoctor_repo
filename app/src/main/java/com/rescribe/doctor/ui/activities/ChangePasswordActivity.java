@@ -43,15 +43,24 @@ public class ChangePasswordActivity extends AppCompatActivity implements HelperR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
         ButterKnife.bind(this);
-        backImageView.setVisibility(View.GONE);
+        backImageView.setVisibility(View.VISIBLE);
         titleTextView.setText(getString(R.string.change_password));
         loginHelper = new LoginHelper(this, this);
+
+        backImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     @OnClick(R.id.okButton)
     public void onViewClicked() {
         validate();
     }
+
+
 
     private void validate() {
         if (oldPasswordEditText.getText().toString().isEmpty()) {
@@ -79,7 +88,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements HelperR
         }
 
         if (!newPasswordEditText.getText().toString().equals(reEnterNewPassword.getText().toString())) {
-            CommonMethods.showToast(this, "Password not match.");
+            CommonMethods.showToast(this, "Password do not match.");
             return;
         }
 

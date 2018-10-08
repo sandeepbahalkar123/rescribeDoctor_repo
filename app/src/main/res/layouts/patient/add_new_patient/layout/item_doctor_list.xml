@@ -52,6 +52,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp15"
+                    android:visibility="gone"
                     app:customFont="@string/roboto_regular"
                     tools:text="test@gmail.com" />
 
