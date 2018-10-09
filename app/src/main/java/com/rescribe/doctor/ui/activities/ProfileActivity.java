@@ -266,7 +266,8 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         if (mArrayListDoctorLocationModel.size() > 0) {
             ArrayList<String> mClinicname = new ArrayList<>();
             for (int i = 0; i < mArrayListDoctorLocationModel.size(); i++) {
-                mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getArea() + ", " + mArrayListDoctorLocationModel.get(i).getCity());
+               // mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getArea() + ", " + mArrayListDoctorLocationModel.get(i).getCity());
+                mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getAddress() );
             }
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.clinic_spinner_layout, mClinicname);
             clinicNameSpinner.setAdapter(arrayAdapter);
