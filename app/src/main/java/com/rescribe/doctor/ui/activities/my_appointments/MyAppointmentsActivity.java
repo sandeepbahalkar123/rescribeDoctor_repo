@@ -54,6 +54,7 @@ import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
  */
 @RuntimePermissions
 public class MyAppointmentsActivity extends AppCompatActivity implements HelperResponse, DrawerForMyAppointment.OnDrawerInteractionListener, DatePickerDialog.OnDateSetListener {
+    public static final int CLOSE_APPOINTMENT_ACTIVITY_AFTER_BOOK_APPOINTMENT = 666;
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -78,7 +79,6 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     private MyAppointmentsBaseModel myAppointmentsBaseMainModel;
     private String phoneNo;
     private String mDateSelectedByUser = "";
-    public static final int CLOSE_APPOINTMENT_ACTIVITY_AFTER_BOOK_APPOINTMENT = 666;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +133,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
                     MyAppointmentsDataModel myAppointmentsDM = new MyAppointmentsDataModel();
                     myAppointmentsDM.setAppointmentList(getBookedAndConfirmed(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentList()));
 
-                    mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(myAppointmentsDM,mDateSelectedByUser);
+                    mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(myAppointmentsDM, mDateSelectedByUser);
                     getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
 
                     Bundle bundle = new Bundle();
@@ -192,12 +192,13 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.closeDrawer(GravityCompat.END);
         } else {
-            if (mMyAppointmentsFragment != null)
+            if (mMyAppointmentsFragment != null) {
                 if (isLongPressed) {
                     mMyAppointmentsFragment.removeCheckBox();
                 } else {
                     super.onBackPressed();
                 }
+            } else super.onBackPressed();
         }
     }
 
@@ -323,7 +324,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
 
         int monthOfYearToShow = monthOfYear + 1;
-        mDateSelectedByUser = dayOfMonth+"-"+monthOfYearToShow+"-"+year;
+        mDateSelectedByUser = dayOfMonth + "-" + monthOfYearToShow + "-" + year;
         dateTextview.setVisibility(View.VISIBLE);
         String timeToShow = CommonMethods.formatDateTime(dayOfMonth + "-" + monthOfYearToShow + "-" + year, RescribeConstants.DATE_PATTERN.MMM_YY,
                 RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE).toLowerCase();
