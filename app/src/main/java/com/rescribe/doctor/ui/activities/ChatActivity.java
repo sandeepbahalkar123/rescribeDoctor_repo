@@ -1400,13 +1400,13 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
         try {
 
-            UploadNotificationConfig uploadNotificationConfig = new UploadNotificationConfig();
-            uploadNotificationConfig.setTitleForAllStatuses("File Uploading");
-            uploadNotificationConfig.setIconColorForAllStatuses(Color.parseColor("#04abdf"));
+//            UploadNotificationConfig uploadNotificationConfig = new UploadNotificationConfig();
+//            uploadNotificationConfig.setTitleForAllStatuses("File Uploading");
+//            uploadNotificationConfig.setIconColorForAllStatuses(Color.parseColor("#04abdf"));
 //            uploadNotificationConfig.setClearOnActionForAllStatuses(true);
 
             MultipartUploadRequest uploadRequest = new MultipartUploadRequest(ChatActivity.this, String.valueOf(mqttMessage.getMsgId()), Config.BASE_URL + Config.CHAT_FILE_UPLOAD)
-                    .setNotificationConfig(uploadNotificationConfig)
+//                    .setNotificationConfig(uploadNotificationConfig)
                     .setMaxRetries(RescribeConstants.MAX_RETRIES)
                     .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, ChatActivity.this))
                     .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
@@ -1562,7 +1562,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
 
             String prefix[] = uploadInfo.getUploadId().split("_");
             if (prefix[0].equals(docId)) {
-                appDBHelper.updateMessageUploadStatus(uploadInfo.getUploadId(), FAILED);
                 int position = getPositionById(uploadInfo.getUploadId());
                 mqttMessages.get(position).setUploadStatus(FAILED);
                 chatAdapter.notifyItemChanged(position);
@@ -1591,7 +1590,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                 mqttMessages.get(position).setUploadStatus(COMPLETED);
                 chatAdapter.notifyItemChanged(position);
 
-                MQTTMessage mqttMessage = appDBHelper.getChatMessageByMessageId(uploadInfo.getUploadId());
+                /*MQTTMessage mqttMessage = appDBHelper.getChatMessageByMessageId(uploadInfo.getUploadId());
 
                 if (mqttMessage != null) {
                     String response = serverResponse.getBodyAsString();
@@ -1603,7 +1602,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.ItemL
                     mqttMessage.setFileUrl(fileUrl);
                     mqttMessage.setUploadStatus(COMPLETED);
                     mqttService.passMessage(mqttMessage);
-                }
+                }*/
             }
         }
 

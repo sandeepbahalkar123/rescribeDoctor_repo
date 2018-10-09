@@ -486,7 +486,6 @@ public class MQTTService extends Service {
         } else CommonMethods.Log(TAG, "Not Connected 1");
         sendStateSubscription.unsubscribe();
         sendStateSubscription = null;
-        syncOfflineRecords.onDestroy();
     }
 
 
