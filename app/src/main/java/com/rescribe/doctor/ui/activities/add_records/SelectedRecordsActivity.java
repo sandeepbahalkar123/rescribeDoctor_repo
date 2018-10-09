@@ -65,7 +65,8 @@ import droidninja.filepicker.FilePickerConst;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.rescribe.doctor.services.SyncOfflineRecords.getUploadConfig;
+import static com.rescribe.doctor.broadcast_receivers.FileUploadReceiver.ATTACHMENT_FILE_UPLOAD;
+//import static com.rescribe.doctor.services.SyncOfflineRecords.getUploadConfig;
 
 @RuntimePermissions
 public class SelectedRecordsActivity extends AppCompatActivity {
@@ -409,7 +410,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                 } else {
 
                     for (int parentIndex = 0; parentIndex < imagePaths.size(); parentIndex++) {
-                        String uploadId = System.currentTimeMillis() + "_" + parentIndex + "_" + patientId;
+                        String uploadId = ATTACHMENT_FILE_UPLOAD + System.currentTimeMillis() + "_" + parentIndex + "_" + patientId;
                         if (NetworkUtil.isInternetAvailable(SelectedRecordsActivity.this))
                             uploadImage(uploadId, imagePaths.get(parentIndex));
                         else
@@ -432,7 +433,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     public void uploadImage(String uploadId, Image image) {
         try {
 
-            UploadNotificationConfig uploadConfig = getUploadConfig(this);
+//            UploadNotificationConfig uploadConfig = getUploadConfig(this);
 
             String currentOpdTime;
             if (mOpdtime.equals(""))
@@ -469,8 +470,8 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                 docCaption = CommonMethods.stripExtension(CommonMethods.getFileNameFromPath(image.getImagePath()));
 
             uploadRequest.addHeader("captionname", docCaption);
-            uploadConfig.getProgress().message = uploadConfig.getProgress().message.replace("record", docCaption);
-            uploadRequest.setNotificationConfig(uploadConfig);
+//            uploadConfig.getProgress().message = uploadConfig.getProgress().message.replace("record", docCaption);
+//            uploadRequest.setNotificationConfig(uploadConfig);
             uploadRequest.startUpload();
 
         } catch (FileNotFoundException | MalformedURLException e) {

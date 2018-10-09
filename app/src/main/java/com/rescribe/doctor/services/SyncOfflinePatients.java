@@ -102,7 +102,6 @@ public class SyncOfflinePatients {
 
             mBuilder.setContentTitle("Syncing patients")
                     .setTicker("Syncing")
-                    .setContentText("Syncing patients")
                     .setSmallIcon(R.drawable.logosmall)
                     .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                     .setContentIntent(pendingIntent).build();

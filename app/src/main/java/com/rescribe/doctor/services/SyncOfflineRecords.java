@@ -62,7 +62,7 @@ public class SyncOfflineRecords {
 
                     if (uploadStatus == FAILED && appDBHelper.isPatientSynced(patientId)) {
 
-                        UploadNotificationConfig uploadConfig = getUploadConfig(context);
+//                        UploadNotificationConfig uploadConfig = getUploadConfig(context);
 
                         String uploadId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.UPLOAD_ID));
 
@@ -121,8 +121,8 @@ public class SyncOfflineRecords {
 
                             uploadRequest.addHeader("captionname", docCaption);
 
-                            uploadConfig.getProgress().message = uploadConfig.getProgress().message.replace("record", docCaption);
-                            uploadRequest.setNotificationConfig(uploadConfig);
+//                            uploadConfig.getProgress().message = uploadConfig.getProgress().message.replace("record", docCaption);
+//                            uploadRequest.setNotificationConfig(uploadConfig);
 
                             uploadRequest.startUpload();
 
@@ -140,7 +140,7 @@ public class SyncOfflineRecords {
         appDBHelper.close();
     }
 
-    public static UploadNotificationConfig getUploadConfig(Context context) {
+    /*public static UploadNotificationConfig getUploadConfig(Context context) {
         UploadNotificationConfig uploadNotificationConfig = new UploadNotificationConfig();
         uploadNotificationConfig.setIconColorForAllStatuses(context.getResources().getColor(R.color.tagColor));
 
@@ -164,54 +164,12 @@ public class SyncOfflineRecords {
         uploadNotificationConfig.getCancelled().iconColorResourceID = Color.YELLOW;
 
         return uploadNotificationConfig;
-    }
+    }*/
 
     void onCreate(Context mContext) {
         this.context = mContext;
         appDBHelper = new AppDBHelper(context);
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, mContext).equals(RescribeConstants.YES))
             check();
-        broadcastReceiver.register(context);
     }
-
-    void onDestroy() {
-        broadcastReceiver.unregister(context);
-    }
-
-    private UploadServiceBroadcastReceiver broadcastReceiver = new UploadServiceBroadcastReceiver() {
-        @Override
-        public void onProgress(Context context, UploadInfo uploadInfo) {
-            // your implementation
-        }
-
-        @Override
-        public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
-            // your implementation
-            if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, context).equals(RescribeConstants.YES)) {
-                appDBHelper.updateRecordUploads(uploadInfo.getUploadId(), FAILED);
-                Intent intent = new Intent(DOC_UPLOAD);
-                intent.putExtra(UPLOAD_INFO, uploadInfo);
-                intent.putExtra(STATUS, FAILED);
-                context.sendBroadcast(intent);
-            }
-        }
-
-        @Override
-        public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-            // your implementation
-
-            if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, context).equals(RescribeConstants.YES)) {
-                appDBHelper.updateRecordUploads(uploadInfo.getUploadId(), COMPLETED);
-                Intent intent = new Intent(DOC_UPLOAD);
-                intent.putExtra(UPLOAD_INFO, uploadInfo);
-                intent.putExtra(STATUS, COMPLETED);
-                context.sendBroadcast(intent);
-            }
-        }
-
-        @Override
-        public void onCancelled(Context context, UploadInfo uploadInfo) {
-            // your implementation
-        }
-    };
 }
