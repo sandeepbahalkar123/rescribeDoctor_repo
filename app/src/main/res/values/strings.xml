@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Dr Rescribe</string>
     <string name="enter_mobile_no">Mobile No. *</string>
+    <string name="enter_ref_mobile_no">Mobile No.</string>
     <string name="log_in">Login</string>
     <string name="enter_full_name">Name</string>
     <string name="enter_email_id">Email ID</string>

@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -171,7 +172,12 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 attachments.add(mListDataHeader.get(groupPosition).getCommonData().get(i));
                 int check = i + 1;
                 if (check % 3 == 0 || check == size1) {
-                    childViewHolder.tableLayout.addView(addAttachmentsTableRow(attachments));
+                    if (headerName.contains(CHILD_TYPE_ATTACHMENTS))
+                    childViewHolder.tableLayout.addView(addAttachmentsTableRow(attachments ,CHILD_TYPE_ATTACHMENTS));
+                    else if(headerName.contains(CHILD_TYPE_ANNOTATION))
+                    {
+                        childViewHolder.tableLayout.addView(addAttachmentsTableRow(attachments ,CHILD_TYPE_ANNOTATION));
+                    }
                     attachments.clear();
                 }
             }
@@ -310,7 +316,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
     // Created dynamic grid function to list of  vitals
     @SuppressLint("CheckResult")
-    private View addAttachmentsTableRow(final List<VisitCommonData> attachments) {
+    private View addAttachmentsTableRow(final List<VisitCommonData> attachments, final String childTypeAnnotation) {
 
         LinearLayout tableRow = new LinearLayout(mContext);
 
@@ -337,18 +343,23 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
             //-------
             if (mShowDeleteCheckbox) {
-                deleteCheckBox.setVisibility(View.VISIBLE);
-                deleteCheckBox.setTag(attachments.get(i));
-                deleteCheckBox.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CheckBox c = (CheckBox) v;
-                        if (c.isChecked())
-                            mSelectedAttachmentToDelete.add((VisitCommonData) v.getTag());
-                        else
-                            mSelectedAttachmentToDelete.remove((VisitCommonData) v.getTag());
-                    }
-                });
+                if (childTypeAnnotation.contains(CHILD_TYPE_ATTACHMENTS)) {
+                    deleteCheckBox.setVisibility(View.VISIBLE);
+                    deleteCheckBox.setTag(attachments.get(i));
+                    deleteCheckBox.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            CheckBox c = (CheckBox) v;
+                            if (c.isChecked())
+                                mSelectedAttachmentToDelete.add((VisitCommonData) v.getTag());
+                            else
+                                mSelectedAttachmentToDelete.remove((VisitCommonData) v.getTag());
+                        }
+                    });
+                }else {
+                    deleteCheckBox.setVisibility(View.GONE);
+                }
+
             } else {
                 deleteCheckBox.setVisibility(View.GONE);
             }
@@ -380,14 +391,21 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 }
             });
 
-            item.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    mShowDeleteCheckbox = mShowDeleteCheckbox ? false : true;
-                    notifyDataSetChanged();
-                    return false;
-                }
-            });
+            if (childTypeAnnotation.contains(CHILD_TYPE_ANNOTATION)) {
+                Log.e("CHILD_TYPE_ANNOTATION","CHILD_TYPE_ANNOTATION  Yes");
+            }else {
+                Log.e("CHILD_TYPE_ANNOTATION","No");
+                item.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        if(childTypeAnnotation.contains(CHILD_TYPE_ATTACHMENTS)) {
+                            mShowDeleteCheckbox = mShowDeleteCheckbox ? false : true;
+                            notifyDataSetChanged();
+                        }
+                        return false;
+                    }
+                });
+            }
 
             tableRow.addView(item);
         }
@@ -616,8 +634,13 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
                     //-----Show delete button on group to delete child attachments---
                     if (mShowDeleteCheckbox) {
-                        groupViewHolder.mDeleteAttachments.setVisibility(View.VISIBLE);
-                        groupViewHolder.mDeleteAttachments.setTag(groupPosition);
+                        if(mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION)){
+                            groupViewHolder.mDeleteAttachments.setVisibility(View.GONE);
+                            groupViewHolder.mDeleteAttachments.setTag(groupPosition);
+                        }else {
+                            groupViewHolder.mDeleteAttachments.setVisibility(View.VISIBLE);
+                            groupViewHolder.mDeleteAttachments.setTag(groupPosition);
+                        }
                     } else {
                         groupViewHolder.mDeleteAttachments.setVisibility(View.GONE);
                     }

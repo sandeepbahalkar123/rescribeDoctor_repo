@@ -75,7 +75,7 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
 
                 // Create the channel object with the unique ID ATTACHMENT_CHANNEL
                 NotificationChannel attachmentsChannel = new NotificationChannel(
-                        ATTACHMENT_FILE_UPLOAD, "Attachment File Upload",
+                        ATTACHMENT_FILE_UPLOAD, "Add Records Uploading",
                         NotificationManager.IMPORTANCE_DEFAULT);
 
                 // Configure the channel's initial settings
@@ -89,7 +89,7 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
             mAttachmentBuilder = new NotificationCompat.Builder(context, ATTACHMENT_FILE_UPLOAD);
             Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);
 
-            mAttachmentBuilder.setContentTitle("Attachment Uploading")
+            mAttachmentBuilder.setContentTitle("Add Records Uploading")
                     .setTicker("Uploading")
                     .setSmallIcon(R.drawable.logosmall)
                     .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
@@ -217,7 +217,7 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
 
                 attachmentUploads.remove(uploadInfo.getUploadId());
                 if (attachmentUploads.isEmpty())
-                    mAttachmentBuilder.setContentText("Files Uploaded");
+                    mAttachmentBuilder.setContentText("Files Uploaded Successfully");
                 else
                     mAttachmentBuilder.setContentText("Uploading " + attachmentUploads.size() + (attachmentUploads.size() == 1 ? " File" : " Files"));
                 // Removes the progress bar
@@ -251,7 +251,7 @@ public class FileUploadReceiver extends UploadServiceBroadcastReceiver {
 
                 connectUploads.remove(uploadInfo.getUploadId());
                 if (connectUploads.isEmpty())
-                    mConnectBuilder.setContentText("Files Uploaded");
+                    mConnectBuilder.setContentText("Files Uploaded Successfully");
                 else
                     mConnectBuilder.setContentText("Uploading " + connectUploads.size() + (connectUploads.size() == 1 ? " File" : " Files"));
                 // Removes the progress bar
