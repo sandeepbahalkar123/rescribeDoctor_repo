@@ -560,13 +560,13 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         //---------
 
         if (firstName.isEmpty()) {
-            message = enter + getString(R.string.first_name).toLowerCase(Locale.US);
+            message = enter + getString(R.string.first_name_error).toLowerCase(Locale.US);
             CommonMethods.showToast(this, message);
         } else if (lastName.isEmpty()) {
-            message = enter + getString(R.string.last_name);
+            message = enter + getString(R.string.last_name_error);
             CommonMethods.showToast(this, message);
         } else if (mob.isEmpty() || mob.length() < 10) {
-            message = enter + getString(R.string.enter_mobile_no);
+            message = enter + getString(R.string.enter_mobile_no_error);
             CommonMethods.showToast(this, message);
         } else if ((mob.trim().length() < 10) || !(mob.trim().startsWith("6") || mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9"))) {
             message = getString(R.string.err_invalid_mobile_no);

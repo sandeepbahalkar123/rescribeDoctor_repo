@@ -5,23 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.network.RequestPool;
 import com.rescribe.doctor.notification.MQTTServiceAlarmTask;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.util.RescribeConstants;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.android.volley.Request.Method.GET;
 
 public class SplashScreenActivity extends AppCompatActivity {
 

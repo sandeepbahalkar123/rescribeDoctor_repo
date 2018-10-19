@@ -46,6 +46,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
     public static final String CHILD_TYPE_VITALS = "vital";
     public static final String CHILD_TYPE_ATTACHMENTS = "attachment";
     public static final String CHILD_TYPE_ANNOTATION = "annotation";
+    public static final String CHILD_TYPE_NOTES = "notes";
     public static final int TEXT_LIMIT = 33;
     private static final String CHILD_TYPE_ALLERGIES = "allergie";
     private static final String CHILD_TYPE_PRESCRIPTIONS = "prescription";
@@ -157,7 +158,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 } else count++;
             }
 
-        } else if (headerName.contains(CHILD_TYPE_ATTACHMENTS) || headerName.contains(CHILD_TYPE_ANNOTATION)) {
+        } else if (headerName.contains(CHILD_TYPE_ATTACHMENTS) || headerName.contains(CHILD_TYPE_ANNOTATION) || headerName.contains(CHILD_TYPE_NOTES)) {
 
             childViewHolder.tableLayout.setVisibility(View.VISIBLE);
             childViewHolder.itemsLayout.setVisibility(View.GONE);
@@ -172,11 +173,10 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 attachments.add(mListDataHeader.get(groupPosition).getCommonData().get(i));
                 int check = i + 1;
                 if (check % 3 == 0 || check == size1) {
-                    if (headerName.contains(CHILD_TYPE_ATTACHMENTS))
-                    childViewHolder.tableLayout.addView(addAttachmentsTableRow(attachments ,CHILD_TYPE_ATTACHMENTS));
-                    else if(headerName.contains(CHILD_TYPE_ANNOTATION))
-                    {
-                        childViewHolder.tableLayout.addView(addAttachmentsTableRow(attachments ,CHILD_TYPE_ANNOTATION));
+                    if (headerName.contains(CHILD_TYPE_ATTACHMENTS) || headerName.contains(CHILD_TYPE_NOTES))
+                        childViewHolder.tableLayout.addView(addAttachmentsTableRow(attachments, CHILD_TYPE_ATTACHMENTS));
+                    else if (headerName.contains(CHILD_TYPE_ANNOTATION)) {
+                        childViewHolder.tableLayout.addView(addAttachmentsTableRow(attachments, CHILD_TYPE_ANNOTATION));
                     }
                     attachments.clear();
                 }
@@ -343,7 +343,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
             //-------
             if (mShowDeleteCheckbox) {
-                if (childTypeAnnotation.contains(CHILD_TYPE_ATTACHMENTS)) {
+                if (childTypeAnnotation.contains(CHILD_TYPE_ATTACHMENTS) || childTypeAnnotation.contains(CHILD_TYPE_NOTES)) {
                     deleteCheckBox.setVisibility(View.VISIBLE);
                     deleteCheckBox.setTag(attachments.get(i));
                     deleteCheckBox.setOnClickListener(new View.OnClickListener() {
@@ -356,7 +356,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                                 mSelectedAttachmentToDelete.remove((VisitCommonData) v.getTag());
                         }
                     });
-                }else {
+                } else {
                     deleteCheckBox.setVisibility(View.GONE);
                 }
 
@@ -392,13 +392,13 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             });
 
             if (childTypeAnnotation.contains(CHILD_TYPE_ANNOTATION)) {
-                Log.e("CHILD_TYPE_ANNOTATION","CHILD_TYPE_ANNOTATION  Yes");
-            }else {
-                Log.e("CHILD_TYPE_ANNOTATION","No");
+                Log.e("CHILD_TYPE_ANNOTATION", "CHILD_TYPE_ANNOTATION  Yes");
+            } else {
+                Log.e("CHILD_TYPE_ANNOTATION", "No");
                 item.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        if(childTypeAnnotation.contains(CHILD_TYPE_ATTACHMENTS)) {
+                        if (childTypeAnnotation.contains(CHILD_TYPE_ATTACHMENTS)) {
                             mShowDeleteCheckbox = mShowDeleteCheckbox ? false : true;
                             notifyDataSetChanged();
                         }
@@ -517,7 +517,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (this.mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || this.mListDataHeader.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_VITALS) || this.mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION))
+        if (this.mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || this.mListDataHeader.get(groupPosition).getCaseDetailName().equalsIgnoreCase(CHILD_TYPE_VITALS) || this.mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION) || this.mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_NOTES))
             return 1;
         else
             return (this.mListDataHeader.get(groupPosition).getCommonData())
@@ -625,7 +625,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                         } else {
                             groupViewHolder.mDetailFirstPoint.setText(mVisitDetailList.get(0).getName() + "...");
                         }
-                } else if (mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION)) {
+                } else if (mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION) || mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_NOTES)) {
 
                     String text = stripExtension(mVisitDetailList.get(0).getName());
                     if (text.length() > TEXT_LIMIT)
@@ -634,10 +634,10 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
                     //-----Show delete button on group to delete child attachments---
                     if (mShowDeleteCheckbox) {
-                        if(mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION)){
+                        if (mListDataHeader.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION)) {
                             groupViewHolder.mDeleteAttachments.setVisibility(View.GONE);
                             groupViewHolder.mDeleteAttachments.setTag(groupPosition);
-                        }else {
+                        } else {
                             groupViewHolder.mDeleteAttachments.setVisibility(View.VISIBLE);
                             groupViewHolder.mDeleteAttachments.setTag(groupPosition);
                         }
@@ -674,8 +674,16 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             public void onClick(View v) {
                 if (!mSelectedAttachmentToDelete.isEmpty()) {
                     selectedAttachmentToDeleteGroupPosition = (Integer) v.getTag();
+                    String caseName= CHILD_TYPE_ATTACHMENTS;
+                    PatientHistory patientHistory = mListDataHeader.get(selectedAttachmentToDeleteGroupPosition);
+                    if (patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS)) {
+                        caseName = CHILD_TYPE_ATTACHMENTS;
+                    } else if (patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_NOTES)) {
+                        caseName = CHILD_TYPE_NOTES;
+                    }
+
                     if (groupViewHolder.mDeleteAttachments.getVisibility() == View.VISIBLE) {
-                        deleteAttachmentsListener.deleteAttachments(mSelectedAttachmentToDelete);
+                        deleteAttachmentsListener.deleteAttachments(mSelectedAttachmentToDelete,caseName);
                     }
                 }
 
@@ -1064,7 +1072,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
     public boolean removeSelectedAttachmentFromList() {
         boolean isAttachmentDeleted = false;
         PatientHistory patientHistory = mListDataHeader.get(selectedAttachmentToDeleteGroupPosition);
-        if (patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION)) {
+        if (patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION) || patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_NOTES)) {
             List<VisitCommonData> commonData = patientHistory.getCommonData();
             for (VisitCommonData objToRemove :
                     mSelectedAttachmentToDelete) {
@@ -1091,7 +1099,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
     }
 
     public interface OnDeleteAttachments {
-        public void deleteAttachments(HashSet<VisitCommonData> list);
+        public void deleteAttachments(HashSet<VisitCommonData> list, String caseName);
 
     }
 

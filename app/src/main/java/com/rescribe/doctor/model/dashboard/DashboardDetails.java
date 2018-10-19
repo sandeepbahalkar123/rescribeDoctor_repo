@@ -17,6 +17,10 @@ public class DashboardDetails implements Parcelable
     @SerializedName("appURL")
     @Expose
     private String appURL;
+
+    @SerializedName("appointmentType")
+    @Expose
+    private String appointmentType;
     @SerializedName("calendarTypeList")
     @Expose
     private ArrayList<CalendarTypeList> calendarTypeList = new ArrayList<CalendarTypeList>();
@@ -46,6 +50,7 @@ public class DashboardDetails implements Parcelable
     protected DashboardDetails(Parcel in) {
         this.versionCode = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.appURL = ((String) in.readValue((String.class.getClassLoader())));
+        this.appointmentType = ((String) in.readValue((String.class.getClassLoader())));
         in.readList(this.calendarTypeList, (CalendarTypeList.class.getClassLoader()));
         this.dashboardAppointmentClinicList = ((DashboardAppointmentClinicList) in.readValue((DashboardAppointmentClinicList.class.getClassLoader())));
         this.dashboardWaitingList = ((DashboardWaitingList) in.readValue((DashboardWaitingList.class.getClassLoader())));
@@ -92,12 +97,21 @@ public class DashboardDetails implements Parcelable
         this.dashboardWaitingList = dashboardWaitingList;
     }
 
+    public String getAppointmentType() {
+        return appointmentType;
+    }
+
+    public void setAppointmentType(String appointmentType) {
+        this.appointmentType = appointmentType;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(versionCode);
         dest.writeValue(appURL);
         dest.writeList(calendarTypeList);
         dest.writeValue(dashboardAppointmentClinicList);
         dest.writeValue(dashboardWaitingList);
+        dest.writeValue(appointmentType);
     }
 
     public int describeContents() {

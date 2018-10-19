@@ -2,13 +2,13 @@ package com.rescribe.doctor.services;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -113,11 +113,22 @@ public class MQTTService extends Service {
     public void onCreate() {
         super.onCreate();
         mContext = this;
+
+
+        Intent notificationIntent = new Intent();
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
         notificationHelper = new NotificationHelper(mContext);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Notification notification = new NotificationCompat.Builder(this, NotificationHelper.CONNECT_CHANNEL)
+            Notification notification = new NotificationCompat.Builder(this, NotificationHelper.PATIENT_CONNECT_CHANNEL)
                     .setContentTitle("Patient Connect")
-                    .setContentText("Chat with Patient").build();
+                    .setSmallIcon(R.drawable.logo)
+                    .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+                    .setContentText("Chat with Patient")
+                    .setContentIntent(pendingIntent).build();
             startForeground(CONNECT_FOREGROUND_ID, notification);
         }
 

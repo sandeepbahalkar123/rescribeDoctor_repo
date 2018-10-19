@@ -6,8 +6,9 @@ package com.rescribe.doctor.network;
 import android.content.Context;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
+
+import com.android.volley.request.JsonObjectRequest;
+import com.android.volley.request.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 public class RequestPool {

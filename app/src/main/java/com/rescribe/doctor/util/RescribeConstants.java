@@ -93,6 +93,7 @@ public class RescribeConstants {
     public static final String TASK_GET_AREA_TO_ADD_NEW_PATIENT = "41";
     public static final String TASK_GET_DOC_LIST_FOR_REFERENCE_TO_ADD_PATIENT = "42";
     public static final String TASK_GET_STATE_TO_ADD_NEW_PATIENT = "43";
+    public static final String TASK_DELETE_PATIENT_OPD_NOTES = "44";
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -294,7 +295,10 @@ public class RescribeConstants {
         String NO_SHOW = "no show";
     }
 
-
+    public interface APPOINTMENT_TYPE{
+        String TOKEN = "token";
+        String BOOK = "book";
+    }
 }
 
 

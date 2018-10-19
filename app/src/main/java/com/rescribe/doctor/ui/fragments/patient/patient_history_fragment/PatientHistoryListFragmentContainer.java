@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -456,6 +457,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     //---------------
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        Log.e("Pat History rsponce", customResponse.toString());
         PatientHistoryBaseModel newBaseModel = (PatientHistoryBaseModel) customResponse;
 
         if (newBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {

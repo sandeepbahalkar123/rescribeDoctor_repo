@@ -221,13 +221,13 @@
             android:enabled="true"
             android:exported="false" />
 
-        <receiver
-            android:name=".broadcast_receivers.FileUploadReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.rescribe.doctor.uploadservice.broadcast.status" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver-->
+            <!--android:name=".broadcast_receivers.FileUploadReceiver"-->
+            <!--android:exported="false">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.rescribe.doctor.uploadservice.broadcast.status" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <activity
             android:name=".ui.activities.zoom_images.ZoomImageViewActivity"
@@ -275,7 +275,8 @@
             android:label="@string/change_password"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <service android:name=".services.add_record_upload_Service.AddRecordService"/>
+        <service android:name=".services.connect_upload_service.ConnectUploadService"/>
     </application>
 
 </manifest>

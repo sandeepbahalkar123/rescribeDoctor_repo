@@ -1,5 +1,6 @@
 package com.rescribe.doctor.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.login.LoginHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.CommonBaseModelContainer;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
@@ -100,8 +102,11 @@ public class ChangePasswordActivity extends AppCompatActivity implements HelperR
         if (CHANGE_PASSWORD.equals(mOldDataTag)){
             if (customResponse instanceof CommonBaseModelContainer){
                 CommonBaseModelContainer commonBaseModelContainer = (CommonBaseModelContainer) customResponse;
-                if (commonBaseModelContainer.getCommonRespose().getStatusCode().equals(SUCCESS))
-                    onBackPressed();
+                if (commonBaseModelContainer.getCommonRespose().getStatusCode().equals(SUCCESS)) {
+                    Intent intent = new Intent(ChangePasswordActivity.this, LoginSignUpActivity.class);
+                    startActivity(intent);
+                    finishAffinity();
+                }
 
                 CommonMethods.showToast(this, commonBaseModelContainer.getCommonRespose().getStatusMessage());
             }

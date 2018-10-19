@@ -12,18 +12,19 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.android.volley.AuthFailureError;
+
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.NetworkError;
+import com.android.volley.error.NoConnectionError;
+import com.android.volley.error.ParseError;
+import com.android.volley.error.ServerError;
+import com.android.volley.error.TimeoutError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
+import com.android.volley.request.StringRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.R;
@@ -196,6 +197,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
 
             }
         };
+        jsonRequest.setShouldCache(false);
         jsonRequest.setRetryPolicy(new DefaultRetryPolicy(CONNECTION_TIME_OUT, N0OF_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         jsonRequest.setTag(requestTag);
         requestTimer.start();
@@ -246,6 +248,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
 
             }
         };
+        jsonRequest.setShouldCache(false);
         jsonRequest.setRetryPolicy(new DefaultRetryPolicy(CONNECTION_TIME_OUT, N0OF_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         jsonRequest.setTag(requestTag);
         requestTimer.start();
@@ -284,6 +287,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
             }
         };
 
+        stringRequest.setShouldCache(false);
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(CONNECTION_TIME_OUT, N0OF_RETRY, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         stringRequest.setTag(requestTag);
         requestTimer.start();
@@ -617,7 +621,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         StateAndCityBaseModel stateAndCityBaseModel = new Gson().fromJson(data, StateAndCityBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, stateAndCityBaseModel, mOldDataTag);
                         break;
-
+                    case RescribeConstants.TASK_DELETE_PATIENT_OPD_NOTES: //This is for delete Notes
+                        CommonBaseModelContainer commonModelNotes = new Gson().fromJson(data, CommonBaseModelContainer.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, commonModelNotes, mOldDataTag);
+                        break;
 
                     default:
 

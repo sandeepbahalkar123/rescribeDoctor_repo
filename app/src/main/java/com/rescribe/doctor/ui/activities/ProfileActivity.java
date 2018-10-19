@@ -16,6 +16,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,10 @@ import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.SimpleMultiPartRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -42,7 +47,6 @@ import com.rescribe.doctor.bottom_menus.BottomMenuAdapter;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.model.login.DocDetail;
-import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.profile_photo.ProfilePhotoResponse;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
@@ -59,16 +63,9 @@ import com.rescribe.doctor.util.ImageUtils;
 import com.rescribe.doctor.util.RescribeConstants;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import net.gotev.uploadservice.MultipartUploadRequest;
-import net.gotev.uploadservice.ServerResponse;
-import net.gotev.uploadservice.UploadInfo;
-import net.gotev.uploadservice.UploadNotificationConfig;
-import net.gotev.uploadservice.UploadStatusDelegate;
-
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -196,16 +193,16 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         String doctorNameToDisplay;
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr."))
             doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
-         else
+        else
             doctorNameToDisplay = "Dr. " + RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
 
         doctorName.setText(doctorNameToDisplay);
 
         String doctorDetails = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, this);
         final DocDetail docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
-        if(docDetail.getDocInfo().isEmpty()){
+        if (docDetail.getDocInfo().isEmpty()) {
             aboutLayout.setVisibility(View.INVISIBLE);
-        }else {
+        } else {
             aboutLayout.setVisibility(View.VISIBLE);
             aboutDoctorDescription.setText(docDetail.getDocInfo());
         }
@@ -266,8 +263,8 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         if (mArrayListDoctorLocationModel.size() > 0) {
             ArrayList<String> mClinicname = new ArrayList<>();
             for (int i = 0; i < mArrayListDoctorLocationModel.size(); i++) {
-               // mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getArea() + ", " + mArrayListDoctorLocationModel.get(i).getCity());
-                mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getAddress() );
+                // mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getArea() + ", " + mArrayListDoctorLocationModel.get(i).getCity());
+                mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getAddress());
             }
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.clinic_spinner_layout, mClinicname);
             clinicNameSpinner.setAdapter(arrayAdapter);
@@ -512,75 +509,59 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     }
 
     public void uploadProfileImage(final String filePath) {
-        try {
-            mCustomProgressDialog.show();
-            MultipartUploadRequest uploadRequest = new MultipartUploadRequest(ProfileActivity.this, System.currentTimeMillis() + docId, Url)
-                    .setUtf8Charset()
-                    .setMaxRetries(RescribeConstants.MAX_RETRIES)
-                    .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
-                    .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
-                    .addHeader(RescribeConstants.OS, device.getOS())
-                    .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
-                    .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
-                    .addHeader("docid", String.valueOf(docId))
-                    .addFileToUpload(filePath, "docImage");
 
-            uploadRequest.setNotificationConfig(new UploadNotificationConfig());
+        mCustomProgressDialog.show();
 
-            uploadRequest.setDelegate(new UploadStatusDelegate() {
-                @Override
-                public void onProgress(Context context, UploadInfo uploadInfo) {
-                    // your code here
-                }
+        HashMap<String, String> mapHeaders = new HashMap<String, String>();
+        mapHeaders.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
+        mapHeaders.put(RescribeConstants.DEVICEID, device.getDeviceId());
+        mapHeaders.put(RescribeConstants.OS, device.getOS());
+        mapHeaders.put(RescribeConstants.OSVERSION, device.getOSVersion());
+        mapHeaders.put(RescribeConstants.DEVICE_TYPE, device.getDeviceType());
+        mapHeaders.put("docid", String.valueOf(docId));
 
-                @Override
-                public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse,
-                                    Exception exception) {
-                    // your code here
-                    mCustomProgressDialog.dismiss();
-                    Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                }
+        SimpleMultiPartRequest profilePhotoUploadRequest = new SimpleMultiPartRequest(Request.Method.POST, Url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("Response profile photo", response);
+                        //On Profile Image Upload on Server is completed that event is captured in this function.
 
-                @SuppressLint("CheckResult")
-                @Override
-                public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-                    //On Profile Image Upload on Server is completed that event is captured in this function.
+                        String bodyAsString = response;
+                        CommonMethods.Log(TAG, bodyAsString);
 
-                    String bodyAsString = serverResponse.getBodyAsString();
-                    CommonMethods.Log(TAG, bodyAsString);
+                        ProfilePhotoResponse profilePhotoResponse = new Gson().fromJson(bodyAsString, ProfilePhotoResponse.class);
+                        if (profilePhotoResponse.getCommon().isSuccess()) {
+                            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, profilePhotoResponse.getData().getDocImgUrl(), mContext);
+                            Toast.makeText(ProfileActivity.this, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                            RequestOptions requestOptions = new RequestOptions();
+                            requestOptions.dontAnimate();
+                            requestOptions.skipMemoryCache(true);
+                            requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
 
-                    ProfilePhotoResponse profilePhotoResponse = new Gson().fromJson(bodyAsString, ProfilePhotoResponse.class);
-                    if (profilePhotoResponse.getCommon().isSuccess()) {
-                        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, profilePhotoResponse.getData().getDocImgUrl(), mContext);
-                        Toast.makeText(context, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
-                        RequestOptions requestOptions = new RequestOptions();
-                        requestOptions.dontAnimate();
-                        requestOptions.skipMemoryCache(true);
-                        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-
-                        Glide.with(mContext)
-                                .load(filePath)
-                                .apply(requestOptions).thumbnail(0.5f)
-                                .into(profileImage);
-                        mCustomProgressDialog.dismiss();
-                    } else {
-                        mCustomProgressDialog.dismiss();
-                        Toast.makeText(context, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                            Glide.with(mContext)
+                                    .load(filePath)
+                                    .apply(requestOptions).thumbnail(0.5f)
+                                    .into(profileImage);
+                            mCustomProgressDialog.dismiss();
+                        } else {
+                            mCustomProgressDialog.dismiss();
+                            Toast.makeText(ProfileActivity.this, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mCustomProgressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
 
-                @Override
-                public void onCancelled(Context context, UploadInfo uploadInfo) {
-                    // your code here
-                    mCustomProgressDialog.dismiss();
-                }
-            });
+            }
+        });
 
-            uploadRequest.startUpload();
+        profilePhotoUploadRequest.setHeaders(mapHeaders);
+        profilePhotoUploadRequest.addFile("docImage", filePath);
+        RescribeApplication.getInstance().addToRequestQueue(profilePhotoUploadRequest);
 
-        } catch (FileNotFoundException | MalformedURLException e) {
-            e.printStackTrace();
-        }
 
     }
 

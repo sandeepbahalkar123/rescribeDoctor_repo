@@ -470,9 +470,14 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount() + "");
                         todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
-                        todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
                         hostViewsLayout.removeAllViews();
-                        setLayoutForAppointment(true, mDashboardDetails.getCalendarTypeList());
+
+                        if (mDashboardDetails.getAppointmentType().equalsIgnoreCase(RescribeConstants.APPOINTMENT_TYPE.TOKEN)) {
+                            todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
+                        } else {
+                            todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
+                            setLayoutForAppointment(true, mDashboardDetails.getCalendarTypeList());
+                        }
                         // inflate waiting list layout
                         setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
                         // inflate patientConnect layout
@@ -487,8 +492,14 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                         todayWaitingListOrAppointmentCount.setText("0");
                         todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
                         todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
-                        todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
-                        setLayoutForAppointment(false, mDashboardDetails.getCalendarTypeList());
+
+                        if (mDashboardDetails.getAppointmentType().equalsIgnoreCase(RescribeConstants.APPOINTMENT_TYPE.TOKEN)) {
+                            todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
+
+                        } else {
+                            todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
+                            setLayoutForAppointment(true, mDashboardDetails.getCalendarTypeList());
+                        }
                         // inflate waiting list layout
                         setLayoutForWaitingList("0");
                         // inflate patientConnect layout

@@ -10,6 +10,7 @@ import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.case_details.CaseDetailsModel;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.patient.delete_attachment_req_model.DeleteAttachmentReqModel;
+import com.rescribe.doctor.model.patient.delete_notes_record.DeleteNotesReqModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryBaseModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryDataModel;
 import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
@@ -148,6 +149,28 @@ public class PatientDetailHelper implements ConnectionListener {
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.DELETE_PATIENT_OPD_ATTCHMENTS);
         mConnectionFactory.createConnection(RescribeConstants.TASK_DELETE_PATIENT_OPD_ATTCHMENTS);
+    }
+
+
+    public void deleteSelectedNotes(HashSet<VisitCommonData> list) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_PATIENT_OPD_NOTES, Request.Method.POST, false);
+
+        ArrayList<DeleteNotesReqModel.NotesData> deleteNotesList = new ArrayList<>();
+        DeleteNotesReqModel delete = new DeleteNotesReqModel();
+
+        for (VisitCommonData s : list) {
+            DeleteNotesReqModel.NotesData i = new DeleteNotesReqModel.NotesData();
+            i.setId("" + s.getId());
+            String url = s.getUrl();
+            i.setFileName("" + url.substring(url.lastIndexOf('/') + 1, url.length()));
+            deleteNotesList.add(i);
+        }
+        delete.setNotesDetails(deleteNotesList);
+
+        mConnectionFactory.setPostParams(delete);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.DELETE_PATIENT_OPD_NOTES);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_DELETE_PATIENT_OPD_NOTES);
     }
 }
 

@@ -3,11 +3,10 @@ package com.rescribe.doctor.services.job_creator_download_cities;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
@@ -27,9 +26,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.android.volley.Request.Method.POST;
-import static com.rescribe.doctor.util.Config.GET_ALL_CITIES_STATE_WISE;
 import static com.rescribe.doctor.util.Config.BASE_URL;
+import static com.rescribe.doctor.util.Config.GET_ALL_CITIES_STATE_WISE;
 
 public class CitySyncJob extends Job {
 
@@ -100,7 +98,7 @@ public class CitySyncJob extends Job {
 
                         CommonMethods.Log(TAG, "RESPONSE:" + response.toString());
 
-                        if (!isCanceled() ) {
+                        if (!isCanceled()) {
                             CommonMethods.Log(TAG, "RESPONSE:" + response.toString());
                             AppDBHelper.getInstance(mContext).insertData(TAG, response.toString());
                         }

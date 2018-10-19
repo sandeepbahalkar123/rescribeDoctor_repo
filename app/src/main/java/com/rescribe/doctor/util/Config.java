@@ -30,6 +30,7 @@ public class Config {
     public static final String TIME_SLOT_TO_BOOK_APPOINTMENT = "api/doctors/getDocOpenTimeSlots?";
     public static final String CONFIRM_APPOINTMENT = "api/patient/bookAppointment";
     public static final String UPLOAD_PROFILE_PHOTO = "api/upload/uploadDoctorImage";
+    public static final String DELETE_PATIENT_OPD_NOTES = "doctor/api/appointment/deleteOpdNotes";
 
 
     //---------------LOCAL SERVER URL START-----------------------

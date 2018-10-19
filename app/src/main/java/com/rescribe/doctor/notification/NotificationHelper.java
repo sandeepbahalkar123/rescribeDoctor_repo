@@ -52,7 +52,7 @@ import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
  */
 public class NotificationHelper extends ContextWrapper {
     private NotificationManager mNotificationManager;
-    public static final String CONNECT_CHANNEL = "connect";
+    public static final String PATIENT_CONNECT_CHANNEL = "patient_connect";
 
     /**
      * The unique identifier for this type of notification.
@@ -77,7 +77,7 @@ public class NotificationHelper extends ContextWrapper {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             // Create the channel object with the unique ID CONNECT_CHANNEL
             NotificationChannel connectChannel = new NotificationChannel(
-                    CONNECT_CHANNEL, "Connect",
+                    PATIENT_CONNECT_CHANNEL, "Patient Connect",
                     NotificationManager.IMPORTANCE_DEFAULT);
 
             // Configure the channel's initial settings
@@ -197,7 +197,7 @@ public class NotificationHelper extends ContextWrapper {
                         .setAllowGeneratedReplies(true)
                         .build();
 
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CONNECT_CHANNEL)
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, PATIENT_CONNECT_CHANNEL)
 
                 // Set appropriate defaults for the notification light, sound,
                 // and vibration.

@@ -103,7 +103,9 @@ dependencies {
 
     compile 'joda-time:joda-time:2.9.9'
     compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.mcxiaoke.volley:library:1.0.19'
+    //compile 'com.mcxiaoke.volley:library:1.0.19'
+    compile 'dev.dworks.libs:volleyplus:+'
+
     compile 'com.android.support.constraint:constraint-layout:1.1.2'
     compile 'com.facebook.android:facebook-android-sdk:4.26.0'
     compile 'com.android.support:multidex:1.0.3'
@@ -128,7 +130,7 @@ dependencies {
         transitive = true;
     }
 
-    compile "net.gotev:uploadservice:3.4.2"
+   // compile "net.gotev:uploadservice:3.4.2"
 
     //job creator for latest version instead services
     implementation 'com.evernote:android-job:1.2.6'

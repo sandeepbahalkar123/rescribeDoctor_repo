@@ -37,7 +37,7 @@ import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
 
-import net.gotev.uploadservice.UploadService;
+//import net.gotev.uploadservice.UploadService;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -936,7 +936,7 @@ public class CommonMethods {
     public static void logout(Context mContext, AppDBHelper appDBHelper) {
 
         // cancel all uploadings.
-        UploadService.stopAllUploads();
+        //UploadService.stopAllUploads();
 
         String mobileNoGmail = "";
         String passwordGmail = "";

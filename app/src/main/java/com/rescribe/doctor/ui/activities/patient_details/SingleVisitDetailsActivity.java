@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -31,8 +32,6 @@ import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import net.gotev.uploadservice.UploadInfo;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,14 +44,11 @@ import butterknife.OnClick;
 
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_ANNOTATION;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_ATTACHMENTS;
+import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_NOTES;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_VITALS;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.TEXT_LIMIT;
-import static com.rescribe.doctor.services.ChatBackUpService.STATUS;
-import static com.rescribe.doctor.services.SyncOfflineRecords.DOC_UPLOAD;
-import static com.rescribe.doctor.services.SyncOfflineRecords.UPLOAD_INFO;
+import static com.rescribe.doctor.services.SyncOfflineRecords.ATTATCHMENT_DOC_UPLOAD;
 import static com.rescribe.doctor.ui.fragments.patient.patient_history_fragment.PatientHistoryListFragmentContainer.SELECT_REQUEST_CODE;
-import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
-import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 
 /**
  * Created by jeetal on 14/6/17.
@@ -159,7 +155,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 if (childObject.size() == 1) {
 
                     boolean flag = true;
-                    if (listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_VITALS))
+                    if (listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_VITALS) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_NOTES) )
                         flag = false;
 
                     if (flag) {
@@ -195,7 +191,10 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
-        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DELETE_PATIENT_OPD_ATTCHMENTS)) {
+        Log.e("Pat Single visit rsp", customResponse.toString());
+        Log.e("mOldDataTag", mOldDataTag);
+
+        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DELETE_PATIENT_OPD_ATTCHMENTS) || mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_DELETE_PATIENT_OPD_NOTES)) {
             CommonBaseModelContainer common = (CommonBaseModelContainer) customResponse;
             if (common.getCommonRespose().isSuccess()) {
                 isAttachmentDeleted = mSingleVisitAdapter.removeSelectedAttachmentFromList();
@@ -252,7 +251,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                                     vital.setUnitName(getString(R.string.bp) + " " + dataObject.getUnitValue());
                                     vital.setUnitValue(dataObject.getUnitValue());
 //                                    vital.setCategory(dataObject.getCategory());
-                                    if(!dataObject.getCategory().isEmpty())
+                                    if (!dataObject.getCategory().isEmpty())
                                         vital.setCategory(dataObject.getCategory());
                                     else
                                         vital.setCategory(dataObject.getUnitName());
@@ -267,15 +266,16 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                                 } else {
                                     Vital previousData = vitalSortedList.get(Integer.parseInt(pos));
                                     String unitValue = previousData.getUnitValue();
-                                    String unitCategory="";
-                                    if(!previousData.getCategory().isEmpty()) {
+                                    String unitCategory = "";
+                                    if (!previousData.getCategory().isEmpty()) {
                                         unitCategory = previousData.getCategory();
                                         unitCategory = unitCategory + getString(R.string.colon_sign) + dataObject.getCategory();
-                                    }else {
+                                    } else {
                                         unitCategory = previousData.getUnitName();
                                         unitCategory = unitCategory + getString(R.string.colon_sign) + dataObject.getUnitName();
 
-                                    }for (int k = 0; k < dataObject.getRanges().size(); k++) {
+                                    }
+                                    for (int k = 0; k < dataObject.getRanges().size(); k++) {
                                         dataObject.getRanges().get(k).setNameOfVital(getString(R.string.bp_min));
                                     }
                                     unitValue = unitValue + "/" + dataObject.getUnitValue();
@@ -290,7 +290,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                                 Vital vital = new Vital();
                                 vital.setUnitName(vitalList.get(j).getDisplayName());
                                 vital.setUnitValue(vitalList.get(j).getUnitValue());
-                                if(!vitalList.get(j).getCategory().isEmpty())
+                                if (!vitalList.get(j).getCategory().isEmpty())
                                     vital.setCategory(vitalList.get(j).getCategory());
                                 else
                                     vital.setCategory(vitalList.get(j).getUnitName());
@@ -442,21 +442,20 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     }
 
     @Override
-    public void deleteAttachments(HashSet<VisitCommonData> list) {
-        mSingleVisitDetailHelper.deleteSelectedAttachments(list, patientID);
+    public void deleteAttachments(HashSet<VisitCommonData> list, String caseName) {
+        if (caseName.contains(CHILD_TYPE_ATTACHMENTS))
+            mSingleVisitDetailHelper.deleteSelectedAttachments(list, patientID);
+        else if (caseName.contains(CHILD_TYPE_NOTES))
+            mSingleVisitDetailHelper.deleteSelectedNotes(list);
     }
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() != null) {
-                if (intent.getAction().equals(DOC_UPLOAD)) {
-                    UploadInfo uploadInfo = intent.getParcelableExtra(UPLOAD_INFO);
-                    int isFailed = intent.getIntExtra(STATUS, FAILED);
-                    if (uploadInfo.getFilesLeft().isEmpty() && isFailed == COMPLETED) {
-                        initialize();
-                        mIsDocUploaded = true;
-                    }
+                if (intent.getAction().equals(ATTATCHMENT_DOC_UPLOAD)) {
+                    initialize();
+                    mIsDocUploaded = true;
 
                 }
             }
@@ -473,7 +472,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     protected void onResume() {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(DOC_UPLOAD);
+        intentFilter.addAction(ATTATCHMENT_DOC_UPLOAD);
         registerReceiver(receiver, intentFilter);
     }
 

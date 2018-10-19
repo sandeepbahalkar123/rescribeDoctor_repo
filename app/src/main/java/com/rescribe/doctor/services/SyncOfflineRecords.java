@@ -1,43 +1,33 @@
 package com.rescribe.doctor.services;
 
-import android.app.NotificationManager;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 
-import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.model.UploadStatus;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.services.add_record_upload_Service.AddRecordService;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import net.gotev.uploadservice.MultipartUploadRequest;
-import net.gotev.uploadservice.ServerResponse;
-import net.gotev.uploadservice.UploadInfo;
-import net.gotev.uploadservice.UploadNotificationConfig;
-import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-
-import static com.rescribe.doctor.services.ChatBackUpService.STATUS;
-import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
+import static com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity.FILELIST;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
-import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.UPLOADING;
-import static net.gotev.uploadservice.Placeholders.ELAPSED_TIME;
-import static net.gotev.uploadservice.Placeholders.PROGRESS;
-import static net.gotev.uploadservice.Placeholders.UPLOAD_RATE;
 
 /**
  * Created by ganeshs on 21/03/18.
  */
 
 public class SyncOfflineRecords {
-    public static final String DOC_UPLOAD = "com.rescribe.doctor.DOC_UPLOAD";
-    public static final String UPLOAD_INFO = "upload_info";
+    public static final String ATTATCHMENT_DOC_UPLOAD = "com.rescribe.doctor.ATTATCHMENT_DOC_UPLOAD";
     private Context context;
     private AppDBHelper appDBHelper;
 
@@ -46,13 +36,17 @@ public class SyncOfflineRecords {
 
     void check() {
 
+        ArrayList<UploadStatus> uploadDataList = new ArrayList<>();;
+
         Cursor cursor = appDBHelper.getRecordUploads();
+
 
         if (cursor.getCount() > 0) {
 
             String Url = Config.BASE_URL + Config.MY_RECORDS_UPLOAD;
             String authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, context);
             Device device = Device.getInstance(context);
+
 
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
@@ -62,7 +56,7 @@ public class SyncOfflineRecords {
 
                     if (uploadStatus == FAILED && appDBHelper.isPatientSynced(patientId)) {
 
-//                        UploadNotificationConfig uploadConfig = getUploadConfig(context);
+//                      UploadNotificationConfig uploadConfig = getUploadConfig(context);
 
                         String uploadId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.UPLOAD_ID));
 
@@ -89,51 +83,40 @@ public class SyncOfflineRecords {
 
                         String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
 
-                        try {
 
-                            MultipartUploadRequest uploadRequest = new MultipartUploadRequest(context, uploadId, Url)
-                                    .setUtf8Charset()
+                        HashMap<String, String> headers = new HashMap<>();
+                        headers.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
+                        headers.put(RescribeConstants.DEVICEID, device.getDeviceId());
+                        headers.put(RescribeConstants.OS, device.getOS());
+                        headers.put(RescribeConstants.OSVERSION, device.getOSVersion());
+                        headers.put(RescribeConstants.DEVICE_TYPE, device.getDeviceType());
+                        headers.put("patientid", patientId);
+                        headers.put("docid", String.valueOf(docId));
+                        headers.put("opddate", visitDateToPass);
+                        headers.put("opdtime", currentOpdTime);
+                        headers.put("opdid", opdId);
+                        headers.put("hospitalid", String.valueOf(mHospitalId));
+                        headers.put("hospitalpatid", mHospitalPatId);
+                        headers.put("locationid", mLocationId);
+                        headers.put("aptid", String.valueOf(aptId));
 
-                                    .setMaxRetries(RescribeConstants.MAX_RETRIES)
-                                    .addHeader(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString)
-                                    .addHeader(RescribeConstants.DEVICEID, device.getDeviceId())
-                                    .addHeader(RescribeConstants.OS, device.getOS())
-                                    .addHeader(RescribeConstants.OSVERSION, device.getOSVersion())
-                                    .addHeader(RescribeConstants.DEVICE_TYPE, device.getDeviceType())
+                        UploadStatus images = new UploadStatus(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, caption, imagePath, Integer.parseInt(aptId),headers);
+                        uploadDataList.add(images);
 
-                                    .addHeader("patientid", patientId)
-                                    .addHeader("docid", String.valueOf(docId))
-                                    .addHeader("opddate", visitDateToPass)
-                                    .addHeader("opdtime", currentOpdTime)
-                                    .addHeader("opdid", opdId)
-                                    .addHeader("hospitalid", mHospitalId)
-                                    .addHeader("hospitalpatid", mHospitalPatId)
-                                    .addHeader("locationid", mLocationId)
-                                    .addHeader("aptid", String.valueOf(aptId))
-                                    .addFileToUpload(imagePath, "attachment");
 
-                            String docCaption;
-
-                            if (!caption.isEmpty()) {
-                                docCaption = caption;
-                            } else
-                                docCaption = CommonMethods.stripExtension(CommonMethods.getFileNameFromPath(imagePath));
-
-                            uploadRequest.addHeader("captionname", docCaption);
-
-//                            uploadConfig.getProgress().message = uploadConfig.getProgress().message.replace("record", docCaption);
-//                            uploadRequest.setNotificationConfig(uploadConfig);
-
-                            uploadRequest.startUpload();
-
-                        } catch (MalformedURLException | FileNotFoundException fe) {
-                            fe.printStackTrace();
-                        }
                     }
 
                     cursor.moveToNext();
                 }
+
+
+
             }
+            Intent i = new Intent(context, AddRecordService.class);
+            i.putParcelableArrayListExtra(FILELIST, uploadDataList);
+            i.putExtra("URL", Url);
+            ContextCompat.startForegroundService(context, i);
+
         }
 
         cursor.close();
