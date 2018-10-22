@@ -34,6 +34,11 @@ public class NewPatientsDetail implements Parcelable {
     @SerializedName("patientImageUrl")
     @Expose
     private String profilePhoto;
+
+    @SerializedName("hospitalName")
+    @Expose
+    private String hospitalName;
+
     @SerializedName("patientEmail")
     @Expose
     private String patientEmail;
@@ -83,6 +88,7 @@ public class NewPatientsDetail implements Parcelable {
         this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
         this.outstandingAmount = ((String) in.readValue((String.class.getClassLoader())));
         this.cityName = ((String) in.readValue((String.class.getClassLoader())));
+        this.hospitalName = ((String) in.readValue((String.class.getClassLoader())));
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.referenceId = ((String) in.readValue((String.class.getClassLoader())));
     }
@@ -219,6 +225,14 @@ public class NewPatientsDetail implements Parcelable {
         this.referenceId = referenceId;
     }
 
+    public String getHospitalName() {
+        return hospitalName;
+    }
+
+    public void setHospitalName(String hospitalName) {
+        this.hospitalName = hospitalName;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(clinicId);
         dest.writeValue(salutation);
@@ -234,6 +248,7 @@ public class NewPatientsDetail implements Parcelable {
         dest.writeValue(cityName);
         dest.writeValue(hospitalPatId);
         dest.writeValue(referenceId);
+        dest.writeValue(hospitalName);
     }
 
     public int describeContents() {

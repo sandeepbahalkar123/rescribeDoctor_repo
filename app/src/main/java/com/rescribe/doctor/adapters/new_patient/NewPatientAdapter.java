@@ -70,8 +70,12 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
         final NewPatientsDetail patientObject = mDataList.get(position);
         holder.opdTypeTextView.setVisibility(View.VISIBLE);
         holder.opdTypeTextView.setVisibility(View.GONE);
+
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
         holder.patientClinicAddress.setText(patientObject.getCityName());
+
+        holder.patientClinic.setVisibility(View.VISIBLE);
+        holder.patientClinic.setText(patientObject.getHospitalName());
         String patientName;
         holder.chatImageView.setVisibility(View.GONE);
         if (patientObject.getSalutation() != 0)
@@ -257,6 +261,8 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
         LinearLayout cardView;
         @BindView(R.id.patientClinicAddress)
         CustomTextView patientClinicAddress;
+        @BindView(R.id.patientClinic)
+        CustomTextView patientClinic;
         @BindView(R.id.patientDetailsClickLinearLayout)
         RelativeLayout patientDetailsClickLinearLayout;
 

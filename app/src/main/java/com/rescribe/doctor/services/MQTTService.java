@@ -2,6 +2,7 @@ package com.rescribe.doctor.services;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Binder;
@@ -59,6 +61,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 
 import static com.rescribe.doctor.broadcast_receivers.ReplayBroadcastReceiver.MESSAGE_LIST;
+import static com.rescribe.doctor.notification.NotificationHelper.PATIENT_CONNECT_SERVICE_CHANNEL;
 import static com.rescribe.doctor.util.Config.BROKER;
 import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.MESSAGE_STATUS.PENDING;
@@ -123,7 +126,8 @@ public class MQTTService extends Service {
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
         notificationHelper = new NotificationHelper(mContext);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Notification notification = new NotificationCompat.Builder(this, NotificationHelper.PATIENT_CONNECT_CHANNEL)
+            createChannel();
+            Notification notification = new NotificationCompat.Builder(this, NotificationHelper.PATIENT_CONNECT_SERVICE_CHANNEL)
                     .setContentTitle("Patient Connect")
                     .setSmallIcon(R.drawable.logo)
                     .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
@@ -146,6 +150,22 @@ public class MQTTService extends Service {
             e.printStackTrace();
         }
     }
+
+        public void createChannel() {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                // Create the channel object with the unique ID CONNECT_CHANNEL
+                NotificationChannel connectChannel = new NotificationChannel(
+                        PATIENT_CONNECT_SERVICE_CHANNEL, "Patient Connect Service",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+
+                // Configure the channel's initial settings
+                connectChannel.setLightColor(Color.GREEN);
+                connectChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
+                // Submit the notification channel object to the notification manager
+                getNotificationManager().createNotificationChannel(connectChannel);
+            }
+        }
 
     /**
      * Get the notification mNotificationManager.

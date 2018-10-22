@@ -49,6 +49,11 @@ public class CompletedOpd implements Parcelable {
     @SerializedName("patientCity")
     @Expose
     private String cityName;
+
+    @SerializedName("hospitalName")
+    @Expose
+    private String hospitalName;
+
     @SerializedName("hospitalPatId")
     @Expose
     private Integer hospitalPatId;
@@ -98,6 +103,7 @@ public class CompletedOpd implements Parcelable {
         this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
         this.outstandingAmount = ((String) in.readValue((String.class.getClassLoader())));
         this.cityName = ((String) in.readValue((String.class.getClassLoader())));
+        this.hospitalName = ((String) in.readValue((String.class.getClassLoader())));
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.opdid = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.opdFollowUpStatus = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -275,6 +281,14 @@ public class CompletedOpd implements Parcelable {
         this.referenceId = referenceId;
     }
 
+    public String getHospitalName() {
+        return hospitalName;
+    }
+
+    public void setHospitalName(String hospitalName) {
+        this.hospitalName = hospitalName;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(clinicId);
         dest.writeValue(salutation);
@@ -294,6 +308,7 @@ public class CompletedOpd implements Parcelable {
         dest.writeValue(opdid);
         dest.writeValue(opdFollowUpStatus);
         dest.writeValue(referenceId);
+        dest.writeValue(hospitalName);
     }
 
     public int describeContents() {

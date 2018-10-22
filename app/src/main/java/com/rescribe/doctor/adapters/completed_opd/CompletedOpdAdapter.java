@@ -70,6 +70,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
         final CompletedOpd patientObject = mDataList.get(position);
         holder.opdTypeTextView.setVisibility(View.VISIBLE);
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
+
         if (patientObject.getOpdFollowUpStatus().equals(0)) {
             holder.opdTypeTextView.setText(mContext.getString(R.string.consultation));
         } else {
@@ -207,7 +208,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
 //            }
 //        });
 
-
+        holder.patientClinicAddress.setText(patientObject.getHospitalName());
         holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

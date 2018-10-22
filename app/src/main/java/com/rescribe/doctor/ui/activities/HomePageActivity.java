@@ -464,48 +464,83 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 if (mDashboardBaseModel.getCommon().isSuccess()) {
                     mDashboardDetails = new DashboardDetails();
                     mDashboardDetails = mDashboardBaseModel.getDashboarddataModel().getDashboardDetails();
-                    if (!mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList().isEmpty()) {
-                        todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayFollowUpCount() + "");
-                        todayNewAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayNewPatientCount() + "");
-                        todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount() + "");
-                        todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
-                        todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
-                        hostViewsLayout.removeAllViews();
 
-                        if (mDashboardDetails.getAppointmentType().equalsIgnoreCase(RescribeConstants.APPOINTMENT_TYPE.TOKEN)) {
+
+                    if (mDashboardDetails.getAppointmentType().equalsIgnoreCase(RescribeConstants.APPOINTMENT_TYPE.TOKEN)) {
+                        if (!mDashboardDetails.getDashboardWaitingList().getWaitingClinicList().isEmpty()) {
+                            todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayFollowUpCount() + "");
+                            todayNewAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayNewPatientCount() + "");
+                            todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardWaitingList().getTodayWaitingCount() + "");
+                            todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+                            todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                             todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
-                        } else {
-                            todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
-                            setLayoutForAppointment(true, mDashboardDetails.getCalendarTypeList());
+                            hostViewsLayout.removeAllViews();
+                            // inflate waiting list layout
+                            setLayoutForWaitingListIfAppointmentListEmpty();
+                            // inflate patientConnect layout
+                            setLayoutForPatientConnect();
+                            // inflate MyPatientsActivity layout
+                            setLayoutForMyPatients();
+
                         }
-                        // inflate waiting list layout
-                        setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
-                        // inflate patientConnect layout
-                        setLayoutForPatientConnect();
-                        // inflate MyPatientsActivity layout
-                        setLayoutForMyPatients();
+                        else {
+                            hostViewsLayout.removeAllViews();
+                            todayFollowAppointmentCount.setText("0");
+                            todayNewAppointmentCount.setText("0");
+                            todayWaitingListOrAppointmentCount.setText("0");
+                            todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+                            todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
+                            todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
+
+                            // inflate waiting list layout
+                            setLayoutForWaitingListIfAppointmentListEmpty();
+                            // inflate patientConnect layout
+                            setLayoutForPatientConnect();
+                            // inflate MyPatientsActivity layout
+                            setLayoutForMyPatients();
+                        }
+
+
 
                     } else {
-                        hostViewsLayout.removeAllViews();
-                        todayFollowAppointmentCount.setText("0");
-                        todayNewAppointmentCount.setText("0");
-                        todayWaitingListOrAppointmentCount.setText("0");
-                        todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
-                        todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
 
-                        if (mDashboardDetails.getAppointmentType().equalsIgnoreCase(RescribeConstants.APPOINTMENT_TYPE.TOKEN)) {
-                            todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_waiting_list));
 
-                        } else {
+                        if (!mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList().isEmpty()) {
+                            todayFollowAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayFollowUpCount() + "");
+                            todayNewAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayNewPatientCount() + "");
+                            todayWaitingListOrAppointmentCount.setText(mDashboardDetails.getDashboardAppointmentClinicList().getTodayAppointmentCount() + "");
+                            todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+                            todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
+                            todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
+                            hostViewsLayout.removeAllViews();
+                            setLayoutForAppointment(true, mDashboardDetails.getCalendarTypeList());
+                            // inflate waiting list layout
+                            setLayoutForWaitingList(mDashboardDetails.getDashboardAppointmentClinicList().getWaitingListCount() + "");
+                            // inflate patientConnect layout
+                            setLayoutForPatientConnect();
+                            // inflate MyPatientsActivity layout
+                            setLayoutForMyPatients();
+
+                        }
+                        else {
+                            hostViewsLayout.removeAllViews();
+                            todayFollowAppointmentCount.setText("0");
+                            todayNewAppointmentCount.setText("0");
+                            todayWaitingListOrAppointmentCount.setText("0");
+                            todayFollowAppointmentTextView.setText(getString(R.string.today_completed_opd));
+                            todayNewAppointmentTextView.setText(getString(R.string.today_new_patient));
                             todayWaitingListOrAppointmentTextView.setText(getString(R.string.today_appointment));
                             setLayoutForAppointment(true, mDashboardDetails.getCalendarTypeList());
+                            // inflate waiting list layout
+                            setLayoutForWaitingList("0");
+                            // inflate patientConnect layout
+                            setLayoutForPatientConnect();
+                            // inflate MyPatientsActivity layout
+                            setLayoutForMyPatients();
                         }
-                        // inflate waiting list layout
-                        setLayoutForWaitingList("0");
-                        // inflate patientConnect layout
-                        setLayoutForPatientConnect();
-                        // inflate MyPatientsActivity layout
-                        setLayoutForMyPatients();
+
+
+
                     }
 
                     if (mDashboardDetails.getVersionCode() > CommonMethods.getVersionCode(mContext) && CommonMethods.getVersionCode(mContext) != -1) {
