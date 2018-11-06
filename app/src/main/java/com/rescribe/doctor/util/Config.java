@@ -31,6 +31,7 @@ public class Config {
     public static final String CONFIRM_APPOINTMENT = "api/patient/bookAppointment";
     public static final String UPLOAD_PROFILE_PHOTO = "api/upload/uploadDoctorImage";
     public static final String DELETE_PATIENT_OPD_NOTES = "doctor/api/appointment/deleteOpdNotes";
+    public static final String GET_REFERENCE_LIST= "doctor/api/patient/getReferredTypes?";
 
 
     //---------------LOCAL SERVER URL START-----------------------

@@ -242,11 +242,13 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ConnectSplashActivity.class);
-                startActivity(intent);
+                CommonMethods.showToast(mContext,"Coming Soon");
+//                Intent intent = new Intent(mContext, ConnectSplashActivity.class);
+//                startActivity(intent);
             }
         });
-        radioSwitch.setVisibility(View.VISIBLE);
+        radioSwitch.setVisibility(View.INVISIBLE);
+
 
         setRadioSwitchStatus();
     }

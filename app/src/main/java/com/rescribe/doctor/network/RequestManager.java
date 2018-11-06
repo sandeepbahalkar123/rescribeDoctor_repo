@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.model.new_patient.ReferenceBaseModel;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaDetailsBaseModel;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.city_details.StateAndCityBaseModel;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorListBaseModel;
@@ -624,6 +625,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_DELETE_PATIENT_OPD_NOTES: //This is for delete Notes
                         CommonBaseModelContainer commonModelNotes = new Gson().fromJson(data, CommonBaseModelContainer.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, commonModelNotes, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_GET_REFERENCE_LIST: //This is for reference details
+                        ReferenceBaseModel referenceBaseModel = new Gson().fromJson(data, ReferenceBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, referenceBaseModel, mOldDataTag);
                         break;
 
                     default:

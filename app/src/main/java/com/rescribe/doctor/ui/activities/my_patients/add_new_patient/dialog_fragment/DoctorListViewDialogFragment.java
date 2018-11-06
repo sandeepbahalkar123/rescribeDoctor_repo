@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.add_new_patient.address_other_details.DoctorListForReference;
@@ -191,11 +192,12 @@ public class DoctorListViewDialogFragment extends DialogFragment implements Doct
         dialogBuilder.setView(dialogView);
 
         //------------
+        Spinner salutationSpinnerRef = dialogView.findViewById(R.id.salutationSpinnerRef);
         final EditText referByField = (EditText) dialogView.findViewById(R.id.referredBy);
         final EditText referredPhoneField = (EditText) dialogView.findViewById(R.id.referredPhone);
         final EditText referredEmailField = (EditText) dialogView.findViewById(R.id.referredEmail);
         //-----------
-
+        salutationSpinnerRef.setVisibility(View.GONE);
         dialogBuilder.setTitle(getString(R.string.plz_select_option))
                 .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override

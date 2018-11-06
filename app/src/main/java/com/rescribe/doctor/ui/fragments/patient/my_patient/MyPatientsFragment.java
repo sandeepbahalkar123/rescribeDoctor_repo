@@ -200,25 +200,18 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             public void afterTextChanged(Editable s) {
                 searchText = s.toString();
 
-                /*if (NetworkUtil.getConnectivityStatusBoolean(getContext())) {
 
-                    if (searchText.length() >= 1) {
-                        searchPatients(true);
-                        isFiltered = true;
-                    } else if (isFiltered) {
-                        isFiltered = false;
-                        searchText = "";
-                        searchPatients(true);
-                    }
 
-                    if (s.toString().length() < 3)
-                        mMyPatientsAdapter.getFilter().filter(s.toString());
-                } else
-                    searchPatients(false);*/
+                    Log("s.length", "" + s.toString().length());
+                    Log("searchText.length", "" + searchText.toString().length());
 
-                searchPatients(NetworkUtil.getConnectivityStatusBoolean(getContext()));
+                    if (s.toString().length() > 3 || s.toString().length() == 0)
+                        searchPatients(NetworkUtil.getConnectivityStatusBoolean(getContext()));
+
+
             }
         });
+
         if (fromActivityLaunched.equals(RescribeConstants.HOME_PAGE)) {
             mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList, true, RescribeConstants.NOT_FROM_COMPLETE_OPD);
             recyclerViewBottom.setLayoutManager(new GridLayoutManager(getActivity(), 3));

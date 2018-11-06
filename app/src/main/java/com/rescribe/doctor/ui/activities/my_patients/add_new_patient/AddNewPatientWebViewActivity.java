@@ -20,6 +20,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -35,6 +36,8 @@ import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.Common;
+import com.rescribe.doctor.model.new_patient.ReferenceBaseModel;
+import com.rescribe.doctor.model.new_patient.ReferenceType;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaData;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaDetailsBaseModel;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorData;
@@ -63,9 +66,11 @@ import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -125,6 +130,20 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     EditText mAddressLine;
     @BindView(R.id.addressDetailLayout)
     LinearLayout mAddressDetailLayout;
+
+    @BindView(R.id.layoutReferenceId)
+    LinearLayout mLayoutReferenceId;
+
+
+    @BindView(R.id.referredDetailsTextInputLayout)
+    TextInputLayout mReferredDetailsTextInputLayout;
+
+    @BindView(R.id.referredDetails)
+    EditText referredDetails;
+
+    @BindView(R.id.salutationSpinnerRef)
+    Spinner mSalutationSpinnerRef;
+
     //----------
     @BindView(R.id.stateEditText)
     EditText mStateEditText;
@@ -139,6 +158,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     //--------
     @BindView(R.id.referenceBySpinner)
     Spinner mReferenceBySpinner;
+
+    @BindView(R.id.relationSpinner)
+    Spinner mRelationSpinner;
+
     @BindView(R.id.referredBy)
     EditText mReferredBy;
     @BindView(R.id.referredByTextInputLayout)
@@ -153,6 +176,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     @BindView(R.id.mainParentLayout)
     LinearLayout mainParentLayout;
 
+    @BindView(R.id.referenceDetailPerson)
+    LinearLayout mReferenceDetailPerson;
+
     //---------
     private int hospitalId;
     private boolean isCalled = false;
@@ -163,17 +189,21 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private boolean mAddPatientOfflineSetting;
     private PatientList mAddedPatientListData;
     private String mDoOperationTaskID = null;
+    private String mRelation = "Self";
     private int mAddNewPatientSelectedOption = -1;
     private AppointmentHelper mAppointmentHelper;
     int mSelectedSalutationOfPatient = 1;
+    int mSelectedSalutationOfPatientRef = 1;
     int mSelectedStateID = -1;
     int mSelectedCityID = -1;
     int mSelectedAreaID = -1;
     private int mSelectedReferenceTypeID = 0;
+    private String mSelectedReferenceTypeName = "";
     private DoctorData mSelectedDoctorReference;
     private PatientList mSelectedPatientReference;
     private String mActivityStartFrom;
     private HashMap<String, HashSet<String>> mOfflineCityAndAreaMap = null;
+    List<ReferenceType> referenceTypes;
 
     //--------
     @Override
@@ -200,6 +230,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         cityID = extras.getInt(RescribeConstants.CITY_ID);
         cityName = extras.getString(RescribeConstants.CITY_NAME);
         int docID = Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this));
+        mAppointmentHelper.getReferenceList(hospitalId);
+        Log.e("CLINIC_ID", "--" + hospitalId);
+
         //--------
         String urlData = Config.ADD_NEW_PATIENT_WEB_URL + docID + "/" +
                 hospitalId + "/" + locationID + "/" + cityID;
@@ -226,10 +259,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             }
             if (internetAvailable && RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, mContext)) {
 
-                mReferredBy.setClickable(true);
-                mReferredBy.setFocusable(false);
-                mReferredByTextInputLayout.setClickable(true);
-                mReferredByTextInputLayout.setFocusable(false);
+//                mReferredBy.setClickable(true);
+//                mReferredBy.setFocusable(false);
+//                mReferredByTextInputLayout.setClickable(true);
+//                mReferredByTextInputLayout.setFocusable(false);
                 mReferenceDetailLayout.setVisibility(View.VISIBLE);
             }
             //--- show addresss /referecens details based on setting done in SettingActivity. : END
@@ -347,17 +380,19 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             case R.id.referredBy:
             case R.id.referredByTextInputLayout: {
 
-                switch (mSelectedReferenceTypeID) {
-                    case 0:
+                switch (mSelectedReferenceTypeName.toLowerCase()) {
+                    case "":
                         CommonMethods.showToast(this, getString(R.string.err_msg_select_reffered_by));
                         break;
-                    case 1: {
+                    case "doctor": {
                         Bundle iArea = new Bundle();
                         iArea.putString(RescribeConstants.TITLE, getString(R.string.about_doctor));
                         DoctorListViewDialogFragment fArea = DoctorListViewDialogFragment.newInstance(iArea, new DoctorListViewDialogFragment.OnItemClickedListener() {
 
                             @Override
                             public void onItemClicked(int id, DoctorData data) {
+                                mReferredEmail.setEnabled(false);
+                                mReferredPhone.setEnabled(false);
                                 mReferredBy.setText(data.getDocName());
                                 mReferredEmail.setText(data.getDocEmail());
                                 mReferredPhone.setText("" + data.getDocPhone());
@@ -368,23 +403,29 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         fArea.show(fm, "");
                     }
                     break;
-                    case 2: {
+                    case "patient": {
                         Bundle iArea = new Bundle();
                         iArea.putString(RescribeConstants.TITLE, getString(R.string.my_patients));
                         PatientListViewDialogFragment fArea = PatientListViewDialogFragment.newInstance(iArea, new PatientListViewDialogFragment.OnItemClickedListener() {
 
                             @Override
                             public void onItemClicked(int id, PatientList data) {
+                                mReferredEmail.setEnabled(false);
+                                mReferredPhone.setEnabled(false);
+                                mSalutationSpinnerRef.setSelection(data.getSalutation());
                                 mReferredBy.setText(data.getPatientName());
                                 mReferredEmail.setText(data.getPatientEmail());
                                 mReferredPhone.setText("" + data.getPatientPhone());
                                 mSelectedPatientReference = data;
+                                mSelectedSalutationOfPatientRef= data.getSalutation();
+
                             }
                         });
 
                         fArea.show(fm, "");
                     }
                     break;
+
                 }
             }
             break;
@@ -557,6 +598,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         String refName = mReferredBy.getText().toString().trim();
         String refMob = mReferredPhone.getText().toString().trim();
         String refEmail = mReferredEmail.getText().toString().trim();
+        String refDetails = referredDetails.getText().toString().trim();
         //---------
 
         if (firstName.isEmpty()) {
@@ -577,9 +619,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         } else if (!enteredRefIDIsValid) {
             message = getString(R.string.reference_id_input_err_msg);
             CommonMethods.showToast(this, message);
-        }
-
-        else {
+        } else {
             patientList = new PatientList();
             int id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
             patientList.setPatientId(id);
@@ -593,6 +633,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             patientList.setPatientEmail("");
             patientList.setPatientPhone(mob);
             patientList.setAge(age);
+            patientList.setRelation(mRelation);
             RadioButton viewById = (RadioButton) findViewById(mGenderRadioGroup.getCheckedRadioButtonId());
             if (viewById != null)
                 patientList.setGender(viewById.getText().toString());
@@ -614,26 +655,39 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 ref.setName(refName);
                 ref.setPhoneNumber(refMob);
                 ref.setEmailId(refEmail);
-                //// mSelectedReferenceTypeID 1:DOCTOR and 2: PATIENT
+                ref.setDescription(refDetails);
+
                 ref.setReferredTypeId(String.valueOf(mSelectedReferenceTypeID));
-                if (mSelectedReferenceTypeID == 1) {
-                    if (mSelectedDoctorReference != null)
+                if (mSelectedReferenceTypeName.toLowerCase().equalsIgnoreCase("doctor")) {
+                    if (mSelectedDoctorReference != null) {
                         ref.setDocId(String.valueOf(mSelectedDoctorReference.getId()));
-                    else {
+                    } else {
                         ref.setName("");
                         ref.setPhoneNumber("");
                         ref.setEmailId("");
                         ref.setReferredTypeId("");
                     }
-                } else if (mSelectedReferenceTypeID == 2) {
-                    if (mSelectedDoctorReference != null)
+                } else if (mSelectedReferenceTypeName.toLowerCase().equalsIgnoreCase("patient")) {
+                    if (mSelectedPatientReference != null) {
                         ref.setPatientId(String.valueOf(mSelectedPatientReference.getPatientId()));
-                    else {
+                        ref.setSalutation(mSelectedSalutationOfPatientRef);
+                    } else {
                         ref.setName("");
                         ref.setPhoneNumber("");
                         ref.setEmailId("");
                         ref.setReferredTypeId("");
                     }
+                }
+                else if(mSelectedReferenceTypeName.toLowerCase().equalsIgnoreCase("person")){
+                   ref.setDocId("");
+                   ref.setPatientId("0");
+                    ref.setSalutation(mSelectedSalutationOfPatientRef);
+                }else {
+                    ref.setDocId("");
+                    ref.setPatientId("");
+                    ref.setName("");
+                    ref.setPhoneNumber("");
+                    ref.setEmailId("");
                 }
                 patientList.setReferedDetails(ref);
             } else {
@@ -803,6 +857,29 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 }
                 break;
             }
+            case RescribeConstants.TASK_GET_REFERENCE_LIST: {
+                ReferenceBaseModel referenceBaseModel = (ReferenceBaseModel) customResponse;
+                if (referenceBaseModel.getCommon().isSuccess()) {
+                    Log.e("getReferenceIdSetting", "" + referenceBaseModel.getReferenceData().getReferenceIdSetting());
+                    if (referenceBaseModel.getReferenceData().getReferenceIdSetting()) {
+                        mLayoutReferenceId.setVisibility(View.GONE);
+                    }
+
+                    referenceTypes = referenceBaseModel.getReferenceData().getReferenceTypeList();
+                    List<String> referenceNames = new ArrayList<>();
+                    referenceNames.add("Select reference");
+                    for (ReferenceType referenceType : referenceTypes) {
+                        referenceNames.add(referenceType.getType());
+                    }
+                    ArrayAdapter spinnerArrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, referenceNames);
+                    mReferenceBySpinner.setAdapter(spinnerArrayAdapter);
+
+
+                }
+                // CommonMethods.showToast(this, referenceBaseModel.getCommon().getStatusMessage());
+
+            }
+            break;
         }
     }
 
@@ -882,15 +959,76 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         mReferenceBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mSelectedReferenceTypeID = position;
+                Log.e("position", "" + position);
 
-                if (position == 2) {
-                    mReferredEmail.setEnabled(false);
-                    mReferredPhone.setEnabled(false);
+                if (position != 0) {
+
+                    ReferenceType type = referenceTypes.get((position - 1));
+
+                    Log.e("type_id", "" + type.getId());
+                    Log.e("type_name", "" + type.getType());
+                    mSelectedReferenceTypeID = type.getId();
+                    mSelectedReferenceTypeName = type.getType();
+
+                    if (type.getType().equalsIgnoreCase("Patient")) {
+                        mReferredBy.setClickable(true);
+                        mReferredBy.setFocusable(false);
+                        mReferredByTextInputLayout.setClickable(true);
+                        mReferredByTextInputLayout.setFocusable(false);
+                        mReferredEmail.setEnabled(false);
+                        mReferredPhone.setEnabled(false);
+                        mReferenceDetailPerson.setVisibility(View.VISIBLE);
+                        if (mSalutationSpinnerRef.getVisibility() != View.VISIBLE)
+                            mSalutationSpinnerRef.setVisibility(View.VISIBLE);
+                        mReferredDetailsTextInputLayout.setVisibility(View.GONE);
+
+                    } else if (type.getType().equalsIgnoreCase("Doctor")) {
+                        mReferredBy.setClickable(true);
+                        mReferredBy.setFocusable(false);
+                        mReferredByTextInputLayout.setClickable(true);
+                        mReferredByTextInputLayout.setFocusable(false);
+
+                        mReferredEmail.setEnabled(false);
+                        mReferredPhone.setEnabled(false);
+                        mReferenceDetailPerson.setVisibility(View.VISIBLE);
+                        mSalutationSpinnerRef.setVisibility(View.GONE);
+                        mReferredDetailsTextInputLayout.setVisibility(View.GONE);
+
+                    } else if (type.getType().equalsIgnoreCase("Person")) {
+                        mReferredBy.setClickable(true);
+                        mReferredBy.setFocusable(true);
+                        mReferredBy.setFocusableInTouchMode(true);
+                        mReferredByTextInputLayout.setClickable(true);
+                        mReferredByTextInputLayout.setFocusable(true);
+                        mReferredByTextInputLayout.setFocusableInTouchMode(true);
+
+                        mReferenceDetailPerson.setVisibility(View.VISIBLE);
+                        if (mSalutationSpinnerRef.getVisibility() != View.VISIBLE)
+                            mSalutationSpinnerRef.setVisibility(View.VISIBLE);
+                        mReferredDetailsTextInputLayout.setVisibility(View.GONE);
+                    } else {
+                        mReferenceDetailPerson.setVisibility(View.GONE);
+                        mReferredDetailsTextInputLayout.setVisibility(View.VISIBLE);
+
+                    }
+
+                    mReferredBy.setText("");
+                    mReferredEmail.setText("");
+                    mReferredPhone.setText("");
+                } else {
+                    Log.e("position else", "" + position);
+                    mSelectedReferenceTypeID = 0;
+                    mSelectedReferenceTypeName = "";
+                    mReferenceDetailPerson.setVisibility(View.VISIBLE);
+                    if (mSalutationSpinnerRef.getVisibility() != View.VISIBLE)
+                        mSalutationSpinnerRef.setVisibility(View.VISIBLE);
+                    mReferredDetailsTextInputLayout.setVisibility(View.GONE);
+                    mReferredBy.setText("");
+                    mReferredEmail.setText("");
+                    mReferredPhone.setText("");
                 }
-                mReferredBy.setText("");
-                mReferredEmail.setText("");
-                mReferredPhone.setText("");
+
+
             }
 
             @Override
@@ -903,18 +1041,65 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mSelectedSalutationOfPatient = position + 1;
 
+                ArrayAdapter<String> spinnerArrayAdapter;
+
                 switch (position) {
                     case 0:
                         genderMale.setChecked(true);
+                        spinnerArrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.mr_relation_entries));
+                        mRelationSpinner.setAdapter(spinnerArrayAdapter);
                         break;
                     case 1:
                     case 2:
                         genderFemale.setChecked(true);
+                        spinnerArrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.mrs_relation_entries));
+                        mRelationSpinner.setAdapter(spinnerArrayAdapter);
                         break;
                     case 3:
                         genderOther.setChecked(true);
+                        spinnerArrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.other_relation_entries));
+                        mRelationSpinner.setAdapter(spinnerArrayAdapter);
                         break;
                 }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        mSalutationSpinnerRef.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mSelectedSalutationOfPatientRef = position + 1;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        mRelationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int Selectedrel = position;
+                List<String> listRelation;
+                if(genderMale.isChecked()){
+                     listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+                      mRelation=listRelation.get(Selectedrel);
+
+                }else if (genderFemale.isChecked()){
+                    listRelation = Arrays.asList(getResources().getStringArray(R.array.mrs_relation_entries));
+                    mRelation=listRelation.get(Selectedrel);
+                }else if(genderOther.isChecked()){
+                    listRelation = Arrays.asList(getResources().getStringArray(R.array.other_relation_entries));
+                    mRelation=listRelation.get(Selectedrel);
+
+
+                }
+
             }
 
             @Override

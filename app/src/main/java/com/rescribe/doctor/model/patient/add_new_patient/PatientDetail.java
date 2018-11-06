@@ -42,6 +42,10 @@ public class PatientDetail implements CustomResponse {
     @Expose
     private String offlineReferenceID;
 
+    @SerializedName("relation")
+    @Expose
+    private String relation;
+
     //-------fields for adding patient in offline mode--------
     @SerializedName("patientAddressDetails")
     @Expose
@@ -155,5 +159,13 @@ public class PatientDetail implements CustomResponse {
 
     public void setAddressDetails(PatientAddressDetails addressDetails) {
         this.addressDetails = addressDetails;
+    }
+
+    public String getRelation() {
+        return relation;
+    }
+
+    public void setRelation(String relation) {
+        this.relation = relation;
     }
 }

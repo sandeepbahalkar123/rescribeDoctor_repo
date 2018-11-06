@@ -2,16 +2,23 @@ package com.rescribe.doctor.ui.activities.my_patients.add_new_patient.dialog_fra
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.add_new_patient.address_other_details.DoctorListForReference;
@@ -29,6 +36,7 @@ import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.my_patients.MyPatientsActivity;
+import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
 import com.rescribe.doctor.util.NetworkUtil;
@@ -57,7 +65,8 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
     private ActionBar mActionBar;
     Context mContext;
     private String mHeader;
-
+    @BindView(R.id.tapToAddNewFab)
+    CustomTextView tapToAddNewFab;
     //--------
     private String searchText = "";
     private boolean isFiltered = false;
@@ -66,6 +75,7 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
     private AppointmentHelper mAppointmentHelper;
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
     private PatientListForReference mMyPatientsAdapter;
+    private int mSelectedSalutationOfRefPatient=0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,7 +107,10 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
     private void initialize() {
 
         mContext = this.getDialog().getContext();
-
+        //--------
+        tapToAddNewFab.setVisibility(View.VISIBLE);
+        tapToAddNewFab.setText(getString(R.string.tap_to_add_new_patient));
+        //--------
         ArrayList<PatientList> patientLists = new ArrayList<>();
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearlayoutManager);
@@ -110,6 +123,7 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
         mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                Log.e("page",""+page);
                 nextPage(page, NetworkUtil.getConnectivityStatusBoolean(getActivity()));
             }
         });
@@ -142,6 +156,13 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
                         mMyPatientsAdapter.getFilter().filter(s.toString());
                 } else
                     searchPatients(false);
+            }
+        });
+
+        tapToAddNewFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogToAddReferenceDetails();
             }
         });
 
@@ -201,7 +222,7 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
 
         if (isInternetAvailable && !isAllPatientDownloaded) {
             mAppointmentHelper = new AppointmentHelper(mContext, this);
-            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+            mRequestSearchPatients.setDocId(0);//(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
             mRequestSearchPatients.setSearchText(searchText);
             mRequestSearchPatients.setPageNo(pageNo);
             mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, mSearchEditText.getText().toString().isEmpty());
@@ -226,7 +247,7 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
         if (isInternetAvailable) {
             mRequestSearchPatients.setPageNo(0);
             mAppointmentHelper = new AppointmentHelper(mContext, this);
-            mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+            mRequestSearchPatients.setDocId(0);//(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
             mRequestSearchPatients.setSearchText(searchText);
             mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, mSearchEditText.getText().toString().isEmpty());
         } else {
@@ -242,4 +263,63 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
             }
         }
     }
+
+
+
+    private void showDialogToAddReferenceDetails() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.addNewPatientDialogCustomTheme);
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_new_reference_details, null);
+        dialogBuilder.setView(dialogView);
+
+        //------------
+        Spinner salutationSpinnerRef = dialogView.findViewById(R.id.salutationSpinnerRef);
+        final EditText referByField = (EditText) dialogView.findViewById(R.id.referredBy);
+        final EditText referredPhoneField = (EditText) dialogView.findViewById(R.id.referredPhone);
+        final EditText referredEmailField = (EditText) dialogView.findViewById(R.id.referredEmail);
+
+
+
+        salutationSpinnerRef.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mSelectedSalutationOfRefPatient = position + 1;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //-----------
+        dialogBuilder.setTitle(getString(R.string.plz_select_option))
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        PatientList d = new PatientList();
+                        d.setSalutation(mSelectedSalutationOfRefPatient);
+                        d.setPatientName(referByField.getText().toString().trim());
+                        d.setPatientPhone(referredPhoneField.getText().toString().trim());
+                        d.setPatientEmail(referredEmailField.getText().toString().trim());
+                        d.setPatientId(0); // explicitly set, check API doc.
+
+                        onValueClicked(0, d);
+                        dismiss();
+                    }
+                }).setCancelable(true)
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+    }
+
+
 }

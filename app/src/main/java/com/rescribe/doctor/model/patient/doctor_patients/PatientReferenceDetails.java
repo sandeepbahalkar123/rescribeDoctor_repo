@@ -1,15 +1,9 @@
 
 package com.rescribe.doctor.model.patient.doctor_patients;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
 
-public class PatientReferenceDetails implements  CustomResponse {
+public class PatientReferenceDetails implements CustomResponse {
 
     private String referredTypeId;
     private String patientId;
@@ -17,6 +11,9 @@ public class PatientReferenceDetails implements  CustomResponse {
     private String name;
     private String emailId;
     private String phoneNumber;
+    private String description;
+    private int salutation;
+
 
     public PatientReferenceDetails() {
     }
@@ -67,5 +64,21 @@ public class PatientReferenceDetails implements  CustomResponse {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getSalutation() {
+        return salutation;
+    }
+
+    public void setSalutation(int salutation) {
+        this.salutation = salutation;
     }
 }

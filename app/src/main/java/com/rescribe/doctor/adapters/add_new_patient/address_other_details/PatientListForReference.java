@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -182,7 +183,7 @@ public class PatientListForReference extends RecyclerView.Adapter<PatientListFor
     public void add(PatientList mc) {
         mDataList.add(mc);
         mListToShowAfterFilter.add(mc);
-        removeDuplicateElements();
+        //removeDuplicateElements();
         notifyItemInserted(mDataList.size() - 1);
     }
 

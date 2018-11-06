@@ -275,6 +275,7 @@ public class AppointmentHelper implements ConnectionListener {
         patient.setClinicId(dataToAdd.getClinicId());
         patient.setPatientDob(dataToAdd.getDateOfBirth());
         patient.setOfflineReferenceID(dataToAdd.getReferenceID());
+        patient.setRelation(dataToAdd.getRelation());
 
         patient.setAddressDetails(dataToAdd.getAddressDetails());
 
@@ -305,6 +306,16 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_ALL_AREA_OF_CITIES_TO_ADD_PATIENT);
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_AREA_TO_ADD_NEW_PATIENT);
+    }
+
+
+
+    public void getReferenceList(int mClinicId) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_REFERENCE_LIST, Request.Method.GET, true);
+        mConnectionFactory.setHeaderParams();
+        String url = Config.GET_REFERENCE_LIST + "clinicId=" + mClinicId;
+        mConnectionFactory.setUrl(url);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_REFERENCE_LIST);
     }
 }
 

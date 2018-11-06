@@ -269,35 +269,76 @@
                     android:layout_height="@dimen/dp1"
                     android:background="@color/black"></View>
 
-                <android.support.design.widget.TextInputLayout
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:layout_marginTop="@dimen/dp10"
-                    android:background="@null"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
-                    android:visibility="visible"
-                    app:theme="@style/text_edit">
+                    android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/referenceID"
-                        android:layout_width="match_parent"
+                    <com.rescribe.doctor.ui.customesViews.CustomTextView
+                        android:layout_width="@dimen/dp0"
                         android:layout_height="match_parent"
-                        android:background="@null"
-                        android:fontFamily="@font/roboto_regular"
+                        android:layout_weight="0.5"
                         android:gravity="center|left"
-                        android:hint="@string/reference_id"
-                        android:maxLength="50"
+                        android:text="@string/relation"
                         android:textColor="@color/black"
-                        android:textColorHint="@color/black"
                         android:textSize="@dimen/sp16" />
 
-                </android.support.design.widget.TextInputLayout>
+                    <Spinner
+                        android:id="@+id/relationSpinner"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:entries="@array/mr_relation_entries"></Spinner>
+
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp1"
                     android:background="@color/black"></View>
+
+                <LinearLayout
+                    android:id="@+id/layoutReferenceId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:visibility="visible"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/referenceID"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/reference_id"
+                            android:maxLength="50"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black"></View>
+
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/addressDetailLayout"
@@ -489,8 +530,7 @@
                             android:id="@+id/referenceBySpinner"
                             android:layout_width="@dimen/dp0"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:entries="@array/reffferd_by"></Spinner>
+                            android:layout_weight="1"></Spinner>
 
                     </LinearLayout>
 

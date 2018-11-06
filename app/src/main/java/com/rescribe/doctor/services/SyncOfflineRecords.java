@@ -30,13 +30,11 @@ public class SyncOfflineRecords {
     public static final String ATTATCHMENT_DOC_UPLOAD = "com.rescribe.doctor.ATTATCHMENT_DOC_UPLOAD";
     private Context context;
     private AppDBHelper appDBHelper;
-
+    ArrayList<UploadStatus> uploadDataList = new ArrayList<>();
     SyncOfflineRecords() {
     }
 
     void check() {
-
-        ArrayList<UploadStatus> uploadDataList = new ArrayList<>();;
 
         Cursor cursor = appDBHelper.getRecordUploads();
 
@@ -112,10 +110,12 @@ public class SyncOfflineRecords {
 
 
             }
-            Intent i = new Intent(context, AddRecordService.class);
-            i.putParcelableArrayListExtra(FILELIST, uploadDataList);
-            i.putExtra("URL", Url);
-            ContextCompat.startForegroundService(context, i);
+            if (uploadDataList.size()!=0) {
+                Intent i = new Intent(context, AddRecordService.class);
+                i.putParcelableArrayListExtra(FILELIST, uploadDataList);
+                i.putExtra("URL", Url);
+                ContextCompat.startForegroundService(context, i);
+            }
 
         }
 

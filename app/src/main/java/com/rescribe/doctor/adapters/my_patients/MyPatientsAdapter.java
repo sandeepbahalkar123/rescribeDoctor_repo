@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,7 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.rescribe.doctor.util.CommonMethods.Log;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 import static com.rescribe.doctor.util.RescribeConstants.CLINIC_ID;
 import static com.rescribe.doctor.util.RescribeConstants.PATIENT_HOS_PAT_ID;
@@ -98,6 +100,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
         else patientName = toCamelCase(patientObject.getPatientName());
 
+        Log.e("patientName--",patientName);
 
         //---- START: Setting of hospitalID or referecne ID, reference is IS high priority than hospitalID.-----
         String dataToShowInPatientID = String.valueOf(patientObject.getReferenceID());
@@ -106,6 +109,10 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             dataToShowInPatientID = String.valueOf(patientObject.getHospitalPatId());
         }
         //---- END------
+        if (patientObject.isDead()){
+            holder.patientNameTextView.setTextColor(ContextCompat.getColor(mContext, R.color.bsp_red));
+        }
+
 
         if (patientObject.getSpannableString() != null) {
             //Spannable condition for PatientName
@@ -199,7 +206,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
         }
 
-        holder.chatImageView.setVisibility(View.VISIBLE);
+       // holder.chatImageView.setVisibility(View.VISIBLE);
         TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, patientObject.getPatientName());
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
@@ -234,23 +241,25 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 return false;
             }
         });
-        holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (!patientObject.isDead()) {
+            holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                //THis is done, bcz not getting proper data from age n gender view.
-                String patientInfo = "";
-                if (!patientObject.getAge().isEmpty() && !patientObject.getGender().isEmpty())
-                    patientInfo = patientObject.getAge() + " yrs - " + patientObject.getGender();
-                else if (!patientObject.getAge().isEmpty())
-                    patientInfo = patientObject.getAge() + " yrs";
-                else if (!patientObject.getGender().isEmpty())
-                    patientInfo = patientObject.getGender();
+                    //THis is done, bcz not getting proper data from age n gender view.
+                    String patientInfo = "";
+                    if (!patientObject.getAge().isEmpty() && !patientObject.getGender().isEmpty())
+                        patientInfo = patientObject.getAge() + " yrs - " + patientObject.getGender();
+                    else if (!patientObject.getAge().isEmpty())
+                        patientInfo = patientObject.getAge() + " yrs";
+                    else if (!patientObject.getGender().isEmpty())
+                        patientInfo = patientObject.getGender();
 
 
-                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, patientInfo, isClickOnPatientDetailsRequired);
-            }
-        });
+                    mOnDownArrowClicked.onClickOfPatientDetails(patientObject, patientInfo, isClickOnPatientDetailsRequired);
+                }
+            });
+        }
 
         holder.chatImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -295,6 +304,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     }
 
     public void add(PatientList mc) {
+
         mDataList.add(mc);
         removeDuplicateElements();
         notifyItemInserted(mDataList.size() - 1);
