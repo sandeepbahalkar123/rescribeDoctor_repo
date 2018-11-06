@@ -100,7 +100,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
         else patientName = toCamelCase(patientObject.getPatientName());
 
-        Log.e("patientName--",patientName);
+
 
         //---- START: Setting of hospitalID or referecne ID, reference is IS high priority than hospitalID.-----
         String dataToShowInPatientID = String.valueOf(patientObject.getReferenceID());
@@ -109,9 +109,6 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             dataToShowInPatientID = String.valueOf(patientObject.getHospitalPatId());
         }
         //---- END------
-//        if (patientObject.isDead()){
-//            holder.patientNameTextView.setTextColor(ContextCompat.getColor(mContext, R.color.bsp_red));
-//        }
 
 
         if (patientObject.getSpannableString() != null) {
@@ -171,6 +168,8 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.patientPhoneNumber.setText(patientObject.getPatientPhone());
             holder.patientIdTextView.setText(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
         }
+
+
         //------------
         String gender = CommonMethods.toCamelCase(patientObject.getGender());
         holder.patientGenderTextView.setText(gender);

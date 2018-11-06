@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -175,7 +176,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         recyclerView.setLayoutManager(linearlayoutManager);
 
         mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, fromActivityLaunched.equals(RescribeConstants.HOME_PAGE));
-        recyclerView.setAdapter(mMyPatientsAdapter);
+
 
         nextPage(0, NetworkUtil.getConnectivityStatusBoolean(getContext()));
 
@@ -202,15 +203,16 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
 
 
-                    Log("s.length", "" + s.toString().length());
-                    Log("searchText.length", "" + searchText.toString().length());
+//                    Log("searchText.length", "" + searchText.length());
+//                   Log("searchText.length", "" + searchText.length());
 
-                    if (s.toString().length() > 3 || s.toString().length() == 0)
+                    if (searchText.length() > 2 || searchText.length() == 0)
                         searchPatients(NetworkUtil.getConnectivityStatusBoolean(getContext()));
 
 
             }
         });
+        recyclerView.setAdapter(mMyPatientsAdapter);
 
         if (fromActivityLaunched.equals(RescribeConstants.HOME_PAGE)) {
             mBottomMenuAppointmentAdapter = new BottomMenuAppointmentAdapter(getContext(), this, mBottomMenuList, true, RescribeConstants.NOT_FROM_COMPLETE_OPD);
@@ -745,7 +747,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     public void nextPage(int pageNo, boolean isInternetAvailable) {
         boolean isAllPatientDownloaded = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, getActivity());
 
+//        Log.d("isAllPatientDownloaded:",""+isAllPatientDownloaded);
         if (isInternetAvailable && !isAllPatientDownloaded) {
+//            Log.d("online condition:","");
             mAppointmentHelper = new AppointmentHelper(getContext(), this);
             mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
             mRequestSearchPatients.setSearchText(searchText);
@@ -754,12 +758,14 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         } else {
             ArrayList<PatientList> offlineAddedPatients = appDBHelper.getOfflineAddedPatients(mRequestSearchPatients, pageNo, searchEditText.getText().toString());
             if (!offlineAddedPatients.isEmpty()) {
+//                Log.d("off patients condition:","");
                 recyclerView.setVisibility(View.VISIBLE);
                 emptyListView.setVisibility(View.GONE);
                 mMyPatientsAdapter.addAll(offlineAddedPatients, ((MyPatientsActivity) getActivity()).selectedDoctorId, searchEditText.getText().toString());
                 mMyPatientsAdapter.notifyDataSetChanged();
             } else {
                 if (pageNo == 0) {
+//                    Log.d("empty data condition:","");
                     recyclerView.setVisibility(View.GONE);
                     emptyListView.setVisibility(View.VISIBLE);
                 }
