@@ -116,14 +116,14 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
         mRecyclerView.setLayoutManager(linearlayoutManager);
 
         mMyPatientsAdapter = new PatientListForReference(getActivity(), patientLists, this);
-        mRecyclerView.setAdapter(mMyPatientsAdapter);
+
 
         nextPage(0, NetworkUtil.getConnectivityStatusBoolean(getActivity()));
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                Log.e("page",""+page);
+//                Log.e("page",""+page);
                 nextPage(page, NetworkUtil.getConnectivityStatusBoolean(getActivity()));
             }
         });
@@ -143,7 +143,7 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
                 searchText = s.toString();
 
                 if (NetworkUtil.getConnectivityStatusBoolean(getActivity())) {
-                    if (searchText.length() >= 3) {
+                    if (searchText.length() > 2) {
                         searchPatients(true);
                         isFiltered = true;
                     } else if (isFiltered) {
@@ -152,8 +152,8 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
                         searchPatients(true);
                     }
 
-                    if (s.toString().length() < 3)
-                        mMyPatientsAdapter.getFilter().filter(s.toString());
+//                    if (s.toString().length() >2 ) //sandeep commnted this filter logic
+//                        mMyPatientsAdapter.getFilter().filter(s.toString());
                 } else
                     searchPatients(false);
             }
@@ -165,6 +165,8 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
                 showDialogToAddReferenceDetails();
             }
         });
+
+        mRecyclerView.setAdapter(mMyPatientsAdapter);
 
     }
 

@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PatientListForReference extends RecyclerView.Adapter<PatientListForReference.ListViewHolder> implements Filterable {
+public class PatientListForReference extends RecyclerView.Adapter<PatientListForReference.ListViewHolder> /*implements Filterable*/ {
 
     private ArrayList<PatientList> mListToShowAfterFilter;
     private Context mContext;
@@ -62,7 +62,7 @@ public class PatientListForReference extends RecyclerView.Adapter<PatientListFor
     @Override
     public void onBindViewHolder(final PatientListForReference.ListViewHolder holder, final int position) {
 
-        PatientList idAndValueDataModel = mListToShowAfterFilter.get(position);
+        PatientList idAndValueDataModel = mDataList.get(position);
         if (idAndValueDataModel.getSpannableString() != null) {
             if (idAndValueDataModel.getPatientName().toLowerCase().contains(idAndValueDataModel.getSpannableString().toLowerCase())) {
                 SpannableString spannablePhoneString = new SpannableString(idAndValueDataModel.getPatientName());
@@ -88,7 +88,7 @@ public class PatientListForReference extends RecyclerView.Adapter<PatientListFor
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PatientList idAndValueDataModel = mListToShowAfterFilter.get(position);
+                PatientList idAndValueDataModel = mDataList.get(position);
                 mOnItemClickedListener.onValueClicked(idAndValueDataModel.getPatientId(), idAndValueDataModel);
             }
         });
@@ -110,49 +110,49 @@ public class PatientListForReference extends RecyclerView.Adapter<PatientListFor
 
     @Override
     public int getItemCount() {
-        return mListToShowAfterFilter.size();
+        return mDataList.size();
     }
 
 
-    @Override
-    public Filter getFilter() {
-
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                String charString = charSequence.toString().toLowerCase();
-                mDataList.clear();
-
-                if (charString.isEmpty()) {
-                    for (PatientList patList : mListToShowAfterFilter) {
-                        patList.setSpannableString("");
-                        mDataList.add(patList);
-                    }
-                } else {
-                    for (PatientList patientListObject : mListToShowAfterFilter) {
-                        if (patientListObject.getPatientName().toLowerCase().contains(charString)
-                                || patientListObject.getPatientPhone().contains(charString)
-                                || String.valueOf(patientListObject.getPatientId()).contains(charString)) {
-
-                            patientListObject.setSpannableString(charString);
-                            mDataList.add(patientListObject);
-                        }
-                    }
-                }
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = mDataList;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                mDataList = (ArrayList<PatientList>) filterResults.values;
-
-                notifyDataSetChanged();
-            }
-        };
-    }
+//    @Override
+//    public Filter getFilter() {
+//
+//        return new Filter() {
+//            @Override
+//            protected FilterResults performFiltering(CharSequence charSequence) {
+//                String charString = charSequence.toString().toLowerCase();
+//                mDataList.clear();
+//
+//                if (charString.isEmpty()) {
+//                    for (PatientList patList : mListToShowAfterFilter) {
+//                        patList.setSpannableString("");
+//                        mDataList.add(patList);
+//                    }
+//                } else {
+//                    for (PatientList patientListObject : mListToShowAfterFilter) {
+//                        if (patientListObject.getPatientName().toLowerCase().contains(charString)
+//                                || patientListObject.getPatientPhone().contains(charString)
+//                                || String.valueOf(patientListObject.getPatientId()).contains(charString)) {
+//
+//                            patientListObject.setSpannableString(charString);
+//                            mDataList.add(patientListObject);
+//                        }
+//                    }
+//                }
+//
+//                FilterResults filterResults = new FilterResults();
+//                filterResults.values = mDataList;
+//                return filterResults;
+//            }
+//
+//            @Override
+//            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+//                mDataList = (ArrayList<PatientList>) filterResults.values;
+//
+//                notifyDataSetChanged();
+//            }
+//        };
+//    }
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
 
@@ -183,7 +183,7 @@ public class PatientListForReference extends RecyclerView.Adapter<PatientListFor
     public void add(PatientList mc) {
         mDataList.add(mc);
         mListToShowAfterFilter.add(mc);
-        //removeDuplicateElements();
+//        removeDuplicateElements();
         notifyItemInserted(mDataList.size() - 1);
     }
 
