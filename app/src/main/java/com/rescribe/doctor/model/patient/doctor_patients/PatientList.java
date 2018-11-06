@@ -84,14 +84,9 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     @SerializedName("creationDate")
     @Expose
     private String creationDate;
-
     @SerializedName("referenceId")
     @Expose
     private String referenceID;
-
-    @SerializedName("isDead")
-    @Expose
-    private boolean isDead;
 
     private String spannableString;
     private boolean selected;
@@ -151,7 +146,6 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.creationDate = ((String) in.readValue((String.class.getClassLoader())));
         this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
-        this.isDead = ((boolean) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -353,7 +347,6 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         dest.writeValue(creationDate);
         dest.writeValue(patientArea);
         dest.writeValue(relation);
-        dest.writeValue(isDead);
     }
 
     public int describeContents() {
@@ -408,13 +401,5 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
 
     public void setRelation(String relation) {
         this.relation = relation;
-    }
-
-    public boolean isDead() {
-        return isDead;
-    }
-
-    public void setDead(boolean dead) {
-        isDead = dead;
     }
 }

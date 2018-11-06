@@ -30,7 +30,7 @@ public class AppointmentList implements Parcelable, Cloneable, Comparable<Appoin
     private String address;
     @SerializedName("clinicId")
     @Expose
-    private Integer clinicId;
+    private int clinicId;
     @SerializedName("cityId")
     @Expose
     private Integer cityId;
@@ -143,11 +143,11 @@ public class AppointmentList implements Parcelable, Cloneable, Comparable<Appoin
         this.cityId = cityId;
     }
 
-    public Integer getClinicId() {
+    public int getClinicId() {
         return clinicId;
     }
 
-    public void setClinicId(Integer clinicId) {
+    public void setClinicId(int clinicId) {
         this.clinicId = clinicId;
     }
 

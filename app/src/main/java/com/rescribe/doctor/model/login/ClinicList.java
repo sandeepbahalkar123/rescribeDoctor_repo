@@ -13,7 +13,7 @@ public class ClinicList implements Parcelable
 
     @SerializedName("clinicId")
     @Expose
-    private Integer clinicId;
+    private int clinicId;
     @SerializedName("clinicName")
     @Expose
     private String clinicName;
@@ -51,7 +51,7 @@ public class ClinicList implements Parcelable
     };
 
     protected ClinicList(Parcel in) {
-        this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.clinicId = ((int) in.readValue((Integer.class.getClassLoader())));
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
         this.clinicAddress = ((String) in.readValue((String.class.getClassLoader())));
         this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -65,11 +65,11 @@ public class ClinicList implements Parcelable
     public ClinicList() {
     }
 
-    public Integer getClinicId() {
+    public int getClinicId() {
         return clinicId;
     }
 
-    public void setClinicId(Integer clinicId) {
+    public void setClinicId(int clinicId) {
         this.clinicId = clinicId;
     }
 

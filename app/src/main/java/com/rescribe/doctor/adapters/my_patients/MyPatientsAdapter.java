@@ -109,9 +109,9 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             dataToShowInPatientID = String.valueOf(patientObject.getHospitalPatId());
         }
         //---- END------
-        if (patientObject.isDead()){
-            holder.patientNameTextView.setTextColor(ContextCompat.getColor(mContext, R.color.bsp_red));
-        }
+//        if (patientObject.isDead()){
+//            holder.patientNameTextView.setTextColor(ContextCompat.getColor(mContext, R.color.bsp_red));
+//        }
 
 
         if (patientObject.getSpannableString() != null) {
@@ -241,7 +241,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 return false;
             }
         });
-        if (!patientObject.isDead()) {
+
             holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -259,7 +259,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                     mOnDownArrowClicked.onClickOfPatientDetails(patientObject, patientInfo, isClickOnPatientDetailsRequired);
                 }
             });
-        }
+
 
         holder.chatImageView.setOnClickListener(new View.OnClickListener() {
             @Override

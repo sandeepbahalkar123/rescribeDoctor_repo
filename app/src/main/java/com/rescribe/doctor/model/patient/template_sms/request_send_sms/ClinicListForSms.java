@@ -21,7 +21,7 @@ public class ClinicListForSms implements Parcelable ,Cloneable{
     private Integer locationId;
     @SerializedName("clinicId")
     @Expose
-    private Integer clinicId;
+    private int clinicId;
     @SerializedName("docId")
     @Expose
     private Integer docId;
@@ -48,7 +48,7 @@ public class ClinicListForSms implements Parcelable ,Cloneable{
             ;
 
     protected ClinicListForSms(Parcel in) {
-        this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.clinicId = ((int) in.readValue((Integer.class.getClassLoader())));
         this.docId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         in.readList(this.patientInfoList, (PatientInfoList.class.getClassLoader()));
@@ -75,11 +75,11 @@ public class ClinicListForSms implements Parcelable ,Cloneable{
         this.locationId = locationId;
     }
 
-    public Integer getClinicId() {
+    public int getClinicId() {
         return clinicId;
     }
 
-    public void setClinicId(Integer clinicId) {
+    public void setClinicId(int clinicId) {
         this.clinicId = clinicId;
     }
 

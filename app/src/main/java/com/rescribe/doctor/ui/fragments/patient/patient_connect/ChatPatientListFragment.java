@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -167,6 +168,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     @Override
     public void onClickOfPatientDetails(PatientList patientListObject, String text) {
         if (mFromWhichActivity.equals(RescribeConstants.MY_APPOINTMENTS)) {
+            Log.e("Clinic Id",""+patientListObject.getClinicId());
             Intent intent = new Intent(getActivity(), SelectSlotToBookAppointmentBaseActivity.class);
             intent.putExtra(RescribeConstants.PATIENT_INFO, patientListObject);
             intent.putExtra(RescribeConstants.PATIENT_DETAILS, text);

@@ -27,7 +27,7 @@ public class ClinicList implements Parcelable
     private Integer cityId;
     @SerializedName("clinicId")
     @Expose
-    private Integer clinicId;
+    private int clinicId;
     private boolean selected;
 
     public final static Parcelable.Creator<ClinicList> CREATOR = new Creator<ClinicList>() {
@@ -53,7 +53,7 @@ public class ClinicList implements Parcelable
         this.area = ((String) in.readValue((String.class.getClassLoader())));
         this.city = ((String) in.readValue((String.class.getClassLoader())));
         this.cityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.clinicId = ((int) in.readValue((Integer.class.getClassLoader())));
         this.selected = ((boolean) in.readValue((String.class.getClassLoader())));
     }
 
@@ -100,11 +100,11 @@ public class ClinicList implements Parcelable
     public void setCityId(Integer cityId) {
         this.cityId = cityId;
     }
-    public Integer getClinicId() {
+    public int getClinicId() {
         return clinicId;
     }
 
-    public void setClinicId(Integer clinicId) {
+    public void setClinicId(int clinicId) {
         this.clinicId = clinicId;
     }
 

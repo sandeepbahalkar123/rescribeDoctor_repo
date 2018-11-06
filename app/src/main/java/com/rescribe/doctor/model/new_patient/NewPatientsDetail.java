@@ -56,7 +56,7 @@ public class NewPatientsDetail implements Parcelable {
     private String referenceId;
     @SerializedName("clinicId")
     @Expose
-    private Integer clinicId;
+    private int clinicId;
     private String spannableString;
     private boolean selected;
     public final static Creator<NewPatientsDetail> CREATOR = new Creator<NewPatientsDetail>() {
@@ -76,7 +76,7 @@ public class NewPatientsDetail implements Parcelable {
     };
 
     protected NewPatientsDetail(Parcel in) {
-        this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.clinicId = ((int) in.readValue((Integer.class.getClassLoader())));
         this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientID = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientName = ((String) in.readValue((String.class.getClassLoader())));
@@ -129,11 +129,11 @@ public class NewPatientsDetail implements Parcelable {
         this.patientID = patientID;
     }
 
-    public Integer getClinicId() {
+    public int getClinicId() {
         return clinicId;
     }
 
-    public void setClinicId(Integer clinicId) {
+    public void setClinicId(int clinicId) {
         this.clinicId = clinicId;
     }
     public String getPatientName() {

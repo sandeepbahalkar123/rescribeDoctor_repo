@@ -15,7 +15,7 @@ public class DoctorLocationModel implements Parcelable
     private String clinicName;
     @SerializedName("clinicId")
     @Expose
-    private Integer clinicId;
+    private int clinicId;
     @SerializedName("locationId")
     @Expose
     private Integer locationId;
@@ -53,7 +53,7 @@ public class DoctorLocationModel implements Parcelable
 
     protected DoctorLocationModel(Parcel in) {
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
-        this.clinicId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.clinicId = ((int) in.readValue((Integer.class.getClassLoader())));
         this.locationId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.area = ((String) in.readValue((String.class.getClassLoader())));
         this.city = ((String) in.readValue((String.class.getClassLoader())));
@@ -73,11 +73,11 @@ public class DoctorLocationModel implements Parcelable
         this.clinicName = clinicName;
     }
 
-    public Integer getClinicId() {
+    public int getClinicId() {
         return clinicId;
     }
 
-    public void setClinicId(Integer clinicId) {
+    public void setClinicId(int clinicId) {
         this.clinicId = clinicId;
     }
 
