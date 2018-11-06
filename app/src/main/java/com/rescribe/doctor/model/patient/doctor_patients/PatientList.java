@@ -43,13 +43,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     private String patientEmail;
     @SerializedName("clinicId")
     @Expose
-
     private int clinicId;
-
-    @SerializedName("relation")
-    @Expose
-    private String relation;
-
     @SerializedName("clinicName")
     @Expose
     private String clinicName;
@@ -102,6 +96,9 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     @SerializedName("patientAddressDetails")
     @Expose
     private PatientAddressDetails addressDetails;
+    @SerializedName("relation")
+    @Expose
+    private String relation;
     //---------------
 
     private boolean isOfflinePatientSynced = true; //considered always sync with server.
@@ -132,20 +129,18 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientPhone = ((String) in.readValue((String.class.getClassLoader())));
         this.patientImageUrl = ((String) in.readValue((String.class.getClassLoader())));
-        this.relation = ((String) in.readValue((String.class.getClassLoader())));
         this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
         this.clinicId = ((int) in.readValue((int.class.getClassLoader())));
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
-
         this.hospitalName = ((String) in.readValue((String.class.getClassLoader())));
         this.patInfoFlag = ((String) in.readValue((String.class.getClassLoader())));
-
         this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientCityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
         this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.creationDate = ((String) in.readValue((String.class.getClassLoader())));
         this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
+        this.relation = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -322,6 +317,13 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
+    public String getRelation() {
+        return relation;
+    }
+
+    public void setRelation(String relation) {
+        this.relation = relation;
+    }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
@@ -395,11 +397,5 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.addressDetails = addressDetails;
     }
 
-    public String getRelation() {
-        return relation;
-    }
 
-    public void setRelation(String relation) {
-        this.relation = relation;
-    }
 }
