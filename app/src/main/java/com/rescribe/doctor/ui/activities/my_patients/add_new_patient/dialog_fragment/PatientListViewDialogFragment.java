@@ -116,17 +116,11 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
         mRecyclerView.setLayoutManager(linearlayoutManager);
 
         mMyPatientsAdapter = new PatientListForReference(getActivity(), patientLists, this);
-
-
+        mRecyclerView.setAdapter(mMyPatientsAdapter);
+      //  Log.d("scroll init:",""+mRecyclerView.getScrollState());
         nextPage(0, NetworkUtil.getConnectivityStatusBoolean(getActivity()));
 
-        mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-//                Log.e("page",""+page);
-                nextPage(page, NetworkUtil.getConnectivityStatusBoolean(getActivity()));
-            }
-        });
+
 
         mSearchEditText.addTextChangedListener(new EditTextWithDeleteButton.TextChangedListener() {
             @Override
@@ -142,20 +136,45 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
             public void afterTextChanged(Editable s) {
                 searchText = s.toString();
 
-                if (NetworkUtil.getConnectivityStatusBoolean(getActivity())) {
-                    if (searchText.length() > 2) {
-                        searchPatients(true);
-                        isFiltered = true;
-                    } else if (isFiltered) {
-                        isFiltered = false;
-                        searchText = "";
-                        searchPatients(true);
-                    }
+//                if (NetworkUtil.getConnectivityStatusBoolean(getActivity())) {
+//                    if (searchText.length() > 2) {
+//                        searchPatients(true);
+//                        isFiltered = true;
+//                    } else if (isFiltered) {
+//                        isFiltered = false;
+//                        searchText = "";
+//                        searchPatients(true);
+//                    }
 
 //                    if (s.toString().length() >2 ) //sandeep commnted this filter logic
 //                        mMyPatientsAdapter.getFilter().filter(s.toString());
-                } else
-                    searchPatients(false);
+//                } else
+//                    searchPatients(false);
+
+                if (searchText.length() > 2 || searchText.length() == 0)
+                    searchPatients(NetworkUtil.getConnectivityStatusBoolean(getActivity()));
+
+            }
+        });
+
+        mSearchEditText.addClearTextButtonListener(new EditTextWithDeleteButton.OnClearButtonClickedInEditTextListener() {
+            @Override
+            public void onClearButtonClicked() {
+               // Log.d("Clear","clear called");
+                searchText = "";
+                mSearchEditText.setText("");
+                nextPage(0, NetworkUtil.getConnectivityStatusBoolean(getActivity()));
+               // Log.d("scrollstate:",""+mRecyclerView.getScrollState());
+            }
+        });
+
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                Log.d("onscroll:","onload more called");
+                nextPage(page, NetworkUtil.getConnectivityStatusBoolean(getActivity()));
+
+
             }
         });
 
@@ -166,7 +185,7 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
             }
         });
 
-        mRecyclerView.setAdapter(mMyPatientsAdapter);
+
 
     }
 
@@ -220,13 +239,13 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
 
 
     public void nextPage(int pageNo, boolean isInternetAvailable) {
-        boolean isAllPatientDownloaded = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, getActivity());
+        //boolean isAllPatientDownloaded = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, getActivity());
 
-        if (isInternetAvailable && !isAllPatientDownloaded) {
+        if (isInternetAvailable) {
+            mRequestSearchPatients.setPageNo(pageNo);
             mAppointmentHelper = new AppointmentHelper(mContext, this);
             mRequestSearchPatients.setDocId(0);//(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
             mRequestSearchPatients.setSearchText(searchText);
-            mRequestSearchPatients.setPageNo(pageNo);
             mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, mSearchEditText.getText().toString().isEmpty());
         } else {
             ArrayList<PatientList> offlineAddedPatients = AppDBHelper.getInstance(getActivity()).getOfflineAddedPatients(mRequestSearchPatients, pageNo, mSearchEditText.getText().toString());

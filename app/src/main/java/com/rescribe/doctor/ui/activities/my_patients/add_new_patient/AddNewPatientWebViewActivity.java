@@ -259,10 +259,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             }
             if (internetAvailable && RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, mContext)) {
 
-//                mReferredBy.setClickable(true);
-//                mReferredBy.setFocusable(false);
-//                mReferredByTextInputLayout.setClickable(true);
-//                mReferredByTextInputLayout.setFocusable(false);
                 mReferenceDetailLayout.setVisibility(View.VISIBLE);
             }
             //--- show addresss /referecens details based on setting done in SettingActivity. : END
@@ -1085,16 +1081,20 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int Selectedrel = position;
+                Log.e("position---",""+position);
                 List<String> listRelation;
                 if(genderMale.isChecked()){
                      listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+                    Log.e("mRelation MR",listRelation.get(Selectedrel));
                       mRelation=listRelation.get(Selectedrel);
 
                 }else if (genderFemale.isChecked()){
                     listRelation = Arrays.asList(getResources().getStringArray(R.array.mrs_relation_entries));
+                    Log.e("mRelation MRS",listRelation.get(Selectedrel));
                     mRelation=listRelation.get(Selectedrel);
                 }else if(genderOther.isChecked()){
                     listRelation = Arrays.asList(getResources().getStringArray(R.array.other_relation_entries));
+                    Log.e("mRelation Other",listRelation.get(Selectedrel));
                     mRelation=listRelation.get(Selectedrel);
 
 

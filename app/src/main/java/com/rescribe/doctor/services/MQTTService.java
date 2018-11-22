@@ -128,10 +128,10 @@ public class MQTTService extends Service {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             createChannel();
             Notification notification = new NotificationCompat.Builder(this, NotificationHelper.PATIENT_CONNECT_SERVICE_CHANNEL)
-                    .setContentTitle("Patient Connect")
+                    .setContentTitle("Dr Rescribe")
                     .setSmallIcon(R.drawable.logo)
                     .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-                    .setContentText("Chat with Patient")
+//                    .setContentText("Chat with Patient")
                     .setContentIntent(pendingIntent).build();
             startForeground(CONNECT_FOREGROUND_ID, notification);
         }

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
@@ -57,6 +58,8 @@ public class CityAndAreaDialogFragment extends DialogFragment implements IdAndVa
 
     @BindView(R.id.tapToAddNewFab)
     CustomTextView tapToAddNewFab;
+
+
 
     private ArrayList<IdAndValueDataModel> mList = new ArrayList<>();
     private int mStateID;
@@ -229,8 +232,10 @@ public class CityAndAreaDialogFragment extends DialogFragment implements IdAndVa
         referredByTextInputLayout.setHint(getString(R.string.area));
         TextInputLayout referredEmailTextInputLayout = (TextInputLayout) dialogView.findViewById(R.id.referredEmailTextInputLayout);
         TextInputLayout referredPhoneTextInputLayout = (TextInputLayout) dialogView.findViewById(R.id.referredPhoneTextInputLayout);
+        Spinner salutationSpinnerRef = (Spinner) dialogView.findViewById(R.id.salutationSpinnerRef);
         referredEmailTextInputLayout.setVisibility(View.GONE);
         referredPhoneTextInputLayout.setVisibility(View.GONE);
+        salutationSpinnerRef.setVisibility(View.GONE);
         //-----------
 
         dialogBuilder.setTitle(getString(R.string.err_msg_no_area_entered))
