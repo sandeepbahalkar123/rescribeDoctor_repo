@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/filepicker" />
             <option value="$PROJECT_DIR$/materialdrawer" />
             <option value="$PROJECT_DIR$/slideview" />
+            <option value="$PROJECT_DIR$/smartPenCore" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

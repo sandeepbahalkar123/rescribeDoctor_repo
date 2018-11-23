@@ -41,8 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                app:srcCompat="@drawable/no_records_found"
                 android:visibility="gone"
+                app:srcCompat="@drawable/no_records_found"
                 tools:visibility="visible" />
 
             <android.support.v4.view.ViewPager
@@ -51,6 +51,19 @@
                 android:layout_height="wrap_content" />
 
         </RelativeLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addNoteFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/dp16"
+            android:clickable="true"
+            android:focusable="true"
+            app:backgroundTint="@color/colorAccent"
+            app:srcCompat="@drawable/ic_note" />
 
         <Button
             android:id="@+id/addRecordButton"
