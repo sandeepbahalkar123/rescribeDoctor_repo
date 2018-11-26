@@ -35,6 +35,7 @@ import com.rescribe.doctor.ui.activities.book_appointment.SelectSlotToBookAppoin
 import com.rescribe.doctor.ui.activities.my_patients.ShowMyPatientsListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -168,13 +169,21 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     @Override
     public void onClickOfPatientDetails(PatientList patientListObject, String text) {
         if (mFromWhichActivity.equals(RescribeConstants.MY_APPOINTMENTS)) {
-            Log.e("Clinic Id",""+patientListObject.getClinicId());
-            Intent intent = new Intent(getActivity(), SelectSlotToBookAppointmentBaseActivity.class);
-            intent.putExtra(RescribeConstants.PATIENT_INFO, patientListObject);
-            intent.putExtra(RescribeConstants.PATIENT_DETAILS, text);
-            intent.putExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
-            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-            getActivity().startActivity(intent);
+
+            if (!patientListObject.isDead()) {
+                Log.e("Clinic Id", "" + patientListObject.getClinicId());
+                Intent intent = new Intent(getActivity(), SelectSlotToBookAppointmentBaseActivity.class);
+                intent.putExtra(RescribeConstants.PATIENT_INFO, patientListObject);
+                intent.putExtra(RescribeConstants.PATIENT_DETAILS, text);
+                intent.putExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
+                intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                getActivity().startActivity(intent);
+            }else {
+
+                CommonMethods.showInfoDialog(getActivity().getResources().getString(R.string.can_not_book_appointment),getActivity(),false);
+
+            }
+
 
         } else {
             Intent intent = new Intent(getActivity(), ChatActivity.class);

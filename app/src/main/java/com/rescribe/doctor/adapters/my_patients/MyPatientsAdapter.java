@@ -89,6 +89,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.patientClinicAddress.setText(CommonMethods.toCamelCase(area + patientObject.getPatientCity()));
         String patientName = "";
 
+
         if (patientObject.getHospitalName() == null || patientObject.getHospitalName().isEmpty())
             holder.patientClinic.setVisibility(View.GONE);
         else {
@@ -99,6 +100,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         if (patientObject.getSalutation() != 0)
             patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
         else patientName = toCamelCase(patientObject.getPatientName());
+
+        if(patientObject.isDead()){
+            holder.patientNameTextView.setTextColor(mContext.getResources().getColor(R.color.bsp_red));
+        }else {
+            holder.patientNameTextView.setTextColor(mContext.getResources().getColor(R.color.black));
+
+        }
 
 
 
@@ -227,9 +235,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 mOnDownArrowClicked.onCheckUncheckRemoveSelectAllSelection(holder.checkbox.isChecked(), patientObject);
             }
         });
-        if (isLongPressed)
-            holder.checkbox.setVisibility(View.VISIBLE);
-        else holder.checkbox.setVisibility(View.GONE);
+        if (isLongPressed) {
+            if(!patientObject.isDead()) {
+                holder.checkbox.setVisibility(View.VISIBLE);
+            }
+        }
+        else
+            holder.checkbox.setVisibility(View.GONE);
 
         holder.patientDetailsClickLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -278,7 +290,11 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnDownArrowClicked.onPhoneNoClick(patientObject.getPatientPhone());
+                if(!patientObject.isDead()) {
+                    mOnDownArrowClicked.onPhoneNoClick(patientObject.getPatientPhone());
+                }else {
+                    CommonMethods.showInfoDialog(mContext.getResources().getString(R.string.can_not_call_patient),mContext,false);
+                }
             }
         });
 

@@ -301,6 +301,9 @@
     <string name="tap_to_add_new_doctor">Tap to add new doctor</string>
     <string name="tap_to_add_new_patient">Tap to add new patient</string>
     <string name="change_password">Change Password</string>
+    <string name="can_not_call_patient">You cannot call deceased patient.</string>
+    <string name="can_not_book_appointment">Booking not allowed for deceased patient.</string>
+    <string name="can_not_add_to_waiting_list">Deceased patient is not allowed to add in waiting list.</string>
 
     <string-array name="add_patient_options">
         <item>Save patient</item>

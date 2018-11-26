@@ -109,6 +109,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private String mPatientId;
     private String mHospitalPatId;
     private int mAptId;
+    private boolean isDead;
 
     public PatientHistoryListFragmentContainer() {
         // Required empty public constructor
@@ -134,7 +135,10 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
         mPatientId = getArguments().getString(RescribeConstants.PATIENT_ID);
         mHospitalId = getArguments().getInt(RescribeConstants.CLINIC_ID);
+        isDead = getArguments().getBoolean(RescribeConstants.PATIENT_IS_DEAD);
 
+        if (isDead)
+            mAddRecordButton.setVisibility(View.GONE);
         if (getArguments().getString(RescribeConstants.PATIENT_NAME) != null) {
             titleTextView.setText(getArguments().getString(RescribeConstants.PATIENT_NAME));
             userInfoTextView.setVisibility(View.VISIBLE);

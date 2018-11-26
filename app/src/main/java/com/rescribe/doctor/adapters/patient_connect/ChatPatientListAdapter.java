@@ -85,6 +85,14 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         else patientName = CommonMethods.toCamelCase(patientObject.getPatientName());
 
 
+        if(patientObject.isDead()){
+            holder.patientNameTextView.setTextColor(mContext.getResources().getColor(R.color.bsp_red));
+        }else {
+            holder.patientNameTextView.setTextColor(mContext.getResources().getColor(R.color.black));
+
+        }
+
+
         //---- START: Setting of hospitalID or referecne ID, reference is IS high priority than hospitalID.-----
         String dataToShowInPatientID = String.valueOf(patientObject.getReferenceID());
 
@@ -208,7 +216,11 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnDownArrowClicked.onPhoneNoClick(patientObject.getPatientPhone());
+                if(!patientObject.isDead()) {
+                    mOnDownArrowClicked.onPhoneNoClick(patientObject.getPatientPhone());
+                }else {
+                    CommonMethods.showInfoDialog(mContext.getResources().getString(R.string.can_not_call_patient),mContext,false);
+                }
             }
         });
 

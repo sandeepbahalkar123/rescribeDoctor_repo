@@ -144,6 +144,7 @@ public class RescribeConstants {
     public static final String WAITING_LIST_INFO = "waiting_list_info";
     public static final String SMS_PATIENT_LIST_TO_SHOW = "sms_list_to_show";
     public static final String PATIENT_HOS_PAT_ID = "hos_pat_id";
+    public static final String PATIENT_IS_DEAD = "is_dead";
     public static final String PATIENT_OPDID = "patient_opdid";
     public static final String PATIENT_LIST = "patient_list";
     public static final String LOCATION_ID = "location_id";
