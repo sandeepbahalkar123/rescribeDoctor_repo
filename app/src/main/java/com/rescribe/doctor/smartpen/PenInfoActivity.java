@@ -1,7 +1,6 @@
 package com.rescribe.doctor.smartpen;
 
 import android.app.AlertDialog.Builder;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,16 +23,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
+import com.rescribe.doctor.model.UploadStatus;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.services.add_record_upload_Service.AddRecordService;
+import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.singleton.RescribeApplication;
+import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
+import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.NetworkUtil;
+import com.rescribe.doctor.util.RescribeConstants;
 import com.smart.pen.core.common.Listeners;
 import com.smart.pen.core.model.FrameSizeObject;
 import com.smart.pen.core.model.PointObject;
@@ -42,15 +48,18 @@ import com.smart.pen.core.symbol.BatteryState;
 import com.smart.pen.core.symbol.ConnectState;
 import com.smart.pen.core.symbol.Keys;
 import com.smart.pen.core.symbol.SceneType;
-import com.smart.pen.core.utils.SystemUtil;
 import com.smart.pen.core.views.MultipleCanvasView;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity.FILELIST;
 
 /**
  * 笔信息显示
@@ -63,6 +72,8 @@ import butterknife.ButterKnife;
 public class PenInfoActivity extends AppCompatActivity {
     public static final String TAG = PenInfoActivity.class.getSimpleName();
     public static final int REQUEST_SETTING_SIZE = 1000;
+    private static final String RESCRIBE_NOTES = "/DrRescribe/Notes/";
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     /**
@@ -197,7 +208,7 @@ public class PenInfoActivity extends AppCompatActivity {
     }
 
     public int getToolBarHeight() {
-        int[] attrs = new int[] {R.attr.actionBarSize};
+        int[] attrs = new int[]{R.attr.actionBarSize};
         TypedArray ta = obtainStyledAttributes(attrs);
         int toolBarHeight = ta.getDimensionPixelSize(0, -1);
         ta.recycle();
@@ -239,11 +250,19 @@ public class PenInfoActivity extends AppCompatActivity {
 
     private void saveAndOpenBitmapToImage() {
         Date now = new Date();
-        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+        String time = String.valueOf(android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now));
 
         try {
             // image naming and path  to include sd card  appending name you choose for file
-            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpg";
+
+            String mPath = Environment.getExternalStorageDirectory().toString() + RESCRIBE_NOTES;
+            File dirFilesFolder = new File(mPath);
+            if (!dirFilesFolder.exists()) {
+                if (dirFilesFolder.mkdirs()) {
+                    Log.i(TAG, mPath + " Directory Created");
+                }
+            }
+            mPath = mPath + time + ".jpg";
 
             // create bitmap screen capture
             View v1 = getWindow().getDecorView().getRootView();
@@ -271,14 +290,89 @@ public class PenInfoActivity extends AppCompatActivity {
                 uri = Uri.fromFile(new File(mPath));
             }
 
-            intent.setDataAndType(uri, "image/*");
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(intent);
+//            intent.setDataAndType(uri, "image/*");
+//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            startActivity(intent);
+
+            uploadNote(mPath);
 
         } catch (Throwable e) {
             // Several error may come out with file handling or DOM
             e.printStackTrace();
         }
+    }
+
+    private void uploadNote(String path) {
+
+        // get Params
+
+        String mHospitalPatId = getIntent().getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
+        String mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);
+        String patientId = getIntent().getStringExtra(RescribeConstants.PATIENT_ID);
+        int mAptId = getIntent().getIntExtra(RescribeConstants.APPOINTMENT_ID, 0);
+        int mHospitalId = getIntent().getIntExtra(RescribeConstants.CLINIC_ID, 0);
+
+//        String patientName = getIntent().getStringExtra(RescribeConstants.PATIENT_NAME);
+//        String patientInfo = getIntent().getStringExtra(RescribeConstants.PATIENT_INFO);
+        String mOpdtime = getIntent().getStringExtra(RescribeConstants.OPD_TIME);
+        String opdId = getIntent().getStringExtra(RescribeConstants.OPD_ID);
+
+        String visitDate = getIntent().getStringExtra(RescribeConstants.VISIT_DATE);
+
+        int docId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this));
+
+        AppDBHelper appDBHelper = new AppDBHelper(this);
+        Device device = Device.getInstance(this);
+        String authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, this);
+
+        ////////////
+
+        ArrayList<UploadStatus> uploadDataList = new ArrayList<>();
+
+        String uploadId = System.currentTimeMillis() + "_" + 0 + "_" + patientId;
+        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, "", path, mAptId, RescribeConstants.NOTES, "", "");
+
+        String currentOpdTime;
+        if (mOpdtime.equals(""))
+            currentOpdTime = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm_ss);
+        else
+            currentOpdTime = mOpdtime;
+
+        String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
+        headers.put(RescribeConstants.DEVICEID, device.getDeviceId());
+        headers.put(RescribeConstants.OS, device.getOS());
+        headers.put(RescribeConstants.OSVERSION, device.getOSVersion());
+        headers.put(RescribeConstants.DEVICE_TYPE, device.getDeviceType());
+        headers.put("patientid", patientId);
+        headers.put("docid", String.valueOf(docId));
+        headers.put("opddate", visitDateToPass);
+        headers.put("opdtime", currentOpdTime);
+        headers.put("opdid", opdId);
+        headers.put("hospitalid", String.valueOf(mHospitalId));
+        headers.put("hospitalpatid", mHospitalPatId);
+        headers.put("locationid", mLocationId);
+        headers.put("aptid", String.valueOf(mAptId));
+
+        // Added in 5 to 6 update
+        headers.put("fileid", "");
+        headers.put("orderid", "");
+
+        UploadStatus uploadStatus = new UploadStatus(uploadId, visitDate, mOpdtime, "", path, RescribeConstants.NOTES, headers);
+        uploadDataList.add(uploadStatus);
+
+        if (NetworkUtil.isInternetAvailable(this))
+            uploadImage(uploadDataList);
+        else
+            CommonMethods.showToast(this, getString(R.string.records_will_upload_when_internet_available));
+    }
+
+    public void uploadImage(ArrayList<UploadStatus> images) {
+        Intent intent = new Intent(this, AddRecordService.class);
+        intent.putParcelableArrayListExtra(FILELIST, images);
+        ContextCompat.startForegroundService(this, intent);
     }
 
     @Override

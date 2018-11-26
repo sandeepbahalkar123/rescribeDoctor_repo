@@ -104,7 +104,6 @@ public class SelectedRecordsActivity extends AppCompatActivity {
     private AppDBHelper appDBHelper;
     private Device device;
     private String authorizationString;
-    private String Url;
     private String mHospitalPatId;
     private String mLocationId;
     private int mHospitalId;
@@ -256,8 +255,6 @@ public class SelectedRecordsActivity extends AppCompatActivity {
 
         appDBHelper = new AppDBHelper(SelectedRecordsActivity.this);
         device = Device.getInstance(SelectedRecordsActivity.this);
-
-        Url = Config.BASE_URL + Config.MY_RECORDS_UPLOAD;
         authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, SelectedRecordsActivity.this);
 
         //  UploadService.UPLOAD_POOL_SIZE = 10;
@@ -416,8 +413,7 @@ public class SelectedRecordsActivity extends AppCompatActivity {
 
                     for (int parentIndex = 0; parentIndex < imagePaths.size(); parentIndex++) {
                         String uploadId =  System.currentTimeMillis() + "_" + parentIndex + "_" + patientId;
-                        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath(), mAptId);
-
+                        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath(), mAptId, "", "", "");
 
                         String currentOpdTime;
                         if (mOpdtime.equals(""))
@@ -426,7 +422,6 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                             currentOpdTime = mOpdtime;
 
                         String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-                        Log.e("Url", Url);
 
                         HashMap<String, String> headers = new HashMap<>();
                         headers.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
@@ -444,18 +439,19 @@ public class SelectedRecordsActivity extends AppCompatActivity {
                         headers.put("locationid", mLocationId);
                         headers.put("aptid", String.valueOf(mAptId));
 
+                        // Added in 5 to 6 update
+                        headers.put("fileid", "");
+                        headers.put("orderid", "");
 
-                        UploadStatus uploadStatus = new UploadStatus(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath(), mAptId,headers);
+
+                        UploadStatus uploadStatus = new UploadStatus(uploadId, visitDate, mOpdtime, imagePaths.get(parentIndex).getParentCaption(), imagePaths.get(parentIndex).getImagePath(), "",headers);
                         uploadDataList.add(uploadStatus);
                     }
 
                     if (NetworkUtil.isInternetAvailable(SelectedRecordsActivity.this))
-
                         uploadImage(uploadDataList);
-
                     else
                         CommonMethods.showToast(this, getString(R.string.records_will_upload_when_internet_available));
-
 
                     onBackPressed();
                 }
@@ -471,12 +467,9 @@ public class SelectedRecordsActivity extends AppCompatActivity {
 
     public void uploadImage(ArrayList<UploadStatus> images) {
 
-
-
-        Intent i = new Intent(SelectedRecordsActivity.this, AddRecordService.class);
-        i.putParcelableArrayListExtra(FILELIST, images);
-        i.putExtra("URL", Url);
-        ContextCompat.startForegroundService(SelectedRecordsActivity.this, i);
+        Intent intent = new Intent(SelectedRecordsActivity.this, AddRecordService.class);
+        intent.putParcelableArrayListExtra(FILELIST, images);
+        ContextCompat.startForegroundService(SelectedRecordsActivity.this, intent);
 
     }
 }
