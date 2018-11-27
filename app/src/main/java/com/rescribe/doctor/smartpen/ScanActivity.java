@@ -94,7 +94,9 @@ public class ScanActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 intent.setClass(ScanActivity.this, PenInfoActivity.class);
                 intent.putExtra(Keys.KEY_DEVICE_ADDRESS, item.address);
+                intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(intent);
+                finish();
             }
         });
 

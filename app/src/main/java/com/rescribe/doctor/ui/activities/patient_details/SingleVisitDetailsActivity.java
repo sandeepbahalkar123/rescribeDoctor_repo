@@ -1,11 +1,14 @@
 package com.rescribe.doctor.ui.activities.patient_details;
 
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -27,10 +30,15 @@ import com.rescribe.doctor.model.case_details.Range;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.case_details.VisitData;
 import com.rescribe.doctor.model.case_details.Vital;
+import com.rescribe.doctor.singleton.RescribeApplication;
+import com.rescribe.doctor.smartpen.PenInfoActivity;
+import com.rescribe.doctor.smartpen.ScanActivity;
 import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+import com.smart.pen.core.services.PenService;
+import com.smart.pen.core.symbol.Keys;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,15 +65,11 @@ import static com.rescribe.doctor.ui.fragments.patient.patient_history_fragment.
 
 public class SingleVisitDetailsActivity extends AppCompatActivity implements HelperResponse, SingleVisitAdapter.OnDeleteAttachments {
 
-    private boolean mIsDocUploaded = false;
-
     private static final String PAIN_SCALE = "pain scale";
     @BindView(R.id.historyExpandableListView)
     ExpandableListView mHistoryExpandableListView;
-
     @BindView(R.id.emptyListView)
     RelativeLayout mNoRecordAvailable;
-
     @BindView(R.id.backImageView)
     ImageView backImageView;
     @BindView(R.id.titleTextView)
@@ -78,8 +82,13 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     Spinner year;
     @BindView(R.id.addImageView)
     ImageView addImageView;
+
     @BindView(R.id.addRecordButton)
     Button addRecordButton;
+    @BindView(R.id.addNoteButton)
+    Button addNoteButton;
+
+    private boolean mIsDocUploaded = false;
     private int mLastExpandedPosition = -1;
     private SingleVisitAdapter mSingleVisitAdapter;
     private boolean isBpMin = false;
@@ -94,13 +103,30 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private PatientDetailHelper mSingleVisitDetailHelper;
     private boolean isAttachmentDeleted = false;
     private int mAptId;
+    private ProgressDialog mProgressDialog;
+    private Context mContext;
+    private Handler mHandler;
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(ATTATCHMENT_DOC_UPLOAD)) {
+                    initialize();
+                    mIsDocUploaded = true;
+
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_detail_activity);
         ButterKnife.bind(this);
+        mContext = this;
+        mHandler = new Handler();
         getBundleData();
         initialize();
     }
@@ -155,7 +181,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 if (childObject.size() == 1) {
 
                     boolean flag = true;
-                    if (listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_VITALS) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_NOTES) )
+                    if (listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ANNOTATION) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_VITALS) || listDataList.get(groupPosition).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_NOTES))
                         flag = false;
 
                     if (flag) {
@@ -335,6 +361,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             }
 
             addRecordButton.setVisibility(View.VISIBLE);
+            addNoteButton.setVisibility(View.VISIBLE);
 
         }
 
@@ -371,7 +398,6 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     }
 
-
     @Override
     public void onParseError(String mOldDataTag, String errorMessage) {
 
@@ -404,13 +430,19 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         isBpMax = bpMax;
     }
 
-    @OnClick({R.id.backImageView, R.id.userInfoTextView, R.id.addRecordButton})
+    @OnClick({R.id.backImageView, R.id.addNoteButton, R.id.addRecordButton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
                 onBackPressed();
                 break;
-            case R.id.userInfoTextView:
+            case R.id.addNoteButton:
+
+                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                if (!mBluetoothAdapter.isEnabled())
+                    mBluetoothAdapter.enable();
+                openSmartPen();
+
                 break;
             case R.id.addRecordButton:
                 CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
@@ -431,6 +463,63 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         }
     }
 
+    private void openSmartPen() {
+        mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);
+        //绑定蓝牙笔服务
+        RescribeApplication.getInstance().bindPenService(Keys.APP_PEN_SERVICE_NAME);
+        isPenServiceReady(Keys.APP_PEN_SERVICE_NAME);
+    }
+
+    private void isPenServiceReady(final String svrName) {
+        PenService service = RescribeApplication.getInstance().getPenService();
+        if (service != null) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dismissProgressDialog();
+                    if (Keys.APP_PEN_SERVICE_NAME.equals(svrName)) {
+                        CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
+                        Intent intent = new Intent(mContext, ScanActivity.class);
+                        intent.putExtra(RescribeConstants.OPD_ID, opdID);
+                        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+                        intent.putExtra(RescribeConstants.LOCATION_ID, "0");
+                        intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
+                        intent.putExtra(RescribeConstants.CLINIC_ID, "0");
+                        intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+                        intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+                        intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+                        intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
+                        intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
+                        startActivity(intent);
+                    } else if (Keys.APP_USB_SERVICE_NAME.equals(svrName)) {
+                        Intent intent = new Intent(mContext, PenInfoActivity.class);
+                        intent.putExtra(Keys.KEY_VALUE, svrName);
+                        startActivity(intent);
+                    }
+                }
+            }, 500);
+        } else {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isPenServiceReady(svrName);
+                }
+            }, 1000);
+        }
+    }
+
+    /**
+     * 释放progressDialog
+     **/
+    protected void dismissProgressDialog() {
+        if (mProgressDialog != null) {
+            if (mProgressDialog.isShowing())
+                mProgressDialog.dismiss();
+
+            mProgressDialog = null;
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (isAttachmentDeleted || mIsDocUploaded) {
@@ -448,19 +537,6 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         else if (caseName.contains(CHILD_TYPE_NOTES))
             mSingleVisitDetailHelper.deleteSelectedNotes(list);
     }
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction() != null) {
-                if (intent.getAction().equals(ATTATCHMENT_DOC_UPLOAD)) {
-                    initialize();
-                    mIsDocUploaded = true;
-
-                }
-            }
-        }
-    };
 
     @Override
     protected void onPause() {
