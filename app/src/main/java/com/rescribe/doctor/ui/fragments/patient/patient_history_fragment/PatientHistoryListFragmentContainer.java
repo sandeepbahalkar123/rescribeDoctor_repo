@@ -211,7 +211,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         }
     }
 
-    private void openSmartPen(BluetoothAdapter mBluetoothAdapter, String dateSelected) {
+    private void openSmartPen(String dateSelected) {
         mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);
         //绑定蓝牙笔服务
         RescribeApplication.getInstance().bindPenService(Keys.APP_PEN_SERVICE_NAME);
@@ -469,7 +469,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (!mBluetoothAdapter.isEnabled())
                 mBluetoothAdapter.enable();
-            openSmartPen(mBluetoothAdapter, dayOfMonth + "-" + monthOfYear + "-" + year);
+            openSmartPen(dayOfMonth + "-" + monthOfYear + "-" + year);
         }
     }
 

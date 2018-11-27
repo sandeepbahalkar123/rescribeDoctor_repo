@@ -184,8 +184,16 @@ public class AddRecordService extends Service {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                String msg = "{\"common\":{\"success\":false,\"statusCode\":400,\"statusMessage\": \"Server Error \"} }";
+                String message = "";
+                if (error.getMessage() != null) {
+                    if (!error.getMessage().isEmpty())
+                        message = error.getMessage();
+                    else
+                        message = "Server Error";
+                } else
+                    message = "Server Error";
+
+                String msg = "{\"common\":{\"success\":false,\"statusCode\":400,\"statusMessage\": \"" + message + "\"} }";
                 publishResults(msg);
             }
         });
