@@ -12,7 +12,6 @@
       <module fileurl="file://$PROJECT_DIR$/rescribeDoctor_repo.iml" filepath="$PROJECT_DIR$/rescribeDoctor_repo.iml" />
       <module fileurl="file://$PROJECT_DIR$/slideview/slideview.iml" filepath="$PROJECT_DIR$/slideview/slideview.iml" />
       <module fileurl="file://$PROJECT_DIR$/smartPenCore/smartPenCore.iml" filepath="$PROJECT_DIR$/smartPenCore/smartPenCore.iml" />
-      <module fileurl="file://$PROJECT_DIR$/smartPenCore/smartPenCore.iml" filepath="$PROJECT_DIR$/smartPenCore/smartPenCore.iml" />
     </modules>
   </component>
 </project>
