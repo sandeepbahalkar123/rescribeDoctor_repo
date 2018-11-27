@@ -275,6 +275,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             b.putInt(RescribeConstants.CLINIC_ID, patientListObject.getClinicId());
             b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
             b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
+            b.putBoolean(RescribeConstants.PATIENT_IS_DEAD,patientListObject.isDead());
             Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
             intent.putExtra(RescribeConstants.PATIENT_INFO, b);
             startActivity(intent);
@@ -293,14 +294,20 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
             if (!patientsListAddToWaitingLists.isEmpty()) {
                 //if only one location then dont display dialog.
-                if (mDoctorLocationModel.size() == 1) {
-                    mLocationId = mDoctorLocationModel.get(0).getLocationId();
-                    mClinicName = mDoctorLocationModel.get(0).getClinicName();
-                    mClinicArea = mDoctorLocationModel.get(0).getArea();
-                    mClinicCity = mDoctorLocationModel.get(0).getCity();
-                    callWaitingListApi();
-                } else {
-                    showDialogToSelectLocation(mDoctorLocationModel, null);
+                if (!patientListObject.isDead()) {
+                    if (mDoctorLocationModel.size() == 1) {
+                        mLocationId = mDoctorLocationModel.get(0).getLocationId();
+                        mClinicName = mDoctorLocationModel.get(0).getClinicName();
+                        mClinicArea = mDoctorLocationModel.get(0).getArea();
+                        mClinicCity = mDoctorLocationModel.get(0).getCity();
+                        callWaitingListApi();
+                    } else {
+                        showDialogToSelectLocation(mDoctorLocationModel, null);
+                    }
+                }else {
+                    CommonMethods.showInfoDialog(getActivity().getResources().getString(R.string.can_not_add_to_waiting_list),getActivity(),false);
+
+
                 }
             }
         }

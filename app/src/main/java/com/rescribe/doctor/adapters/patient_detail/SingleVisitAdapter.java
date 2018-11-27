@@ -72,21 +72,22 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             if (commonData != null) {
                 if (!commonData.isEmpty()) {
                     mListDataHeader.add(listDataHeader.get(i));
-                } else if (listDataHeader.get(i).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ALLERGIES)) {
-                    List<VisitCommonData> common = new ArrayList<>();
-                    VisitCommonData visitCommonData = new VisitCommonData();
-                    visitCommonData.setDosage("");
-                    visitCommonData.setId(0);
-                    visitCommonData.setMedicineTypeName("");
-                    visitCommonData.setMedicinename("");
-                    visitCommonData.setName("No Allergies Found");
-                    visitCommonData.setRemarks("");
-                    visitCommonData.setVitalValue("");
-                    visitCommonData.setUrl("");
-                    common.add(visitCommonData);
-                    listDataHeader.get(i).setCommonData(common);
-                    mListDataHeader.add(listDataHeader.get(i));
                 }
+//                } else if (listDataHeader.get(i).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ALLERGIES)) {
+//                    List<VisitCommonData> common = new ArrayList<>();
+//                    VisitCommonData visitCommonData = new VisitCommonData();
+//                    visitCommonData.setDosage("");
+//                    visitCommonData.setId(0);
+//                    visitCommonData.setMedicineTypeName("");
+//                    visitCommonData.setMedicinename("");
+//                    visitCommonData.setName("No Allergies Found");
+//                    visitCommonData.setRemarks("");
+//                    visitCommonData.setVitalValue("");
+//                    visitCommonData.setUrl("");
+//                    common.add(visitCommonData);
+//                    listDataHeader.get(i).setCommonData(common);
+//                    mListDataHeader.add(listDataHeader.get(i));
+//                }
             } else if (commonDatasVitals != null) {
                 if (!commonDatasVitals.isEmpty()) {
                     VisitCommonData commonVitals = new VisitCommonData();

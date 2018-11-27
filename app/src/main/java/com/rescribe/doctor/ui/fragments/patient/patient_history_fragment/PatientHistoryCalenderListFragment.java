@@ -37,6 +37,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
     private static String mHospitalPatId;
     private static int mAptId;
     private static String patientID;
+    private static boolean isdead;
     private ArrayList<String> mMonthName;
     private String mYear;
     private ArrayList<PatientHistoryInfo> formattedDoctorList;
@@ -77,6 +78,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         patientID = b.getString(RescribeConstants.PATIENT_ID);
         mHospitalPatId = b.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
         mAptId = b.getInt(RescribeConstants.APPOINTMENT_ID, 0);
+        isdead = b.getBoolean(RescribeConstants.PATIENT_IS_DEAD);
         fragment.setArguments(args);
         return fragment;
     }
@@ -102,6 +104,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
         intent.putExtra(RescribeConstants.DATE, visitDate);
         intent.putExtra(RescribeConstants.OPD_TIME, opdTime);
+        intent.putExtra(RescribeConstants.PATIENT_IS_DEAD, isdead);
         getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
     }
 

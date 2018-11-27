@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -107,8 +108,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     @BindView(R.id.addNoteButton)
     Button addNoteButton;
 
-//    @BindView(R.id.addNoteFab)
-//    FloatingActionButton addNoteFab;
+    @BindView(R.id.footer)
+    LinearLayout footer;
 
     Handler mHandler;
     //----------
@@ -125,7 +126,11 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private String mPatientId;
     private String mHospitalPatId;
     private int mAptId;
+
+    private boolean isDead;
+
     private ProgressDialog mProgressDialog;
+
 
     public PatientHistoryListFragmentContainer() {
         // Required empty public constructor
@@ -146,16 +151,21 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     public void initialize() {
 
-        if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, getActivity()))
-            addNoteButton.setVisibility(View.VISIBLE);
-        else addNoteButton.setVisibility(View.GONE);
-
         mHandler = new Handler();
         mYearList = new ArrayList<>();
         mTimePeriodList = new ArrayList<>();
 
         mPatientId = getArguments().getString(RescribeConstants.PATIENT_ID);
         mHospitalId = getArguments().getInt(RescribeConstants.CLINIC_ID);
+        isDead = getArguments().getBoolean(RescribeConstants.PATIENT_IS_DEAD);
+
+        if (isDead) {
+            footer.setVisibility(View.GONE);
+        } else {
+            if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, getActivity()))
+                addNoteButton.setVisibility(View.VISIBLE);
+            else addNoteButton.setVisibility(View.GONE);
+        }
 
         if (getArguments().getString(RescribeConstants.PATIENT_NAME) != null) {
             titleTextView.setText(getArguments().getString(RescribeConstants.PATIENT_NAME));

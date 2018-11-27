@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
@@ -90,6 +91,9 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     @BindView(R.id.addNoteButton)
     Button addNoteButton;
 
+    @BindView(R.id.footer)
+    LinearLayout footer;
+
     private boolean mIsDocUploaded = false;
     private int mLastExpandedPosition = -1;
     private SingleVisitAdapter mSingleVisitAdapter;
@@ -102,6 +106,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String opdID;
     private String mHospitalPatId;
     private String mOpdTime;
+    private boolean isDead = false;
     private PatientDetailHelper mSingleVisitDetailHelper;
     private boolean isAttachmentDeleted = false;
     private int mAptId;
@@ -147,6 +152,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             titleTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_NAME));
             userInfoTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_INFO));
             mDateSelected = intent.getStringExtra(RescribeConstants.DATE);
+            isDead = intent.getBooleanExtra(RescribeConstants.PATIENT_IS_DEAD, false);
             String timeToShow = CommonMethods.formatDateTime(mDateSelected, RescribeConstants.DATE_PATTERN.MMM_YY,
                     RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE).toLowerCase();
             String[] timeToShowSpilt = timeToShow.split(",");
@@ -162,6 +168,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 dateTextview.setText(Html.fromHtml(toDisplay));
             }
         }
+
+
     }
 
     private void initialize() {
@@ -169,6 +177,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
         mSingleVisitDetailHelper = new PatientDetailHelper(this, this);
         mSingleVisitDetailHelper.doGetOneDayVisit(opdID, patientID);
+
 
         // title.setText(getString(R.string.visit_details));
 
@@ -215,6 +224,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             }
         });
 
+
     }
 
     @Override
@@ -244,13 +254,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             CommonMethods.showToast(this, common.getCommonRespose().getStatusMessage());
         } else {
             VisitData visitData = (VisitData) customResponse;
-            if (visitData != null) {
-                mHistoryExpandableListView.setVisibility(View.VISIBLE);
-                mNoRecordAvailable.setVisibility(View.GONE);
-            } else {
-                mHistoryExpandableListView.setVisibility(View.INVISIBLE);
-                mNoRecordAvailable.setVisibility(View.VISIBLE);
-            }
+            mHistoryExpandableListView.setVisibility(View.VISIBLE);
+            mNoRecordAvailable.setVisibility(View.GONE);
             List<PatientHistory> patientHistoryList = visitData.getPatientHistory();
             List<Vital> vitalSortedList = new ArrayList<>();
             // Bpmin and Bpmax is clubed together as Bp in vitals
@@ -362,11 +367,13 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 mNoRecordAvailable.setVisibility(View.VISIBLE);
             }
 
-            addRecordButton.setVisibility(View.VISIBLE);
+            if (!isDead) {
+                addRecordButton.setVisibility(View.VISIBLE);
 
-            if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, mContext))
-                addNoteButton.setVisibility(View.VISIBLE);
-            else addNoteButton.setVisibility(View.GONE);
+                if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, mContext))
+                    addNoteButton.setVisibility(View.VISIBLE);
+                else addNoteButton.setVisibility(View.GONE);
+            } else footer.setVisibility(View.GONE);
 
         }
 

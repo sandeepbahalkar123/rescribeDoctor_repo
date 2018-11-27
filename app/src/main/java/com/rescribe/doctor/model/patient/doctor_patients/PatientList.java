@@ -99,6 +99,13 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     @SerializedName("relation")
     @Expose
     private String relation;
+
+
+    @SerializedName("isDead")
+    @Expose
+    private boolean isDead;
+
+
     //---------------
 
     private boolean isOfflinePatientSynced = true; //considered always sync with server.
@@ -141,6 +148,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.creationDate = ((String) in.readValue((String.class.getClassLoader())));
         this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
         this.relation = ((String) in.readValue((String.class.getClassLoader())));
+        this.isDead = ((boolean) in.readValue((boolean.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -325,6 +333,14 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.relation = relation;
     }
 
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
         dest.writeValue(patientName);
@@ -349,6 +365,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         dest.writeValue(creationDate);
         dest.writeValue(patientArea);
         dest.writeValue(relation);
+        dest.writeValue(isDead);
     }
 
     public int describeContents() {

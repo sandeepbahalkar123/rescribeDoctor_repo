@@ -708,6 +708,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
                         contentValues.put(ADD_NEW_PATIENT.LAST_NAME, split[2]);
                 }
 
+                if (patient.isDead()){
+                    contentValues.put(ADD_NEW_PATIENT.IS_DEAD,1);
+                }else {
+                    contentValues.put(ADD_NEW_PATIENT.IS_DEAD, 0);
+                }
+
                 contentValues.put(ADD_NEW_PATIENT.MOBILE_NO, patient.getPatientPhone());
                 contentValues.put(ADD_NEW_PATIENT.AGE, patient.getAge());
                 contentValues.put(ADD_NEW_PATIENT.GENDER, patient.getGender());
@@ -924,6 +930,13 @@ public class AppDBHelper extends SQLiteOpenHelper {
                     name += " " + cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.LAST_NAME));
 
                 patient.setPatientName(name);
+
+                if (cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.IS_DEAD))==1){
+                    patient.setDead(true);
+                }else {
+                    patient.setDead(false);
+
+                }
 
                 patient.setSalutation(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.SALUTATION)));
                 patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));

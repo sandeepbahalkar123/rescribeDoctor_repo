@@ -250,8 +250,11 @@ public class RescribePreferencesManager {
         String SELECTED_LOCATION_ID = "selected_location_id";
         String BACK_UP = "back_up";
         String PATIENT_DOWNLOAD = "patient_download";
-        String COACHMARK_GET_TOKEN = "coachmark_get_token";
+
+        String PATIENT_DOWNLOAD_DATE = "patient_download_date";
+        String COACHMARK_GET_TOKEN = "coachmark_get_token" ;
         String PREMIUM = "premium";
+
 
         String COACHMARK_ALL_PATIENT_DOWNLOAD = "COACHMARK_ALL_PATIENT_DOWNLOAD" ;
 
