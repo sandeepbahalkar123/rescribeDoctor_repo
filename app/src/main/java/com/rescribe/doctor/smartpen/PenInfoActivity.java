@@ -294,6 +294,7 @@ public class PenInfoActivity extends AppCompatActivity {
 //            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //            startActivity(intent);
 
+
             uploadNote(mPath);
 
         } catch (Throwable e) {
@@ -357,8 +358,8 @@ public class PenInfoActivity extends AppCompatActivity {
         headers.put("aptid", String.valueOf(mAptId));
 
         // Added in 5 to 6 update
-        headers.put("fileid", "");
-        headers.put("orderid", "");
+        headers.put("fileid", "0");
+        headers.put("orderid", "1");
 
         UploadStatus uploadStatus = new UploadStatus(uploadId, visitDate, mOpdtime, "", path, RescribeConstants.NOTES, headers);
         uploadDataList.add(uploadStatus);
@@ -367,6 +368,8 @@ public class PenInfoActivity extends AppCompatActivity {
             uploadImage(uploadDataList);
         else
             CommonMethods.showToast(this, getString(R.string.records_will_upload_when_internet_available));
+
+        onBackPressed();
     }
 
     public void uploadImage(ArrayList<UploadStatus> images) {
