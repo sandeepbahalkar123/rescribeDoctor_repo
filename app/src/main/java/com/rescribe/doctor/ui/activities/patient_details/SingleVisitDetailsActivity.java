@@ -39,6 +39,7 @@ import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 import com.smart.pen.core.services.PenService;
+import com.smart.pen.core.symbol.ConnectState;
 import com.smart.pen.core.symbol.Keys;
 
 import java.util.ArrayList;
@@ -477,31 +478,50 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private void isPenServiceReady(final String svrName) {
         PenService service = RescribeApplication.getInstance().getPenService();
         if (service != null) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    dismissProgressDialog();
-                    if (Keys.APP_PEN_SERVICE_NAME.equals(svrName)) {
-                        CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
-                        Intent intent = new Intent(mContext, ScanActivity.class);
-                        intent.putExtra(RescribeConstants.OPD_ID, opdID);
-                        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-                        intent.putExtra(RescribeConstants.LOCATION_ID, "0");
-                        intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
-                        intent.putExtra(RescribeConstants.CLINIC_ID, "0");
-                        intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
-                        intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
-                        intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
-                        intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
-                        intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
-                        startActivity(intent);
-                    } else if (Keys.APP_USB_SERVICE_NAME.equals(svrName)) {
+            if (service.checkDeviceConnect() == ConnectState.CONNECTED) {
+                dismissProgressDialog();
+
+                CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
+                Intent intent = new Intent(mContext, PenInfoActivity.class);
+                intent.putExtra(RescribeConstants.OPD_ID, opdID);
+                intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+                intent.putExtra(RescribeConstants.LOCATION_ID, "0");
+                intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
+                intent.putExtra(RescribeConstants.CLINIC_ID, "0");
+                intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+                intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+                intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+                intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
+                intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
+                startActivity(intent);
+
+            } else {
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dismissProgressDialog();
+                        if (Keys.APP_PEN_SERVICE_NAME.equals(svrName)) {
+                            CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
+                            Intent intent = new Intent(mContext, ScanActivity.class);
+                            intent.putExtra(RescribeConstants.OPD_ID, opdID);
+                            intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+                            intent.putExtra(RescribeConstants.LOCATION_ID, "0");
+                            intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
+                            intent.putExtra(RescribeConstants.CLINIC_ID, "0");
+                            intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+                            intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+                            intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+                            intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
+                            intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
+                            startActivity(intent);
+                        } /*else if (Keys.APP_USB_SERVICE_NAME.equals(svrName)) {
                         Intent intent = new Intent(mContext, PenInfoActivity.class);
                         intent.putExtra(Keys.KEY_VALUE, svrName);
                         startActivity(intent);
+                    }*/
                     }
-                }
-            }, 500);
+                }, 500);
+            }
         } else {
             mHandler.postDelayed(new Runnable() {
                 @Override

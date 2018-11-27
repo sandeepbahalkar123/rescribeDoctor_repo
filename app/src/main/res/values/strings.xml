@@ -369,5 +369,7 @@
     <string name="draw_activity">Write Note</string>
     <string name="action_save">Save</string>
     <string name="add_note">Add Notes</string>
+    <string name="action_disconnect">Disconnect</string>
+    <string name="initializing">Initializing</string>
 
 </resources>

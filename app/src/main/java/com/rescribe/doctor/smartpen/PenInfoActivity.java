@@ -35,7 +35,6 @@ import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.add_record_upload_Service.AddRecordService;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.singleton.RescribeApplication;
-import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -73,9 +72,9 @@ public class PenInfoActivity extends AppCompatActivity {
     public static final String TAG = PenInfoActivity.class.getSimpleName();
     public static final int REQUEST_SETTING_SIZE = 1000;
     private static final String RESCRIBE_NOTES = "/DrRescribe/Notes/";
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    private Menu menu;
     /**
      * 笔服务广播处理
      **/
@@ -113,21 +112,50 @@ public class PenInfoActivity extends AppCompatActivity {
                     dismissProgressDialog();
                     Toast.makeText(PenInfoActivity.this, R.string.connected, Toast.LENGTH_SHORT).show();
                     initSceneType();
+                    if (menu != null) {
+                        MenuItem item = menu.findItem(R.id.action_disconnect);
+                        if (item.getTitle().equals("Connect")) {
+                            item.setTitle("Disconnect");
+                        }
+                    }
                     break;
                 case CONNECTED:
-
+                    /*if (menu != null) {
+                        MenuItem item = menu.findItem(R.id.action_disconnect);
+                        if (item.getTitle().equals("Connect")) {
+                            item.setTitle("Disconnect");
+                        }
+                    }*/
                     break;
                 case SERVICES_FAIL:
                     dismissProgressDialog();
-                    alertError("The pen service discovery failed.");
+                    alertError("The pen discovery failed, You can restart pen device bluetooth and connect again.");
+                    if (menu != null) {
+                        MenuItem item = menu.findItem(R.id.action_disconnect);
+                        if (!item.getTitle().equals("Connect")) {
+                            item.setTitle("Connect");
+                        }
+                    }
                     break;
                 case CONNECT_FAIL:
                     dismissProgressDialog();
-                    alertError("The pen service connection failure.");
+                    if (menu != null) {
+                        MenuItem item = menu.findItem(R.id.action_disconnect);
+                        if (!item.getTitle().equals("Connect")) {
+                            item.setTitle("Connect");
+                        }
+                    }
+                    alertError("The pen connection failure, You can restart pen device bluetooth and connect again.");
                     break;
                 case DISCONNECTED:
                     dismissProgressDialog();
 //                    Toast.makeText(PenInfoActivity.this, R.string.disconnected, Toast.LENGTH_SHORT).show();
+                    if (menu != null) {
+                        MenuItem item = menu.findItem(R.id.action_disconnect);
+                        if (!item.getTitle().equals("Connect")) {
+                            item.setTitle("Connect");
+                        }
+                    }
                     break;
                 default:
 
@@ -226,6 +254,7 @@ public class PenInfoActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.pen_info, menu);
+        this.menu = menu;
         return true;
     }
 
@@ -242,6 +271,28 @@ public class PenInfoActivity extends AppCompatActivity {
                 mPenView.setVisibility(View.GONE);
                 saveAndOpenBitmapToImage();
                 mPenView.setVisibility(View.VISIBLE);
+                break;
+            case R.id.action_disconnect:
+                if (!item.getTitle().equals("Connect")) {
+                    item.setTitle("Connect");
+                    PenService service = RescribeApplication.getInstance().getPenService();
+                    if (service != null) {
+                        service.disconnectDevice();
+                    }
+                } else {
+                    item.setTitle("Disconnect");
+                    String address = getIntent().getStringExtra(Keys.KEY_DEVICE_ADDRESS);
+                    if (address != null && !address.isEmpty()) {
+                        connectDevice(address);
+                    } else {
+                        String isUsbSvr = getIntent().getStringExtra(Keys.KEY_VALUE);
+                        if (isUsbSvr != null && !isUsbSvr.isEmpty() && isUsbSvr.equals(Keys.APP_USB_SERVICE_NAME)) {
+                            initSceneType();
+                        } else {
+                            alertError("IP address error.");
+                        }
+                    }
+                }
                 break;
         }
         return true;
@@ -414,7 +465,7 @@ public class PenInfoActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    @Override
+    /*@Override
     protected void onDestroy() {
         //断开设备
         PenService service = RescribeApplication.getInstance().getPenService();
@@ -423,7 +474,7 @@ public class PenInfoActivity extends AppCompatActivity {
         }
 
         super.onDestroy();
-    }
+    }*/
 
     private void initPage() {
         PenService service = RescribeApplication.getInstance().getPenService();
@@ -517,13 +568,29 @@ public class PenInfoActivity extends AppCompatActivity {
     }
 
     private void alertError(String msg) {
-        Builder alert = new Builder(this);
+        Builder alert = new Builder(this, R.style.MyDialogTheme);
         alert.setTitle("Warning");
         alert.setMessage(msg);
-        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 PenInfoActivity.this.finish();
+            }
+        });
+        alert.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String address = getIntent().getStringExtra(Keys.KEY_DEVICE_ADDRESS);
+                if (address != null && !address.isEmpty()) {
+                    connectDevice(address);
+                } else {
+                    String isUsbSvr = getIntent().getStringExtra(Keys.KEY_VALUE);
+                    if (isUsbSvr != null && !isUsbSvr.isEmpty() && isUsbSvr.equals(Keys.APP_USB_SERVICE_NAME)) {
+                        initSceneType();
+                    } else {
+                        alertError("IP address error.");
+                    }
+                }
             }
         });
         alert.show();
@@ -542,19 +609,21 @@ public class PenInfoActivity extends AppCompatActivity {
     }
 
     private void connectDevice(String address) {
+        Log.i("PEN_ADDRESS", address);
         PenService service = RescribeApplication.getInstance().getPenService();
         if (service != null) {
-            ConnectState state = ((SmartPenService) service).connectDevice(onConnectStateListener, address);
-            if (state != ConnectState.CONNECTING) {
-                alertError("The pen service connection failure.");
-            } else {
-                mProgressDialog = ProgressDialog.show(PenInfoActivity.this, "", getString(R.string.connecting), true);
-            }
+                ConnectState state = ((SmartPenService) service).connectDevice(onConnectStateListener, address);
+                if (state != ConnectState.CONNECTING) {
+                    alertError("The pen connection failure, You can restart pen device bluetooth and connect again.");
+                } else {
+                    mProgressDialog = ProgressDialog.show(PenInfoActivity.this, "", getString(R.string.initializing), true);
+                }
         }
     }
 
-    //处理笔服务通过广播方式发送的笔迹坐标信息
-    //示例仅用作演示有这个功能，没有特殊需求可删除以下代码
+
+    // Handle the pen coordinate information sent by the pen service by broadcast
+    //The example is only used as a demo to have this feature, there is no special requirement to delete the following code
     private class PenServiceReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

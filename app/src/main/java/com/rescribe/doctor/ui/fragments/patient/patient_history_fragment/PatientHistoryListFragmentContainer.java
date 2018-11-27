@@ -56,6 +56,7 @@ import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 import com.smart.pen.core.services.PenService;
+import com.smart.pen.core.symbol.ConnectState;
 import com.smart.pen.core.symbol.Keys;
 
 import org.joda.time.DateTime;
@@ -224,30 +225,53 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private void isPenServiceReady(final String svrName, final String dateSelected) {
         PenService service = RescribeApplication.getInstance().getPenService();
         if (service != null) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    dismissProgressDialog();
-                    if (Keys.APP_PEN_SERVICE_NAME.equals(svrName)) {
-                        Intent intent = new Intent(mContext, ScanActivity.class);
-                        intent.putExtra(RescribeConstants.OPD_ID, "0");
-                        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-                        intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
-                        intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
-                        intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
-                        intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
-                        intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
-                        intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
-                        intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
-                        intent.putExtra(RescribeConstants.OPD_TIME, "");
-                        getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
-                    } else if (Keys.APP_USB_SERVICE_NAME.equals(svrName)) {
+            if (service.checkDeviceConnect() == ConnectState.CONNECTED) {
+
+                dismissProgressDialog();
+
+                Intent intent = new Intent(mContext, PenInfoActivity.class);
+                intent.putExtra(RescribeConstants.OPD_ID, "0");
+                intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+                intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+                intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+                intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
+                intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
+                intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+                intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+                intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
+                intent.putExtra(RescribeConstants.OPD_TIME, "");
+                intent.putExtra(Keys.KEY_DEVICE_ADDRESS, service.getConnectDevice().address);
+
+                getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
+
+            } else {
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dismissProgressDialog();
+                        if (Keys.APP_PEN_SERVICE_NAME.equals(svrName)) {
+
+                            Intent intent = new Intent(mContext, ScanActivity.class);
+                            intent.putExtra(RescribeConstants.OPD_ID, "0");
+                            intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+                            intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+                            intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+                            intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
+                            intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
+                            intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+                            intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+                            intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
+                            intent.putExtra(RescribeConstants.OPD_TIME, "");
+                            getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
+
+                        } /*else if (Keys.APP_USB_SERVICE_NAME.equals(svrName)) {
                         Intent intent = new Intent(mContext, PenInfoActivity.class);
                         intent.putExtra(Keys.KEY_VALUE, svrName);
                         startActivity(intent);
+                    }*/
                     }
-                }
-            }, 500);
+                }, 500);
+            }
         } else {
             mHandler.postDelayed(new Runnable() {
                 @Override
