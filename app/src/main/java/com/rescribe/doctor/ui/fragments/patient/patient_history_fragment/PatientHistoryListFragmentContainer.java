@@ -504,8 +504,10 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         } else if (fromString.equals("AddNotes")) {
 
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (!mBluetoothAdapter.isEnabled())
-                mBluetoothAdapter.enable();
+            if (!mBluetoothAdapter.isEnabled()) {
+                if (mBluetoothAdapter.enable())
+                    Toast.makeText(mContext, "Please Turn on bluetooth.", Toast.LENGTH_SHORT).show();
+            }
             openSmartPen(dayOfMonth + "-" + monthOfYear + "-" + year);
         }
     }

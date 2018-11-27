@@ -374,5 +374,6 @@
     <string name="add_note">Add Notes</string>
     <string name="action_disconnect">Disconnect</string>
     <string name="initializing">Initializing</string>
+    <string name="initialized">Initialized</string>
 
 </resources>

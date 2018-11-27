@@ -2,6 +2,7 @@ package com.rescribe.doctor.smartpen;
 
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -110,7 +112,7 @@ public class PenInfoActivity extends AppCompatActivity {
                     break;
                 case PEN_INIT_COMPLETE:
                     dismissProgressDialog();
-                    Toast.makeText(PenInfoActivity.this, R.string.connected, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PenInfoActivity.this, R.string.initialized, Toast.LENGTH_SHORT).show();
                     initSceneType();
                     if (menu != null) {
                         MenuItem item = menu.findItem(R.id.action_disconnect);
@@ -129,7 +131,7 @@ public class PenInfoActivity extends AppCompatActivity {
                     break;
                 case SERVICES_FAIL:
                     dismissProgressDialog();
-                    alertError("The pen discovery failed, You can restart pen device bluetooth and connect again.");
+                    alertError("The pen discovery failed, You can restart pen device bluetooth and connect again.", "Retry");
                     if (menu != null) {
                         MenuItem item = menu.findItem(R.id.action_disconnect);
                         if (!item.getTitle().equals("Connect")) {
@@ -145,7 +147,7 @@ public class PenInfoActivity extends AppCompatActivity {
                             item.setTitle("Connect");
                         }
                     }
-                    alertError("The pen connection failure, You can restart pen device bluetooth and connect again.");
+                    alertError("The pen connection failure, You can restart pen device bluetooth and connect again.", "Retry");
                     break;
                 case DISCONNECTED:
                     dismissProgressDialog();
@@ -156,6 +158,11 @@ public class PenInfoActivity extends AppCompatActivity {
                             item.setTitle("Connect");
                         }
                     }
+
+                    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                    if (!mBluetoothAdapter.isEnabled())
+                        alertError("Device Bluetooth is off, Please start Device Bluetooth!", "Connect");
+
                     break;
                 default:
 
@@ -220,16 +227,19 @@ public class PenInfoActivity extends AppCompatActivity {
         mLineWindow.addView(mPenView);
 
         mPenService = RescribeApplication.getInstance().getPenService();
-
-        String address = getIntent().getStringExtra(Keys.KEY_DEVICE_ADDRESS);
-        if (address != null && !address.isEmpty()) {
-            connectDevice(address);
+        if (mPenService.checkDeviceConnect() == ConnectState.CONNECTED) {
+            initSceneType();
         } else {
-            String isUsbSvr = getIntent().getStringExtra(Keys.KEY_VALUE);
-            if (isUsbSvr != null && !isUsbSvr.isEmpty() && isUsbSvr.equals(Keys.APP_USB_SERVICE_NAME)) {
-                initSceneType();
+            String address = getIntent().getStringExtra(Keys.KEY_DEVICE_ADDRESS);
+            if (address != null && !address.isEmpty()) {
+                connectDevice(address);
             } else {
-                alertError("IP address error.");
+                String isUsbSvr = getIntent().getStringExtra(Keys.KEY_VALUE);
+                if (isUsbSvr != null && !isUsbSvr.isEmpty() && isUsbSvr.equals(Keys.APP_USB_SERVICE_NAME)) {
+                    initSceneType();
+                } else {
+                    alertError("IP address error.", "Retry");
+                }
             }
         }
     }
@@ -289,7 +299,7 @@ public class PenInfoActivity extends AppCompatActivity {
                         if (isUsbSvr != null && !isUsbSvr.isEmpty() && isUsbSvr.equals(Keys.APP_USB_SERVICE_NAME)) {
                             initSceneType();
                         } else {
-                            alertError("IP address error.");
+                            alertError("IP address error.", "Retry");
                         }
                     }
                 }
@@ -567,17 +577,18 @@ public class PenInfoActivity extends AppCompatActivity {
         }
     }
 
-    private void alertError(String msg) {
+    private void alertError(String msg, String buttonName) {
         Builder alert = new Builder(this, R.style.MyDialogTheme);
         alert.setTitle("Warning");
         alert.setMessage(msg);
+        alert.setCancelable(false);
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 PenInfoActivity.this.finish();
             }
         });
-        alert.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(buttonName, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String address = getIntent().getStringExtra(Keys.KEY_DEVICE_ADDRESS);
@@ -588,7 +599,7 @@ public class PenInfoActivity extends AppCompatActivity {
                     if (isUsbSvr != null && !isUsbSvr.isEmpty() && isUsbSvr.equals(Keys.APP_USB_SERVICE_NAME)) {
                         initSceneType();
                     } else {
-                        alertError("IP address error.");
+                        alertError("IP address error.", "Retry");
                     }
                 }
             }
@@ -608,16 +619,40 @@ public class PenInfoActivity extends AppCompatActivity {
         }
     }
 
-    private void connectDevice(String address) {
-        Log.i("PEN_ADDRESS", address);
-        PenService service = RescribeApplication.getInstance().getPenService();
-        if (service != null) {
+    private void connectDevice(final String address) {
+        final PenService service = RescribeApplication.getInstance().getPenService();
+
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!mBluetoothAdapter.isEnabled()) {
+            if (!mBluetoothAdapter.enable())
+                Toast.makeText(this, "Please Turn on bluetooth.", Toast.LENGTH_SHORT).show();
+            else {
+                mProgressDialog = ProgressDialog.show(PenInfoActivity.this, "", getString(R.string.initializing), true);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i("PEN_ADDRESS", address);
+                        if (service != null) {
+                            ConnectState state = ((SmartPenService) service).connectDevice(onConnectStateListener, address);
+                            if (state != ConnectState.CONNECTING) {
+                                dismissProgressDialog();
+                                alertError("The pen connection failure, You can restart pen device bluetooth and connect again.", "Retry");
+                            }
+                        }
+                    }
+                }, 500);
+            }
+        } else {
+            Log.i("PEN_ADDRESS", address);
+            if (service != null) {
                 ConnectState state = ((SmartPenService) service).connectDevice(onConnectStateListener, address);
                 if (state != ConnectState.CONNECTING) {
-                    alertError("The pen connection failure, You can restart pen device bluetooth and connect again.");
+                    alertError("The pen connection failure, You can restart pen device bluetooth and connect again.", "Retry");
                 } else {
                     mProgressDialog = ProgressDialog.show(PenInfoActivity.this, "", getString(R.string.initializing), true);
                 }
+            }
         }
     }
 

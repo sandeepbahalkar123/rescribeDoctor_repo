@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter;
@@ -451,8 +452,10 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             case R.id.addNoteButton:
 
                 BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                if (!mBluetoothAdapter.isEnabled())
-                    mBluetoothAdapter.enable();
+                if (!mBluetoothAdapter.isEnabled()) {
+                    if (!mBluetoothAdapter.enable())
+                        Toast.makeText(this, "Please Turn on bluetooth.", Toast.LENGTH_SHORT).show();
+                }
                 openSmartPen();
 
                 break;
