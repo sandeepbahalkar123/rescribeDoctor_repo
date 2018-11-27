@@ -10,14 +10,36 @@
     <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+        android:layout_height="match_parent" />
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/backButton"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:padding="@dimen/dp10"
-        app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
+        android:background="@drawable/shads">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:padding="@dimen/dp10"
+            app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/backButton"
+            android:layout_alignBottom="@+id/backButton"
+            android:layout_toEndOf="@+id/backButton"
+            android:layout_toRightOf="@+id/backButton"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp10"
+            android:paddingEnd="@dimen/dp10"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp16"
+            tools:text="12-04-2015" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

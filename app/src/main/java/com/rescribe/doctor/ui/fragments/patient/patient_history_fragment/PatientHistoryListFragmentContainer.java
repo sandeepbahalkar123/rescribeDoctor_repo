@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -149,6 +148,10 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     }
 
     public void initialize() {
+
+        if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, getActivity()))
+            addNoteButton.setVisibility(View.VISIBLE);
+        else addNoteButton.setVisibility(View.GONE);
 
         mHandler = new Handler();
         mYearList = new ArrayList<>();
