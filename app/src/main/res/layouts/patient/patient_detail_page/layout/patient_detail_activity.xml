@@ -28,7 +28,7 @@
                 android:id="@+id/historyExpandableListView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/addRecordButton"
+                android:layout_above="@+id/footer"
                 android:layout_alignParentTop="true"
                 android:background="@color/white"
                 android:childDivider="@null"
@@ -38,51 +38,45 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:visibility="visible" />
 
-            <Button
-                android:id="@+id/addRecordButton"
+            <LinearLayout
+                android:id="@+id/footer"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp35"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_gravity="bottom"
-                android:layout_marginStart="@dimen/dp2"
-                android:layout_marginLeft="@dimen/dp2"
-                android:layout_marginBottom="@dimen/dp2"
-                android:layout_toStartOf="@+id/divider"
-                android:layout_toLeftOf="@+id/divider"
-                android:background="@drawable/button_selector"
-                android:fontFamily="@font/roboto_bold"
-                android:text="@string/add_record"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp14"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/dp2"
+                android:paddingEnd="@dimen/dp2"
+                android:paddingBottom="@dimen/dp2">
 
-            <View
-                android:id="@+id/divider"
-                android:layout_width="2dp"
-                android:layout_height="0dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:background="@color/white" />
+                <Button
+                    android:id="@+id/addRecordButton"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_margin="@dimen/dp2"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_selector"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="@string/add_record"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp14"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
-            <Button
-                android:id="@+id/addNoteButton"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp35"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="bottom"
-                android:layout_marginEnd="@dimen/dp2"
-                android:layout_marginRight="@dimen/dp2"
-                android:layout_marginBottom="@dimen/dp2"
-                android:layout_toEndOf="@+id/divider"
-                android:layout_toRightOf="@+id/divider"
-                android:background="@drawable/button_selector"
-                android:fontFamily="@font/roboto_bold"
-                android:text="@string/add_note"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp14"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                <Button
+                    android:id="@+id/addNoteButton"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_margin="@dimen/dp2"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_selector"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="@string/add_note"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp14"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
 
         </RelativeLayout>
     </LinearLayout>

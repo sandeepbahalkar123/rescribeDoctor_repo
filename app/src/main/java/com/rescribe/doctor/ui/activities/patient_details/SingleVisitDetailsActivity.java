@@ -30,6 +30,7 @@ import com.rescribe.doctor.model.case_details.Range;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.case_details.VisitData;
 import com.rescribe.doctor.model.case_details.Vital;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.smartpen.PenInfoActivity;
 import com.rescribe.doctor.smartpen.ScanActivity;
@@ -361,7 +362,10 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             }
 
             addRecordButton.setVisibility(View.VISIBLE);
-            addNoteButton.setVisibility(View.VISIBLE);
+
+            if (RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, mContext))
+                addNoteButton.setVisibility(View.VISIBLE);
+            else addNoteButton.setVisibility(View.GONE);
 
         }
 

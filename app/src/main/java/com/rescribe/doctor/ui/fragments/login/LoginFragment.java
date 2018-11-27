@@ -191,6 +191,7 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADDRESS, docDetail.getDocAddress(), getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, editTextPassword.getText().toString(), getActivity());
+                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, docDetail.isPremium(), getActivity());
 
                 String doctorDetails = new Gson().toJson(docDetail);
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, doctorDetails, getActivity());
@@ -207,7 +208,6 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 CommonMethods.showToast(getActivity(), receivedModel.getCommon().getStatusMessage());
             }
         }
-        //--- TODO  NOT CONFIRMED ABOUT THIS IMPLEMENTATION RIGHT NOW, HENCE COMMENTED.
 
        /* else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_LOGIN_WITH_OTP)) {
             //After login user navigated to HomepageActivity

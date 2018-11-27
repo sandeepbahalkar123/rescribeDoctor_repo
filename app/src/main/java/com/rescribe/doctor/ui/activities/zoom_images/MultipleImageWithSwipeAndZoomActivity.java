@@ -3,7 +3,6 @@ package com.rescribe.doctor.ui.activities.zoom_images;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -20,7 +19,6 @@ import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.ui.customesViews.zoomview.ZoomageView;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -33,6 +31,8 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
     ViewPager pager;
     @BindView(R.id.backButton)
     ImageView backButton;
+    @BindView(R.id.titleText)
+    TextView titleText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
         setContentView(R.layout.multi_image_with_swipe_and_zoom);
         ButterKnife.bind(this);
 
-        ArrayList<VisitCommonData> parcelableArrayListExtra = getIntent().getParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST);
+        final ArrayList<VisitCommonData> parcelableArrayListExtra = getIntent().getParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST);
 
         String url = getIntent().getStringExtra(RescribeConstants.DOCUMENTS);
 
@@ -59,6 +59,20 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
         CustomPagerAdapter mCustomPagerAdapter = new CustomPagerAdapter(this, parcelableArrayListExtra);
         pager.setAdapter(mCustomPagerAdapter);
         pager.setCurrentItem(clickedImage);
+
+        titleText.setText(parcelableArrayListExtra.get(clickedImage).getName());
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+            @Override
+            public void onPageSelected(int position) {
+                titleText.setText(parcelableArrayListExtra.get(position).getName());
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     @OnClick(R.id.backButton)
@@ -68,10 +82,10 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
 
     private class CustomPagerAdapter extends PagerAdapter {
 
-        private ArrayList<VisitCommonData> visitCommonData;
         Context mContext;
         LayoutInflater mLayoutInflater;
         RequestOptions requestOptions;
+        private ArrayList<VisitCommonData> visitCommonData;
 
         public CustomPagerAdapter(Context context, ArrayList<VisitCommonData> visitCommonData) {
             mContext = context;

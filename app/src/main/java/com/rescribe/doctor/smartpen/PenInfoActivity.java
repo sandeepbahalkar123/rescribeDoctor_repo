@@ -127,8 +127,7 @@ public class PenInfoActivity extends AppCompatActivity {
                     break;
                 case DISCONNECTED:
                     dismissProgressDialog();
-                    Toast.makeText(PenInfoActivity.this, R.string.disconnected, Toast.LENGTH_SHORT).show();
-
+//                    Toast.makeText(PenInfoActivity.this, R.string.disconnected, Toast.LENGTH_SHORT).show();
                     break;
                 default:
 
@@ -467,7 +466,7 @@ public class PenInfoActivity extends AppCompatActivity {
     private void initSceneType(boolean isShow) {
         SceneType sceneType = mPenService.getSceneType();
         if (sceneType == SceneType.NOTHING || isShow) {
-            final String[] menus = new String[]{"A4 (portrait)", "A4 (horizontal)", "A5 (portrait)", "A5 (horizontal)", "Customize"};
+            final String[] menus = new String[]{"A4 (portrait)", "A4 (horizontal)", "A5 (portrait)", "A5 (horizontal)"/*, "Customize"*/};
 
             Builder alert = new Builder(this, R.style.AlertDialogTheme);
             alert.setTitle(R.string.select_please);
@@ -487,12 +486,12 @@ public class PenInfoActivity extends AppCompatActivity {
                         case 3:
                             mPenService.setSceneType(SceneType.A5_horizontal);
                             break;
-                        case 4:
+                        /*case 4:
                             //mSmartPenService.setSceneType(SceneType.CUSTOM);
                             Intent intent = new Intent();
                             intent.setClass(PenInfoActivity.this, SettingSizeActivity.class);
                             PenInfoActivity.this.startActivityForResult(intent, REQUEST_SETTING_SIZE);
-                            return;
+                            return;*/
                     }
                     initPage();
                 }
