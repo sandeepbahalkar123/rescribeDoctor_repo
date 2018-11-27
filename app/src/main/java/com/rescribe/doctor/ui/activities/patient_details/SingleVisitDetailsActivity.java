@@ -100,6 +100,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String opdID;
     private String mHospitalPatId;
     private String mOpdTime;
+    private boolean isDead=false;
     private PatientDetailHelper mSingleVisitDetailHelper;
     private boolean isAttachmentDeleted = false;
     private int mAptId;
@@ -145,6 +146,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             titleTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_NAME));
             userInfoTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_INFO));
             mDateSelected = intent.getStringExtra(RescribeConstants.DATE);
+            isDead = intent.getBooleanExtra(RescribeConstants.PATIENT_IS_DEAD,false);
             String timeToShow = CommonMethods.formatDateTime(mDateSelected, RescribeConstants.DATE_PATTERN.MMM_YY,
                     RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE).toLowerCase();
             String[] timeToShowSpilt = timeToShow.split(",");
@@ -160,6 +162,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 dateTextview.setText(Html.fromHtml(toDisplay));
             }
         }
+
+
     }
 
     private void initialize() {
@@ -167,6 +171,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
         mSingleVisitDetailHelper = new PatientDetailHelper(this, this);
         mSingleVisitDetailHelper.doGetOneDayVisit(opdID, patientID);
+
+
 
         // title.setText(getString(R.string.visit_details));
 
@@ -212,6 +218,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 return false;
             }
         });
+
+
 
     }
 
