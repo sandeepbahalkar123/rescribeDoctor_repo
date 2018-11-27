@@ -49,7 +49,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "MyRescribe.sqlite";
     private static final String DB_PATH_SUFFIX = "/data/data/com.rescribe.doctor/databases/"; // Change
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 6;
 
     //this is globle table to save data of any APIs response.
     public static final String APP_DATA_TABLE = "PrescriptionData";
@@ -343,11 +343,11 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     public Cursor getRecordUploads() {
         SQLiteDatabase db = getReadableDatabase();
-        String sql = "SELECT * FROM " + MY_RECORDS.MY_RECORDS_TABLE + " WHERE " + MY_RECORDS.UPLOAD_STATUS + " = " + FAILED;
+        String sql = "SELECT * FROM " + MY_RECORDS.MY_RECORDS_TABLE + " WHERE " + MY_RECORDS.UPLOAD_STATUS + " = " + FAILED /*+ " AND " + MY_RECORDS.RECORD_TYPE + " = '" + recordType + "'"*/;
         return db.rawQuery(sql, null);
     }
 
-    public void insertRecordUploads(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath, int mAptId) {
+    public void insertRecordUploads(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath, int mAptId, String recordType, String orderId, String fileId) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -366,12 +366,17 @@ public class AppDBHelper extends SQLiteOpenHelper {
         contentValues.put(MY_RECORDS.UPLOAD_STATUS, FAILED);
         contentValues.put(MY_RECORDS.APT_ID, mAptId);
 
+        // Added in 5 to 6
+        contentValues.put(MY_RECORDS.RECORD_TYPE, recordType);
+        contentValues.put(MY_RECORDS.ORDER_ID, orderId);
+        contentValues.put(MY_RECORDS.FILE_ID, fileId);
+
         db.insert(MY_RECORDS.MY_RECORDS_TABLE, null, contentValues);
 
         db.close();
     }
 
-    public void updateRecordUploads(String uploadId, int uploadStatus) {
+    public void updateRecordUploads(String uploadId, int uploadStatus, String fileType) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -397,6 +402,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String IMAGE_PATH = "imagePath";
         String UPLOAD_STATUS = "uploadStatus";
         String APT_ID = "aptId";
+
+        // New Added in 5 to 6
+
+        String RECORD_TYPE = "recordType";
+        String ORDER_ID = "orderId";
+        String FILE_ID = "fileId";
     }
 
     // All About Chat
@@ -455,6 +466,9 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String DOC_ID = "docID";
         Integer IS_SYNC_WITH_SERVER = 1;
         Integer IS_NOT_SYNC_WITH_SERVER = 0;
+
+        // New Added in 5 to 6
+        String IS_DEAD = "isDead";
 
         //-------
         String PATIENT_ADDRESS_LINE = "patientAddressLine";
@@ -694,6 +708,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
                         contentValues.put(ADD_NEW_PATIENT.LAST_NAME, split[2]);
                 }
 
+                if (patient.isDead()){
+                    contentValues.put(ADD_NEW_PATIENT.IS_DEAD,1);
+                }else {
+                    contentValues.put(ADD_NEW_PATIENT.IS_DEAD, 0);
+                }
+
                 contentValues.put(ADD_NEW_PATIENT.MOBILE_NO, patient.getPatientPhone());
                 contentValues.put(ADD_NEW_PATIENT.AGE, patient.getAge());
                 contentValues.put(ADD_NEW_PATIENT.GENDER, patient.getGender());
@@ -910,6 +930,13 @@ public class AppDBHelper extends SQLiteOpenHelper {
                     name += " " + cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.LAST_NAME));
 
                 patient.setPatientName(name);
+
+                if (cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.IS_DEAD))==1){
+                    patient.setDead(true);
+                }else {
+                    patient.setDead(false);
+
+                }
 
                 patient.setSalutation(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.SALUTATION)));
                 patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));

@@ -149,7 +149,16 @@ public class LoadAllPatientsService extends Service {
         mRequestSearchPatients.setDocId(Integer.valueOf(id));
         mRequestSearchPatients.setSearchText("");
         mRequestSearchPatients.setPaginationSize(RECORD_COUNT);
-        mRequestSearchPatients.setDate(CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN));
+
+        String date =CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
+        if (isDownloaded){
+            date=RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD_DATE, this);
+        }else {
+            date=CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
+        }
+        Log.e("date","--"+date);
+
+        mRequestSearchPatients.setDate(date);
 
         JSONObject jsonObject = null;
         try {
@@ -163,7 +172,10 @@ public class LoadAllPatientsService extends Service {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(POST, isDownloaded ? BASE_URL + GET_PATIENTS_SYNC : BASE_URL + GET_MY_PATIENTS_LIST, jsonObject,
+        String url =isDownloaded ? BASE_URL + GET_PATIENTS_SYNC : BASE_URL + GET_MY_PATIENTS_LIST;
+        Log.e("URL:--","--"+url);
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(POST, url, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -235,7 +247,9 @@ public class LoadAllPatientsService extends Service {
         mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
 
         RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, !isFailed, LoadAllPatientsService.this);
-
+        if (size!=0){
+            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD_DATE, CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN), LoadAllPatientsService.this);
+        }
         stopForeground(true);
         stopSelf();
     }

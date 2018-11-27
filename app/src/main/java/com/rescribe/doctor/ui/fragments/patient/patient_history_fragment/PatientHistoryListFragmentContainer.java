@@ -1,12 +1,15 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_history_fragment;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -46,11 +49,15 @@ import com.rescribe.doctor.model.patient.patient_history.PatientHistoryInfo;
 import com.rescribe.doctor.model.patient.patient_history.YearsMonthsData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
+import com.rescribe.doctor.smartpen.PenInfoActivity;
+import com.rescribe.doctor.smartpen.ScanActivity;
 import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+import com.smart.pen.core.services.PenService;
+import com.smart.pen.core.symbol.Keys;
 
 import org.joda.time.DateTime;
 
@@ -93,8 +100,17 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     //----------
     @BindView(R.id.noRecords)
     ImageView noRecords;
+
     @BindView(R.id.addRecordButton)
     Button mAddRecordButton;
+
+    @BindView(R.id.addNoteButton)
+    Button addNoteButton;
+
+//    @BindView(R.id.addNoteFab)
+//    FloatingActionButton addNoteFab;
+
+    Handler mHandler;
     //----------
     private ArrayList<String> mYearList;
     private ArrayList<YearsMonthsData> mTimePeriodList;
@@ -109,7 +125,11 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private String mPatientId;
     private String mHospitalPatId;
     private int mAptId;
+
     private boolean isDead;
+
+    private ProgressDialog mProgressDialog;
+
 
     public PatientHistoryListFragmentContainer() {
         // Required empty public constructor
@@ -130,6 +150,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     public void initialize() {
 
+        mHandler = new Handler();
         mYearList = new ArrayList<>();
         mTimePeriodList = new ArrayList<>();
 
@@ -137,8 +158,11 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mHospitalId = getArguments().getInt(RescribeConstants.CLINIC_ID);
         isDead = getArguments().getBoolean(RescribeConstants.PATIENT_IS_DEAD);
 
-        if (isDead)
+        if (isDead) {
             mAddRecordButton.setVisibility(View.GONE);
+            addNoteButton.setVisibility(View.GONE);
+        }
+
         if (getArguments().getString(RescribeConstants.PATIENT_NAME) != null) {
             titleTextView.setText(getArguments().getString(RescribeConstants.PATIENT_NAME));
             userInfoTextView.setVisibility(View.VISIBLE);
@@ -164,15 +188,14 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mPatientDetailHelper.doGetPatientHistory(mPatientId, "", getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
     }
 
-    @OnClick({R.id.backImageView, R.id.addRecordButton})
+    @OnClick({R.id.backImageView, R.id.addRecordButton, R.id.addNoteButton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
                 mParentActivity.onBackPressed();
                 break;
-            case R.id.addRecordButton:
+            case R.id.addRecordButton: {
                 Calendar now = Calendar.getInstance();
-// As of version 2.3.0, `BottomSheetDatePickerDialog` is deprecated.
                 DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
                         this,
                         now.get(Calendar.YEAR),
@@ -180,10 +203,78 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                         now.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.setAccentColor(getResources().getColor(R.color.tagColor));
                 datePickerDialog.setMaxDate(Calendar.getInstance());
-                datePickerDialog.show(getActivity().getSupportFragmentManager(), getResources().getString(R.string.select_date_text));
+                datePickerDialog.show(getActivity().getSupportFragmentManager(), "AddRecords");
+            }
+            break;
+            case R.id.addNoteButton: {
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                        this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.setAccentColor(getResources().getColor(R.color.tagColor));
+                datePickerDialog.setMaxDate(Calendar.getInstance());
+                datePickerDialog.show(getActivity().getSupportFragmentManager(), "AddNotes");
+            }
+            break;
+        }
+    }
 
-                break;
+    private void openSmartPen(BluetoothAdapter mBluetoothAdapter, String dateSelected) {
+        mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);
+        //绑定蓝牙笔服务
+        RescribeApplication.getInstance().bindPenService(Keys.APP_PEN_SERVICE_NAME);
+        isPenServiceReady(Keys.APP_PEN_SERVICE_NAME, dateSelected);
+    }
 
+    private void isPenServiceReady(final String svrName, final String dateSelected) {
+        PenService service = RescribeApplication.getInstance().getPenService();
+        if (service != null) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dismissProgressDialog();
+                    if (Keys.APP_PEN_SERVICE_NAME.equals(svrName)) {
+                        Intent intent = new Intent(mContext, ScanActivity.class);
+                        intent.putExtra(RescribeConstants.OPD_ID, "0");
+                        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+                        intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+                        intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+                        intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
+                        intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
+                        intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+                        intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+                        intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
+                        intent.putExtra(RescribeConstants.OPD_TIME, "");
+                        getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
+                    } else if (Keys.APP_USB_SERVICE_NAME.equals(svrName)) {
+                        Intent intent = new Intent(mContext, PenInfoActivity.class);
+                        intent.putExtra(Keys.KEY_VALUE, svrName);
+                        startActivity(intent);
+                    }
+                }
+            }, 500);
+        } else {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isPenServiceReady(svrName, dateSelected);
+                }
+            }, 1000);
+        }
+    }
+
+
+    /**
+     * 释放progressDialog
+     **/
+    protected void dismissProgressDialog() {
+        if (mProgressDialog != null) {
+            if (mProgressDialog.isShowing())
+                mProgressDialog.dismiss();
+
+            mProgressDialog = null;
         }
     }
 
@@ -274,14 +365,18 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
-        ArrayList<DoctorLocationModel> mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
-        ArrayList<DoctorLocationModel> myDoctorLocations = getMyDoctorLocations(mDoctorLocationModel, mHospitalId);
-        if (myDoctorLocations.size() == 1) {
-            mLocationId = String.valueOf(myDoctorLocations.get(0).getLocationId());
-            mHospitalId = myDoctorLocations.get(0).getClinicId();
-            callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear + 1, dayOfMonth);
-        } else {
-            showDialogToSelectLocation(getMyDoctorLocations(mDoctorLocationModel, mHospitalId), year, monthOfYear + 1, dayOfMonth);
+        String fromString = dialog.getTag();
+        if (fromString != null) {
+
+            ArrayList<DoctorLocationModel> mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
+            ArrayList<DoctorLocationModel> myDoctorLocations = getMyDoctorLocations(mDoctorLocationModel, mHospitalId);
+            if (myDoctorLocations.size() == 1) {
+                mLocationId = String.valueOf(myDoctorLocations.get(0).getLocationId());
+                mHospitalId = myDoctorLocations.get(0).getClinicId();
+                callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear + 1, dayOfMonth, fromString);
+            } else {
+                showDialogToSelectLocation(getMyDoctorLocations(mDoctorLocationModel, mHospitalId), year, monthOfYear + 1, dayOfMonth, fromString);
+            }
         }
     }
 
@@ -297,7 +392,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         return mDoctorLocations;
     }
 
-    private void showDialogToSelectLocation(ArrayList<DoctorLocationModel> mPatientListsOriginal, final int year, final int monthOfYear, final int dayOfMonth) {
+    private void showDialogToSelectLocation(ArrayList<DoctorLocationModel> mPatientListsOriginal, final int year, final int monthOfYear, final int dayOfMonth, final String fromString) {
         final Dialog dialog = new Dialog(getActivity());
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -340,7 +435,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
                 if (mLocationId != null) {
                     if (!mLocationId.equals("0")) {
-                        callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth);
+                        callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth, fromString);
                         dialog.cancel();
                     } else
                         Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
@@ -364,97 +459,27 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     }
 
-    private void callAddRecordsActivity(String mLocationId, int mHospitalId, int year, int monthOfYear, int dayOfMonth) {
+    private void callAddRecordsActivity(String mLocationId, int mHospitalId, int year, int monthOfYear, int dayOfMonth, String fromString) {
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, String.valueOf(mLocationId), getActivity());
-        Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
-        intent.putExtra(RescribeConstants.OPD_ID, "0");
-        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-        intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
-        intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
-        intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
-        intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
-        intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
-        intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
-        intent.putExtra(RescribeConstants.VISIT_DATE, dayOfMonth + "-" + monthOfYear + "-" + year);
-        intent.putExtra(RescribeConstants.OPD_TIME, "");
+        if (fromString.equals("AddRecords")) {
+            Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
+            intent.putExtra(RescribeConstants.OPD_ID, "0");
+            intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+            intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+            intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+            intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
+            intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
+            intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+            intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+            intent.putExtra(RescribeConstants.VISIT_DATE, dayOfMonth + "-" + monthOfYear + "-" + year);
+            intent.putExtra(RescribeConstants.OPD_TIME, "");
+            getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
+        } else if (fromString.equals("AddNotes")) {
 
-        getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
-    }
-
-
-    //---------------
-    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<YearsMonthsData> mFragmentTitleList = new ArrayList<>();
-
-        ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, YearsMonthsData title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "" + mFragmentTitleList.get(position).getYear();
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }
-    }
-
-    private class YearSpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
-
-        boolean mYearSpinnerConfigChange = false;
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            mYearSpinnerConfigChange = true;
-            return false;
-        }
-
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            if (mYearSpinnerConfigChange) {
-                // Your selection handling code here
-                mYearSpinnerConfigChange = false;
-                if (parent.getId() == R.id.year && !mYearSpinnerConfigChange) {
-                    String selectedYear = mYearList.get(parent.getSelectedItemPosition());
-                    for (int i = 0; i < mTimePeriodList.size(); i++) {
-                        if (mTimePeriodList.get(i).getYear() == Integer.parseInt(selectedYear)) {
-                            Year y = new Year();
-                            YearsMonthsData yearsMonthsData = mTimePeriodList.get(i);
-                            y.setYear("" + yearsMonthsData.getYear());
-                            y.setMonthName(yearsMonthsData.getMonths().get(yearsMonthsData.getMonths().size() - 1));
-
-                            mCurrentSelectedTimePeriodTab = y;
-                            mViewpager.setCurrentItem(i);
-                            break;
-                        }
-                    }
-                } else {
-                    mYearSpinnerConfigChange = false;
-                }
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (!mBluetoothAdapter.isEnabled())
+                mBluetoothAdapter.enable();
+            openSmartPen(mBluetoothAdapter, dayOfMonth + "-" + monthOfYear + "-" + year);
         }
     }
 
@@ -563,16 +588,12 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         }
 
     }
-    //---------------
 
     public PatientDetailHelper getParentPatientDetailHelper() {
         return mPatientDetailHelper;
     }
 
-    public Button getAddRecordButton() {
-        return mAddRecordButton;
-    }
-
+    //---------------
 
     public void setOPDStatusGridViewAdapter(ArrayList<String> list) {
         OPDStatusShowAdapter baseAdapter = new OPDStatusShowAdapter(getContext(), list);
@@ -582,6 +603,82 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    //---------------
+    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<YearsMonthsData> mFragmentTitleList = new ArrayList<>();
+
+        ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, YearsMonthsData title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "" + mFragmentTitleList.get(position).getYear();
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+    }
+
+    private class YearSpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
+
+        boolean mYearSpinnerConfigChange = false;
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            mYearSpinnerConfigChange = true;
+            return false;
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+            if (mYearSpinnerConfigChange) {
+                // Your selection handling code here
+                mYearSpinnerConfigChange = false;
+                if (parent.getId() == R.id.year && !mYearSpinnerConfigChange) {
+                    String selectedYear = mYearList.get(parent.getSelectedItemPosition());
+                    for (int i = 0; i < mTimePeriodList.size(); i++) {
+                        if (mTimePeriodList.get(i).getYear() == Integer.parseInt(selectedYear)) {
+                            Year y = new Year();
+                            YearsMonthsData yearsMonthsData = mTimePeriodList.get(i);
+                            y.setYear("" + yearsMonthsData.getYear());
+                            y.setMonthName(yearsMonthsData.getMonths().get(yearsMonthsData.getMonths().size() - 1));
+
+                            mCurrentSelectedTimePeriodTab = y;
+                            mViewpager.setCurrentItem(i);
+                            break;
+                        }
+                    }
+                } else {
+                    mYearSpinnerConfigChange = false;
+                }
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
     }
 
 

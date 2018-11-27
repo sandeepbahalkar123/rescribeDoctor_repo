@@ -8,19 +8,12 @@ import java.util.HashMap;
 public class UploadStatus implements Parcelable {
 
     private String uploadId;
-    private String patientId;
-    private int docId;
     private String visitDate;
     private String mOpdtime;
-    private String opdId;
-    private String mHospitalId;
-    private String mHospitalPatId;
-    private String mLocationId;
     private String parentCaption;
     private String imagePath;
-    private int mAptId;
+    private String recordType;
     private HashMap <String,String> headerMap = new HashMap<>();
-
 
 
     @Override
@@ -31,49 +24,31 @@ public class UploadStatus implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.uploadId);
-        dest.writeString(this.patientId);
-        dest.writeInt(this.docId);
         dest.writeString(this.visitDate);
         dest.writeString(this.mOpdtime);
-        dest.writeString(this.opdId);
-        dest.writeString(this.mHospitalId);
-        dest.writeString(this.mHospitalPatId);
-        dest.writeString(this.mLocationId);
         dest.writeString(this.parentCaption);
         dest.writeString(this.imagePath);
-        dest.writeInt(this.mAptId);
+        dest.writeString(this.recordType);
         dest.writeSerializable(this.headerMap);
     }
 
-    public UploadStatus(String uploadId, String patientId, int docId, String visitDate, String mOpdtime, String opdId, String mHospitalId, String mHospitalPatId, String mLocationId, String parentCaption, String imagePath, int mAptId, HashMap<String, String> headerMap) {
+    public UploadStatus(String uploadId, String visitDate, String mOpdtime, String parentCaption, String imagePath, String recordType,HashMap<String, String> headerMap) {
         this.uploadId = uploadId;
-        this.patientId = patientId;
-        this.docId = docId;
         this.visitDate = visitDate;
         this.mOpdtime = mOpdtime;
-        this.opdId = opdId;
-        this.mHospitalId = mHospitalId;
-        this.mHospitalPatId = mHospitalPatId;
-        this.mLocationId = mLocationId;
         this.parentCaption = parentCaption;
         this.imagePath = imagePath;
-        this.mAptId = mAptId;
+        this.recordType = recordType;
         this.headerMap = headerMap;
     }
 
     protected UploadStatus(Parcel in) {
         this.uploadId = in.readString();
-        this.patientId = in.readString();
-        this.docId = in.readInt();
         this.visitDate = in.readString();
         this.mOpdtime = in.readString();
-        this.opdId = in.readString();
-        this.mHospitalId = in.readString();
-        this.mHospitalPatId = in.readString();
-        this.mLocationId = in.readString();
         this.parentCaption = in.readString();
         this.imagePath = in.readString();
-        this.mAptId = in.readInt();
+        this.recordType = in.readString();
         this.headerMap = (HashMap<String, String>) in.readSerializable();
 
     }
@@ -98,22 +73,6 @@ public class UploadStatus implements Parcelable {
         this.uploadId = uploadId;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
-    public int getDocId() {
-        return docId;
-    }
-
-    public void setDocId(int docId) {
-        this.docId = docId;
-    }
-
     public String getVisitDate() {
         return visitDate;
     }
@@ -128,38 +87,6 @@ public class UploadStatus implements Parcelable {
 
     public void setmOpdtime(String mOpdtime) {
         this.mOpdtime = mOpdtime;
-    }
-
-    public String getOpdId() {
-        return opdId;
-    }
-
-    public void setOpdId(String opdId) {
-        this.opdId = opdId;
-    }
-
-    public String getmHospitalId() {
-        return mHospitalId;
-    }
-
-    public void setmHospitalId(String mHospitalId) {
-        this.mHospitalId = mHospitalId;
-    }
-
-    public String getmHospitalPatId() {
-        return mHospitalPatId;
-    }
-
-    public void setmHospitalPatId(String mHospitalPatId) {
-        this.mHospitalPatId = mHospitalPatId;
-    }
-
-    public String getmLocationId() {
-        return mLocationId;
-    }
-
-    public void setmLocationId(String mLocationId) {
-        this.mLocationId = mLocationId;
     }
 
     public String getParentCaption() {
@@ -178,12 +105,12 @@ public class UploadStatus implements Parcelable {
         this.imagePath = imagePath;
     }
 
-    public int getmAptId() {
-        return mAptId;
+    public String getRecordType() {
+        return recordType;
     }
 
-    public void setmAptId(int mAptId) {
-        this.mAptId = mAptId;
+    public void setRecordType(String recordType) {
+        this.recordType = recordType;
     }
 
     public HashMap<String, String> getHeaderMap() {

@@ -20,6 +20,9 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application
         android:name=".singleton.RescribeApplication"
         android:allowBackup="true"
@@ -222,11 +225,11 @@
             android:exported="false" />
 
         <!--<receiver-->
-            <!--android:name=".broadcast_receivers.FileUploadReceiver"-->
-            <!--android:exported="false">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.rescribe.doctor.uploadservice.broadcast.status" />-->
-            <!--</intent-filter>-->
+        <!--android:name=".broadcast_receivers.FileUploadReceiver"-->
+        <!--android:exported="false">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="com.rescribe.doctor.uploadservice.broadcast.status" />-->
+        <!--</intent-filter>-->
         <!--</receiver>-->
 
         <activity
@@ -275,8 +278,36 @@
             android:label="@string/change_password"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <service android:name=".services.add_record_upload_Service.AddRecordService"/>
-        <service android:name=".services.connect_upload_service.ConnectUploadService"/>
+
+        <service android:name=".services.add_record_upload_Service.AddRecordService" />
+        <service android:name=".services.connect_upload_service.ConnectUploadService" />
+
+        <activity
+            android:name=".smartpen.ScanActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".smartpen.PenInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".smartpen.SettingSizeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name="com.smart.pen.core.services.SmartPenService"
+            android:enabled="true">
+            <intent-filter android:priority="10000">
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.smart.pen.core.services.UsbPenService"
+            android:enabled="true" />
+
     </application>
 
 </manifest>

@@ -33,6 +33,10 @@ public class Config {
     public static final String DELETE_PATIENT_OPD_NOTES = "doctor/api/appointment/deleteOpdNotes";
     public static final String GET_REFERENCE_LIST= "doctor/api/patient/getReferredTypes?";
 
+    public static final String ADD_OPD_NOTE= "api/upload/addOpdNotes";
+    public static final String DELETE_OPD_NOTE= "doctor/api/appointment/deleteOpdNotes";
+    public static final String GET_OPD_NOTE= "doctor/api/appointment/getOPDNotes?"; // docId=2860&patientId=624914&pageNo=0&paginationSize=1
+
 
     //---------------LOCAL SERVER URL START-----------------------
     /*public static String BASE_URL = "http://172.16.100.219:3003/";

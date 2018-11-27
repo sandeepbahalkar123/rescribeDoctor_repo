@@ -1,11 +1,9 @@
 package com.rescribe.doctor.services;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.UploadStatus;
@@ -28,9 +26,10 @@ import static com.rescribe.doctor.util.RescribeConstants.FILE_STATUS.FAILED;
 
 public class SyncOfflineRecords {
     public static final String ATTATCHMENT_DOC_UPLOAD = "com.rescribe.doctor.ATTATCHMENT_DOC_UPLOAD";
+    private ArrayList<UploadStatus> uploadDataList = new ArrayList<>();
     private Context context;
     private AppDBHelper appDBHelper;
-    ArrayList<UploadStatus> uploadDataList = new ArrayList<>();
+
     SyncOfflineRecords() {
     }
 
@@ -40,8 +39,6 @@ public class SyncOfflineRecords {
 
 
         if (cursor.getCount() > 0) {
-
-            String Url = Config.BASE_URL + Config.MY_RECORDS_UPLOAD;
             String authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, context);
             Device device = Device.getInstance(context);
 
@@ -58,7 +55,7 @@ public class SyncOfflineRecords {
 
                         String uploadId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.UPLOAD_ID));
 
-                        appDBHelper.updateRecordUploads(uploadId, uploadStatus);
+                        appDBHelper.updateRecordUploads(uploadId, uploadStatus, "");
 
                         String mOpdtime = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.OPD_TIME));
                         String visitDate = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.VISIT_DATE));
@@ -71,6 +68,10 @@ public class SyncOfflineRecords {
                         String imagePath = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.IMAGE_PATH));
                         String caption = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.PARENT_CAPTION));
                         String aptId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.APT_ID));
+
+                        String recordType = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.RECORD_TYPE));
+                        String fileId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.FILE_ID));
+                        String orderId = cursor.getString(cursor.getColumnIndex(AppDBHelper.MY_RECORDS.ORDER_ID));
 
                         String currentOpdTime;
 
@@ -98,23 +99,23 @@ public class SyncOfflineRecords {
                         headers.put("locationid", mLocationId);
                         headers.put("aptid", String.valueOf(aptId));
 
-                        UploadStatus images = new UploadStatus(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, caption, imagePath, Integer.parseInt(aptId),headers);
+                        // Added in 5 to 6
+                        headers.put("orderid", orderId);
+                        headers.put("fileid", fileId);
+
+                        UploadStatus images = new UploadStatus(uploadId, visitDate, mOpdtime, caption, imagePath, recordType, headers);
                         uploadDataList.add(images);
-
-
                     }
 
                     cursor.moveToNext();
                 }
 
 
-
             }
-            if (uploadDataList.size()!=0) {
-                Intent i = new Intent(context, AddRecordService.class);
-                i.putParcelableArrayListExtra(FILELIST, uploadDataList);
-                i.putExtra("URL", Url);
-                ContextCompat.startForegroundService(context, i);
+            if (uploadDataList.size() != 0) {
+                Intent intent = new Intent(context, AddRecordService.class);
+                intent.putParcelableArrayListExtra(FILELIST, uploadDataList);
+                ContextCompat.startForegroundService(context, intent);
             }
 
         }

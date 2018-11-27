@@ -105,7 +105,6 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.patientNameTextView.setTextColor(mContext.getResources().getColor(R.color.bsp_red));
         }else {
             holder.patientNameTextView.setTextColor(mContext.getResources().getColor(R.color.black));
-
         }
 
 

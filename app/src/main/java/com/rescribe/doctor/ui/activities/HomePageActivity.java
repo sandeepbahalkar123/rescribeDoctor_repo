@@ -712,8 +712,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     startActivity(intent);
                 }
                 break;
-            case R.id.viewPagerDoctorItem:
-                break;
             case R.id.todayAppointmentsOrWaitingList:
                 if (todayWaitingListOrAppointmentTextView.getText().toString().equals(getString(R.string.today_appointment))) {
                     if (!todayWaitingListOrAppointmentCount.getText().toString().equals("0")) {
@@ -733,10 +731,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                     startActivity(todayNewPatient);
                 }
                 break;
-            case R.id.doctorDashboardImage:
-
-                break;
-
         }
     }
 

@@ -41,8 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                app:srcCompat="@drawable/no_records_found"
                 android:visibility="gone"
+                app:srcCompat="@drawable/no_records_found"
                 tools:visibility="visible" />
 
             <android.support.v4.view.ViewPager
@@ -52,17 +52,63 @@
 
         </RelativeLayout>
 
+        <!--<android.support.design.widget.FloatingActionButton
+            android:id="@+id/addNoteFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/dp16"
+            android:clickable="true"
+            android:focusable="true"
+            app:backgroundTint="@color/colorAccent"
+            app:srcCompat="@drawable/ic_note" />-->
+
+
         <Button
             android:id="@+id/addRecordButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp35"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/dp2"
+            android:layout_marginLeft="@dimen/dp2"
+            android:layout_toStartOf="@+id/divider"
+            android:layout_toLeftOf="@+id/divider"
             android:background="@drawable/button_selector"
             android:fontFamily="@font/roboto_bold"
             android:text="@string/add_record"
             android:textColor="@color/white"
             android:textSize="@dimen/sp14"
+            android:visibility="visible"
+            android:layout_marginBottom="@dimen/dp2"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="2dp"
+            android:layout_height="@dimen/dp30"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/white" />
+
+        <Button
+            android:id="@+id/addNoteButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp35"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:layout_marginEnd="@dimen/dp2"
+            android:layout_marginRight="@dimen/dp2"
+            android:layout_toEndOf="@+id/divider"
+            android:layout_toRightOf="@+id/divider"
+            android:background="@drawable/button_selector"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/add_note"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp14"
+            android:layout_marginBottom="@dimen/dp2"
             android:visibility="visible"
             tools:visibility="visible" />
 

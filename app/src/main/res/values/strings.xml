@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Dr Rescribe</string>
     <string name="enter_mobile_no">Mobile No. *</string>
     <string name="enter_mobile_no_error">Mobile No.</string>
@@ -349,5 +349,28 @@
         <item>Mother</item>
         <item>Wife</item>
     </string-array>
+
+    <string name="action_settings">Page Size</string>
+    <string name="help">Help</string>
+    <string name="selectmode">Select Mode</string>
+    <string name="select_please">Select Please</string>
+    <string name="battery_low">Battery Low</string>
+    <string name="canceled">Canceled</string>
+    <string name="back">Back</string>
+    <string name="confirm">Confirm</string>
+    <string name="connecting">Connecting...</string>
+    <string name="connected">Connected.</string>
+    <string name="disconnected">Disconnected.</string>
+    <string name="setting_size" tools:ignore="ExtraTranslation">Setting Size</string>
+    <string name="setting_size_step1">Setting Size Step1</string>
+    <string name="setting_size_step2">Setting Size Step2</string>
+    <string name="setting_size_end">Setting Size End</string>
+    <string name="setting_size_small">Setting Size Small</string>
+    <string name="service_ble_start">Service BLE Start...</string>
+    <string name="service_usb_start">service USB Start...</string>
+    <string name="scan_activity">Scan Smart Pen</string>
+    <string name="draw_activity">Write Note</string>
+    <string name="action_save">Save</string>
+    <string name="add_note">Add Notes</string>
 
 </resources>

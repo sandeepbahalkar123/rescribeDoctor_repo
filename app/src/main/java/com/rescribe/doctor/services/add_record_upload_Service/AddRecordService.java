@@ -26,6 +26,8 @@ import com.rescribe.doctor.model.CommonBaseModelContainer;
 import com.rescribe.doctor.model.UploadStatus;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.Config;
+import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,13 +43,12 @@ public class AddRecordService extends Service {
     public static final String RESULT = "result";
     private static final String ADD_RECORD_CHANNEL = "addrecord";
     private static final int ADD_RECORD_FOREGROUND_ID = 1634;
-    private String BASE_URL;
-    private NotificationManager mNotificationManager;
-    NotificationCompat.Builder mBuilder;
-    ArrayList<UploadStatus> uploadIdList = new ArrayList<>();
-    private AppDBHelper appDBHelper;
     public int index = 0;
-    ArrayList<String> documents = new ArrayList<String>() {{
+    private NotificationManager mNotificationManager;
+    private NotificationCompat.Builder mBuilder;
+    private ArrayList<UploadStatus> uploadIdList = new ArrayList<>();
+    private AppDBHelper appDBHelper;
+    private ArrayList<String> documents = new ArrayList<String>() {{
         add("png");
         add("jpeg");
         add("jpg");
@@ -94,10 +95,9 @@ public class AddRecordService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //TODO do something useful
+
         ArrayList<UploadStatus> uploadStatusArrayList = intent.getParcelableArrayListExtra(FILELIST);
         uploadIdList.addAll(uploadStatusArrayList);
-        BASE_URL = intent.getStringExtra("URL");
 
         mBuilder.setContentText("Uploading " + uploadIdList.size() + (uploadIdList.size() == 1 ? " File" : " Files"));
         // Removes the progress bar
@@ -107,7 +107,7 @@ public class AddRecordService extends Service {
         if (index == 0) {
             UploadStatus file = uploadIdList.get(index);
             String path = file.getImagePath();
-            String fileType = CommonMethods.getExtension(path);
+            String fileType = CommonMethods.getExtension(path).toLowerCase();
             String fileTypeName;
             if (documents.contains(fileType))
                 fileTypeName = "image";
@@ -165,11 +165,15 @@ public class AddRecordService extends Service {
 
     private void imageUpload(String imagePath, HashMap<String, String> mapHeaders, String docCaption, String fileTypeName) {
 
-        appDBHelper.updateRecordUploads(uploadIdList.get(index).getUploadId(), UPLOADING);
+        appDBHelper.updateRecordUploads(uploadIdList.get(index).getUploadId(), UPLOADING, uploadIdList.get(index).getRecordType());
 
-        Log.e("imagePath122--", "-" + imagePath);
-        Log.e("fileType--", "-" + fileTypeName);
-        SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, BASE_URL,
+        String url = Config.BASE_URL + (uploadIdList.get(index).getRecordType().equals(RescribeConstants.NOTES) ? Config.ADD_OPD_NOTE : Config.MY_RECORDS_UPLOAD);
+
+        Log.i("upload_url--", "-" + url);
+        Log.i("imagePath122--", "-" + imagePath);
+        Log.i("fileType--", "-" + fileTypeName);
+
+        SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -207,7 +211,7 @@ public class AddRecordService extends Service {
             mNotificationManager.notify(ADD_RECORD_FOREGROUND_ID, mBuilder.build());
 
             Log.e("index sucess", "" + index);
-            appDBHelper.updateRecordUploads(uploadIdList.get(index).getUploadId(), COMPLETED);
+            appDBHelper.updateRecordUploads(uploadIdList.get(index).getUploadId(), COMPLETED, "");
 
 
             if (uploadIdList.size() == (index + 1)) {
@@ -254,7 +258,7 @@ public class AddRecordService extends Service {
             mNotificationManager.notify(ADD_RECORD_FOREGROUND_ID, mBuilder.build());
 
             Log.e("index fail", "" + index);
-            appDBHelper.updateRecordUploads(uploadIdList.get(index).getUploadId(), FAILED);
+            appDBHelper.updateRecordUploads(uploadIdList.get(index).getUploadId(), FAILED, "");
 
             if (uploadIdList.size() == (index + 1)) {
 
@@ -266,13 +270,13 @@ public class AddRecordService extends Service {
                 intent.putExtra(RESULT, common);
                 sendBroadcast(intent);
                 stopSelf();
-            }else {
+            } else {
                 index += 1;
 
                 UploadStatus file = uploadIdList.get(index);
                 String path = file.getImagePath();
                 String fileType = CommonMethods.getExtension(path);
-                String fileTypeName = "image";
+                String fileTypeName;
                 if (documents.contains(fileType))
                     fileTypeName = "image";
                 else
