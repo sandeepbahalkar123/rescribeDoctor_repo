@@ -2,58 +2,58 @@ package com.smart.pen.core.model;
 /**
  * 
  * @author Xiaoz
- * @date 2015年8月7日 上午10:29:20
+ * @date August 7, 2015 10:29:20 AM
  *
  * Description
  */
 public class FrameSizeObject {
-	//显示画布的区域尺寸
+	//Display the area size of the canvas
 	/**
-	 * 显示画布区域宽
+	 * Display canvas area width
 	 */
 	public int frameWidth;
 	/**
-	 * 显示画布区域高
+	 * Show canvas area high
 	 */
 	public int frameHeight;
 	
 	
-	//纸张尺寸
+	//Paper size
 	/**
-	 * 纸张可写区域宽
+	 * Paper writable area wide
 	 */
 	public int sceneWidth;
 	/**
-	 * 纸张可写区域高
+	 * Paper writable area is high
 	 */
 	public int sceneHeight;
 	
 
 	/**
-	 * 显示可写区域宽
+	 * Display writable area width
 	 */
 	public int windowWidth;
 	
 	/**
-	 * 显示可写区域高
+	 * Show high writable area
 	 */
 	public int windowHeight;
 	public int windowLeft;
 	public int windowTop;
 	
 	/**
-	 * 缩放宽
+	 * Zoom width
 	 */
 	public int zoomWidth;
 	
 	/**
-	 * 缩放高
+	 * Zoom high
 	 */
 	public int zoomHeight;
 	
 	
 	/**
-	 * 设置画布可写区域尺寸
+	 * Set the canvas writable area size
 	 * @return
 	 */
 	public void initWindowSize(){
@@ -90,7 +90,7 @@ public class FrameSizeObject {
 	
 	
 	/**
-	 * 设置窗口缩放尺寸，需要在initWindowSize之后执行
+	 * Set the window zoom size, you need to execute after initWindowSize
 	 * @param refSize
 	 * @return
 	 */

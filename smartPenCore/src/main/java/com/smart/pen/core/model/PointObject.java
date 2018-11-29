@@ -1,5 +1,7 @@
 package com.smart.pen.core.model;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -235,8 +237,10 @@ public class PointObject {
 	
 	@Override
 	public String toString(){
-		return "isRoute:"+ isRoute +",isSw1:"+ isSw1 +",battery:"+ battery +"\nx:"+ originalX +",y:"+originalY
+		String events = "isRoute:"+ isRoute +",isSw1:"+ isSw1 +",battery:"+ battery +"\nx:"+ originalX +",y:"+originalY
 				+"\nsceneType:"+sceneType+"  sceneX:"+ getSceneX() +",sceneY:"+getSceneY();
+		Log.i("EVENTS", events);
+		return events;
 	}
 	
 	/**

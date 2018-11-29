@@ -1,6 +1,7 @@
 package com.rescribe.doctor.smartpen;
 
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -11,23 +12,28 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rescribe.doctor.R;
@@ -50,6 +56,7 @@ import com.smart.pen.core.symbol.ConnectState;
 import com.smart.pen.core.symbol.Keys;
 import com.smart.pen.core.symbol.SceneType;
 import com.smart.pen.core.views.MultipleCanvasView;
+import com.thebluealliance.spectrum.SpectrumDialog;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,6 +66,7 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity.FILELIST;
 
@@ -72,16 +80,56 @@ import static com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActiv
  */
 public class PenInfoActivity extends AppCompatActivity {
     public static final String TAG = PenInfoActivity.class.getSimpleName();
-    public static final int REQUEST_SETTING_SIZE = 1000;
+    //    public static final int REQUEST_SETTING_SIZE = 1000;
     private static final String RESCRIBE_NOTES = "/DrRescribe/Notes/";
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    private Menu menu;
-    /**
-     * 笔服务广播处理
-     **/
+    @BindView(R.id.undoButton)
+    ImageView undoButton;
+    @BindView(R.id.reduButton)
+    ImageView reduButton;
+    @BindView(R.id.eraserSizeButton)
+    ImageView eraserSizeButton;
+    @BindView(R.id.penSizeButton)
+    ImageView penSizeButton;
+    @BindView(R.id.opacityButton)
+    ImageView opacityButton;
+    @BindView(R.id.penColorButton)
+    ImageView penColorButton;
 
-    private int bmpx = 0, bmpy = 0, bmpw = 0, bmph = 0;
+    @BindView(R.id.clearPageButton)
+    ImageView clearPageButton;
+
+    @BindView(R.id.newPageButton)
+    ImageView newPageButton;
+    @BindView(R.id.preButton)
+    ImageView preButton;
+    @BindView(R.id.pageCount)
+    TextView pageCount;
+    @BindView(R.id.nextButton)
+    ImageView nextButton;
+
+    /*@BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.drawerButton)
+    ImageView drawerButton;
+    @BindView(R.id.penButtonL)
+    LinearLayout penButtonL;
+    @BindView(R.id.textButtonL)
+    LinearLayout textButtonL;
+    @BindView(R.id.shapeButtonL)
+    LinearLayout shapeButtonL;
+    @BindView(R.id.imageButtonL)
+    LinearLayout imageButtonL;
+    @BindView(R.id.clipArtButtonL)
+    LinearLayout clipArtButtonL;*/
+
+    private int totalPage = 1;
+    private int currentPage = 1;
+    private Menu menu;
+
+    private ArrayList<Bitmap> bitmaps = new ArrayList<>();
 
     private PenServiceReceiver mPenServiceReceiver;
     private PenService mPenService;
@@ -179,20 +227,20 @@ public class PenInfoActivity extends AppCompatActivity {
                 Toast.makeText(PenInfoActivity.this, R.string.battery_low, Toast.LENGTH_LONG).show();
             }
 
-            //获取显示窗口比例缩放坐标
+            //Get the display window scaling coordinates
             int windowX = point.getSceneX(mPenCanvasView.getWindowWidth());
             int windowY = point.getSceneY(mPenCanvasView.getWindowHeight());
 
             if (mShowType != 1) return;
 
-            //绘制笔
+            // Drawing a pen
             mPenView.bitmapX = windowX;
-            mPenView.bitmapY = windowY;
+            mPenView.bitmapY = windowY - 30;
             mPenView.isRoute = point.isRoute;
             mPenView.invalidate();
 
-            //绘制笔迹
-            mPenCanvasView.drawLine(windowX, windowY, point.isRoute);
+            // Drawing handwriting
+            mPenCanvasView.drawLine(windowX, windowY - 30, point.isRoute);
         }
     };
 
@@ -200,7 +248,7 @@ public class PenInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_info);
+        setContentView(R.layout.content_info);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -208,25 +256,24 @@ public class PenInfoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(getResources().getText(R.string.draw_activity));
 
-        bmpx = 0;
-        bmpy = getToolBarHeight() + getStatusBarHeight();
+        pageCount.setText(currentPage + " of " + totalPage);
+
+        int topSpace = getToolBarHeight() + getStatusBarHeight();
 
         DisplayMetrics metric = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metric);
-        mDisplayWidth = metric.widthPixels;  // 屏幕宽度（像素）
-        mDisplayHeight = metric.heightPixels - bmpy;  // 屏幕高度（像素）
-
-        bmpw = mDisplayWidth;
-        bmph = mDisplayHeight;
+        mDisplayWidth = metric.widthPixels;  // Screen width (pixels)
+        mDisplayHeight = metric.heightPixels - topSpace;  // Screen height (pixels)
 
         mLineFrame = (RelativeLayout) findViewById(R.id.lineFrame);
         mLineWindow = (FrameLayout) findViewById(R.id.lineWindow);
         mPenCanvasView = (MultipleCanvasView) findViewById(R.id.penCanvasView);
-        //添加笔视图
+        // Add pen view
         mPenView = new PenView(this);
         mLineWindow.addView(mPenView);
 
         mPenService = RescribeApplication.getInstance().getPenService();
+        mPenService.setBroadcastEnabled(true);
         if (mPenService.checkDeviceConnect() == ConnectState.CONNECTED) {
             initSceneType();
         } else {
@@ -279,7 +326,14 @@ public class PenInfoActivity extends AppCompatActivity {
                 break;
             case R.id.action_save:
                 mPenView.setVisibility(View.GONE);
-                saveAndOpenBitmapToImage();
+
+                if (bitmaps.size() >= currentPage)
+                    bitmaps.set(currentPage - 1, getBitmap());
+                else
+                    bitmaps.add(currentPage - 1, getBitmap());
+
+                for (int index = 0; index < bitmaps.size(); index++)
+                    saveImage(index);
                 mPenView.setVisibility(View.VISIBLE);
                 break;
             case R.id.action_disconnect:
@@ -308,13 +362,19 @@ public class PenInfoActivity extends AppCompatActivity {
         return true;
     }
 
-    private void saveAndOpenBitmapToImage() {
+    private Bitmap getBitmap() {
+        mPenCanvasView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(mPenCanvasView.getDrawingCache(), 0, 0, mPenCanvasView.getWindowWidth(), mPenCanvasView.getWindowHeight());
+        mPenCanvasView.setDrawingCacheEnabled(false);
+        return bitmap;
+    }
+
+    private void saveImage(int index) {
         Date now = new Date();
-        String time = String.valueOf(android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now));
+        String time = String.valueOf(DateFormat.format("yyyy-MM-dd_hh:mm:ss", now)) + "_" + (index + 1);
 
         try {
             // image naming and path  to include sd card  appending name you choose for file
-
             String mPath = Environment.getExternalStorageDirectory().toString() + RESCRIBE_NOTES;
             File dirFilesFolder = new File(mPath);
             if (!dirFilesFolder.exists()) {
@@ -323,33 +383,24 @@ public class PenInfoActivity extends AppCompatActivity {
                 }
             }
             mPath = mPath + time + ".jpg";
-
-            // create bitmap screen capture
-            View v1 = getWindow().getDecorView().getRootView();
-            v1.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache(), bmpx, bmpy, bmpw, bmph);
-            v1.setDrawingCacheEnabled(false);
-
             File imageFile = new File(mPath);
-
             FileOutputStream outputStream = new FileOutputStream(imageFile);
             int quality = 100;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            bitmaps.get(index).compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
             //alertError("File saved to " + mPath);
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
+//            Intent intent = new Intent();
+//            intent.setAction(Intent.ACTION_VIEW);
 
-            Uri uri;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".droidninja.filepicker.provider", new File(mPath));
-            } else {
-                uri = Uri.fromFile(new File(mPath));
-            }
-
+//            Uri uri;
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".droidninja.filepicker.provider", new File(mPath));
+//            } else {
+//                uri = Uri.fromFile(new File(mPath));
+//            }
 //            intent.setDataAndType(uri, "image/*");
 //            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //            startActivity(intent);
@@ -438,7 +489,7 @@ public class PenInfoActivity extends AppCompatActivity {
         ContextCompat.startForegroundService(this, intent);
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_SETTING_SIZE) {
@@ -447,17 +498,17 @@ public class PenInfoActivity extends AppCompatActivity {
                 initSceneType();
             }
         }
-    }
+    }*/
 
     @Override
     public void onResume() {
         super.onResume();
 
         if (mPenService != null) {
-            //设置笔坐标监听
+            // Set pen coordinate monitor
             mPenService.setOnPointChangeListener(onPointChangeListener);
         } else {
-            //注册笔服务通过广播方式发送的笔迹坐标信息
+            // Registered pen service sends handwritten coordinate information by broadcast
             mPenServiceReceiver = new PenServiceReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Keys.ACTION_SERVICE_SEND_POINT);
@@ -487,9 +538,9 @@ public class PenInfoActivity extends AppCompatActivity {
     }*/
 
     private void initPage() {
-        PenService service = RescribeApplication.getInstance().getPenService();
+        final PenService service = RescribeApplication.getInstance().getPenService();
 
-        //设置画布尺寸信息
+        // Set the canvas size information
         FrameSizeObject sizeObj = new FrameSizeObject();
 
         sizeObj.frameWidth = mDisplayWidth;
@@ -513,16 +564,16 @@ public class PenInfoActivity extends AppCompatActivity {
     }
 
     /**
-     * 初始化纸张尺寸
+     * Initialize paper size
      */
     private void initSceneType() {
         initSceneType(false);
     }
 
     /**
-     * 初始化纸张尺寸
+     * Initialize paper size
      *
-     * @param isShow 是否强制显示
+     * @param isShow Whether to force display
      */
     private void initSceneType(boolean isShow) {
         SceneType sceneType = mPenService.getSceneType();
@@ -656,6 +707,188 @@ public class PenInfoActivity extends AppCompatActivity {
         }
     }
 
+    @OnClick({R.id.undoButton, R.id.reduButton, R.id.eraserSizeButton, R.id.penSizeButton, R.id.opacityButton, R.id.penColorButton, R.id.clearPageButton, R.id.newPageButton, R.id.preButton, R.id.nextButton/*, R.id.drawerButton, R.id.penButtonL, R.id.textButtonL, R.id.shapeButtonL, R.id.imageButtonL, R.id.clipArtButtonL*/})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.undoButton:
+                break;
+            case R.id.reduButton:
+                break;
+            case R.id.eraserSizeButton:
+                break;
+
+            case R.id.penSizeButton:
+                showPenSizeDialog();
+                break;
+            case R.id.opacityButton:
+                showOpacityDialog();
+                break;
+
+            case R.id.penColorButton:
+                showColorPicker();
+                break;
+
+            case R.id.clearPageButton:
+                clearPageWarnDialog("Are you sure?");
+                break;
+
+            case R.id.newPageButton:
+                if (bitmaps.size() >= currentPage)
+                    bitmaps.set(currentPage - 1, getBitmap());
+                else
+                    bitmaps.add(currentPage - 1, getBitmap());
+                mPenCanvasView.cleanAll();
+                totalPage++;
+                currentPage = totalPage;
+                pageCount.setText(currentPage + " of " + totalPage);
+                break;
+
+            case R.id.preButton:
+                if (currentPage > 1) {
+                    if (bitmaps.size() >= currentPage)
+                        bitmaps.set(currentPage - 1, getBitmap());
+                    else
+                        bitmaps.add(currentPage - 1, getBitmap());
+                    currentPage--;
+                    mPenCanvasView.cleanAll();
+                    mPenCanvasView.drawBitmap(bitmaps.get(currentPage - 1));
+                    pageCount.setText(currentPage + " of " + totalPage);
+                }
+                break;
+
+            case R.id.nextButton:
+                if (totalPage > currentPage) {
+                    if (bitmaps.size() >= currentPage)
+                        bitmaps.set(currentPage - 1, getBitmap());
+                    else
+                        bitmaps.add(currentPage - 1, getBitmap());
+                    currentPage++;
+                    mPenCanvasView.cleanAll();
+                    mPenCanvasView.drawBitmap(bitmaps.get(currentPage - 1));
+                    pageCount.setText(currentPage + " of " + totalPage);
+                }
+                break;
+
+            /*case R.id.drawerButton:
+                drawer.openDrawer(GravityCompat.END);
+                break;
+
+            case R.id.penButtonL:
+                mPenCanvasView.stopInsertShape();
+                mPenCanvasView.setIsRubber(false);
+                break;
+            case R.id.textButtonL:
+                break;
+            case R.id.shapeButtonL:
+                break;
+            case R.id.imageButtonL:
+                break;
+            case R.id.clipArtButtonL:
+                break;*/
+        }
+    }
+
+    private void clearPageWarnDialog(String msg) {
+        final Builder alert = new Builder(this, R.style.MyDialogTheme);
+        alert.setTitle("Warning");
+        alert.setMessage(msg);
+        alert.setCancelable(false);
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                mPenCanvasView.cleanAll();
+            }
+        });
+        alert.show();
+    }
+
+    public void showPenSizeDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.pen_size_dialog);
+
+        final TextView penSizeText = dialog.findViewById(R.id.penSizeText);
+        SeekBar penSizeSeekBar = dialog.findViewById(R.id.seekBar);
+        penSizeSeekBar.setMax(9);
+        penSizeSeekBar.setProgress(mPenCanvasView.getPenWeight() - 1);
+        penSizeText.setText("Pen Size: " + mPenCanvasView.getPenWeight());
+
+        penSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mPenCanvasView.setPenWeight(progress + 1);
+                penSizeText.setText("Pen Size: " + mPenCanvasView.getPenWeight());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        dialog.show();
+    }
+
+    public void showOpacityDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.pen_size_dialog);
+
+        final TextView penSizeText = dialog.findViewById(R.id.penSizeText);
+        SeekBar penSizeSeekBar = dialog.findViewById(R.id.seekBar);
+        penSizeSeekBar.setMax(9);
+        penSizeSeekBar.setProgress(mPenCanvasView.getPenOpacity() - 1);
+        penSizeText.setText("Pen Opacity: " + mPenCanvasView.getPenOpacity());
+
+        penSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mPenCanvasView.setPenOpacity(progress + 1);
+                penSizeText.setText("Pen Opacity: " + mPenCanvasView.getPenOpacity());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showColorPicker() {
+        new SpectrumDialog.Builder(this, R.style.MyDialogTheme)
+                .setColors(R.array.demo_colors)
+                .setSelectedColorRes(R.color.errorColor)
+                .setDismissOnColorSelected(false)
+                .setOutlineWidth(2)
+                .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(boolean positiveResult, @ColorInt int color) {
+                        if (positiveResult) {
+//                            Toast.makeText(PenInfoActivity.this, "Color selected: #" + Integer.toHexString(color).toUpperCase(), Toast.LENGTH_SHORT).show();
+                            mPenCanvasView.setPenColor(color);
+                            mPenCanvasView.setPenOpacity(10);
+                        }
+                    }
+                }).build().show(getSupportFragmentManager(), "dialog_demo_1");
+    }
+
 
     // Handle the pen coordinate information sent by the pen service by broadcast
     //The example is only used as a demo to have this feature, there is no special requirement to delete the following code
@@ -664,14 +897,14 @@ public class PenInfoActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(Keys.ACTION_SERVICE_SEND_POINT)) {
-                //广播的形式接收笔迹信息
+                // Receiving handwriting information in the form of a broadcast
                 String pointJson = intent.getStringExtra(Keys.KEY_PEN_POINT);
                 if (pointJson != null && !pointJson.isEmpty()) {
 
                     Toast.makeText(PenInfoActivity.this, pointJson, Toast.LENGTH_SHORT).show();
                     //Log.v(TAG, "pointJson:"+pointJson);
 
-                    //更新笔坐标信息
+                    //Update pen coordinate information
                     //如果注册了service.setOnPointChangeListener监听，那么请注释掉下面的代码，否则信息会冲突
                     //反之如果需要使用Receiver，那么就不要使用setOnPointChangeListener
                     //PointObject item = new PointObject(pointJson);

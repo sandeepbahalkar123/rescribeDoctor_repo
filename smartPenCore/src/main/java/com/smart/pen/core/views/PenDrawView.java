@@ -111,6 +111,10 @@ public class PenDrawView extends View {
         this.mCanvas.setBitmap(mBitmap);
     }
 
+    public void drawBitmap(Bitmap bitmap) {
+        this.mCanvas.drawBitmap(bitmap, 0, 0, null);
+    }
+
     /**
      * 设置笔模式
      *

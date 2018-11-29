@@ -39,6 +39,7 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
 
     private PenModel mPenModel = PenModel.None;
     private int mPenWeight = 3;
+    private int mPenOpacity = 255;
     private int mPenColor = Color.BLACK;
     private int mBgColor = Color.WHITE;
     private boolean mIsRubber = false;
@@ -131,6 +132,10 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
 
     }
 
+    public void drawBitmap(Bitmap bitmap){
+        this.mPenDrawView.drawBitmap(bitmap);
+    }
+
     /**
      * 获取插入的图片数量
      *
@@ -165,6 +170,10 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         this.mPenModel = value;
     }
 
+    public int getPenWeight() {
+        return mPenWeight;
+    }
+
     /**
      * 设置笔粗细
      *
@@ -175,6 +184,10 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         mPenPaint.setStrokeWidth(mPenWeight);
         mErasePaint.setStrokeWidth(mPenWeight);
         mPenDrawView.setPenWeight(mPenWeight);
+    }
+
+    public int getPenColor() {
+        return mPenColor;
     }
 
     /**
@@ -390,6 +403,15 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
             }
         }
         return index;
+    }
+
+    public int getPenOpacity() {
+        return (int) (mPenOpacity / 25.5);
+    }
+
+    public void setPenOpacity(int penOpacity) {
+        mPenOpacity = (int) (penOpacity * 25.5);
+        mPenPaint.setAlpha(mPenOpacity);
     }
 
     /**

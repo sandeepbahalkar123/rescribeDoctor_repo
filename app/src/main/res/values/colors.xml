@@ -69,4 +69,14 @@
     <color name="clickHere">#3676a3</color>
     <color name="activity_background">#E4E4E4</color>
     <color name="blue">#2b93d0</color>
+
+
+    <array name="demo_colors">
+        <item>@color/Red</item>
+        <item>@color/green_light</item>
+        <item>@color/blue</item>
+        <item>@color/yellow</item>
+        <item>@color/black</item>
+        <item>@color/confirm_color</item>
+    </array>
 </resources>
