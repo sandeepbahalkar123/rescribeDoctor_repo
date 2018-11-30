@@ -22,12 +22,12 @@ import com.smart.pen.core.views.MultipleCanvasView.PenModel;
 public class PenDrawView extends View {
     private Path mPath = new Path();
     private Bitmap mBitmap;
-    private Canvas mCanvas;//画布
+    private Canvas mCanvas; // canvas
     private PenModel mPenModel = PenModel.None;
     private int mPenWeight = 1;
-    private int mDownMoveNum = 0;    //笔移动数量
+    private int mDownMoveNum = 0;    // Number of pen movements
 
-    private int mLastX;//上一次记录点的坐标
+    private int mLastX;//The coordinates of the last recorded point
     private int mLastY;
 
     public PenDrawView(Context context) {
@@ -49,26 +49,26 @@ public class PenDrawView extends View {
      *
      * @param x
      * @param y
-     * @param isRoute 是否在写
+     * @param isRoute Is it writing?
      */
     public void drawLine(int x, int y, boolean isRoute, Paint paint) {
-        //是否准备写 笔尖是否接触
+        // Is it ready to write whether the tip is in contact?
         if (isRoute) {
-            //是否是move
+            // Is it move?
             if (mLastX != 0 && mLastY != 0) {
                 double speed = Math.sqrt(Math.pow(mLastX - x, 2) + Math.pow(mLastY - y, 2));
-                //按下移动距离大于一定距离才开始计算weight
+                // Pressing the moving distance is greater than a certain distance to start calculating the weight
                 if (mDownMoveNum > 3 * mPenWeight && mPenModel != PenModel.None) {
-                    //根据速度计算笔迹粗/细
+                    // Calculate handwriting thickness/fine according to speed
                     int fix = (int) (speed / 10);
                     float weight = mPenWeight - fix;
 
-                    //如果距离小于计算后的weight，那么不处理
+                    // If the distance is less than the calculated weight, then it will not be processed
                     if (speed <= weight) return;
                     if (weight < 1) weight = 1;
                     paint.setStrokeWidth(weight);
                 } else if (speed <= mPenWeight) {
-                    //如果距离小于weight，那么不处理
+                    // If the distance is less than weight, then it will not be processed
                     return;
                 }
 
@@ -97,7 +97,7 @@ public class PenDrawView extends View {
             mLastY = y;
         } else {
             mPath.reset();
-            //没在写
+            // Not writing
             mLastX = 0;
             mLastY = 0;
         }
@@ -116,7 +116,7 @@ public class PenDrawView extends View {
     }
 
     /**
-     * 设置笔模式
+     * Set pen mode
      *
      * @param model
      */
@@ -125,7 +125,7 @@ public class PenDrawView extends View {
     }
 
     /**
-     * 设置笔画宽度
+     * Set the stroke width
      *
      * @param weight
      */

@@ -180,6 +180,8 @@ public class RescribeConstants {
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";
     public static String START_FROM = "START_FROM";
+    public static final String START_FROM_NOTE = "start_from_note";
+    public static final String SELECTED_INDEX = "selected_index";
 
     public static final String[] SALUTATION = {"Mr. ", "Mrs. ", "Miss ", ""};
     public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};

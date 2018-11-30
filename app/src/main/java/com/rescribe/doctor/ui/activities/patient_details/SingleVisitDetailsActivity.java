@@ -37,6 +37,7 @@ import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.smartpen.PenInfoActivity;
 import com.rescribe.doctor.smartpen.ScanActivity;
 import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
+import com.rescribe.doctor.ui.activities.zoom_images.MultipleImageWithSwipeAndZoomActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -67,7 +68,7 @@ import static com.rescribe.doctor.ui.fragments.patient.patient_history_fragment.
  */
 
 
-public class SingleVisitDetailsActivity extends AppCompatActivity implements HelperResponse, SingleVisitAdapter.OnDeleteAttachments {
+public class SingleVisitDetailsActivity extends AppCompatActivity implements HelperResponse, SingleVisitAdapter.OnAttachmentsListener {
 
     private static final String PAIN_SCALE = "pain scale";
     @BindView(R.id.historyExpandableListView)
@@ -94,6 +95,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     @BindView(R.id.footer)
     LinearLayout footer;
+
+    List<VisitCommonData> notesList = new ArrayList<>();
 
     private boolean mIsDocUploaded = false;
     private int mLastExpandedPosition = -1;
@@ -355,6 +358,9 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                     }
                     patientHistoryList.get(i).setVitals(vitalSortedList);
                 }
+
+                if (patientHistoryList.get(i).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_NOTES))
+                    notesList = patientHistoryList.get(i).getCommonData();
             }
 
 
@@ -480,7 +486,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
 
     private void openSmartPen() {
         mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);
-        //绑定蓝牙笔服务
+        // Binding Bluetooth pen service
         RescribeApplication.getInstance().bindPenService(Keys.APP_PEN_SERVICE_NAME);
         isPenServiceReady(Keys.APP_PEN_SERVICE_NAME);
     }
@@ -503,6 +509,10 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
                 intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
                 intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
+                if (!notesList.isEmpty()) {
+                    intent.putExtra(RescribeConstants.START_FROM_NOTE, true);
+                    intent.putParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST, new ArrayList<VisitCommonData>(notesList));
+                }
                 startActivity(intent);
 
             } else {
@@ -523,6 +533,11 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                             intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
                             intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
                             intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
+
+                            if (!notesList.isEmpty()) {
+                                intent.putExtra(RescribeConstants.START_FROM_NOTE, true);
+                                intent.putParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST, new ArrayList<VisitCommonData>(notesList));
+                            }
                             startActivity(intent);
                         } /*else if (Keys.APP_USB_SERVICE_NAME.equals(svrName)) {
                         Intent intent = new Intent(mContext, PenInfoActivity.class);
@@ -570,6 +585,41 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             mSingleVisitDetailHelper.deleteSelectedAttachments(list, patientID);
         else if (caseName.contains(CHILD_TYPE_NOTES))
             mSingleVisitDetailHelper.deleteSelectedNotes(list);
+    }
+
+    @Override
+    public void onClickAttachment(VisitCommonData visitCommonData, List<VisitCommonData> visitCommonDatas, boolean isNote) {
+        // Show Image or WebView.
+        String tag = visitCommonData.getUrl();
+        String fileExtension = tag.substring(tag.lastIndexOf("."));
+
+        if (fileExtension.contains(".doc") || fileExtension.contains(".odt") || fileExtension.contains(".ppt") || fileExtension.contains(".odp") || fileExtension.contains(".xls") || fileExtension.contains(".ods") || fileExtension.contains(".pdf")) {
+            Intent intent = new Intent(mContext, WebViewActivity.class);
+            intent.putExtra(mContext.getString(R.string.title_activity_selected_docs), tag);
+            intent.putExtra(mContext.getString(R.string.file_extension), fileExtension);
+            startActivity(intent);
+        } else {
+            // do stuff here
+            //  Intent intent = new Intent(mContext, ZoomImageViewActivity.class);
+            Intent intent = new Intent(mContext, MultipleImageWithSwipeAndZoomActivity.class);
+            intent.putExtra(RescribeConstants.DOCUMENTS, tag);
+            intent.putExtra(RescribeConstants.IS_URL, true);
+
+            intent.putExtra(RescribeConstants.START_FROM_NOTE, isNote);
+            intent.putExtra(RescribeConstants.OPD_ID, opdID);
+            intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+            intent.putExtra(RescribeConstants.LOCATION_ID, "0");
+            intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
+            intent.putExtra(RescribeConstants.CLINIC_ID, "0");
+            intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+            intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+            intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+            intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
+            intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
+
+            intent.putParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST, new ArrayList<VisitCommonData>(visitCommonDatas));
+            startActivity(intent);
+        }
     }
 
     @Override

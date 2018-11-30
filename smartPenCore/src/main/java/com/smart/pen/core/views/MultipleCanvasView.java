@@ -53,10 +53,16 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
     private ArrayList<PhotoView> mPhotoList = new ArrayList<PhotoView>();
 
     private CanvasManageInterface mCanvasManageInterface;
+    private PenDrawViewCanvasListener mPenDrawViewCanvasListener;
 
     public MultipleCanvasView(Context context, CanvasManageInterface canvasManage) {
         super(context);
         this.mCanvasManageInterface = canvasManage;
+        try {
+            this.mPenDrawViewCanvasListener = (PenDrawViewCanvasListener) context;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
         initCanvasInfo();
     }
 
@@ -67,6 +73,13 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
+
+        try {
+            this.mPenDrawViewCanvasListener = (PenDrawViewCanvasListener) context;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+
         initCanvasInfo();
     }
 
@@ -77,6 +90,13 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
+
+        try {
+            this.mPenDrawViewCanvasListener = (PenDrawViewCanvasListener) context;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+
         initCanvasInfo();
     }
 
@@ -132,8 +152,9 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
 
     }
 
-    public void drawBitmap(Bitmap bitmap){
-        this.mPenDrawView.drawBitmap(bitmap);
+    public void drawBitmap(Bitmap bitmap) {
+        if (bitmap != null)
+            this.mPenDrawView.drawBitmap(bitmap);
     }
 
     /**
@@ -315,16 +336,22 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mIsEditPhoto) return false;
 
         int x = (int) event.getX();
         int y = (int) event.getY();
         boolean isRoute = (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN);
+
+        if (mPenDrawViewCanvasListener != null)
+            mPenDrawViewCanvasListener.onDraw(x, y, isRoute);
+
+        if (mIsEditPhoto) return false;
+
         if (mInsertShape != ShapeModel.None) {
             insertShape(x, y, isRoute);
         } else {
             drawLine(x, y, isRoute);
         }
+
         return true;
     }
 
@@ -488,5 +515,9 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
          * @param isRoute
          */
         void penRouteStatus(boolean isRoute);
+    }
+
+    public interface PenDrawViewCanvasListener {
+        void onDraw(int x, int y, boolean isRoute);
     }
 }

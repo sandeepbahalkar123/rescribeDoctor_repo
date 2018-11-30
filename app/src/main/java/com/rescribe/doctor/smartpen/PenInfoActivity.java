@@ -1,5 +1,7 @@
 package com.rescribe.doctor.smartpen;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -18,6 +20,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.ColorInt;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,9 +39,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.UploadStatus;
+import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.add_record_upload_Service.AddRecordService;
 import com.rescribe.doctor.singleton.Device;
@@ -71,14 +80,14 @@ import butterknife.OnClick;
 import static com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity.FILELIST;
 
 /**
- * 笔信息显示
+ * Pen information display
  *
  * @author Xiaoz
  * @date 2015年6月12日 下午3:34:58
  * <p>
  * Description
  */
-public class PenInfoActivity extends AppCompatActivity {
+public class PenInfoActivity extends AppCompatActivity implements MultipleCanvasView.PenDrawViewCanvasListener {
     public static final String TAG = PenInfoActivity.class.getSimpleName();
     //    public static final int REQUEST_SETTING_SIZE = 1000;
     private static final String RESCRIBE_NOTES = "/DrRescribe/Notes/";
@@ -127,9 +136,11 @@ public class PenInfoActivity extends AppCompatActivity {
 
     private int totalPage = 1;
     private int currentPage = 1;
+    private boolean isAnyEdited = false;
     private Menu menu;
 
     private ArrayList<Bitmap> bitmaps = new ArrayList<>();
+    private ArrayList<VisitCommonData> visitCommonDatas;
 
     private PenServiceReceiver mPenServiceReceiver;
     private PenService mPenService;
@@ -140,16 +151,16 @@ public class PenInfoActivity extends AppCompatActivity {
     private FrameLayout mLineWindow;
 
     /**
-     * 笔画布
+     * Stroke cloth
      **/
     private MultipleCanvasView mPenCanvasView;
 
-    //笔视图
+    // Pen view
     private PenView mPenView;
 
-    //当前设备屏幕宽度
+    // Current device screen width
     private int mDisplayWidth;
-    //屏幕高度
+    // Screen height
     private int mDisplayHeight;
     private Listeners.OnConnectStateListener onConnectStateListener = new Listeners.OnConnectStateListener() {
         @Override
@@ -161,7 +172,6 @@ public class PenInfoActivity extends AppCompatActivity {
                 case PEN_INIT_COMPLETE:
                     dismissProgressDialog();
                     Toast.makeText(PenInfoActivity.this, R.string.initialized, Toast.LENGTH_SHORT).show();
-                    initSceneType();
                     if (menu != null) {
                         MenuItem item = menu.findItem(R.id.action_disconnect);
                         if (item.getTitle().equals("Connect")) {
@@ -241,6 +251,16 @@ public class PenInfoActivity extends AppCompatActivity {
 
             // Drawing handwriting
             mPenCanvasView.drawLine(windowX, windowY - 30, point.isRoute);
+
+            // is Edit
+
+            if (point.isRoute) {
+                if (visitCommonDatas != null) {
+                    if (visitCommonDatas.size() > (currentPage - 1)) {
+                        visitCommonDatas.get((currentPage - 1)).setEdited(true);
+                    }
+                }
+            }
         }
     };
 
@@ -273,10 +293,11 @@ public class PenInfoActivity extends AppCompatActivity {
         mLineWindow.addView(mPenView);
 
         mPenService = RescribeApplication.getInstance().getPenService();
-        mPenService.setBroadcastEnabled(true);
+//        mPenService.setBroadcastEnabled(true);
         if (mPenService.checkDeviceConnect() == ConnectState.CONNECTED) {
             initSceneType();
         } else {
+            initSceneType();
             String address = getIntent().getStringExtra(Keys.KEY_DEVICE_ADDRESS);
             if (address != null && !address.isEmpty()) {
                 connectDevice(address);
@@ -316,14 +337,23 @@ public class PenInfoActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (isAnyOneEdited())
+            exitDialog("Do you want to save your changes?");
+        else
+            super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
-            case R.id.action_settings:
+            /*case R.id.action_settings:
                 initSceneType(true);
-                break;
+                break;*/
+
             case R.id.action_save:
                 mPenView.setVisibility(View.GONE);
 
@@ -334,8 +364,18 @@ public class PenInfoActivity extends AppCompatActivity {
 
                 for (int index = 0; index < bitmaps.size(); index++)
                     saveImage(index);
+
+                if (!isAnyEdited) {
+                    Toast.makeText(PenInfoActivity.this, "You haven't changed anything.", Toast.LENGTH_SHORT).show();
+                }
+
                 mPenView.setVisibility(View.VISIBLE);
                 break;
+
+            case R.id.action_clear_all:
+                clearAllPagesWarnDialog("Are you sure you want to clear all pages?");
+                break;
+
             case R.id.action_disconnect:
                 if (!item.getTitle().equals("Connect")) {
                     item.setTitle("Connect");
@@ -369,27 +409,59 @@ public class PenInfoActivity extends AppCompatActivity {
         return bitmap;
     }
 
-    private void saveImage(int index) {
-        Date now = new Date();
-        String time = String.valueOf(DateFormat.format("yyyy-MM-dd_hh:mm:ss", now)) + "_" + (index + 1);
-
-        try {
-            // image naming and path  to include sd card  appending name you choose for file
-            String mPath = Environment.getExternalStorageDirectory().toString() + RESCRIBE_NOTES;
-            File dirFilesFolder = new File(mPath);
-            if (!dirFilesFolder.exists()) {
-                if (dirFilesFolder.mkdirs()) {
-                    Log.i(TAG, mPath + " Directory Created");
+    private boolean isAnyOneEdited() {
+        boolean isAnyOneEdited = false;
+        for (int index = 0; index < bitmaps.size(); index++) {
+            boolean isEdited = true;
+            if (visitCommonDatas != null) {
+                if (visitCommonDatas.size() > index) {
+                    isEdited = visitCommonDatas.get(index).isEdited();
                 }
             }
-            mPath = mPath + time + ".jpg";
-            File imageFile = new File(mPath);
-            FileOutputStream outputStream = new FileOutputStream(imageFile);
-            int quality = 100;
-            bitmaps.get(index).compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
-            outputStream.flush();
-            outputStream.close();
-            //alertError("File saved to " + mPath);
+
+            if (isEdited) {
+                isAnyOneEdited = true;
+                break;
+            }
+        }
+        return isAnyOneEdited;
+    }
+
+    private void saveImage(int index) {
+        String fileId = "0";
+        String orderId = String.valueOf(index + 1);
+        boolean isEdited = true;
+        Date now = new Date();
+        String imageName = String.valueOf(DateFormat.format("yyyy-MM-dd_hh:mm:ss", now)) + "_" + (index + 1) + ".jpg";
+
+        if (visitCommonDatas != null) {
+            if (visitCommonDatas.size() > index) {
+                fileId = String.valueOf(visitCommonDatas.get(index).getId());
+                imageName = visitCommonDatas.get(index).getName() + ".jpg";
+                isEdited = visitCommonDatas.get(index).isEdited();
+            }
+        }
+
+        if (isEdited) {
+            isAnyEdited = true;
+
+            try {
+                // image naming and path  to include sd card  appending name you choose for file
+                String mPath = Environment.getExternalStorageDirectory().toString() + RESCRIBE_NOTES;
+                File dirFilesFolder = new File(mPath);
+                if (!dirFilesFolder.exists()) {
+                    if (dirFilesFolder.mkdirs()) {
+                        Log.i(TAG, mPath + " Directory Created");
+                    }
+                }
+                mPath = mPath + imageName;
+                File imageFile = new File(mPath);
+                FileOutputStream outputStream = new FileOutputStream(imageFile);
+                int quality = 100;
+                bitmaps.get(index).compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+                outputStream.flush();
+                outputStream.close();
+                //alertError("File saved to " + mPath);
 //            Intent intent = new Intent();
 //            intent.setAction(Intent.ACTION_VIEW);
 
@@ -406,15 +478,16 @@ public class PenInfoActivity extends AppCompatActivity {
 //            startActivity(intent);
 
 
-            uploadNote(mPath);
+                uploadNote(mPath, fileId, orderId);
 
-        } catch (Throwable e) {
-            // Several error may come out with file handling or DOM
-            e.printStackTrace();
+            } catch (Throwable e) {
+                // Several error may come out with file handling or DOM
+                e.printStackTrace();
+            }
         }
     }
 
-    private void uploadNote(String path) {
+    private void uploadNote(String path, String fileId, String orderId) {
 
         // get Params
 
@@ -469,8 +542,8 @@ public class PenInfoActivity extends AppCompatActivity {
         headers.put("aptid", String.valueOf(mAptId));
 
         // Added in 5 to 6 update
-        headers.put("fileid", "0");
-        headers.put("orderid", "1");
+        headers.put("fileid", fileId);
+        headers.put("orderid", orderId);
 
         UploadStatus uploadStatus = new UploadStatus(uploadId, visitDate, mOpdtime, "", path, RescribeConstants.NOTES, headers);
         uploadDataList.add(uploadStatus);
@@ -480,7 +553,8 @@ public class PenInfoActivity extends AppCompatActivity {
         else
             CommonMethods.showToast(this, getString(R.string.records_will_upload_when_internet_available));
 
-        onBackPressed();
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     public void uploadImage(ArrayList<UploadStatus> images) {
@@ -561,6 +635,45 @@ public class PenInfoActivity extends AppCompatActivity {
         mLineWindow.setLayoutParams(params);
         mPenCanvasView.setPenModel(MultipleCanvasView.PenModel.Pen);
         mPenCanvasView.setSize(sizeObj.windowWidth, sizeObj.windowHeight);
+
+        if (getIntent().getBooleanExtra(RescribeConstants.START_FROM_NOTE, false)) {
+            visitCommonDatas = getIntent().getParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST);
+            loadBitmap(0, visitCommonDatas);
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private void loadBitmap(final int index, final ArrayList<VisitCommonData> visitCommonDatas) {
+        if (visitCommonDatas.size() == index)
+            bitmapsLoaded();
+        else {
+            Glide.with(getApplicationContext())
+                    .asBitmap()
+                    .load(visitCommonDatas.get(index).getUrl())
+                    .listener(new RequestListener<Bitmap>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                            bitmaps.add(null);
+                            loadBitmap(index + 1, visitCommonDatas);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                            // resource is your loaded Bitmap
+                            bitmaps.add(resource);
+                            loadBitmap(index + 1, visitCommonDatas);
+                            return true;
+                        }
+                    }).submit();
+        }
+    }
+
+    private void bitmapsLoaded() {
+        totalPage = bitmaps.size();
+        currentPage = getIntent().getIntExtra(RescribeConstants.SELECTED_INDEX, 0) + 1;
+        pageCount.setText(currentPage + " of " + totalPage);
+        mPenCanvasView.drawBitmap(bitmaps.get(currentPage - 1));
     }
 
     /**
@@ -636,7 +749,7 @@ public class PenInfoActivity extends AppCompatActivity {
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                PenInfoActivity.this.finish();
+//                PenInfoActivity.this.finish();
             }
         });
         alert.setPositiveButton(buttonName, new DialogInterface.OnClickListener() {
@@ -653,6 +766,36 @@ public class PenInfoActivity extends AppCompatActivity {
                         alertError("IP address error.", "Retry");
                     }
                 }
+            }
+        });
+        alert.show();
+    }
+
+    private void exitDialog(String msg) {
+        Builder alert = new Builder(this, R.style.MyDialogTheme);
+        alert.setTitle("Confirm");
+        alert.setMessage(msg);
+        alert.setCancelable(false);
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mPenView.setVisibility(View.GONE);
+
+                if (bitmaps.size() >= currentPage)
+                    bitmaps.set(currentPage - 1, getBitmap());
+                else
+                    bitmaps.add(currentPage - 1, getBitmap());
+
+                for (int index = 0; index < bitmaps.size(); index++)
+                    saveImage(index);
+                mPenView.setVisibility(View.VISIBLE);
             }
         });
         alert.show();
@@ -692,7 +835,7 @@ public class PenInfoActivity extends AppCompatActivity {
                             }
                         }
                     }
-                }, 500);
+                }, 700);
             }
         } else {
             Log.i("PEN_ADDRESS", address);
@@ -729,7 +872,7 @@ public class PenInfoActivity extends AppCompatActivity {
                 break;
 
             case R.id.clearPageButton:
-                clearPageWarnDialog("Are you sure?");
+                clearPageWarnDialog("Are you sure you want to clear this page?");
                 break;
 
             case R.id.newPageButton:
@@ -790,7 +933,7 @@ public class PenInfoActivity extends AppCompatActivity {
 
     private void clearPageWarnDialog(String msg) {
         final Builder alert = new Builder(this, R.style.MyDialogTheme);
-        alert.setTitle("Warning");
+        alert.setTitle("Confirm");
         alert.setMessage(msg);
         alert.setCancelable(false);
         alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -804,6 +947,38 @@ public class PenInfoActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 mPenCanvasView.cleanAll();
+                if (visitCommonDatas != null) {
+                    if (visitCommonDatas.size() > (currentPage - 1)) {
+                        visitCommonDatas.get((currentPage - 1)).setEdited(true);
+                    }
+                }
+            }
+        });
+        alert.show();
+    }
+
+    private void clearAllPagesWarnDialog(String msg) {
+        final Builder alert = new Builder(this, R.style.MyDialogTheme);
+        alert.setTitle("Confirm");
+        alert.setMessage(msg);
+        alert.setCancelable(false);
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (visitCommonDatas != null)
+                    visitCommonDatas.clear();
+                dialog.dismiss();
+                bitmaps.clear();
+                mPenCanvasView.cleanAll();
+                totalPage = 1;
+                currentPage = 1;
+                pageCount.setText(currentPage + " of " + totalPage);
             }
         });
         alert.show();
@@ -887,6 +1062,16 @@ public class PenInfoActivity extends AppCompatActivity {
                         }
                     }
                 }).build().show(getSupportFragmentManager(), "dialog_demo_1");
+    }
+
+    @Override
+    public void onDraw(int x, int y, boolean isRoute) {
+//        Log.i("FINGER_DRAW", x + " " + y + " " + isRoute);
+        if (visitCommonDatas != null) {
+            if (visitCommonDatas.size() > (currentPage - 1)) {
+                visitCommonDatas.get((currentPage - 1)).setEdited(true);
+            }
+        }
     }
 
 

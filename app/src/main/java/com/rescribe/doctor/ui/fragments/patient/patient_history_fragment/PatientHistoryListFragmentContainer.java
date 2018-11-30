@@ -227,7 +227,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     private void openSmartPen(String dateSelected) {
         mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);
-        //绑定蓝牙笔服务
+        // Binding Bluetooth pen service
         RescribeApplication.getInstance().bindPenService(Keys.APP_PEN_SERVICE_NAME);
         isPenServiceReady(Keys.APP_PEN_SERVICE_NAME, dateSelected);
     }

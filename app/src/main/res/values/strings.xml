@@ -375,5 +375,6 @@
     <string name="action_disconnect">Disconnect</string>
     <string name="initializing">Initializing</string>
     <string name="initialized">Initialized</string>
+    <string name="action_clear_all">Clear All Pages</string>
 
 </resources>
