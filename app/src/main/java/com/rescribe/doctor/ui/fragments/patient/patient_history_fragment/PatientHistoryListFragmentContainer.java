@@ -1,10 +1,13 @@
 package com.rescribe.doctor.ui.fragments.patient.patient_history_fragment;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -50,12 +54,13 @@ import com.rescribe.doctor.model.patient.patient_history.YearsMonthsData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.smartpen.PenInfoActivity;
-import com.rescribe.doctor.smartpen.ScanActivity;
 import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+import com.smart.pen.core.common.Listeners;
+import com.smart.pen.core.model.DeviceObject;
 import com.smart.pen.core.services.PenService;
 import com.smart.pen.core.symbol.ConnectState;
 import com.smart.pen.core.symbol.Keys;
@@ -66,6 +71,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -75,6 +81,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.rescribe.doctor.smartpen.PenInfoActivity.MY_PERMISSIONS_REQUEST_CODE;
 import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
@@ -211,15 +218,14 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             }
             break;
             case R.id.addNoteButton: {
-                Calendar now = Calendar.getInstance();
-                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                        this,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.setAccentColor(getResources().getColor(R.color.tagColor));
-                datePickerDialog.setMaxDate(Calendar.getInstance());
-                datePickerDialog.show(getActivity().getSupportFragmentManager(), "AddNotes");
+                requestPermissions(
+                        new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        },
+                        MY_PERMISSIONS_REQUEST_CODE
+                );
             }
             break;
         }
@@ -258,27 +264,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        dismissProgressDialog();
-                        if (Keys.APP_PEN_SERVICE_NAME.equals(svrName)) {
-
-                            Intent intent = new Intent(mContext, ScanActivity.class);
-                            intent.putExtra(RescribeConstants.OPD_ID, "0");
-                            intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-                            intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
-                            intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
-                            intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
-                            intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
-                            intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
-                            intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
-                            intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
-                            intent.putExtra(RescribeConstants.OPD_TIME, "");
-                            getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
-
-                        } /*else if (Keys.APP_USB_SERVICE_NAME.equals(svrName)) {
-                        Intent intent = new Intent(mContext, PenInfoActivity.class);
-                        intent.putExtra(Keys.KEY_VALUE, svrName);
-                        startActivity(intent);
-                    }*/
+                        // Scan Bluetooth and connect service
+                        scanBluetoothAndConnect(dateSelected);
                     }
                 }, 500);
             }
@@ -292,6 +279,68 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         }
     }
 
+    private void scanBluetoothAndConnect(final String dateSelected) {
+        final PenService service = RescribeApplication.getInstance().getPenService();
+        if (service != null) {
+            service.scanDevice(new Listeners.OnScanDeviceListener() {
+                @Override
+                public void find(DeviceObject device) {
+
+                    Intent intent = new Intent(mContext, PenInfoActivity.class);
+                    intent.putExtra(RescribeConstants.OPD_ID, "0");
+                    intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+                    intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+                    intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+                    intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
+                    intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
+                    intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+                    intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+                    intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
+                    intent.putExtra(RescribeConstants.OPD_TIME, "");
+                    intent.putExtra(Keys.KEY_DEVICE_ADDRESS, device.address);
+
+                    getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
+
+                    // Stop searching
+                    PenService service = RescribeApplication.getInstance().getPenService();
+                    if (service != null) {
+                        service.stopScanDevice();
+                    }
+
+                    dismissProgressDialog();
+                }
+
+                @Override
+                public void complete(HashMap<String, DeviceObject> list) {
+                    Log.i("DEVICES", list.toString());
+                    dismissProgressDialog();
+                    if (list.isEmpty())
+                        showRetryDialog(dateSelected);
+                }
+            });
+        }
+    }
+
+    private void showRetryDialog(final String dateSelected) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
+        alert.setTitle("Info");
+        alert.setMessage("Device not found");
+        alert.setCancelable(false);
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.setPositiveButton("Scan Again", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);
+                scanBluetoothAndConnect(dateSelected);
+            }
+        });
+        alert.show();
+    }
 
     /**
      * 释放progressDialog
@@ -403,6 +452,35 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear + 1, dayOfMonth, fromString);
             } else {
                 showDialogToSelectLocation(getMyDoctorLocations(mDoctorLocationModel, mHospitalId), year, monthOfYear + 1, dayOfMonth, fromString);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CODE: {
+                // When request is cancelled, the results array are empty
+                if ((grantResults.length <= 0) ||
+                        (grantResults[0]
+                                + grantResults[1]
+                                + grantResults[2] != PackageManager.PERMISSION_GRANTED)) {
+                    // Permissions are denied
+                    Toast.makeText(getActivity(), "Permissions denied.", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    Calendar now = Calendar.getInstance();
+                    DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                            this,
+                            now.get(Calendar.YEAR),
+                            now.get(Calendar.MONTH),
+                            now.get(Calendar.DAY_OF_MONTH));
+                    datePickerDialog.setAccentColor(getResources().getColor(R.color.tagColor));
+                    datePickerDialog.setMaxDate(Calendar.getInstance());
+                    datePickerDialog.show(getActivity().getSupportFragmentManager(), "AddNotes");
+                    // Permissions are granted
+//                    Toast.makeText(this, "Permissions granted.", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

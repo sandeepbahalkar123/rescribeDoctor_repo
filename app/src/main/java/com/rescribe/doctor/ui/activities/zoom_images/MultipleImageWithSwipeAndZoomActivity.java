@@ -1,22 +1,27 @@
 package com.rescribe.doctor.ui.activities.zoom_images;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,19 +31,23 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.smartpen.PenInfoActivity;
-import com.rescribe.doctor.smartpen.ScanActivity;
 import com.rescribe.doctor.ui.customesViews.zoomview.ZoomageView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+import com.smart.pen.core.common.Listeners;
+import com.smart.pen.core.model.DeviceObject;
 import com.smart.pen.core.services.PenService;
 import com.smart.pen.core.symbol.ConnectState;
 import com.smart.pen.core.symbol.Keys;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.rescribe.doctor.smartpen.PenInfoActivity.MY_PERMISSIONS_REQUEST_CODE;
 
 public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
 
@@ -113,13 +122,42 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
                 onBackPressed();
                 break;
             case R.id.editButton:
-                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                if (!mBluetoothAdapter.isEnabled()) {
-                    if (!mBluetoothAdapter.enable())
-                        Toast.makeText(this, "Please Turn on bluetooth.", Toast.LENGTH_SHORT).show();
-                }
-                openSmartPen();
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        },
+                        MY_PERMISSIONS_REQUEST_CODE
+                );
                 break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CODE: {
+                // When request is cancelled, the results array are empty
+                if ((grantResults.length <= 0) ||
+                        (grantResults[0]
+                                + grantResults[1]
+                                + grantResults[2] != PackageManager.PERMISSION_GRANTED)) {
+                    // Permissions are denied
+                    Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                    if (!mBluetoothAdapter.isEnabled()) {
+                        if (!mBluetoothAdapter.enable())
+                            Toast.makeText(this, "Please Turn on bluetooth.", Toast.LENGTH_SHORT).show();
+                    }
+                    openSmartPen();
+                    // Permissions are granted
+//                    Toast.makeText(this, "Permissions granted.", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
@@ -145,17 +183,8 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        dismissProgressDialog();
-                        if (Keys.APP_PEN_SERVICE_NAME.equals(svrName)) {
-                            Intent intent = getIntent();
-                            intent.setClass(mContext, ScanActivity.class);
-                            intent.putExtra(RescribeConstants.SELECTED_INDEX, pager.getCurrentItem());
-                            startActivityForResult(intent, 323);
-                        } /*else if (Keys.APP_USB_SERVICE_NAME.equals(svrName)) {
-                        Intent intent = new Intent(mContext, PenInfoActivity.class);
-                        intent.putExtra(Keys.KEY_VALUE, svrName);
-                        startActivity(intent);
-                    }*/
+                        // Scan Bluetooth and connect service
+                        scanBluetoothAndConnect();
                     }
                 }, 500);
             }
@@ -169,6 +198,62 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
         }
     }
 
+    private void scanBluetoothAndConnect() {
+        PenService service = RescribeApplication.getInstance().getPenService();
+        if (service != null) {
+            service.scanDevice(new Listeners.OnScanDeviceListener() {
+                @Override
+                public void find(DeviceObject device) {
+
+                    Intent intent = getIntent();
+                    intent.setClass(mContext, PenInfoActivity.class);
+                    intent.putExtra(RescribeConstants.SELECTED_INDEX, pager.getCurrentItem());
+                    intent.putExtra(Keys.KEY_DEVICE_ADDRESS, device.address);
+
+                    startActivityForResult(intent, 323);
+
+                    // Stop searching
+                    PenService service = RescribeApplication.getInstance().getPenService();
+                    if (service != null) {
+                        service.stopScanDevice();
+                    }
+
+                    dismissProgressDialog();
+                }
+
+                @Override
+                public void complete(HashMap<String, DeviceObject> list) {
+                    Log.i("DEVICES", list.toString());
+                    dismissProgressDialog();
+                    if (list.isEmpty())
+                        showRetryDialog();
+                }
+            });
+        }
+    }
+
+    private void showRetryDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
+        alert.setTitle("Info");
+        alert.setMessage("Device not found");
+        alert.setCancelable(false);
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.setPositiveButton("Scan Again", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);
+                scanBluetoothAndConnect();
+            }
+        });
+        alert.show();
+    }
+
+
     /**
      * 释放progressDialog
      **/
@@ -178,6 +263,16 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
                 mProgressDialog.dismiss();
 
             mProgressDialog = null;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 323) {
+                finish();
+            }
         }
     }
 
@@ -231,16 +326,6 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((ZoomageView) object);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK){
-            if (requestCode == 323){
-                finish();
-            }
         }
     }
 }

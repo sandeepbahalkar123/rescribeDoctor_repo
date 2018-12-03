@@ -181,7 +181,7 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
 
         } else {
             holder.payableAmountTextView.setText(" Rs." + patientObject.getOutStandingAmount() + "/-");
-            holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
+            holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.red));
 
         }
         holder.chatImageView.setVisibility(View.GONE);

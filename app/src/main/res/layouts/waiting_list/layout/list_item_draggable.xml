@@ -59,7 +59,7 @@
                 android:background="@color/white"
                 android:text="@string/delete"
                 android:textAllCaps="false"
-                android:textColor="@color/Red"
+                android:textColor="@color/red"
                 android:textSize="@dimen/sp12" />
 
             <View

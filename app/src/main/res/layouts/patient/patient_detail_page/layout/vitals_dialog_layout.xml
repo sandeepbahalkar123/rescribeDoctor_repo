@@ -160,7 +160,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingLeft="@dimen/dp8"
-                        android:textColor="@color/Red"
+                        android:textColor="@color/red"
                         android:textSize="14sp"
                         app:customFont="@string/roboto_medium" />
                 </LinearLayout>
@@ -323,7 +323,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingLeft="@dimen/dp8"
-                        android:textColor="@color/Red"
+                        android:textColor="@color/red"
                         android:textSize="14sp"
                         app:customFont="@string/roboto_medium" />
                 </LinearLayout>

@@ -112,6 +112,7 @@
                     android:layout_marginEnd="@dimen/dp3"
                     android:adjustViewBounds="true"
                     android:padding="@dimen/dp5"
+                    android:visibility="gone"
                     android:src="@drawable/sp_opacity"
                     android:tooltipText="Opacity" />
 

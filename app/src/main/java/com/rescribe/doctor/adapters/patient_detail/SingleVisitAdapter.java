@@ -297,7 +297,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
                 noOfVitals.setText(mListDataHeader.get(groupPosition).getVitals().get(mPosition).getUnitValue());
                 if (mListDataHeader.get(groupPosition).getVitals().get(mPosition).getCategory().equalsIgnoreCase(mContext.getResources().getString(R.string.severeRange))) {
-                    noOfVitals.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
+                    noOfVitals.setTextColor(ContextCompat.getColor(mContext, R.color.red));
                 } else if (mListDataHeader.get(groupPosition).getVitals().get(mPosition).getCategory().equalsIgnoreCase(mContext.getResources().getString(R.string.normalRange))) {
                     noOfVitals.setTextColor(ContextCompat.getColor(mContext, R.color.range_green));
                 } else if (mListDataHeader.get(groupPosition).getVitals().get(mPosition).getCategory().equalsIgnoreCase(mContext.getResources().getString(R.string.moderateRange))) {
@@ -898,7 +898,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 categoryBpMin = categoryForBp.length == 2 ? categoryForBp[1] : "";
             }
             if (categoryForBpMax.equalsIgnoreCase(context.getString(R.string.severeRange))) {
-                noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.Red));
+                noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.red));
             } else if (categoryForBpMax.equalsIgnoreCase(context.getString(R.string.normalRange))) {
                 noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.range_green));
             } else if (categoryForBpMax.equalsIgnoreCase(context.getString(R.string.moderateRange))) {
@@ -908,7 +908,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             }
 
             if (categoryBpMin.equalsIgnoreCase(context.getString(R.string.severeRange))) {
-                noOfVitalsTypeDialog.setTextColor(ContextCompat.getColor(context, R.color.Red));
+                noOfVitalsTypeDialog.setTextColor(ContextCompat.getColor(context, R.color.red));
             } else if (categoryBpMin.equalsIgnoreCase(context.getString(R.string.normalRange))) {
                 noOfVitalsTypeDialog.setTextColor(ContextCompat.getColor(context, R.color.range_green));
             } else if (categoryBpMin.equalsIgnoreCase(context.getString(R.string.moderateRange))) {
@@ -968,7 +968,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             vitalName.setText(vitalDisplayName);
             //---*************** Show vaital_display_name instead of unitName : END
             if (category.equalsIgnoreCase(context.getString(R.string.severeRange))) {
-                noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.Red));
+                noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.red));
             } else if (category.equalsIgnoreCase(context.getString(R.string.normalRange))) {
                 noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.range_green));
             } else if (category.equalsIgnoreCase(context.getString(R.string.moderateRange))) {

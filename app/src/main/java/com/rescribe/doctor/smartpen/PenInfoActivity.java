@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
@@ -91,6 +92,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
     public static final String TAG = PenInfoActivity.class.getSimpleName();
     //    public static final int REQUEST_SETTING_SIZE = 1000;
     private static final String RESCRIBE_NOTES = "/DrRescribe/Notes/";
+    public static final int MY_PERMISSIONS_REQUEST_CODE = 1212;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -693,7 +695,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         if (sceneType == SceneType.NOTHING || isShow) {
             final String[] menus = new String[]{"A4 (portrait)", "A4 (horizontal)", "A5 (portrait)", "A5 (horizontal)"/*, "Customize"*/};
 
-            Builder alert = new Builder(this, R.style.AlertDialogTheme);
+            AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
             alert.setTitle(R.string.select_please);
             alert.setItems(menus, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
@@ -742,7 +744,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
     }
 
     private void alertError(String msg, String buttonName) {
-        Builder alert = new Builder(this, R.style.MyDialogTheme);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.MyDialogTheme);
         alert.setTitle("Warning");
         alert.setMessage(msg);
         alert.setCancelable(false);
@@ -772,7 +774,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
     }
 
     private void exitDialog(String msg) {
-        Builder alert = new Builder(this, R.style.MyDialogTheme);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.MyDialogTheme);
         alert.setTitle("Confirm");
         alert.setMessage(msg);
         alert.setCancelable(false);
@@ -932,7 +934,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
     }
 
     private void clearPageWarnDialog(String msg) {
-        final Builder alert = new Builder(this, R.style.MyDialogTheme);
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.MyDialogTheme);
         alert.setTitle("Confirm");
         alert.setMessage(msg);
         alert.setCancelable(false);
@@ -958,7 +960,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
     }
 
     private void clearAllPagesWarnDialog(String msg) {
-        final Builder alert = new Builder(this, R.style.MyDialogTheme);
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.MyDialogTheme);
         alert.setTitle("Confirm");
         alert.setMessage(msg);
         alert.setCancelable(false);
