@@ -2,7 +2,6 @@ package com.rescribe.doctor.smartpen;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -16,6 +15,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -25,16 +25,22 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -45,10 +51,12 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.philliphsu.bottomsheetpickers.date.DatePickerDialog;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.UploadStatus;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
+import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.services.add_record_upload_Service.AddRecordService;
 import com.rescribe.doctor.singleton.Device;
@@ -71,6 +79,7 @@ import com.thebluealliance.spectrum.SpectrumDialog;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -88,38 +97,40 @@ import static com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActiv
  * <p>
  * Description
  */
-public class PenInfoActivity extends AppCompatActivity implements MultipleCanvasView.PenDrawViewCanvasListener {
+public class PenInfoActivity extends AppCompatActivity implements MultipleCanvasView.PenDrawViewCanvasListener, DatePickerDialog.OnDateSetListener {
     public static final String TAG = PenInfoActivity.class.getSimpleName();
+    public static final int MY_PERMISSIONS_REQUEST_CODE = 1212;
     //    public static final int REQUEST_SETTING_SIZE = 1000;
     private static final String RESCRIBE_NOTES = "/DrRescribe/Notes/";
-    public static final int MY_PERMISSIONS_REQUEST_CODE = 1212;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.undoButton)
     ImageView undoButton;
     @BindView(R.id.reduButton)
     ImageView reduButton;
-    @BindView(R.id.eraserSizeButton)
-    ImageView eraserSizeButton;
     @BindView(R.id.penSizeButton)
     ImageView penSizeButton;
-    @BindView(R.id.opacityButton)
-    ImageView opacityButton;
     @BindView(R.id.penColorButton)
     ImageView penColorButton;
-
     @BindView(R.id.clearPageButton)
     ImageView clearPageButton;
-
+    @BindView(R.id.locationButton)
+    ImageView locationButton;
+    @BindView(R.id.calenderButton)
+    ImageView calenderButton;
     @BindView(R.id.newPageButton)
     ImageView newPageButton;
     @BindView(R.id.preButton)
     ImageView preButton;
     @BindView(R.id.pageCount)
     TextView pageCount;
+
+    @BindView(R.id.saveButton)
+    Button saveButton;
+
     @BindView(R.id.nextButton)
     ImageView nextButton;
+    private Context mContext;
 
     /*@BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -135,13 +146,12 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
     LinearLayout imageButtonL;
     @BindView(R.id.clipArtButtonL)
     LinearLayout clipArtButtonL;*/
-
     private int totalPage = 1;
     private int currentPage = 1;
     private boolean isAnyEdited = false;
     private Menu menu;
 
-    private ArrayList<Bitmap> bitmaps = new ArrayList<>();
+    private ArrayList<BitmapProps> bitmaps = new ArrayList<>();
     private ArrayList<VisitCommonData> visitCommonDatas;
 
     private PenServiceReceiver mPenServiceReceiver;
@@ -191,7 +201,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                     break;
                 case SERVICES_FAIL:
                     dismissProgressDialog();
-                    alertError("The pen discovery failed, You can restart pen device bluetooth and connect again.", "Retry");
+                    alertError("The pen discovery failed, You can restart pen bluetooth and connect again.", "Retry");
                     if (menu != null) {
                         MenuItem item = menu.findItem(R.id.action_disconnect);
                         if (!item.getTitle().equals("Connect")) {
@@ -207,7 +217,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                             item.setTitle("Connect");
                         }
                     }
-                    alertError("The pen connection failure, You can restart pen device bluetooth and connect again.", "Retry");
+                    alertError("The pen connection failure, You can restart pen bluetooth and connect again.", "Retry");
                     break;
                 case DISCONNECTED:
                     dismissProgressDialog();
@@ -230,14 +240,32 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
             }
         }
     };
-    private Listeners.OnPointChangeListener onPointChangeListener = new Listeners.OnPointChangeListener() {
-
+    private ArrayList<DoctorLocationModel> mPatientListsOriginal;
+    private String mLocationId;
+    private int mHospitalId;
+    private String mHospitalPatId;
+    private String patientId;
+    private String mOpdtime;
+    private String opdId;
+    private String visitDate;
+    private int mAptId;
+    private int docId;
+    private boolean penButtonFlagOld;
+    private final Listeners.OnPointChangeListener onPointChangeListener = new Listeners.OnPointChangeListener() {
         @Override
         public void change(PointObject point) {
 
             if (point.battery == BatteryState.LOW) {
                 Toast.makeText(PenInfoActivity.this, R.string.battery_low, Toast.LENGTH_LONG).show();
             }
+
+
+            if (point.isSw1) {
+                if (penButtonFlagOld)
+                    penButtonClicked();
+                penButtonFlagOld = false;
+            } else
+                penButtonFlagOld = true;
 
             //Get the display window scaling coordinates
             int windowX = point.getSceneX(mPenCanvasView.getWindowWidth());
@@ -255,16 +283,27 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
             mPenCanvasView.drawLine(windowX, windowY - 30, point.isRoute);
 
             // is Edit
-
             if (point.isRoute) {
-                if (visitCommonDatas != null) {
-                    if (visitCommonDatas.size() > (currentPage - 1)) {
-                        visitCommonDatas.get((currentPage - 1)).setEdited(true);
-                    }
-                }
+                if (bitmaps.size() >= currentPage)
+                    bitmaps.get((currentPage - 1)).setEdited(true);
+                else bitmaps.add(new BitmapProps(null, true));
+
             }
         }
     };
+
+    private void penButtonClicked() {
+        Log.i("CLICKED", "button clicked");
+
+        if (bitmaps.size() >= currentPage)
+            bitmaps.set(currentPage - 1, new BitmapProps(getBitmap(), bitmaps.get(currentPage - 1).isEdited()));
+        else
+            bitmaps.add(currentPage - 1, new BitmapProps(getBitmap(), false));
+        mPenCanvasView.cleanAll();
+        totalPage++;
+        currentPage = totalPage;
+        pageCount.setText(currentPage + " of " + totalPage);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,11 +311,39 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.content_info);
         ButterKnife.bind(this);
+        mContext = this;
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle(getResources().getText(R.string.draw_activity));
+        getSupportActionBar().setSubtitle("");
+
+        getIntentParams();
+
+        ArrayList<DoctorLocationModel> mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
+        mPatientListsOriginal = CommonMethods.getMyDoctorLocations(mDoctorLocationModel, mHospitalId);
+
+        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, this).equals(""))
+            mLocationId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, this);
+
+
+        for (int index = 0; index < mPatientListsOriginal.size(); index++) {
+            final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
+            if (mLocationId != null) {
+                if (mLocationId.equals(String.valueOf(clinicList.getLocationId()))) {
+                    getSupportActionBar().setSubtitle(clinicList.getClinicName() + ", " + clinicList.getAddress());
+                    mHospitalId = clinicList.getClinicId();
+                }
+            }
+        }
+
+        if (getSupportActionBar().getSubtitle().length() == 0) {
+            DoctorLocationModel clinicList = mPatientListsOriginal.get(0);
+            getSupportActionBar().setSubtitle(clinicList.getClinicName() + ", " + clinicList.getAddress());
+            mHospitalId = clinicList.getClinicId();
+            mLocationId = String.valueOf(clinicList.getLocationId());
+            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, mLocationId, mContext);
+        }
 
         pageCount.setText(currentPage + " of " + totalPage);
 
@@ -290,6 +357,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         mLineFrame = (RelativeLayout) findViewById(R.id.lineFrame);
         mLineWindow = (FrameLayout) findViewById(R.id.lineWindow);
         mPenCanvasView = (MultipleCanvasView) findViewById(R.id.penCanvasView);
+        mPenCanvasView.setFingerTouch(false);
         // Add pen view
         mPenView = new PenView(this);
         mLineWindow.addView(mPenView);
@@ -312,6 +380,34 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                 }
             }
         }
+    }
+
+    private void getIntentParams() {
+        mHospitalPatId = getIntent().getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
+        mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);
+        patientId = getIntent().getStringExtra(RescribeConstants.PATIENT_ID);
+        // String patientName = getIntent().getStringExtra(RescribeConstants.PATIENT_NAME);
+        // String patientInfo = getIntent().getStringExtra(RescribeConstants.PATIENT_INFO);
+        mOpdtime = getIntent().getStringExtra(RescribeConstants.OPD_TIME);
+        opdId = getIntent().getStringExtra(RescribeConstants.OPD_ID);
+        visitDate = getIntent().getStringExtra(RescribeConstants.VISIT_DATE);
+
+        if (visitDate != null) {
+            Date date = CommonMethods.convertStringToDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            String toDisplay = getResources().getText(R.string.draw_activity) + " (" + cal.get(Calendar.DAY_OF_MONTH) + "<sup>" + CommonMethods.getSuffixForNumber(cal.get(Calendar.DAY_OF_MONTH)) + "</sup> " + CommonMethods.getFormattedDate(String.valueOf(cal.get(Calendar.MONTH) + 1), "MM", "MMM") + "' " + cal.get(Calendar.YEAR) + ")";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                getSupportActionBar().setTitle(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                getSupportActionBar().setTitle(Html.fromHtml(toDisplay));
+            }
+        }
+
+        mAptId = getIntent().getIntExtra(RescribeConstants.APPOINTMENT_ID, 0);
+        mHospitalId = getIntent().getIntExtra(RescribeConstants.CLINIC_ID, 0);
+
+        docId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this));
     }
 
     public int getToolBarHeight() {
@@ -341,7 +437,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
     @Override
     public void onBackPressed() {
         if (isAnyOneEdited())
-            exitDialog("Do you want to save your changes?");
+            exitDialog("Do you want to save your changes?", true, null);
         else
             super.onBackPressed();
     }
@@ -354,7 +450,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                 break;
             /*case R.id.action_settings:
                 initSceneType(true);
-                break;*/
+                break;
 
             case R.id.action_save:
                 mPenView.setVisibility(View.GONE);
@@ -373,6 +469,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
 
                 mPenView.setVisibility(View.VISIBLE);
                 break;
+                */
 
             case R.id.action_clear_all:
                 clearAllPagesWarnDialog("Are you sure you want to clear all pages?");
@@ -414,14 +511,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
     private boolean isAnyOneEdited() {
         boolean isAnyOneEdited = false;
         for (int index = 0; index < bitmaps.size(); index++) {
-            boolean isEdited = true;
-            if (visitCommonDatas != null) {
-                if (visitCommonDatas.size() > index) {
-                    isEdited = visitCommonDatas.get(index).isEdited();
-                }
-            }
-
-            if (isEdited) {
+            if (bitmaps.get(index).isEdited()) {
                 isAnyOneEdited = true;
                 break;
             }
@@ -429,7 +519,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         return isAnyOneEdited;
     }
 
-    private void saveImage(int index) {
+    private void saveImage(int index, boolean isFinish) {
         String fileId = "0";
         String orderId = String.valueOf(index + 1);
         boolean isEdited = true;
@@ -440,7 +530,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
             if (visitCommonDatas.size() > index) {
                 fileId = String.valueOf(visitCommonDatas.get(index).getId());
                 imageName = visitCommonDatas.get(index).getName() + ".jpg";
-                isEdited = visitCommonDatas.get(index).isEdited();
+                isEdited = bitmaps.get(index).isEdited();
             }
         }
 
@@ -460,7 +550,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                 File imageFile = new File(mPath);
                 FileOutputStream outputStream = new FileOutputStream(imageFile);
                 int quality = 100;
-                bitmaps.get(index).compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+                bitmaps.get(index).getBitmap().compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
                 outputStream.flush();
                 outputStream.close();
                 //alertError("File saved to " + mPath);
@@ -480,7 +570,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
 //            startActivity(intent);
 
 
-                uploadNote(mPath, fileId, orderId);
+                uploadNote(mPath, fileId, orderId, isFinish);
 
             } catch (Throwable e) {
                 // Several error may come out with file handling or DOM
@@ -489,24 +579,9 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         }
     }
 
-    private void uploadNote(String path, String fileId, String orderId) {
+    private void uploadNote(String path, String fileId, String orderId, boolean isFinish) {
 
         // get Params
-
-        String mHospitalPatId = getIntent().getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
-        String mLocationId = getIntent().getStringExtra(RescribeConstants.LOCATION_ID);
-        String patientId = getIntent().getStringExtra(RescribeConstants.PATIENT_ID);
-        int mAptId = getIntent().getIntExtra(RescribeConstants.APPOINTMENT_ID, 0);
-        int mHospitalId = getIntent().getIntExtra(RescribeConstants.CLINIC_ID, 0);
-
-//        String patientName = getIntent().getStringExtra(RescribeConstants.PATIENT_NAME);
-//        String patientInfo = getIntent().getStringExtra(RescribeConstants.PATIENT_INFO);
-        String mOpdtime = getIntent().getStringExtra(RescribeConstants.OPD_TIME);
-        String opdId = getIntent().getStringExtra(RescribeConstants.OPD_ID);
-
-        String visitDate = getIntent().getStringExtra(RescribeConstants.VISIT_DATE);
-
-        int docId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this));
 
         AppDBHelper appDBHelper = new AppDBHelper(this);
         Device device = Device.getInstance(this);
@@ -555,8 +630,10 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         else
             CommonMethods.showToast(this, getString(R.string.records_will_upload_when_internet_available));
 
-        setResult(Activity.RESULT_OK);
-        finish();
+        if (isFinish) {
+            setResult(Activity.RESULT_OK);
+            finish();
+        }
     }
 
     public void uploadImage(ArrayList<UploadStatus> images) {
@@ -663,7 +740,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                         @Override
                         public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
                             // resource is your loaded Bitmap
-                            bitmaps.add(resource);
+                            bitmaps.add(new BitmapProps(resource, false));
                             loadBitmap(index + 1, visitCommonDatas);
                             return true;
                         }
@@ -675,7 +752,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         totalPage = bitmaps.size();
         currentPage = getIntent().getIntExtra(RescribeConstants.SELECTED_INDEX, 0) + 1;
         pageCount.setText(currentPage + " of " + totalPage);
-        mPenCanvasView.drawBitmap(bitmaps.get(currentPage - 1));
+        mPenCanvasView.drawBitmap(bitmaps.get(currentPage - 1).getBitmap());
     }
 
     /**
@@ -752,6 +829,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
             @Override
             public void onClick(DialogInterface dialog, int which) {
 //                PenInfoActivity.this.finish();
+                dialog.dismiss();
             }
         });
         alert.setPositiveButton(buttonName, new DialogInterface.OnClickListener() {
@@ -773,7 +851,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         alert.show();
     }
 
-    private void exitDialog(String msg) {
+    private void exitDialog(String msg, final boolean isFinish, final String date) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this, R.style.MyDialogTheme);
         alert.setTitle("Confirm");
         alert.setMessage(msg);
@@ -782,7 +860,19 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                finish();
+                if (isFinish)
+                    finish();
+                else {
+                    if (visitCommonDatas != null)
+                        visitCommonDatas.clear();
+                    bitmaps.clear();
+                    mPenCanvasView.cleanAll();
+                    totalPage = 1;
+                    currentPage = 1;
+                    pageCount.setText(currentPage + " of " + totalPage);
+
+                    visitDate = date;
+                }
             }
         });
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -791,13 +881,26 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                 mPenView.setVisibility(View.GONE);
 
                 if (bitmaps.size() >= currentPage)
-                    bitmaps.set(currentPage - 1, getBitmap());
+                    bitmaps.set(currentPage - 1, new BitmapProps(getBitmap(), bitmaps.get(currentPage - 1).isEdited()));
                 else
-                    bitmaps.add(currentPage - 1, getBitmap());
+                    bitmaps.add(currentPage - 1, new BitmapProps(getBitmap(), false));
 
                 for (int index = 0; index < bitmaps.size(); index++)
-                    saveImage(index);
+                    saveImage(index, isFinish);
                 mPenView.setVisibility(View.VISIBLE);
+
+                ////////////////////////////////
+
+                if (visitCommonDatas != null)
+                    visitCommonDatas.clear();
+                bitmaps.clear();
+                mPenCanvasView.cleanAll();
+                totalPage = 1;
+                currentPage = 1;
+                pageCount.setText(currentPage + " of " + totalPage);
+
+                if (!isFinish)
+                    visitDate = date;
             }
         });
         alert.show();
@@ -833,7 +936,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                             ConnectState state = ((SmartPenService) service).connectDevice(onConnectStateListener, address);
                             if (state != ConnectState.CONNECTING) {
                                 dismissProgressDialog();
-                                alertError("The pen connection failure, You can restart pen device bluetooth and connect again.", "Retry");
+                                alertError("The pen connection failure, You can restart pen bluetooth and connect again.", "Retry");
                             }
                         }
                     }
@@ -844,7 +947,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
             if (service != null) {
                 ConnectState state = ((SmartPenService) service).connectDevice(onConnectStateListener, address);
                 if (state != ConnectState.CONNECTING) {
-                    alertError("The pen connection failure, You can restart pen device bluetooth and connect again.", "Retry");
+                    alertError("The pen connection failure, You can restart pen bluetooth and connect again.", "Retry");
                 } else {
                     mProgressDialog = ProgressDialog.show(PenInfoActivity.this, "", getString(R.string.initializing), true);
                 }
@@ -852,21 +955,16 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         }
     }
 
-    @OnClick({R.id.undoButton, R.id.reduButton, R.id.eraserSizeButton, R.id.penSizeButton, R.id.opacityButton, R.id.penColorButton, R.id.clearPageButton, R.id.newPageButton, R.id.preButton, R.id.nextButton/*, R.id.drawerButton, R.id.penButtonL, R.id.textButtonL, R.id.shapeButtonL, R.id.imageButtonL, R.id.clipArtButtonL*/})
+    @OnClick({R.id.undoButton, R.id.reduButton, R.id.penSizeButton, R.id.penColorButton, R.id.clearPageButton, R.id.locationButton, R.id.calenderButton, R.id.newPageButton, R.id.preButton, R.id.nextButton, R.id.saveButton/*, R.id.drawerButton, R.id.penButtonL, R.id.textButtonL, R.id.shapeButtonL, R.id.imageButtonL, R.id.clipArtButtonL*/})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.undoButton:
                 break;
             case R.id.reduButton:
                 break;
-            case R.id.eraserSizeButton:
-                break;
 
             case R.id.penSizeButton:
                 showPenSizeDialog();
-                break;
-            case R.id.opacityButton:
-                showOpacityDialog();
                 break;
 
             case R.id.penColorButton:
@@ -879,9 +977,9 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
 
             case R.id.newPageButton:
                 if (bitmaps.size() >= currentPage)
-                    bitmaps.set(currentPage - 1, getBitmap());
+                    bitmaps.set(currentPage - 1, new BitmapProps(getBitmap(), bitmaps.get(currentPage - 1).isEdited()));
                 else
-                    bitmaps.add(currentPage - 1, getBitmap());
+                    bitmaps.add(currentPage - 1, new BitmapProps(getBitmap(), false));
                 mPenCanvasView.cleanAll();
                 totalPage++;
                 currentPage = totalPage;
@@ -891,12 +989,12 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
             case R.id.preButton:
                 if (currentPage > 1) {
                     if (bitmaps.size() >= currentPage)
-                        bitmaps.set(currentPage - 1, getBitmap());
+                        bitmaps.set(currentPage - 1, new BitmapProps(getBitmap(), bitmaps.get(currentPage - 1).isEdited()));
                     else
-                        bitmaps.add(currentPage - 1, getBitmap());
+                        bitmaps.add(currentPage - 1, new BitmapProps(getBitmap(), false));
                     currentPage--;
                     mPenCanvasView.cleanAll();
-                    mPenCanvasView.drawBitmap(bitmaps.get(currentPage - 1));
+                    mPenCanvasView.drawBitmap(bitmaps.get(currentPage - 1).getBitmap());
                     pageCount.setText(currentPage + " of " + totalPage);
                 }
                 break;
@@ -904,14 +1002,48 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
             case R.id.nextButton:
                 if (totalPage > currentPage) {
                     if (bitmaps.size() >= currentPage)
-                        bitmaps.set(currentPage - 1, getBitmap());
+                        bitmaps.set(currentPage - 1, new BitmapProps(getBitmap(), bitmaps.get(currentPage - 1).isEdited()));
                     else
-                        bitmaps.add(currentPage - 1, getBitmap());
+                        bitmaps.add(currentPage - 1, new BitmapProps(getBitmap(), false));
                     currentPage++;
                     mPenCanvasView.cleanAll();
-                    mPenCanvasView.drawBitmap(bitmaps.get(currentPage - 1));
+                    mPenCanvasView.drawBitmap(bitmaps.get(currentPage - 1).getBitmap());
                     pageCount.setText(currentPage + " of " + totalPage);
                 }
+                break;
+
+            case R.id.locationButton:
+                showDialogToSelectLocation();
+                break;
+
+            case R.id.calenderButton:
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                        this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.setAccentColor(getResources().getColor(R.color.tagColor));
+                datePickerDialog.setMaxDate(Calendar.getInstance());
+                datePickerDialog.show(getSupportFragmentManager(), "AddNotes");
+                break;
+
+            case R.id.saveButton:
+                mPenView.setVisibility(View.GONE);
+
+                if (bitmaps.size() >= currentPage) {
+                    bitmaps.set(currentPage - 1, new BitmapProps(getBitmap(), bitmaps.get(currentPage - 1).isEdited()));
+                } else
+                    bitmaps.add(currentPage - 1, new BitmapProps(getBitmap(), false));
+
+                for (int index = 0; index < bitmaps.size(); index++)
+                    saveImage(index, true);
+
+                if (!isAnyEdited) {
+                    Toast.makeText(PenInfoActivity.this, "You haven't changed anything.", Toast.LENGTH_SHORT).show();
+                }
+
+                mPenView.setVisibility(View.VISIBLE);
                 break;
 
             /*case R.id.drawerButton:
@@ -949,11 +1081,8 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 mPenCanvasView.cleanAll();
-                if (visitCommonDatas != null) {
-                    if (visitCommonDatas.size() > (currentPage - 1)) {
-                        visitCommonDatas.get((currentPage - 1)).setEdited(true);
-                    }
-                }
+                if (!bitmaps.isEmpty())
+                    bitmaps.get((currentPage - 1)).setEdited(true);
             }
         });
         alert.show();
@@ -1017,7 +1146,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         dialog.show();
     }
 
-    public void showOpacityDialog() {
+    /*public void showOpacityDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1046,7 +1175,7 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         });
 
         dialog.show();
-    }
+    }*/
 
     private void showColorPicker() {
         new SpectrumDialog.Builder(this, R.style.MyDialogTheme)
@@ -1069,11 +1198,90 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
     @Override
     public void onDraw(int x, int y, boolean isRoute) {
 //        Log.i("FINGER_DRAW", x + " " + y + " " + isRoute);
-        if (visitCommonDatas != null) {
-            if (visitCommonDatas.size() > (currentPage - 1)) {
-                visitCommonDatas.get((currentPage - 1)).setEdited(true);
-            }
+        if (bitmaps.size() >= currentPage)
+            bitmaps.get((currentPage - 1)).setEdited(true);
+        else bitmaps.add(new BitmapProps(null, true));
+
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+        String toDisplay = getResources().getText(R.string.draw_activity) + " (" + dayOfMonth + "<sup>" + CommonMethods.getSuffixForNumber(dayOfMonth) + "</sup> " + CommonMethods.getFormattedDate(String.valueOf(monthOfYear + 1), "MM", "MMM") + "' " + year + ")";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            getSupportActionBar().setTitle(Html.fromHtml(toDisplay, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            getSupportActionBar().setTitle(Html.fromHtml(toDisplay));
         }
+
+        if (isAnyOneEdited())
+            exitDialog("Do you want to save your changes?", false, dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+        else {
+            if (visitCommonDatas != null)
+                visitCommonDatas.clear();
+            bitmaps.clear();
+            mPenCanvasView.cleanAll();
+            totalPage = 1;
+            currentPage = 1;
+            pageCount.setText(currentPage + " of " + totalPage);
+            visitDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+        }
+    }
+
+    private void showDialogToSelectLocation() {
+        final Dialog dialog = new Dialog(this);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_select_location_waiting_list_layout);
+        dialog.setCancelable(true);
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, this).equals(""))
+            mLocationId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, this);
+        final RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
+        for (int index = 0; index < mPatientListsOriginal.size(); index++) {
+            final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
+
+            RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
+
+            if (mLocationId != null)
+                radioButton.setChecked(mLocationId.equals(String.valueOf(clinicList.getLocationId())));
+
+            radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
+            radioButton.setId(CommonMethods.generateViewId());
+            radioButton.setTag(clinicList);
+            radioGroup.addView(radioButton);
+        }
+
+        TextView okButton = (TextView) dialog.findViewById(R.id.okButton);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (radioGroup.getCheckedRadioButtonId() != -1) {
+                    RadioButton radioButton = radioGroup.findViewById(radioGroup.getCheckedRadioButtonId());
+                    DoctorLocationModel clinicList = (DoctorLocationModel) radioButton.getTag();
+                    mLocationId = String.valueOf(clinicList.getLocationId());
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, mLocationId, mContext);
+                    mHospitalId = clinicList.getClinicId();
+                    getSupportActionBar().setSubtitle(clinicList.getClinicName() + ", " + clinicList.getAddress());
+                    dialog.cancel();
+                } else
+                    Toast.makeText(mContext, "Please select clinic location.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+        dialog.getWindow().setAttributes(lp);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
     }
 
 

@@ -45,6 +45,8 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
     private boolean mIsRubber = false;
     private boolean mIsEditPhoto = false;
 
+    private boolean mIsFingerTouch = true;
+
     private ShapeModel mInsertShape = ShapeModel.None;
     private ShapeView mInsertShapeTmp;
     private boolean mInsertShapeIsFill = false;
@@ -332,26 +334,34 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         super.onDraw(canvas);
     }
 
+    public boolean isFingerTouch() {
+        return mIsFingerTouch;
+    }
+
+    public void setFingerTouch(boolean mIsFingerTouch) {
+        this.mIsFingerTouch = mIsFingerTouch;
+    }
+
     //触摸事件
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (isFingerTouch()) {
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+            boolean isRoute = (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN);
 
-        int x = (int) event.getX();
-        int y = (int) event.getY();
-        boolean isRoute = (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN);
+            if (mPenDrawViewCanvasListener != null)
+                mPenDrawViewCanvasListener.onDraw(x, y, isRoute);
 
-        if (mPenDrawViewCanvasListener != null)
-            mPenDrawViewCanvasListener.onDraw(x, y, isRoute);
+            if (mIsEditPhoto) return false;
 
-        if (mIsEditPhoto) return false;
-
-        if (mInsertShape != ShapeModel.None) {
-            insertShape(x, y, isRoute);
-        } else {
-            drawLine(x, y, isRoute);
+            if (mInsertShape != ShapeModel.None) {
+                insertShape(x, y, isRoute);
+            } else {
+                drawLine(x, y, isRoute);
+            }
         }
-
         return true;
     }
 

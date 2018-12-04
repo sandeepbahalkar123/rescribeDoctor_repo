@@ -46,9 +46,7 @@ public class RescribeApplication extends MultiDexApplication {
     private static String SHOW_UPDATE_DIALOG_ON_SKIPPED = "";
 
     private RequestQueue mRequestQueue;
-
     private static RescribeApplication mInstance;
-
 
     public static String getShowUpdateDialogOnSkipped() {
         return SHOW_UPDATE_DIALOG_ON_SKIPPED;
@@ -75,11 +73,10 @@ public class RescribeApplication extends MultiDexApplication {
         Fabric.with(this, new Crashlytics());
        // UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
         AppDBHelper.getInstance(this);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
+//        FacebookSdk.sdkInitialize(getApplicationContext());
+//        AppEventsLogger.activateApp(this);
 //        new NukeSSLCerts().nuke(); // disable all ssl certificates (dangerous)
         JobManager.create(this).addJobCreator(new AppJobCreator());
-
         mInstance = this;
     }
     public static ArrayList<DoctorLocationModel> getDoctorLocationModels() {
@@ -111,7 +108,8 @@ public class RescribeApplication extends MultiDexApplication {
     ///////////////////////////////////////////////////
 
     /**
-     * 获取录制级别
+     *
+     * Get the recording level
      * @return
      */
     public int getRecordLevel(){
@@ -121,7 +119,7 @@ public class RescribeApplication extends MultiDexApplication {
     }
 
     /**
-     * 设置录制级别
+     * Set the recording level
      * @param value
      * @return
      */
@@ -135,7 +133,7 @@ public class RescribeApplication extends MultiDexApplication {
     }
 
     /**
-     * 获取笔服务
+     * Get pen service
      * @return
      */
     public PenService getPenService(){
@@ -177,18 +175,18 @@ public class RescribeApplication extends MultiDexApplication {
         return mPenServiceConnection;
     }
 
-    /**开始后台服务**/
+    /**Start background service**/
     protected void startPenService(String svrName){
         Log.v(TAG, "startPenService name:"+svrName);
         startService(getPenServiceIntent(svrName));
     }
-    /**停止后台服务**/
+    /**Stop background service**/
     public void stopPenService(String svrName){
         Log.v(TAG, "stopPenService");
         stopService(getPenServiceIntent(svrName));
     }
 
-    /**绑定后台服务,如果没有启动则启动服务再绑定**/
+    /**Bind the background service, if not started, start the service and then bind**/
     public void bindPenService(String svrName){
         if(!isServiceRunning(svrName)){
             isBindPenService = false;
@@ -200,7 +198,7 @@ public class RescribeApplication extends MultiDexApplication {
             Log.v(TAG, "bindService "+svrName);
         }
     }
-    /**解除绑定后台服务**/
+    /**Unbind background service**/
     public void unBindPenService(){
         if(isBindPenService){
             if(mPenServiceConnection != null){
@@ -213,7 +211,8 @@ public class RescribeApplication extends MultiDexApplication {
     }
 
 
-    /**查询后台服务是否已开启**/
+    /**
+     Query whether the background service is enabled**/
     private boolean isServiceRunning(String serviceName) {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {

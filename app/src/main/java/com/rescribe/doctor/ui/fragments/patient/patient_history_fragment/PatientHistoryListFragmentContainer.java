@@ -128,7 +128,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private HashSet<String> mGeneratedRequestForYearList;
     private Context mContext;
     private PatientHistoryActivity mParentActivity;
-    private String mLocationId;
+    private int mLocationId;
     private int mHospitalId;
     private String mPatientId;
     private String mHospitalPatId;
@@ -245,20 +245,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
                 dismissProgressDialog();
 
-                Intent intent = new Intent(mContext, PenInfoActivity.class);
-                intent.putExtra(RescribeConstants.OPD_ID, "0");
-                intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-                intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
-                intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
-                intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
-                intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
-                intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
-                intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
-                intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
-                intent.putExtra(RescribeConstants.OPD_TIME, "");
-                intent.putExtra(Keys.KEY_DEVICE_ADDRESS, service.getConnectDevice().address);
-
-                getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
+                callPanInfoActivity(dateSelected, service.getConnectDevice().address);
 
             } else {
                 mHandler.postDelayed(new Runnable() {
@@ -279,6 +266,24 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         }
     }
 
+    private void callPanInfoActivity(String dateSelected, String address) {
+
+        Intent intent = new Intent(mContext, PenInfoActivity.class);
+        intent.putExtra(RescribeConstants.OPD_ID, "0");
+        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+        intent.putExtra(RescribeConstants.LOCATION_ID, String.valueOf(mLocationId));
+        intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+        intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
+        intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
+        intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+        intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+        intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
+        intent.putExtra(RescribeConstants.OPD_TIME, "");
+        intent.putExtra(Keys.KEY_DEVICE_ADDRESS, address);
+
+        getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
+    }
+
     private void scanBluetoothAndConnect(final String dateSelected) {
         final PenService service = RescribeApplication.getInstance().getPenService();
         if (service != null) {
@@ -286,20 +291,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 @Override
                 public void find(DeviceObject device) {
 
-                    Intent intent = new Intent(mContext, PenInfoActivity.class);
-                    intent.putExtra(RescribeConstants.OPD_ID, "0");
-                    intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-                    intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
-                    intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
-                    intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
-                    intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
-                    intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
-                    intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
-                    intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
-                    intent.putExtra(RescribeConstants.OPD_TIME, "");
-                    intent.putExtra(Keys.KEY_DEVICE_ADDRESS, device.address);
-
-                    getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
+                    callPanInfoActivity(dateSelected, device.address);
 
                     // Stop searching
                     PenService service = RescribeApplication.getInstance().getPenService();
@@ -324,7 +316,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private void showRetryDialog(final String dateSelected) {
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
         alert.setTitle("Info");
-        alert.setMessage("Device not found");
+        alert.setMessage("Device not found, make sure pen bluetooth is on");
         alert.setCancelable(false);
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -332,7 +324,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 dialog.dismiss();
             }
         });
-        alert.setPositiveButton("Scan Again", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);
@@ -445,13 +437,13 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         if (fromString != null) {
 
             ArrayList<DoctorLocationModel> mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
-            ArrayList<DoctorLocationModel> myDoctorLocations = getMyDoctorLocations(mDoctorLocationModel, mHospitalId);
+            ArrayList<DoctorLocationModel> myDoctorLocations = CommonMethods.getMyDoctorLocations(mDoctorLocationModel, mHospitalId);
             if (myDoctorLocations.size() == 1) {
-                mLocationId = String.valueOf(myDoctorLocations.get(0).getLocationId());
+                mLocationId = myDoctorLocations.get(0).getLocationId();
                 mHospitalId = myDoctorLocations.get(0).getClinicId();
                 callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear + 1, dayOfMonth, fromString);
             } else {
-                showDialogToSelectLocation(getMyDoctorLocations(mDoctorLocationModel, mHospitalId), year, monthOfYear + 1, dayOfMonth, fromString);
+                showDialogToSelectLocation(CommonMethods.getMyDoctorLocations(mDoctorLocationModel, mHospitalId), year, monthOfYear + 1, dayOfMonth, fromString);
             }
         }
     }
@@ -469,7 +461,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                     Toast.makeText(getActivity(), "Permissions denied.", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    Calendar now = Calendar.getInstance();
+                    /*Calendar now = Calendar.getInstance();
                     DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
                             this,
                             now.get(Calendar.YEAR),
@@ -477,24 +469,16 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                             now.get(Calendar.DAY_OF_MONTH));
                     datePickerDialog.setAccentColor(getResources().getColor(R.color.tagColor));
                     datePickerDialog.setMaxDate(Calendar.getInstance());
-                    datePickerDialog.show(getActivity().getSupportFragmentManager(), "AddNotes");
+                    datePickerDialog.show(getActivity().getSupportFragmentManager(), "AddNotes");*/
+
+                    Calendar now = Calendar.getInstance();
+                    callAddRecordsActivity(mLocationId, mHospitalId, now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, now.get(Calendar.DAY_OF_MONTH), "AddNotes");
+
                     // Permissions are granted
 //                    Toast.makeText(this, "Permissions granted.", Toast.LENGTH_SHORT).show();
                 }
             }
         }
-    }
-
-    private ArrayList<DoctorLocationModel> getMyDoctorLocations(ArrayList<DoctorLocationModel> mDoctorLocationModel, int mClinicId) {
-        ArrayList<DoctorLocationModel> mDoctorLocations = new ArrayList<>();
-        for (DoctorLocationModel doctorLocationModel : mDoctorLocationModel) {
-            if (mClinicId == 0) {
-                mDoctorLocations.add(doctorLocationModel);
-            } else if (doctorLocationModel.getClinicId() == mClinicId) {
-                mDoctorLocations.add(doctorLocationModel);
-            }
-        }
-        return mDoctorLocations;
     }
 
     private void showDialogToSelectLocation(ArrayList<DoctorLocationModel> mPatientListsOriginal, final int year, final int monthOfYear, final int dayOfMonth, final String fromString) {
@@ -505,31 +489,22 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         dialog.setCancelable(true);
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals(""))
-            mLocationId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity());
-        RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
+        if (!RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()).equals("")) {
+            try {
+                mLocationId = Integer.parseInt(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, getActivity()));
+            } catch (NumberFormatException e) {
+                Log.i("EXCEPTION", "NumberFormat");
+            }
+        }
+        final RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
         for (int index = 0; index < mPatientListsOriginal.size(); index++) {
             final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
 
             RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
-
-            if (mLocationId != null) {
-                if (mLocationId.equals(String.valueOf(clinicList.getLocationId()))) {
-                    mHospitalId = clinicList.getClinicId();
-                    radioButton.setChecked(true);
-                } else {
-                    radioButton.setChecked(false);
-                }
-            }
+            radioButton.setChecked(mLocationId == clinicList.getLocationId());
+            radioButton.setTag(clinicList);
             radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
             radioButton.setId(CommonMethods.generateViewId());
-            radioButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mLocationId = String.valueOf(clinicList.getLocationId());
-                    mHospitalId = clinicList.getClinicId();
-                }
-            });
             radioGroup.addView(radioButton);
         }
 
@@ -538,14 +513,18 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             @Override
             public void onClick(View v) {
 
-                if (mLocationId != null) {
-                    if (!mLocationId.equals("0")) {
-                        callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth, fromString);
-                        dialog.cancel();
-                    } else
-                        Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
-                } else
+                if (radioGroup.getCheckedRadioButtonId() != -1) {
+                    RadioButton radioButton = radioGroup.findViewById(radioGroup.getCheckedRadioButtonId());
+                    DoctorLocationModel clinicList = (DoctorLocationModel) radioButton.getTag();
+                    mLocationId = clinicList.getLocationId();
+                    mHospitalId = clinicList.getClinicId();
+
+                    callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth, fromString);
+                    dialog.cancel();
+
+                } else {
                     Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -564,7 +543,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     }
 
-    private void callAddRecordsActivity(String mLocationId, int mHospitalId, int year, int monthOfYear, int dayOfMonth, String fromString) {
+    private void callAddRecordsActivity(int mLocationId, int mHospitalId, int year, int monthOfYear, int dayOfMonth, String fromString) {
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, String.valueOf(mLocationId), getActivity());
         if (fromString.equals("AddRecords")) {
             Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);

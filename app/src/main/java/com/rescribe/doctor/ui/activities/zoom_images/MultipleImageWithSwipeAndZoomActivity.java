@@ -235,7 +235,7 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
     private void showRetryDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
         alert.setTitle("Info");
-        alert.setMessage("Device not found");
+        alert.setMessage("Device not found, make sure pen bluetooth is on");
         alert.setCancelable(false);
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -243,7 +243,7 @@ public class MultipleImageWithSwipeAndZoomActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        alert.setPositiveButton("Scan Again", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);

@@ -220,6 +220,12 @@
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
         <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="actionMenuTextAppearance">@style/menuTextSize</item>
+    </style>
+
+    <style name="menuTextSize" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/sp15</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -228,5 +234,20 @@
 
     <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorPrimary">@color/tagColor</item>
+    </style>
+
+    <style name="ToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/sp15</item> //size desired.
+        <item name="android:textColor">@color/white</item> //font color
+    </style>
+
+    <style name="ToolbarSubtitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/sp10</item> //size desired.
+        <item name="android:textColor">@color/white</item> //font color
+    </style>
+
+    <style name="MyMenu">
+        <item name="android:textSize">@dimen/sp15</item> //size desired.
+        <item name="android:textColor">@color/white</item> //font color
     </style>
 </resources>

@@ -33,8 +33,6 @@ public class VisitCommonData implements CustomResponse, Parcelable {
     private String medicineTypeName = "";
     private String vitalValue;
 
-    private boolean edited;
-
     public final static Creator<VisitCommonData> CREATOR = new Creator<VisitCommonData>() {
 
         @SuppressWarnings({
@@ -50,7 +48,6 @@ public class VisitCommonData implements CustomResponse, Parcelable {
             instance.dosage = ((String) in.readValue((String.class.getClassLoader())));
             instance.medicineTypeName = ((String) in.readValue((String.class.getClassLoader())));
             instance.vitalValue = ((String) in.readValue((String.class.getClassLoader())));
-            instance.edited = ((boolean) in.readValue((boolean.class.getClassLoader())));
             return instance;
         }
 
@@ -125,14 +122,6 @@ public class VisitCommonData implements CustomResponse, Parcelable {
         this.name = name;
     }
 
-    public boolean isEdited() {
-        return edited;
-    }
-
-    public void setEdited(boolean edited) {
-        this.edited = edited;
-    }
-
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(name);
@@ -142,7 +131,6 @@ public class VisitCommonData implements CustomResponse, Parcelable {
         dest.writeValue(dosage);
         dest.writeValue(medicineTypeName);
         dest.writeValue(vitalValue);
-        dest.writeValue(edited);
     }
 
     public int describeContents() {

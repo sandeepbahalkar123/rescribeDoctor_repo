@@ -117,6 +117,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String patientID;
     private String opdID;
     private String mHospitalPatId;
+    private int mHospitalId;
     private String mOpdTime;
     private boolean isDead = false;
     private PatientDetailHelper mSingleVisitDetailHelper;
@@ -160,6 +161,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             mAptId = intent.getIntExtra(RescribeConstants.APPOINTMENT_ID, 0);
             opdID = intent.getStringExtra(RescribeConstants.PATIENT_OPDID);
             mOpdTime = intent.getStringExtra(RescribeConstants.OPD_TIME);
+            mHospitalId = intent.getIntExtra(RescribeConstants.CLINIC_ID, 0);
             mHospitalPatId = intent.getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
             titleTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_NAME));
             userInfoTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_INFO));
@@ -540,7 +542,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
                 intent.putExtra(RescribeConstants.LOCATION_ID, "0");
                 intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
-                intent.putExtra(RescribeConstants.CLINIC_ID, "0");
+                intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
                 intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
                 intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
                 intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
@@ -620,7 +622,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private void showRetryDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
         alert.setTitle("Info");
-        alert.setMessage("Device not found");
+        alert.setMessage("Device not found, make sure pen bluetooth is on");
         alert.setCancelable(false);
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -628,7 +630,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 dialog.dismiss();
             }
         });
-        alert.setPositiveButton("Scan Again", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);

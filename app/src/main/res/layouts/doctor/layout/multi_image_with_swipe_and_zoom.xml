@@ -49,6 +49,8 @@
         android:layout_height="@dimen/dp34"
         android:textColor="@color/white"
         android:text="Edit"
+        android:textStyle="bold"
+        android:textSize="@dimen/sp16"
         android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:background="@color/tagColor"/>
