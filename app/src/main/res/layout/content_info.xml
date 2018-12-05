@@ -179,7 +179,7 @@
             <Button
                 android:id="@+id/saveButton"
                 android:layout_width="wrap_content"
-                android:minWidth="@dimen/dp120"
+                android:minWidth="@dimen/save_button"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/dp4"
                 android:textColor="@color/white"
@@ -216,6 +216,7 @@
                     android:layout_marginStart="@dimen/dp3"
                     android:textColor="@color/black"
                     android:layout_marginEnd="@dimen/dp3"
+                    android:textSize="@dimen/sp12"
                     tools:text="1 of 1" />
 
                 <ImageView

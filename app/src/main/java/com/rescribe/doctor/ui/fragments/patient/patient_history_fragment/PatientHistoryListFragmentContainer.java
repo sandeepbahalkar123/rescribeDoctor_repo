@@ -549,7 +549,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
             Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
             intent.putExtra(RescribeConstants.OPD_ID, "0");
             intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-            intent.putExtra(RescribeConstants.LOCATION_ID, mLocationId);
+            intent.putExtra(RescribeConstants.LOCATION_ID, String.valueOf(mLocationId));
             intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
             intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
             intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);

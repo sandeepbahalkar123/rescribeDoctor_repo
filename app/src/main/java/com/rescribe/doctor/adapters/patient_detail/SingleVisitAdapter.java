@@ -380,7 +380,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 item.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        if (childTypeAnnotation.contains(CHILD_TYPE_ATTACHMENTS)) {
+                        if (childTypeAnnotation.contains(CHILD_TYPE_ATTACHMENTS) || childTypeAnnotation.contains(CHILD_TYPE_NOTES)) {
                             mShowDeleteCheckbox = !mShowDeleteCheckbox;
                             notifyDataSetChanged();
                         }

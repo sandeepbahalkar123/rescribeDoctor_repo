@@ -24,6 +24,7 @@ public class UploadStatus implements Parcelable {
     private String parentCaption;
     private String imagePath;
     private String recordType;
+    private boolean uploading = false;
     private HashMap<String, String> headerMap = new HashMap<>();
 
     public UploadStatus(String uploadId, String visitDate, String mOpdtime, String parentCaption, String imagePath, String recordType, HashMap<String, String> headerMap) {
@@ -117,5 +118,13 @@ public class UploadStatus implements Parcelable {
 
     public void setHeaderMap(HashMap<String, String> headerMap) {
         this.headerMap = headerMap;
+    }
+
+    public boolean isUploading() {
+        return uploading;
+    }
+
+    public void setUploading(boolean uploading) {
+        this.uploading = uploading;
     }
 }

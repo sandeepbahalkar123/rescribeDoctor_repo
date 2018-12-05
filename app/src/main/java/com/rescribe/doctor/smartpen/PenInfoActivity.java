@@ -592,7 +592,6 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
         ArrayList<UploadStatus> uploadDataList = new ArrayList<>();
 
         String uploadId = System.currentTimeMillis() + "_" + 0 + "_" + patientId;
-        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, "", path, mAptId, RescribeConstants.NOTES, "", "");
 
         String currentOpdTime;
         if (mOpdtime.equals(""))
@@ -601,6 +600,8 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
             currentOpdTime = mOpdtime;
 
         String visitDateToPass = CommonMethods.getFormattedDate(visitDate, RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
+
+        appDBHelper.insertRecordUploads(uploadId, patientId, docId, visitDate, mOpdtime, opdId, String.valueOf(mHospitalId), mHospitalPatId, mLocationId, "", path, mAptId, RescribeConstants.NOTES, orderId, fileId);
 
         HashMap<String, String> headers = new HashMap<>();
         headers.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
