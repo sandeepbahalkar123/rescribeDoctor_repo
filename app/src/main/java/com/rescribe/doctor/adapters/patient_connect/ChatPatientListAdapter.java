@@ -339,7 +339,7 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         void onPhoneNoClick(String patientPhone);
     }
 
-    public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
+    public void addAll(ArrayList<PatientList> mcList, String searchText) {
 
         for (PatientList mc : mcList) {
             mc.setSpannableString(searchText);

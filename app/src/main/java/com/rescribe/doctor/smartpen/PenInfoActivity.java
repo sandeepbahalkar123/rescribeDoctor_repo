@@ -815,7 +815,8 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                     initSceneType();
                 }
             });
-            alert.show();
+            if (!isFinishing())
+                alert.show();
         } else {
             initPage();
         }
@@ -849,7 +850,8 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                 }
             }
         });
-        alert.show();
+        if (!isFinishing())
+            alert.show();
     }
 
     private void exitDialog(String msg, final boolean isFinish, final String date) {
@@ -904,7 +906,8 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                     visitDate = date;
             }
         });
-        alert.show();
+        if (!isFinishing())
+            alert.show();
     }
 
     /**
@@ -1086,7 +1089,8 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                     bitmaps.get((currentPage - 1)).setEdited(true);
             }
         });
-        alert.show();
+        if (!isFinishing())
+            alert.show();
     }
 
     private void clearAllPagesWarnDialog(String msg) {
@@ -1113,7 +1117,8 @@ public class PenInfoActivity extends AppCompatActivity implements MultipleCanvas
                 pageCount.setText(currentPage + " of " + totalPage);
             }
         });
-        alert.show();
+        if (!isFinishing())
+            alert.show();
     }
 
     public void showPenSizeDialog() {

@@ -17,9 +17,6 @@ import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotsInfoList;
 
 import java.util.ArrayList;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.rescribe.doctor.ui.fragments.book_appointment.SelectSlotTimeToBookAppointmentFragment.mSelectedTimeSlot;
-
 public class SelectSlotToBookAppointmentAdapter extends BaseExpandableListAdapter {
 
     private final String mSelectedDate;
@@ -55,7 +52,7 @@ public class SelectSlotToBookAppointmentAdapter extends BaseExpandableListAdapte
 
         RecyclerView slotRecyclerView = (RecyclerView) convertView.findViewById(R.id.slotRecyclerView);
         BookAppointmentShowTimingsAdapter mBookAppointmentShowTimingsAdapter = new BookAppointmentShowTimingsAdapter(mContext, timeSlotData, mSelectedDate);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 4);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 4);
         slotRecyclerView.setLayoutManager(layoutManager);
         slotRecyclerView.setItemAnimator(new DefaultItemAnimator());
         slotRecyclerView.setAdapter(mBookAppointmentShowTimingsAdapter);

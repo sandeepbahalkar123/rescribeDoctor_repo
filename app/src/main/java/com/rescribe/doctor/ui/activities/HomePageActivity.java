@@ -195,7 +195,10 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         }
 
         doctorNameTextView.setText(doctorNameToDisplay);
-        aboutDoctorTextView.setText(docDetail.getDocDegree());
+        if (docDetail != null) {
+            if (docDetail.getDocDegree() != null)
+                aboutDoctorTextView.setText(docDetail.getDocDegree());
+        }
         setUpImage();
     }
 
@@ -242,7 +245,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
         menuOptionLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommonMethods.showToast(mContext,"Coming Soon");
+                CommonMethods.showToast(mContext, "Coming Soon");
 //                Intent intent = new Intent(mContext, ConnectSplashActivity.class);
 //                startActivity(intent);
             }
@@ -484,8 +487,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                             // inflate MyPatientsActivity layout
                             setLayoutForMyPatients();
 
-                        }
-                        else {
+                        } else {
                             hostViewsLayout.removeAllViews();
                             todayFollowAppointmentCount.setText("0");
                             todayNewAppointmentCount.setText("0");
@@ -501,7 +503,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                             // inflate MyPatientsActivity layout
                             setLayoutForMyPatients();
                         }
-
 
 
                     } else {
@@ -523,8 +524,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                             // inflate MyPatientsActivity layout
                             setLayoutForMyPatients();
 
-                        }
-                        else {
+                        } else {
                             hostViewsLayout.removeAllViews();
                             todayFollowAppointmentCount.setText("0");
                             todayNewAppointmentCount.setText("0");
@@ -540,7 +540,6 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                             // inflate MyPatientsActivity layout
                             setLayoutForMyPatients();
                         }
-
 
 
                     }
