@@ -99,7 +99,7 @@
             android:layout_marginRight="@dimen/fab_margin"
             android:layout_marginTop="@dimen/dp5"
             android:visibility="visible"
-            app:backgroundTint="@color/Red"
+            app:backgroundTint="@color/red"
             app:srcCompat="@drawable/filter" />
 
         <android.support.design.widget.FloatingActionButton

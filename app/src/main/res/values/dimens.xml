@@ -71,4 +71,5 @@
     <dimen name="dp62">72dp</dimen>
     <dimen name="sp8">8sp</dimen>
     <dimen name="activity_vertical_margin">12dp</dimen>
+    <dimen name="save_button">100dp</dimen>
 </resources>

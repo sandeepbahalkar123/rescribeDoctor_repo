@@ -53,7 +53,6 @@ import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class ChatPatientListFragment extends Fragment implements ChatPatientListAdapter.OnDownArrowClicked, HelperResponse {
 
-    private AppointmentHelper mAppointmentHelper;
     @BindView(R.id.whiteUnderLine)
     ImageView whiteUnderLine;
     @BindView(R.id.historyExpandableListView)
@@ -72,12 +71,19 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
     RecyclerView recyclerViewBottom;
     @BindView(R.id.searchEditText)
     EditTextWithDeleteButton searchEditText;
+    private AppointmentHelper mAppointmentHelper;
     private Unbinder unbinder;
     private ChatPatientListAdapter mMyPatientsAdapter;
     private String searchText = "";
     private boolean isFiltered = false;
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
     private String mFromWhichActivity;
+
+    public static ChatPatientListFragment newInstance(Bundle b) {
+        ChatPatientListFragment fragment = new ChatPatientListFragment();
+        fragment.setArguments(b);
+        return fragment;
+    }
 
     @Override
     public void onDestroy() {
@@ -178,9 +184,9 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
                 intent.putExtra(RescribeConstants.IS_APPOINTMENT_TYPE_RESHEDULE, false);
                 intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 getActivity().startActivity(intent);
-            }else {
+            } else {
 
-                CommonMethods.showInfoDialog(getActivity().getResources().getString(R.string.can_not_book_appointment),getActivity(),false);
+                CommonMethods.showInfoDialog(getActivity().getResources().getString(R.string.can_not_book_appointment), getActivity(), false);
 
             }
 
@@ -210,14 +216,6 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         activity.callPatient(patientPhone);
     }
 
-
-    public static ChatPatientListFragment newInstance(Bundle b) {
-        ChatPatientListFragment fragment = new ChatPatientListFragment();
-        fragment.setArguments(b);
-        return fragment;
-    }
-
-
     @OnClick({R.id.rightFab, R.id.leftFab})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -236,7 +234,7 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
         mRequestSearchPatients.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
         mRequestSearchPatients.setSearchText(searchText);
         mRequestSearchPatients.setPageNo(pageNo);
-        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, false);
+        mAppointmentHelper.doGetSearchResult(mRequestSearchPatients, searchText.isEmpty());
     }
 
     public void searchPatients() {
@@ -265,16 +263,16 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
 
             if (myAppointmentsBaseModel.getCommon().getStatusCode().equals(SUCCESS)) {
 
-                ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
-
-                mMyPatientsAdapter.addAll(mLoadedPatientList, ((ShowMyPatientsListActivity) getActivity()).selectedDoctorId, searchText);
-
-                if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
-                    recyclerView.setVisibility(View.VISIBLE);
-                    emptyListView.setVisibility(View.GONE);
-                } else {
-                    recyclerView.setVisibility(View.GONE);
-                    emptyListView.setVisibility(View.VISIBLE);
+                if (recyclerView != null) {
+                    ArrayList<PatientList> mLoadedPatientList = myAppointmentsBaseModel.getPatientDataModel().getPatientList();
+                    mMyPatientsAdapter.addAll(mLoadedPatientList, searchText);
+                    if (!mMyPatientsAdapter.getGroupList().isEmpty()) {
+                        recyclerView.setVisibility(View.VISIBLE);
+                        emptyListView.setVisibility(View.GONE);
+                    } else {
+                        recyclerView.setVisibility(View.GONE);
+                        emptyListView.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         }

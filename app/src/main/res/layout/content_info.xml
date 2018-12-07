@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/tagColor"
+            app:popupTheme="@style/MyMenu"
+            app:subtitleTextAppearance="@style/ToolbarSubtitle"
+            app:theme="@style/ToolBarStyle"
+            app:titleTextAppearance="@style/ToolbarTitle"
+            tools:subtitle="Pune, Aundh, 499983"
+            tools:title="@string/about_doctor" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:id="@+id/lineFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ff666666">
+
+        <FrameLayout
+            android:id="@+id/lineWindow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/footer"
+            android:layout_below="@+id/headerMenu"
+            android:background="#ffffffff">
+
+            <com.smart.pen.core.views.MultipleCanvasView
+                android:id="@+id/penCanvasView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/headerMenu"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp40"
+            android:layout_alignParentTop="true"
+            android:background="#EAEAEA"
+            android:paddingStart="@dimen/dp10"
+            android:paddingEnd="@dimen/dp10">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp30"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/locationButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp5"
+                    android:tooltipText="Location"
+                    app:srcCompat="@drawable/sp_location" />
+
+                <ImageView
+                    android:id="@+id/calenderButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp5"
+                    android:tooltipText="Calender"
+                    app:srcCompat="@drawable/sp_calendar" />
+
+                <ImageView
+                    android:id="@+id/undoButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:adjustViewBounds="true"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/dp5"
+                    android:src="@drawable/sp_undo_arrow"
+                    android:tooltipText="Undo"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/reduButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp5"
+                    android:src="@drawable/sp_redo_arrow"
+                    android:tooltipText="Redu"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/penSizeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp5"
+                    android:src="@drawable/sp_compose"
+                    android:tooltipText="Pen Size" />
+
+                <ImageView
+                    android:id="@+id/penColorButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp5"
+                    android:src="@drawable/sp_paint_board_and_brush"
+                    android:tooltipText="Pen Color" />
+
+                <ImageView
+                    android:id="@+id/clearPageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp5"
+                    android:tooltipText="Clear Page"
+                    app:srcCompat="@drawable/sp_clean_code" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/newPageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp30"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:adjustViewBounds="true"
+                android:padding="@dimen/dp3"
+                android:tooltipText="New Page"
+                app:srcCompat="@drawable/sp_note_add" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/drawerButton"
+            android:layout_width="@dimen/dp28"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:padding="@dimen/dp8"
+            android:src="@drawable/sp_drawer_arrow"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp34"
+            android:layout_alignParentBottom="true"
+            android:background="#EAEAEA">
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="wrap_content"
+                android:minWidth="@dimen/save_button"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/dp4"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp16"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/button_selector"
+                android:text="@string/save" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp30"
+                android:layout_centerVertical="true"
+                android:gravity="end|center_vertical"
+                android:paddingStart="@dimen/dp10"
+                android:paddingEnd="@dimen/dp10">
+
+                <ImageView
+                    android:id="@+id/preButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:adjustViewBounds="true"
+                    android:background="@color/transparent"
+                    android:rotation="180"
+                    android:tooltipText="Pre Page"
+                    app:srcCompat="@drawable/sp_arrow" />
+
+                <TextView
+                    android:id="@+id/pageCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:textColor="@color/black"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:textSize="@dimen/sp12"
+                    tools:text="1 of 1" />
+
+                <ImageView
+                    android:id="@+id/nextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp3"
+                    android:layout_marginEnd="@dimen/dp3"
+                    android:adjustViewBounds="true"
+                    android:tooltipText="Next Page"
+                    app:srcCompat="@drawable/sp_arrow" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</LinearLayout>

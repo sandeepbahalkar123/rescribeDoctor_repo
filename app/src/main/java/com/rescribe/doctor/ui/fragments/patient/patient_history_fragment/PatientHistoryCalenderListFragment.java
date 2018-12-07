@@ -32,12 +32,13 @@ import static com.rescribe.doctor.ui.fragments.patient.patient_history_fragment.
 
 public class PatientHistoryCalenderListFragment extends Fragment implements CalenderDayOfMonthGridAdapter.OnDayClickListener {
 
-    private static String patientName;
-    private static String patientInfo;
-    private static String mHospitalPatId;
-    private static int mAptId;
-    private static String patientID;
-    private static boolean isdead;
+    private String patientName;
+    private String patientInfo;
+    private String mHospitalPatId;
+    private int mAptId;
+    private String patientID;
+    private int mHospitalId;
+    private boolean isdead;
     private ArrayList<String> mMonthName;
     private String mYear;
     private ArrayList<PatientHistoryInfo> formattedDoctorList;
@@ -57,10 +58,19 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         View mRootView = inflater.inflate(R.layout.patient_history_calender_view, container, false);
         ButterKnife.bind(this, mRootView);
 
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            mMonthName = arguments.getStringArrayList(RescribeConstants.MONTH);
-            mYear = arguments.getString(RescribeConstants.YEAR);
+        Bundle args = getArguments();
+        if (args != null) {
+
+            mHospitalId = args.getInt(RescribeConstants.CLINIC_ID, 0);
+            patientName = args.getString(RescribeConstants.PATIENT_NAME);
+            patientInfo = args.getString(RescribeConstants.PATIENT_INFO);
+            patientID = args.getString(RescribeConstants.PATIENT_ID);
+            mHospitalPatId = args.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
+            mAptId = args.getInt(RescribeConstants.APPOINTMENT_ID, 0);
+            isdead = args.getBoolean(RescribeConstants.PATIENT_IS_DEAD);
+
+            mMonthName = args.getStringArrayList(RescribeConstants.MONTH);
+            mYear = args.getString(RescribeConstants.YEAR);
         }
 
         setGridViewAdapter();
@@ -68,17 +78,10 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
     }
 
 
-    public static PatientHistoryCalenderListFragment createNewFragment(YearsMonthsData dataString, Bundle b) {
+    public static PatientHistoryCalenderListFragment createNewFragment(YearsMonthsData dataString, Bundle args) {
         PatientHistoryCalenderListFragment fragment = new PatientHistoryCalenderListFragment();
-        Bundle args = new Bundle();
         args.putStringArrayList(RescribeConstants.MONTH, dataString.getMonths());
         args.putString(RescribeConstants.YEAR, "" + dataString.getYear());
-        patientName = b.getString(RescribeConstants.PATIENT_NAME);
-        patientInfo = b.getString(RescribeConstants.PATIENT_INFO);
-        patientID = b.getString(RescribeConstants.PATIENT_ID);
-        mHospitalPatId = b.getString(RescribeConstants.PATIENT_HOS_PAT_ID);
-        mAptId = b.getInt(RescribeConstants.APPOINTMENT_ID, 0);
-        isdead = b.getBoolean(RescribeConstants.PATIENT_IS_DEAD);
         fragment.setArguments(args);
         return fragment;
     }
@@ -105,6 +108,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
         intent.putExtra(RescribeConstants.DATE, visitDate);
         intent.putExtra(RescribeConstants.OPD_TIME, opdTime);
         intent.putExtra(RescribeConstants.PATIENT_IS_DEAD, isdead);
+        intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
         getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
     }
 

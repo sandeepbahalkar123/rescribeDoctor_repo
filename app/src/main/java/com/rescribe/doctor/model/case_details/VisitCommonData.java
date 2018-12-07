@@ -122,7 +122,6 @@ public class VisitCommonData implements CustomResponse, Parcelable {
         this.name = name;
     }
 
-
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(name);

@@ -181,7 +181,7 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
 
         } else {
             holder.payableAmountTextView.setText(" Rs." + patientObject.getOutStandingAmount() + "/-");
-            holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
+            holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.red));
 
         }
         holder.chatImageView.setVisibility(View.GONE);
@@ -339,7 +339,7 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         void onPhoneNoClick(String patientPhone);
     }
 
-    public void addAll(ArrayList<PatientList> mcList, HashSet<Integer> selectedDoctorId, String searchText) {
+    public void addAll(ArrayList<PatientList> mcList, String searchText) {
 
         for (PatientList mc : mcList) {
             mc.setSpannableString(searchText);

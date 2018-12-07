@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
+
+    <include
+        layout="@layout/content_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="@dimen/dp67"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:background="@color/transparent"
+        android:fitsSystemWindows="false"
+        android:paddingTop="@dimen/dp20"
+        tools:layout_gravity="start|center_vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#2F3338"
+            android:orientation="vertical"
+            android:padding="@dimen/dp6">
+
+            <LinearLayout
+                android:id="@+id/penButtonL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/dp5"
+                android:paddingBottom="@dimen/dp5">
+
+                <ImageView
+                    android:id="@+id/penButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp10"
+                    android:src="@drawable/sp_pencil"
+                    android:tooltipText="Pen" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp4"
+                    android:text="Pen"
+                    android:textColor="#ACB9C4"
+                    android:textSize="@dimen/sp12" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#ACB9C4" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/textButtonL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/dp5"
+                android:paddingBottom="@dimen/dp5">
+
+                <ImageView
+                    android:id="@+id/textButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp10"
+                    android:src="@drawable/sp_text"
+                    android:tooltipText="Text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp4"
+                    android:text="Text"
+                    android:textColor="#ACB9C4"
+                    android:textSize="@dimen/sp12" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#ACB9C4" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/shapeButtonL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/dp5"
+                android:paddingBottom="@dimen/dp5">
+
+                <ImageView
+                    android:id="@+id/shapeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp10"
+                    android:src="@drawable/sp_square"
+                    android:tooltipText="Shape" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp4"
+                    android:text="Shape"
+                    android:textColor="#ACB9C4"
+                    android:textSize="@dimen/sp12" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#ACB9C4" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/imageButtonL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/dp5"
+                android:paddingBottom="@dimen/dp5">
+
+                <ImageView
+                    android:id="@+id/imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp10"
+                    android:src="@drawable/sp_picture"
+                    android:tooltipText="Image" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp4"
+                    android:text="Image"
+                    android:textColor="#ACB9C4"
+                    android:textSize="@dimen/sp12" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#ACB9C4" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/clipArtButtonL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/dp5"
+                android:paddingBottom="@dimen/dp5">
+
+                <ImageView
+                    android:id="@+id/clipArtButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dp10"
+                    android:src="@drawable/sp_custom_shape"
+                    android:tooltipText="Clipart" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp4"
+                    android:text="Clipart"
+                    android:textColor="#ACB9C4"
+                    android:textSize="@dimen/sp12" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#ACB9C4" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.design.widget.NavigationView>
+
+</android.support.v4.widget.DrawerLayout>

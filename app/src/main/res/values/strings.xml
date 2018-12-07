@@ -369,11 +369,12 @@
     <string name="service_ble_start">Service BLE Start...</string>
     <string name="service_usb_start">service USB Start...</string>
     <string name="scan_activity">Scan Smart Pen</string>
-    <string name="draw_activity">Write Note</string>
+    <string name="draw_activity">Add Notes</string>
     <string name="action_save">Save</string>
     <string name="add_note">Add Notes</string>
     <string name="action_disconnect">Disconnect</string>
     <string name="initializing">Initializing</string>
     <string name="initialized">Initialized</string>
+    <string name="action_clear_all">Clear All Pages</string>
 
 </resources>

@@ -169,7 +169,7 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
 
         } else {
             holder.payableAmountTextView.setText(" Rs." + patientObject.getOutstandingAmount() + "/-");
-            holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
+            holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.red));
 
         }
 

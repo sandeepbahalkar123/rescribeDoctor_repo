@@ -33,6 +33,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.interfaces.CheckIpConnection;
 import com.rescribe.doctor.interfaces.DatePickerDialogListener;
+import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
@@ -804,6 +805,18 @@ public class CommonMethods {
         ArrayList<String> a = new ArrayList<>();
         a.add("2017");
         return a;
+    }
+
+    public static ArrayList<DoctorLocationModel> getMyDoctorLocations(ArrayList<DoctorLocationModel> mDoctorLocationModel, int mClinicId) {
+        ArrayList<DoctorLocationModel> mDoctorLocations = new ArrayList<>();
+        for (DoctorLocationModel doctorLocationModel : mDoctorLocationModel) {
+            if (mClinicId == 0) {
+                mDoctorLocations.add(doctorLocationModel);
+            } else if (doctorLocationModel.getClinicId() == mClinicId) {
+                mDoctorLocations.add(doctorLocationModel);
+            }
+        }
+        return mDoctorLocations;
     }
 
     public void datePickerDialog(Context context, DatePickerDialogListener datePickerDialogListener, Date dateToSet, final Boolean isFromDateClicked, final Date date) {

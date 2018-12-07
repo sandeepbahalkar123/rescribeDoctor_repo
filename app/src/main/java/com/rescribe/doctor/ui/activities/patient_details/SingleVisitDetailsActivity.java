@@ -1,14 +1,19 @@
 package com.rescribe.doctor.ui.activities.patient_details;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -35,11 +40,13 @@ import com.rescribe.doctor.model.case_details.Vital;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.smartpen.PenInfoActivity;
-import com.rescribe.doctor.smartpen.ScanActivity;
 import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
+import com.rescribe.doctor.ui.activities.zoom_images.MultipleImageWithSwipeAndZoomActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
+import com.smart.pen.core.common.Listeners;
+import com.smart.pen.core.model.DeviceObject;
 import com.smart.pen.core.services.PenService;
 import com.smart.pen.core.symbol.ConnectState;
 import com.smart.pen.core.symbol.Keys;
@@ -47,6 +54,7 @@ import com.smart.pen.core.symbol.Keys;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -60,6 +68,7 @@ import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHI
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.CHILD_TYPE_VITALS;
 import static com.rescribe.doctor.adapters.patient_detail.SingleVisitAdapter.TEXT_LIMIT;
 import static com.rescribe.doctor.services.SyncOfflineRecords.ATTATCHMENT_DOC_UPLOAD;
+import static com.rescribe.doctor.smartpen.PenInfoActivity.MY_PERMISSIONS_REQUEST_CODE;
 import static com.rescribe.doctor.ui.fragments.patient.patient_history_fragment.PatientHistoryListFragmentContainer.SELECT_REQUEST_CODE;
 
 /**
@@ -67,7 +76,7 @@ import static com.rescribe.doctor.ui.fragments.patient.patient_history_fragment.
  */
 
 
-public class SingleVisitDetailsActivity extends AppCompatActivity implements HelperResponse, SingleVisitAdapter.OnDeleteAttachments {
+public class SingleVisitDetailsActivity extends AppCompatActivity implements HelperResponse, SingleVisitAdapter.OnAttachmentsListener {
 
     private static final String PAIN_SCALE = "pain scale";
     @BindView(R.id.historyExpandableListView)
@@ -95,6 +104,8 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     @BindView(R.id.footer)
     LinearLayout footer;
 
+    List<VisitCommonData> notesList = new ArrayList<>();
+
     private boolean mIsDocUploaded = false;
     private int mLastExpandedPosition = -1;
     private SingleVisitAdapter mSingleVisitAdapter;
@@ -106,6 +117,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
     private String patientID;
     private String opdID;
     private String mHospitalPatId;
+    private int mHospitalId;
     private String mOpdTime;
     private boolean isDead = false;
     private PatientDetailHelper mSingleVisitDetailHelper;
@@ -149,6 +161,7 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             mAptId = intent.getIntExtra(RescribeConstants.APPOINTMENT_ID, 0);
             opdID = intent.getStringExtra(RescribeConstants.PATIENT_OPDID);
             mOpdTime = intent.getStringExtra(RescribeConstants.OPD_TIME);
+            mHospitalId = intent.getIntExtra(RescribeConstants.CLINIC_ID, 0);
             mHospitalPatId = intent.getStringExtra(RescribeConstants.PATIENT_HOS_PAT_ID);
             titleTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_NAME));
             userInfoTextView.setText(intent.getStringExtra(RescribeConstants.PATIENT_INFO));
@@ -355,6 +368,9 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                     }
                     patientHistoryList.get(i).setVitals(vitalSortedList);
                 }
+
+                if (patientHistoryList.get(i).getCaseDetailName().toLowerCase().contains(CHILD_TYPE_NOTES))
+                    notesList = patientHistoryList.get(i).getCommonData();
             }
 
 
@@ -451,12 +467,15 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 break;
             case R.id.addNoteButton:
 
-                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                if (!mBluetoothAdapter.isEnabled()) {
-                    if (!mBluetoothAdapter.enable())
-                        Toast.makeText(this, "Please Turn on bluetooth.", Toast.LENGTH_SHORT).show();
-                }
-                openSmartPen();
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        },
+                        MY_PERMISSIONS_REQUEST_CODE
+                );
 
                 break;
             case R.id.addRecordButton:
@@ -478,9 +497,35 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CODE: {
+                // When request is cancelled, the results array are empty
+                if ((grantResults.length <= 0) ||
+                        (grantResults[0]
+                                + grantResults[1]
+                                + grantResults[2] != PackageManager.PERMISSION_GRANTED)) {
+                    // Permissions are denied
+                    Toast.makeText(this, "Permissions denied.", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                    if (!mBluetoothAdapter.isEnabled()) {
+                        if (!mBluetoothAdapter.enable())
+                            Toast.makeText(this, "Please Turn on bluetooth.", Toast.LENGTH_SHORT).show();
+                    }
+                    openSmartPen();
+                    // Permissions are granted
+//                    Toast.makeText(this, "Permissions granted.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
     private void openSmartPen() {
         mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);
-        //绑定蓝牙笔服务
+        // Binding Bluetooth pen service
         RescribeApplication.getInstance().bindPenService(Keys.APP_PEN_SERVICE_NAME);
         isPenServiceReady(Keys.APP_PEN_SERVICE_NAME);
     }
@@ -497,38 +542,24 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
                 intent.putExtra(RescribeConstants.LOCATION_ID, "0");
                 intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
-                intent.putExtra(RescribeConstants.CLINIC_ID, "0");
+                intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
                 intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
                 intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
                 intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
                 intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
                 intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
+                if (!notesList.isEmpty()) {
+                    intent.putExtra(RescribeConstants.START_FROM_NOTE, true);
+                    intent.putParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST, new ArrayList<VisitCommonData>(notesList));
+                }
                 startActivity(intent);
 
             } else {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        dismissProgressDialog();
-                        if (Keys.APP_PEN_SERVICE_NAME.equals(svrName)) {
-                            CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
-                            Intent intent = new Intent(mContext, ScanActivity.class);
-                            intent.putExtra(RescribeConstants.OPD_ID, opdID);
-                            intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-                            intent.putExtra(RescribeConstants.LOCATION_ID, "0");
-                            intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
-                            intent.putExtra(RescribeConstants.CLINIC_ID, "0");
-                            intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
-                            intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
-                            intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
-                            intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
-                            intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
-                            startActivity(intent);
-                        } /*else if (Keys.APP_USB_SERVICE_NAME.equals(svrName)) {
-                        Intent intent = new Intent(mContext, PenInfoActivity.class);
-                        intent.putExtra(Keys.KEY_VALUE, svrName);
-                        startActivity(intent);
-                    }*/
+                        // Scan Bluetooth and connect service
+                        scanBluetoothAndConnect();
                     }
                 }, 500);
             }
@@ -540,6 +571,73 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
                 }
             }, 1000);
         }
+    }
+
+    private void scanBluetoothAndConnect() {
+        PenService service = RescribeApplication.getInstance().getPenService();
+        if (service != null) {
+            service.scanDevice(new Listeners.OnScanDeviceListener() {
+                @Override
+                public void find(DeviceObject device) {
+
+                    CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY);
+                    Intent intent = new Intent(mContext, PenInfoActivity.class);
+                    intent.putExtra(RescribeConstants.OPD_ID, opdID);
+                    intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+                    intent.putExtra(RescribeConstants.LOCATION_ID, "0");
+                    intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
+                    intent.putExtra(RescribeConstants.CLINIC_ID, "0");
+                    intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+                    intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+                    intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+                    intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
+                    intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
+                    intent.putExtra(Keys.KEY_DEVICE_ADDRESS, device.address);
+                    if (!notesList.isEmpty()) {
+                        intent.putExtra(RescribeConstants.START_FROM_NOTE, true);
+                        intent.putParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST, new ArrayList<VisitCommonData>(notesList));
+                    }
+                    startActivity(intent);
+
+                    // Stop searching
+                    PenService service = RescribeApplication.getInstance().getPenService();
+                    if (service != null) {
+                        service.stopScanDevice();
+                    }
+
+                    dismissProgressDialog();
+                }
+
+                @Override
+                public void complete(HashMap<String, DeviceObject> list) {
+                    Log.i("DEVICES", list.toString());
+                    dismissProgressDialog();
+                    if (list.isEmpty())
+                        showRetryDialog();
+                }
+            });
+        }
+    }
+
+    private void showRetryDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
+        alert.setTitle("Info");
+        alert.setMessage("Device not found, make sure pen bluetooth is on");
+        alert.setCancelable(false);
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mProgressDialog = ProgressDialog.show(mContext, "", getString(R.string.service_ble_start), true);
+                scanBluetoothAndConnect();
+            }
+        });
+        alert.show();
     }
 
     /**
@@ -570,6 +668,41 @@ public class SingleVisitDetailsActivity extends AppCompatActivity implements Hel
             mSingleVisitDetailHelper.deleteSelectedAttachments(list, patientID);
         else if (caseName.contains(CHILD_TYPE_NOTES))
             mSingleVisitDetailHelper.deleteSelectedNotes(list);
+    }
+
+    @Override
+    public void onClickAttachment(VisitCommonData visitCommonData, List<VisitCommonData> visitCommonDatas, boolean isNote) {
+        // Show Image or WebView.
+        String tag = visitCommonData.getUrl();
+        String fileExtension = tag.substring(tag.lastIndexOf("."));
+
+        if (fileExtension.contains(".doc") || fileExtension.contains(".odt") || fileExtension.contains(".ppt") || fileExtension.contains(".odp") || fileExtension.contains(".xls") || fileExtension.contains(".ods") || fileExtension.contains(".pdf")) {
+            Intent intent = new Intent(mContext, WebViewActivity.class);
+            intent.putExtra(mContext.getString(R.string.title_activity_selected_docs), tag);
+            intent.putExtra(mContext.getString(R.string.file_extension), fileExtension);
+            startActivity(intent);
+        } else {
+            // do stuff here
+            //  Intent intent = new Intent(mContext, ZoomImageViewActivity.class);
+            Intent intent = new Intent(mContext, MultipleImageWithSwipeAndZoomActivity.class);
+            intent.putExtra(RescribeConstants.DOCUMENTS, tag);
+            intent.putExtra(RescribeConstants.IS_URL, true);
+
+            intent.putExtra(RescribeConstants.START_FROM_NOTE, isNote);
+            intent.putExtra(RescribeConstants.OPD_ID, opdID);
+            intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+            intent.putExtra(RescribeConstants.LOCATION_ID, "0");
+            intent.putExtra(RescribeConstants.PATIENT_ID, patientID);
+            intent.putExtra(RescribeConstants.CLINIC_ID, "0");
+            intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+            intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+            intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+            intent.putExtra(RescribeConstants.VISIT_DATE, CommonMethods.getFormattedDate(mDateSelected, RescribeConstants.DATE_PATTERN.UTC_PATTERN, RescribeConstants.DATE_PATTERN.DD_MM_YYYY));
+            intent.putExtra(RescribeConstants.OPD_TIME, mOpdTime);
+
+            intent.putParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST, new ArrayList<VisitCommonData>(visitCommonDatas));
+            startActivity(intent);
+        }
     }
 
     @Override

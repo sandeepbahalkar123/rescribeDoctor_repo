@@ -9,7 +9,7 @@
     <color name="grey_500">#9E9E9E</color>
     <color name="transparent">#00000000</color>
     <color name="placeHolder">#55000000</color>
-    <item name="errorColor" type="color">#BD362F</item>
+    <color name="errorColor">#BD362F</color>
     <color name="recentblue">#04abdf</color>
     <color name="light_green">#6cbb8e</color>
     <color name="clinic_address_color">#5f5f5f</color>
@@ -17,7 +17,7 @@
     <color name="black">#000000</color>
     <color name="black_opacity">#20000000</color>
     <color name="floating_blue_color">#3676A2</color>
-    <color name="Red">#FF0000</color>
+    <color name="red">#FF0000</color>
     <color name="tagColor">#04abdf</color>
     <color name="timing_bg_color">#50a9da</color>
     <color name="statusbar">#0077a7</color>
@@ -69,4 +69,26 @@
     <color name="clickHere">#3676a3</color>
     <color name="activity_background">#E4E4E4</color>
     <color name="blue">#2b93d0</color>
+    <color name="green">#00FF00</color>
+    <color name="pink">#FFC0CB</color>
+    <color name="orange">#FFA500</color>
+    <color name="purple">#800080</color>
+    <color name="brown">#A52A2A</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="gold">#D4AF37</color>
+
+
+    <array name="demo_colors">
+        <item>@color/red</item>
+        <item>@color/green</item>
+        <item>@color/blue</item>
+        <item>@color/yellow</item>
+        <item>@color/black</item>
+        <item>@color/pink</item>
+        <item>@color/orange</item>
+        <item>@color/purple</item>
+        <item>@color/brown</item>
+        <item>@color/silver</item>
+        <item>@color/gold</item>
+    </array>
 </resources>

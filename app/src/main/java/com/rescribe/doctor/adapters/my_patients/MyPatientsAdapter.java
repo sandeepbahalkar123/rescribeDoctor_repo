@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +43,6 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.rescribe.doctor.util.CommonMethods.Log;
 import static com.rescribe.doctor.util.CommonMethods.toCamelCase;
 import static com.rescribe.doctor.util.RescribeConstants.CLINIC_ID;
 import static com.rescribe.doctor.util.RescribeConstants.PATIENT_HOS_PAT_ID;
@@ -209,7 +207,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
         } else {
             holder.payableAmountTextView.setText(" Rs." + patientObject.getOutStandingAmount() + "/-");
-            holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
+            holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.red));
         }
 
        // holder.chatImageView.setVisibility(View.VISIBLE);

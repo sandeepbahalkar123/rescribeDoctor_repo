@@ -3,7 +3,6 @@ package com.rescribe.doctor.adapters.patient_detail;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
@@ -28,10 +27,7 @@ import com.rescribe.doctor.model.case_details.PatientHistory;
 import com.rescribe.doctor.model.case_details.Range;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.case_details.Vital;
-import com.rescribe.doctor.ui.activities.patient_details.WebViewActivity;
-import com.rescribe.doctor.ui.activities.zoom_images.MultipleImageWithSwipeAndZoomActivity;
 import com.rescribe.doctor.util.CommonMethods;
-import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,7 +46,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
     public static final int TEXT_LIMIT = 33;
     private static final String CHILD_TYPE_ALLERGIES = "allergie";
     private static final String CHILD_TYPE_PRESCRIPTIONS = "prescription";
-    private OnDeleteAttachments deleteAttachmentsListener;
+    private OnAttachmentsListener attachmentsListener;
     private int mPosition = 0;
     private Context mContext;
     private List<PatientHistory> mListDataHeader = new ArrayList<>(); // header titles
@@ -62,9 +58,9 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
     private Integer selectedAttachmentToDeleteGroupPosition;
     //-------
 
-    public SingleVisitAdapter(Context context, List<PatientHistory> listDataHeader, OnDeleteAttachments deleteAttachmentsListener) {
+    public SingleVisitAdapter(Context context, List<PatientHistory> listDataHeader, OnAttachmentsListener attachmentsListener) {
         this.mContext = context;
-        this.deleteAttachmentsListener = deleteAttachmentsListener;
+        this.attachmentsListener = attachmentsListener;
         //  case details with no data are not added in the list
         for (int i = 0; i < listDataHeader.size(); i++) {
             List<VisitCommonData> commonData = listDataHeader.get(i).getCommonData();
@@ -174,8 +170,10 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 attachments.add(mListDataHeader.get(groupPosition).getCommonData().get(i));
                 int check = i + 1;
                 if (check % 3 == 0 || check == size1) {
-                    if (headerName.contains(CHILD_TYPE_ATTACHMENTS) || headerName.contains(CHILD_TYPE_NOTES))
+                    if (headerName.contains(CHILD_TYPE_ATTACHMENTS))
                         childViewHolder.tableLayout.addView(addAttachmentsTableRow(attachments, CHILD_TYPE_ATTACHMENTS));
+                    else if (headerName.contains(CHILD_TYPE_NOTES))
+                        childViewHolder.tableLayout.addView(addAttachmentsTableRow(attachments, CHILD_TYPE_NOTES));
                     else if (headerName.contains(CHILD_TYPE_ANNOTATION)) {
                         childViewHolder.tableLayout.addView(addAttachmentsTableRow(attachments, CHILD_TYPE_ANNOTATION));
                     }
@@ -299,7 +297,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
 
                 noOfVitals.setText(mListDataHeader.get(groupPosition).getVitals().get(mPosition).getUnitValue());
                 if (mListDataHeader.get(groupPosition).getVitals().get(mPosition).getCategory().equalsIgnoreCase(mContext.getResources().getString(R.string.severeRange))) {
-                    noOfVitals.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
+                    noOfVitals.setTextColor(ContextCompat.getColor(mContext, R.color.red));
                 } else if (mListDataHeader.get(groupPosition).getVitals().get(mPosition).getCategory().equalsIgnoreCase(mContext.getResources().getString(R.string.normalRange))) {
                     noOfVitals.setTextColor(ContextCompat.getColor(mContext, R.color.range_green));
                 } else if (mListDataHeader.get(groupPosition).getVitals().get(mPosition).getCategory().equalsIgnoreCase(mContext.getResources().getString(R.string.moderateRange))) {
@@ -370,25 +368,8 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Show Image or WebView.
-
-                    String tag = ((VisitCommonData) v.getTag()).getUrl();
-                    String fileExtension = tag.substring(tag.lastIndexOf("."));
-
-                    if (fileExtension.contains(".doc") || fileExtension.contains(".odt") || fileExtension.contains(".ppt") || fileExtension.contains(".odp") || fileExtension.contains(".xls") || fileExtension.contains(".ods") || fileExtension.contains(".pdf")) {
-                        Intent intent = new Intent(mContext, WebViewActivity.class);
-                        intent.putExtra(mContext.getString(R.string.title_activity_selected_docs), tag);
-                        intent.putExtra(mContext.getString(R.string.file_extension), fileExtension);
-                        mContext.startActivity(intent);
-                    } else {
-                        // do stuff here
-                        //  Intent intent = new Intent(mContext, ZoomImageViewActivity.class);
-                        Intent intent = new Intent(mContext, MultipleImageWithSwipeAndZoomActivity.class);
-                        intent.putExtra(RescribeConstants.DOCUMENTS, tag);
-                        intent.putExtra(RescribeConstants.IS_URL, true);
-                        intent.putParcelableArrayListExtra(RescribeConstants.ATTACHMENTS_LIST, new ArrayList<VisitCommonData>(mListDataHeaderAllAttachmentCommonDataList));
-                        mContext.startActivity(intent);
-                    }
+                    boolean isNote = childTypeAnnotation.contains(CHILD_TYPE_NOTES);
+                    attachmentsListener.onClickAttachment((VisitCommonData) v.getTag(), mListDataHeaderAllAttachmentCommonDataList, isNote);
                 }
             });
 
@@ -399,8 +380,8 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 item.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        if (childTypeAnnotation.contains(CHILD_TYPE_ATTACHMENTS)) {
-                            mShowDeleteCheckbox = mShowDeleteCheckbox ? false : true;
+                        if (childTypeAnnotation.contains(CHILD_TYPE_ATTACHMENTS) || childTypeAnnotation.contains(CHILD_TYPE_NOTES)) {
+                            mShowDeleteCheckbox = !mShowDeleteCheckbox;
                             notifyDataSetChanged();
                         }
                         return false;
@@ -675,7 +656,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             public void onClick(View v) {
                 if (!mSelectedAttachmentToDelete.isEmpty()) {
                     selectedAttachmentToDeleteGroupPosition = (Integer) v.getTag();
-                    String caseName= CHILD_TYPE_ATTACHMENTS;
+                    String caseName = CHILD_TYPE_ATTACHMENTS;
                     PatientHistory patientHistory = mListDataHeader.get(selectedAttachmentToDeleteGroupPosition);
                     if (patientHistory.getCaseDetailName().toLowerCase().contains(CHILD_TYPE_ATTACHMENTS)) {
                         caseName = CHILD_TYPE_ATTACHMENTS;
@@ -684,7 +665,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                     }
 
                     if (groupViewHolder.mDeleteAttachments.getVisibility() == View.VISIBLE) {
-                        deleteAttachmentsListener.deleteAttachments(mSelectedAttachmentToDelete,caseName);
+                        attachmentsListener.deleteAttachments(mSelectedAttachmentToDelete, caseName);
                     }
                 }
 
@@ -917,7 +898,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
                 categoryBpMin = categoryForBp.length == 2 ? categoryForBp[1] : "";
             }
             if (categoryForBpMax.equalsIgnoreCase(context.getString(R.string.severeRange))) {
-                noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.Red));
+                noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.red));
             } else if (categoryForBpMax.equalsIgnoreCase(context.getString(R.string.normalRange))) {
                 noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.range_green));
             } else if (categoryForBpMax.equalsIgnoreCase(context.getString(R.string.moderateRange))) {
@@ -927,7 +908,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             }
 
             if (categoryBpMin.equalsIgnoreCase(context.getString(R.string.severeRange))) {
-                noOfVitalsTypeDialog.setTextColor(ContextCompat.getColor(context, R.color.Red));
+                noOfVitalsTypeDialog.setTextColor(ContextCompat.getColor(context, R.color.red));
             } else if (categoryBpMin.equalsIgnoreCase(context.getString(R.string.normalRange))) {
                 noOfVitalsTypeDialog.setTextColor(ContextCompat.getColor(context, R.color.range_green));
             } else if (categoryBpMin.equalsIgnoreCase(context.getString(R.string.moderateRange))) {
@@ -987,7 +968,7 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
             vitalName.setText(vitalDisplayName);
             //---*************** Show vaital_display_name instead of unitName : END
             if (category.equalsIgnoreCase(context.getString(R.string.severeRange))) {
-                noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.Red));
+                noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.red));
             } else if (category.equalsIgnoreCase(context.getString(R.string.normalRange))) {
                 noOfVitalsDialog.setTextColor(ContextCompat.getColor(context, R.color.range_green));
             } else if (category.equalsIgnoreCase(context.getString(R.string.moderateRange))) {
@@ -1099,9 +1080,10 @@ public class SingleVisitAdapter extends BaseExpandableListAdapter {
         return isAttachmentDeleted;
     }
 
-    public interface OnDeleteAttachments {
-        public void deleteAttachments(HashSet<VisitCommonData> list, String caseName);
+    public interface OnAttachmentsListener {
+        void deleteAttachments(HashSet<VisitCommonData> list, String caseName);
 
+        void onClickAttachment(VisitCommonData visitCommonData, List<VisitCommonData> visitCommonDatas, boolean isNote);
     }
 
     class ChildViewHolder {

@@ -39,10 +39,13 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
 
     private PenModel mPenModel = PenModel.None;
     private int mPenWeight = 3;
+    private int mPenOpacity = 255;
     private int mPenColor = Color.BLACK;
     private int mBgColor = Color.WHITE;
     private boolean mIsRubber = false;
     private boolean mIsEditPhoto = false;
+
+    private boolean mIsFingerTouch = true;
 
     private ShapeModel mInsertShape = ShapeModel.None;
     private ShapeView mInsertShapeTmp;
@@ -52,10 +55,16 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
     private ArrayList<PhotoView> mPhotoList = new ArrayList<PhotoView>();
 
     private CanvasManageInterface mCanvasManageInterface;
+    private PenDrawViewCanvasListener mPenDrawViewCanvasListener;
 
     public MultipleCanvasView(Context context, CanvasManageInterface canvasManage) {
         super(context);
         this.mCanvasManageInterface = canvasManage;
+        try {
+            this.mPenDrawViewCanvasListener = (PenDrawViewCanvasListener) context;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
         initCanvasInfo();
     }
 
@@ -66,6 +75,13 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
+
+        try {
+            this.mPenDrawViewCanvasListener = (PenDrawViewCanvasListener) context;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+
         initCanvasInfo();
     }
 
@@ -76,6 +92,13 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
+
+        try {
+            this.mPenDrawViewCanvasListener = (PenDrawViewCanvasListener) context;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+
         initCanvasInfo();
     }
 
@@ -131,6 +154,11 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
 
     }
 
+    public void drawBitmap(Bitmap bitmap) {
+        if (bitmap != null)
+            this.mPenDrawView.drawBitmap(bitmap);
+    }
+
     /**
      * 获取插入的图片数量
      *
@@ -165,6 +193,10 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         this.mPenModel = value;
     }
 
+    public int getPenWeight() {
+        return mPenWeight;
+    }
+
     /**
      * 设置笔粗细
      *
@@ -175,6 +207,10 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         mPenPaint.setStrokeWidth(mPenWeight);
         mErasePaint.setStrokeWidth(mPenWeight);
         mPenDrawView.setPenWeight(mPenWeight);
+    }
+
+    public int getPenColor() {
+        return mPenColor;
     }
 
     /**
@@ -298,19 +334,33 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         super.onDraw(canvas);
     }
 
+    public boolean isFingerTouch() {
+        return mIsFingerTouch;
+    }
+
+    public void setFingerTouch(boolean mIsFingerTouch) {
+        this.mIsFingerTouch = mIsFingerTouch;
+    }
+
     //触摸事件
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mIsEditPhoto) return false;
+        if (isFingerTouch()) {
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+            boolean isRoute = (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN);
 
-        int x = (int) event.getX();
-        int y = (int) event.getY();
-        boolean isRoute = (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN);
-        if (mInsertShape != ShapeModel.None) {
-            insertShape(x, y, isRoute);
-        } else {
-            drawLine(x, y, isRoute);
+            if (mPenDrawViewCanvasListener != null)
+                mPenDrawViewCanvasListener.onDraw(x, y, isRoute);
+
+            if (mIsEditPhoto) return false;
+
+            if (mInsertShape != ShapeModel.None) {
+                insertShape(x, y, isRoute);
+            } else {
+                drawLine(x, y, isRoute);
+            }
         }
         return true;
     }
@@ -392,6 +442,15 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
         return index;
     }
 
+    public int getPenOpacity() {
+        return (int) (mPenOpacity / 25.5);
+    }
+
+    public void setPenOpacity(int penOpacity) {
+        mPenOpacity = (int) (penOpacity * 25.5);
+        mPenPaint.setAlpha(mPenOpacity);
+    }
+
     /**
      * 笔模式
      *
@@ -466,5 +525,9 @@ public class MultipleCanvasView extends FrameLayout implements OnLongClickListen
          * @param isRoute
          */
         void penRouteStatus(boolean isRoute);
+    }
+
+    public interface PenDrawViewCanvasListener {
+        void onDraw(int x, int y, boolean isRoute);
     }
 }

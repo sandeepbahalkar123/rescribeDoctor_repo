@@ -1,7 +1,6 @@
 package com.rescribe.doctor.ui.fragments.patient.my_patient;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -9,15 +8,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Editable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +56,6 @@ import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHist
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
 import com.rescribe.doctor.ui.customesViews.drag_drop_recyclerview_helper.EndlessRecyclerViewScrollListener;
-import com.rescribe.doctor.ui.fragments.book_appointment.CoachFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -89,7 +84,6 @@ import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
  */
 
 public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.OnDownArrowClicked, BottomMenuAppointmentAdapter.OnMenuBottomItemClickListener, HelperResponse {
-    private AppointmentHelper mAppointmentHelper;
     @BindView(R.id.whiteUnderLine)
     ImageView whiteUnderLine;
     @BindView(R.id.historyExpandableListView)
@@ -108,7 +102,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     RecyclerView recyclerViewBottom;
     @BindView(R.id.searchEditText)
     EditTextWithDeleteButton searchEditText;
-
+    private AppointmentHelper mAppointmentHelper;
     private Unbinder unbinder;
     private MyPatientsAdapter mMyPatientsAdapter;
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List"};
@@ -126,8 +120,13 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private int mLocationId;
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
     private String fromActivityLaunched = "";
-    private boolean isFiltered = false;
     private AppDBHelper appDBHelper;
+
+    public static MyPatientsFragment newInstance(Bundle bundle) {
+        MyPatientsFragment myPatientsFragment = new MyPatientsFragment();
+        myPatientsFragment.setArguments(bundle);
+        return myPatientsFragment;
+    }
 
     @Override
     public void onDestroy() {
@@ -202,12 +201,11 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 searchText = s.toString();
 
 
-
 //                    Log("searchText.length", "" + searchText.length());
 //                   Log("searchText.length", "" + searchText.length());
 
-                    if (searchText.length() > 2 || searchText.length() == 0)
-                        searchPatients(NetworkUtil.getConnectivityStatusBoolean(getContext()));
+                if (searchText.length() > 2 || searchText.length() == 0)
+                    searchPatients(NetworkUtil.getConnectivityStatusBoolean(getContext()));
 
 
             }
@@ -275,7 +273,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             b.putInt(RescribeConstants.CLINIC_ID, patientListObject.getClinicId());
             b.putString(RescribeConstants.PATIENT_ID, String.valueOf(patientListObject.getPatientId()));
             b.putString(RescribeConstants.PATIENT_HOS_PAT_ID, String.valueOf(patientListObject.getHospitalPatId()));
-            b.putBoolean(RescribeConstants.PATIENT_IS_DEAD,patientListObject.isDead());
+            b.putBoolean(RescribeConstants.PATIENT_IS_DEAD, patientListObject.isDead());
             Intent intent = new Intent(getActivity(), PatientHistoryActivity.class);
             intent.putExtra(RescribeConstants.PATIENT_INFO, b);
             startActivity(intent);
@@ -304,8 +302,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     } else {
                         showDialogToSelectLocation(mDoctorLocationModel, null);
                     }
-                }else {
-                    CommonMethods.showInfoDialog(getActivity().getResources().getString(R.string.can_not_add_to_waiting_list),getActivity(),false);
+                } else {
+                    CommonMethods.showInfoDialog(getActivity().getResources().getString(R.string.can_not_add_to_waiting_list), getActivity(), false);
 
 
                 }
@@ -325,13 +323,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             emptyListView.setVisibility(View.VISIBLE);
         else
             emptyListView.setVisibility(View.GONE);
-    }
-
-
-    public static MyPatientsFragment newInstance(Bundle bundle) {
-        MyPatientsFragment myPatientsFragment = new MyPatientsFragment();
-        myPatientsFragment.setArguments(bundle);
-        return myPatientsFragment;
     }
 
     @Override
@@ -528,29 +519,15 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 }
             }
         }
-        RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
+        final RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
         for (int index = 0; index < mPatientListsOriginal.size(); index++) {
             final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
 
             final RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
-            if (mLocationId == clinicList.getLocationId()) {
-                radioButton.setChecked(true);
-            } else {
-                radioButton.setChecked(false);
-            }
+            radioButton.setChecked(mLocationId == clinicList.getLocationId());
+            radioButton.setTag(clinicList);
             radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
             radioButton.setId(CommonMethods.generateViewId());
-            radioButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mLocationId = clinicList.getLocationId();
-                    mClinicId = clinicList.getClinicId();
-                    mClinicName = clinicList.getClinicName();
-                    mClinicCity = clinicList.getCity();
-                    mClinicArea = clinicList.getArea();
-                    CommonMethods.Log("clinicList", "" + clinicList.toString());
-                }
-            });
             radioGroup.addView(radioButton);
         }
 
@@ -559,7 +536,17 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             @Override
             public void onClick(View v) {
 
-                if (mLocationId != 0) {
+                if (radioGroup.getCheckedRadioButtonId() != -1) {
+
+                    RadioButton radioButton = radioGroup.findViewById(radioGroup.getCheckedRadioButtonId());
+                    DoctorLocationModel clinicList = (DoctorLocationModel) radioButton.getTag();
+                    mLocationId = clinicList.getLocationId();
+                    mClinicId = clinicList.getClinicId();
+                    mClinicName = clinicList.getClinicName();
+                    mClinicCity = clinicList.getCity();
+                    mClinicArea = clinicList.getArea();
+                    CommonMethods.Log("clinicList", "" + clinicList.toString());
+
                     if (getString(R.string.new_patients).equalsIgnoreCase(calledFrom)) {
 
                         for (DoctorLocationModel doctorLocationModel : getDoctorLocationModels()) {

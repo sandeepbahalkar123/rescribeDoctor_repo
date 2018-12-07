@@ -2,7 +2,6 @@ package com.rescribe.doctor.adapters.my_appointments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -260,7 +259,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
         } else {
             viewHolder.payableAmountTextView.setText(" Rs." + patientList.getOutStandingAmount() + "/-");
-            viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
+            viewHolder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.red));
         }
 
         viewHolder.appointmentTime.setVisibility(View.VISIBLE);
@@ -540,7 +539,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             groupViewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.rating_color));
         } else {
             groupViewHolder.mPayableAmountTextView.setText(" Rs." + appointmentListObject.getPatientHeader().getOutStandingAmount() + "/-");
-            groupViewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
+            groupViewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.red));
         }
 
         groupViewHolder.mAppointmentTime.setVisibility(View.VISIBLE);

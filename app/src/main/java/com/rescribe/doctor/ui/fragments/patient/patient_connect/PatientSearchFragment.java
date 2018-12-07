@@ -22,8 +22,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 /**
  * Created by jeetal on 8/9/17.
  */
@@ -89,7 +87,7 @@ public class PatientSearchFragment extends Fragment {
             if (mReceivedPatientDataList.size() > 0) {
                 isDataListViewVisible(true);
                 mPatientConnectAdapter = new PatientConnectChatAdapter(getActivity(), mReceivedPatientDataList, this);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setItemAnimator(new DefaultItemAnimator());
                 DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),

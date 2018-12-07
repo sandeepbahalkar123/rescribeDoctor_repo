@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/seekbar_dialog_bg"
+        android:padding="@dimen/dp10">
+
+        <TextView
+            android:id="@+id/penSizeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:padding="@dimen/dp5"
+            tools:text="Pen Size: 1" />
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:background="#2F3338"
+            android:layout_height="wrap_content"
+            tools:max="10"
+            tools:progress="3"
+            android:progressTint="@color/tagColor"
+            android:padding="@dimen/dp5" />
+
+    </LinearLayout>
+
+</RelativeLayout>

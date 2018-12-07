@@ -51,7 +51,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/notification/ic_event_note_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_play_arrow_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -61,8 +61,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_note" />
-                            <entry key="sourceFile" value="$USER_HOME$" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="sp_calendar" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/calendar.svg" />
                           </map>
                         </option>
                       </PersistentState>

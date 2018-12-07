@@ -7,32 +7,27 @@ import java.util.HashMap;
 
 public class UploadStatus implements Parcelable {
 
+    public static final Creator<UploadStatus> CREATOR = new Creator<UploadStatus>() {
+        @Override
+        public UploadStatus createFromParcel(Parcel source) {
+            return new UploadStatus(source);
+        }
+
+        @Override
+        public UploadStatus[] newArray(int size) {
+            return new UploadStatus[size];
+        }
+    };
     private String uploadId;
     private String visitDate;
     private String mOpdtime;
     private String parentCaption;
     private String imagePath;
     private String recordType;
-    private HashMap <String,String> headerMap = new HashMap<>();
+    private boolean uploading = false;
+    private HashMap<String, String> headerMap = new HashMap<>();
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.uploadId);
-        dest.writeString(this.visitDate);
-        dest.writeString(this.mOpdtime);
-        dest.writeString(this.parentCaption);
-        dest.writeString(this.imagePath);
-        dest.writeString(this.recordType);
-        dest.writeSerializable(this.headerMap);
-    }
-
-    public UploadStatus(String uploadId, String visitDate, String mOpdtime, String parentCaption, String imagePath, String recordType,HashMap<String, String> headerMap) {
+    public UploadStatus(String uploadId, String visitDate, String mOpdtime, String parentCaption, String imagePath, String recordType, HashMap<String, String> headerMap) {
         this.uploadId = uploadId;
         this.visitDate = visitDate;
         this.mOpdtime = mOpdtime;
@@ -53,17 +48,21 @@ public class UploadStatus implements Parcelable {
 
     }
 
-    public static final Creator<UploadStatus> CREATOR = new Creator<UploadStatus>() {
-        @Override
-        public UploadStatus createFromParcel(Parcel source) {
-            return new UploadStatus(source);
-        }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-        @Override
-        public UploadStatus[] newArray(int size) {
-            return new UploadStatus[size];
-        }
-    };
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.uploadId);
+        dest.writeString(this.visitDate);
+        dest.writeString(this.mOpdtime);
+        dest.writeString(this.parentCaption);
+        dest.writeString(this.imagePath);
+        dest.writeString(this.recordType);
+        dest.writeSerializable(this.headerMap);
+    }
 
     public String getUploadId() {
         return uploadId;
@@ -119,5 +118,13 @@ public class UploadStatus implements Parcelable {
 
     public void setHeaderMap(HashMap<String, String> headerMap) {
         this.headerMap = headerMap;
+    }
+
+    public boolean isUploading() {
+        return uploading;
+    }
+
+    public void setUploading(boolean uploading) {
+        this.uploading = uploading;
     }
 }

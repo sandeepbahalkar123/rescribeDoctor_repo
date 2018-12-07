@@ -48,7 +48,7 @@
                 android:background="@color/transparent"
                 android:text="@string/cancel"
                 android:textAllCaps="false"
-                android:textColor="@color/Red"
+                android:textColor="@color/red"
                 android:textSize="@dimen/sp12" />
             <View
                 android:layout_width="match_parent"

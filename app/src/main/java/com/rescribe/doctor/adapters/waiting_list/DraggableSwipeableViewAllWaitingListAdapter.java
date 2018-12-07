@@ -347,7 +347,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
 
         if (item.getViewAll().getWaitingStatusId().equals(CANCEL))
             // Set Red Color
-            holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.Red));
+            holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.red));
         else
             holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.tagColor));
 

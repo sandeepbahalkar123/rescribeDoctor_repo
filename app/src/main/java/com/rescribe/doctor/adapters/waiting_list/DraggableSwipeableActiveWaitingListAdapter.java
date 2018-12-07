@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -345,7 +344,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
         if (item.getActiveAll().getWaitingStatusId().equals(CANCEL))
             // Set Red Color
-            holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.Red));
+            holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.red));
         else
             holder.mTypeStatus.setTextColor(holder.mTypeStatus.getContext().getResources().getColor(R.color.tagColor));
 

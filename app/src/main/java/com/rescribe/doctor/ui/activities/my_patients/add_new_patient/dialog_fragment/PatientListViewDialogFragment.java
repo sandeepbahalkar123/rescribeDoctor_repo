@@ -62,21 +62,19 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
     RecyclerView mRecyclerView;
     @BindView(R.id.emptyListView)
     RelativeLayout mEmptyListView;
-    private ActionBar mActionBar;
     Context mContext;
     private String mHeader;
     @BindView(R.id.tapToAddNewFab)
     CustomTextView tapToAddNewFab;
     //--------
     private String searchText = "";
-    private boolean isFiltered = false;
     //--------
 
     private AppointmentHelper mAppointmentHelper;
     private RequestSearchPatients mRequestSearchPatients = new RequestSearchPatients();
     private PatientListForReference mMyPatientsAdapter;
     private int mSelectedSalutationOfRefPatient=0;
-
+    EndlessRecyclerViewScrollListener scrollListener;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -154,6 +152,7 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
                 if (searchText.length() > 2 || searchText.length() == 0)
                     searchPatients(NetworkUtil.getConnectivityStatusBoolean(getActivity()));
 
+
             }
         });
 
@@ -168,15 +167,16 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
             }
         });
 
-        mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearlayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                Log.d("onscroll:","onload more called");
-                nextPage(page, NetworkUtil.getConnectivityStatusBoolean(getActivity()));
+     scrollListener= new EndlessRecyclerViewScrollListener(linearlayoutManager) {
+         @Override
+         public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+             Log.e("onscroll:", "onload more called");
+             nextPage(page, NetworkUtil.getConnectivityStatusBoolean(getActivity()));
 
+         }
+     };
 
-            }
-        });
+        mRecyclerView.addOnScrollListener(scrollListener);
 
         tapToAddNewFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,6 +265,8 @@ public class PatientListViewDialogFragment extends DialogFragment implements Pat
 
     public void searchPatients(boolean isInternetAvailable) {
         mMyPatientsAdapter.clear();
+        mMyPatientsAdapter.notifyDataSetChanged();
+        scrollListener.resetState();
         if (isInternetAvailable) {
             mRequestSearchPatients.setPageNo(0);
             mAppointmentHelper = new AppointmentHelper(mContext, this);

@@ -106,25 +106,28 @@ public class AddRecordService extends Service {
 
         if (index == 0) {
             UploadStatus file = uploadIdList.get(index);
-            String path = file.getImagePath();
-            String fileType = CommonMethods.getExtension(path).toLowerCase();
-            String fileTypeName;
-            if (documents.contains(fileType))
-                fileTypeName = "image";
-            else
-                fileTypeName = "document";
+            if (!file.isUploading()) {
+                file.setUploading(true);
+                String path = file.getImagePath();
+                String fileType = CommonMethods.getExtension(path).toLowerCase();
+                String fileTypeName;
+                if (documents.contains(fileType))
+                    fileTypeName = "image";
+                else
+                    fileTypeName = "document";
 
 
-            Log.e("fileTypeName", fileTypeName);
+                Log.e("fileTypeName", fileTypeName);
 
-            String docCaption;
+                String docCaption;
 
-            if (!file.getParentCaption().isEmpty())
-                docCaption = file.getParentCaption();
-            else
-                docCaption = CommonMethods.stripExtension(CommonMethods.getFileNameFromPath(file.getImagePath()));
+                if (!file.getParentCaption().isEmpty())
+                    docCaption = file.getParentCaption();
+                else
+                    docCaption = CommonMethods.stripExtension(CommonMethods.getFileNameFromPath(file.getImagePath()));
 
-            imageUpload(path, uploadIdList.get(index).getHeaderMap(), docCaption, fileTypeName);
+                imageUpload(path, uploadIdList.get(index).getHeaderMap(), docCaption, fileTypeName);
+            }
         }
 
         return Service.START_STICKY;
@@ -172,6 +175,7 @@ public class AddRecordService extends Service {
         Log.i("upload_url--", "-" + url);
         Log.i("imagePath122--", "-" + imagePath);
         Log.i("fileType--", "-" + fileTypeName);
+        Log.i("HEADER_PARAMS", index + "_" + mapHeaders.toString());
 
         SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

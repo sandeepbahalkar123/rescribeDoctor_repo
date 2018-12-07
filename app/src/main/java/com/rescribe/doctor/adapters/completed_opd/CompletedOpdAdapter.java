@@ -169,7 +169,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
 
         } else {
             holder.payableAmountTextView.setText(" Rs." + patientObject.getOutstandingAmount() + "/-");
-            holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.Red));
+            holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.red));
 
         }
 
