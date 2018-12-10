@@ -828,8 +828,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         intent.putExtra(RescribeConstants.LOCATION_ID, locationID);
                         setResult(Activity.RESULT_OK, intent);
                         finish();
-                    }
+                    }else
                     CommonMethods.showToast(this, addToWaitingListBaseModel.getCommon().getStatusMessage());
+                    finish();
                 }
             }
             break;
