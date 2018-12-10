@@ -48,20 +48,18 @@ import static com.rescribe.doctor.util.Config.GET_PATIENTS_SYNC;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class LoadAllPatientsService extends Service {
-    private static final String CHANNEL_PATIENT_DOWNLOAD = "patient_download";
-    private static final String TAG = "LOAD_ALL_PATIENT";
-    public static boolean RUNNING = false;
-
-    private static final String LOG_TAG = "LoadAllPatientsService";
     public static final String STATUS = "status";
     public static final String LOAD_ALL_PATIENTS = "com.rescribe.doctor.LOAD_ALL_PATIENTS";
-
+    private static final String CHANNEL_PATIENT_DOWNLOAD = "patient_download";
+    private static final String TAG = "LOAD_ALL_PATIENT";
+    private static final String LOG_TAG = "LoadAllPatientsService";
+    private static final int RECORD_COUNT = 50;
+    public static boolean RUNNING = false;
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
     private int pageCount = 0;
     private boolean isFailed = true;
     private AppDBHelper appDBHelper;
-    private static final int RECORD_COUNT = 50;
     private Gson gson;
 
     @Override
@@ -150,13 +148,13 @@ public class LoadAllPatientsService extends Service {
         mRequestSearchPatients.setSearchText("");
         mRequestSearchPatients.setPaginationSize(RECORD_COUNT);
 
-        String date =CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
-        if (isDownloaded){
-            date=RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD_DATE, this);
-        }else {
-            date=CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
+        String date = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
+        if (isDownloaded) {
+            date = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD_DATE, this);
+        } else {
+            date = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
         }
-        Log.e("date","--"+date);
+        Log.e("date", "--" + date);
 
         mRequestSearchPatients.setDate(date);
 
@@ -172,8 +170,8 @@ public class LoadAllPatientsService extends Service {
             e.printStackTrace();
         }
 
-        String url =isDownloaded ? BASE_URL + GET_PATIENTS_SYNC : BASE_URL + GET_MY_PATIENTS_LIST;
-        Log.e("URL:--","--"+url);
+        String url = isDownloaded ? BASE_URL + GET_PATIENTS_SYNC : BASE_URL + GET_MY_PATIENTS_LIST;
+        Log.e("URL:--", "--" + url);
 
         JsonObjectRequest jsonRequest = new JsonObjectRequest(POST, url, jsonObject,
                 new Response.Listener<JSONObject>() {
@@ -247,7 +245,7 @@ public class LoadAllPatientsService extends Service {
         mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
 
         RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, !isFailed, LoadAllPatientsService.this);
-        if (size!=0){
+        if (size != 0) {
             RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD_DATE, CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN), LoadAllPatientsService.this);
         }
         stopForeground(true);

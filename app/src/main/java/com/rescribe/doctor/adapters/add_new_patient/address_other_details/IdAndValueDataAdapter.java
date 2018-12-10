@@ -86,7 +86,6 @@ public class IdAndValueDataAdapter extends RecyclerView.Adapter<IdAndValueDataAd
 
     @Override
     public Filter getFilter() {
-
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
@@ -94,7 +93,10 @@ public class IdAndValueDataAdapter extends RecyclerView.Adapter<IdAndValueDataAd
                 mFilteredList.clear();
 
                 if (charString.isEmpty()) {
-                    mFilteredList.addAll(list);
+                    for (IdAndValueDataModel patientListObject : list) {
+                        patientListObject.setSpannableSearchedText("");
+                        mFilteredList.add(patientListObject);
+                    }
                 } else {
                     for (IdAndValueDataModel patientListObject : list) {
                         if (patientListObject.getIdValue().toLowerCase().contains(charString)) {
@@ -117,6 +119,10 @@ public class IdAndValueDataAdapter extends RecyclerView.Adapter<IdAndValueDataAd
         };
     }
 
+    public interface OnItemClicked {
+        public void onValueClicked(int id, String value);
+    }
+
     static class ListViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text)
@@ -128,10 +134,6 @@ public class IdAndValueDataAdapter extends RecyclerView.Adapter<IdAndValueDataAd
             ButterKnife.bind(this, view);
             this.view = view;
         }
-    }
-
-    public interface OnItemClicked {
-        public void onValueClicked(int id, String value);
     }
 
 }

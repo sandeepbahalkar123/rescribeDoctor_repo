@@ -46,6 +46,12 @@ public class Config {
     */
     //---------------LOCAL SERVER URL END-----------------------
 
+    //---------------TEST SERVER UR-----------------------
+//    public static String BASE_URL = "https://devrescribe.com:3003/";
+//    public static final String FORGOT_PASSWORD_URL = "https://devrescribe.com/app.html#/access/forgotPassword";
+//    public static final String ADD_NEW_PATIENT_WEB_URL = "https://devrescribe.com/app.html#/addpatientmobile/";
+//    public static final String BROKER = "tcp://devrescribe.com:1883";
+    //---------------TEST SERVER UR-----------------------
 
     //---------------QA SERVER URL START-----------------------
     public static String BASE_URL = "http://drrescribe.com:3003/";

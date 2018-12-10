@@ -1,5 +1,6 @@
 package com.rescribe.doctor.adapters.add_new_patient.address_other_details;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -20,8 +21,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorData;
-import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorListBaseModel;
-import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.IdAndValueDataModel;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
 
@@ -55,6 +54,7 @@ public class DoctorListForReference extends RecyclerView.Adapter<DoctorListForRe
         return new DoctorListForReference.ListViewHolder(itemView);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(final DoctorListForReference.ListViewHolder holder, final int position) {
 
@@ -119,7 +119,10 @@ public class DoctorListForReference extends RecyclerView.Adapter<DoctorListForRe
                 mFilteredList.clear();
 
                 if (charString.isEmpty()) {
-                    mFilteredList.addAll(list);
+                    for (DoctorData patientListObject : list) {
+                        patientListObject.setSpannableSearchedText("");
+                        mFilteredList.add(patientListObject);
+                    }
                 } else {
                     for (DoctorData patientListObject : list) {
                         if (patientListObject.getDocName().toLowerCase().contains(charString)) {
@@ -142,6 +145,10 @@ public class DoctorListForReference extends RecyclerView.Adapter<DoctorListForRe
         };
     }
 
+    public interface OnItemClicked {
+        public void onValueClicked(int id, DoctorData data);
+    }
+
     static class ListViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.docName)
@@ -161,10 +168,6 @@ public class DoctorListForReference extends RecyclerView.Adapter<DoctorListForRe
             ButterKnife.bind(this, view);
             this.view = view;
         }
-    }
-
-    public interface OnItemClicked {
-        public void onValueClicked(int id, DoctorData data);
     }
 
 }
