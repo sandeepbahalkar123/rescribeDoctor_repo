@@ -8,6 +8,23 @@
     android:background="@color/white"
     android:orientation="vertical">
 
+    <com.rescribe.doctor.ui.customesViews.CustomTextView
+        android:id="@+id/textView_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp58"
+        android:layout_marginStart="@dimen/dp58"
+        android:paddingRight="@dimen/dp4"
+        android:paddingEnd="@dimen/dp4"
+        android:paddingLeft="@dimen/dp2"
+        android:textColor="@color/view_detail_color"
+        android:textSize="@dimen/sp18"
+        android:visibility="gone"
+        app:customFont="@string/roboto_medium"
+        tools:text="@string/dummy_normal"
+        android:paddingStart="@dimen/dp2" />
+
+
     <LinearLayout
         android:id="@+id/table"
         android:layout_width="match_parent"
