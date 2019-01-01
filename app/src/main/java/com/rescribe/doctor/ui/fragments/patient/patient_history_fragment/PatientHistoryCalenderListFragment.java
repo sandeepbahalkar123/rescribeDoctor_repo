@@ -79,10 +79,12 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
 
 
     public static PatientHistoryCalenderListFragment createNewFragment(YearsMonthsData dataString, Bundle args) {
+        Bundle bundle = new Bundle();
+        bundle.putAll(args);
         PatientHistoryCalenderListFragment fragment = new PatientHistoryCalenderListFragment();
-        args.putStringArrayList(RescribeConstants.MONTH, dataString.getMonths());
-        args.putString(RescribeConstants.YEAR, "" + dataString.getYear());
-        fragment.setArguments(args);
+        bundle.putStringArrayList(RescribeConstants.MONTH, dataString.getMonths());
+        bundle.putString(RescribeConstants.YEAR, "" + dataString.getYear());
+        fragment.setArguments(bundle);
         return fragment;
     }
 

@@ -196,7 +196,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
         mGeneratedRequestForYearList = new HashSet<>();
 
-        mPatientDetailHelper.doGetPatientHistory(mPatientId, "", getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
+        mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
     }
 
     @OnClick({R.id.backImageView, R.id.addRecordButton, R.id.addNoteButton})
@@ -349,8 +349,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private void setupViewPager() {
         mViewPagerAdapter.mFragmentList.clear();
         mViewPagerAdapter.mFragmentTitleList.clear();
-        for (YearsMonthsData data :
-                mTimePeriodList) {
+        for (YearsMonthsData data : mTimePeriodList) {
             Fragment fragment = PatientHistoryCalenderListFragment.createNewFragment(data, getArguments());
             mViewPagerAdapter.addFragment(fragment, data); // pass title here
         }

@@ -59,7 +59,21 @@ public class DashBoardAppointmentListAdapter extends RecyclerView.Adapter<DashBo
             mStartTimeToShow = CommonMethods.formatDateTime(appointmentClinicList.getAppointmentStartTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME);
         }
         //TODO : NEED TO IMPLEMENT
-        if(mRequiredOpdOrOtString.equals(RescribeConstants.OT_AND_OPD)){
+
+        if(mRequiredOpdOrOtString.equals(RescribeConstants.OT_AND_OPD_AND_OTHER)){
+
+            String otCount = appointmentClinicList.getAppointmentOTCount() + " OT, ";
+            String opdCount = appointmentClinicList.getAppointmentOpdCount() + " OPD, ";
+            String otherCount = appointmentClinicList.getAppointmentOtherCount() + " Other";
+            String clinicInfo = appointmentClinicList.getClinicName() + ", " + appointmentClinicList.getAreaName() + ", " + appointmentClinicList.getCityName();
+
+            Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/roboto_bold.ttf");
+            SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(clinicInfo + mStringFrom + mStartTimeToShow.toLowerCase() + " - " + opdCount + otCount +otherCount);
+            spannableStringBuilder.setSpan(new CustomTypefaceSpan("", font), clinicInfo.length() + +mStringFrom.length() + mStartTimeToShow.length() + 3, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.textViewName.setText(spannableStringBuilder);
+
+
+        }else if(mRequiredOpdOrOtString.equals(RescribeConstants.OT_AND_OPD)){
 
             String otCount = appointmentClinicList.getAppointmentOTCount() + " OT";
             String opdCount = appointmentClinicList.getAppointmentOpdCount() + " OPD, ";
