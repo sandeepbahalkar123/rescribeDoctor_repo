@@ -110,7 +110,10 @@ public class LoadAllPatientsService extends Service {
             if (intent.getAction().equals(RescribeConstants.STARTFOREGROUND_ACTION)) {
                 Log.i(LOG_TAG, "Received Start Foreground Intent ");
                 // Start Downloading
-                request(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, LoadAllPatientsService.this));
+                if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, this).equals(RescribeConstants.YES))
+                    request(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, LoadAllPatientsService.this));
+                else
+                    stopSelf();
             }
         } else stopSelf();
         return super.onStartCommand(intent, flags, startId);
@@ -150,13 +153,13 @@ public class LoadAllPatientsService extends Service {
         mRequestSearchPatients.setSearchText("");
         mRequestSearchPatients.setPaginationSize(RECORD_COUNT);
 
-        String date =CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
-        if (isDownloaded){
-            date=RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD_DATE, this);
-        }else {
-            date=CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
+        String date = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
+        if (isDownloaded) {
+            date = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD_DATE, this);
+        } else {
+            date = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN);
         }
-        Log.e("date","--"+date);
+        Log.e("date", "--" + date);
 
         mRequestSearchPatients.setDate(date);
 
@@ -172,8 +175,8 @@ public class LoadAllPatientsService extends Service {
             e.printStackTrace();
         }
 
-        String url =isDownloaded ? BASE_URL + GET_PATIENTS_SYNC : BASE_URL + GET_MY_PATIENTS_LIST;
-        Log.e("URL:--","--"+url);
+        String url = isDownloaded ? BASE_URL + GET_PATIENTS_SYNC : BASE_URL + GET_MY_PATIENTS_LIST;
+        Log.e("URL:--", "--" + url);
 
         JsonObjectRequest jsonRequest = new JsonObjectRequest(POST, url, jsonObject,
                 new Response.Listener<JSONObject>() {
@@ -195,8 +198,12 @@ public class LoadAllPatientsService extends Service {
                                     isFailed = false;
                                     restored(patientList.size());
                                 } else {
-                                    request(isDownloaded);
-                                    pageCount += 1;
+                                    if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, LoadAllPatientsService.this).equals(RescribeConstants.YES)) {
+                                        request(isDownloaded);
+                                        pageCount += 1;
+                                    } else
+                                        stopSelf();
+
                                 }
                             }
                         }
@@ -247,7 +254,7 @@ public class LoadAllPatientsService extends Service {
         mNotifyManager.notify(RescribeConstants.FOREGROUND_SERVICE, mBuilder.build());
 
         RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, !isFailed, LoadAllPatientsService.this);
-        if (size!=0){
+        if (size != 0) {
             RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD_DATE, CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.UTC_PATTERN), LoadAllPatientsService.this);
         }
         stopForeground(true);
@@ -259,4 +266,6 @@ public class LoadAllPatientsService extends Service {
         super.onDestroy();
         Log.i(LOG_TAG, "In onDestroy");
     }
+
+
 }
