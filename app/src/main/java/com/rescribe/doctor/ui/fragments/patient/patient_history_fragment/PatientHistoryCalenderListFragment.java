@@ -41,7 +41,7 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
     private boolean isdead;
     private ArrayList<String> mMonthName;
     private String mYear;
-    private ArrayList<PatientHistoryInfo> formattedDoctorList;
+
     public CalenderDayOfMonthGridAdapter mCalenderDayOfMonthGridAdapter;
 
     @BindView(R.id.calenderDays)
@@ -130,10 +130,12 @@ public class PatientHistoryCalenderListFragment extends Fragment implements Cale
             Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedPatientHistoryInfo = parentPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
             if (!yearWiseSortedPatientHistoryInfo.isEmpty()) {
                 Map<String, ArrayList<PatientHistoryInfo>> monthArrayListHashMap = yearWiseSortedPatientHistoryInfo.get(mYear);
+                ArrayList<PatientHistoryInfo> formattedDoctorList = new ArrayList<>();
+
                 if (monthArrayListHashMap != null) {
                     for (String month : mMonthName) {
-                        if (formattedDoctorList == null)
-                            formattedDoctorList = new ArrayList<>();
+                      //  if (formattedDoctorList == null)
+                       //     formattedDoctorList = new ArrayList<>();
                         if (monthArrayListHashMap.get(month) != null)
                             formattedDoctorList.addAll(monthArrayListHashMap.get(month));
                     }

@@ -78,6 +78,16 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         String area = patientObject.getPatientArea().isEmpty() ? "" : (patientObject.getPatientCity().isEmpty() ? patientObject.getPatientArea() : patientObject.getPatientArea() + ", ");
         holder.patientClinicAddress.setText(CommonMethods.toCamelCase(area + patientObject.getPatientCity()));
 
+
+
+        if (patientObject.getHospitalName() == null || patientObject.getHospitalName().isEmpty())
+            holder.patientClinic.setVisibility(View.GONE);
+        else {
+            holder.patientClinic.setVisibility(View.VISIBLE);
+            holder.patientClinic.setText(patientObject.getHospitalName());
+        }
+
+
         String patientName = "";
 
         if (patientObject.getSalutation() != 0)
@@ -271,6 +281,11 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         LinearLayout cardView;
         @BindView(R.id.patientClinicAddress)
         CustomTextView patientClinicAddress;
+
+        @BindView(R.id.patientClinic)
+        CustomTextView patientClinic;
+
+
         @BindView(R.id.blueLineDivider)
         View blueLineDivider;
         @BindView(R.id.patientInfoDetailLayout)
