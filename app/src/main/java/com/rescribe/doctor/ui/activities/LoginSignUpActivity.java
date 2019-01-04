@@ -23,14 +23,11 @@ import com.rescribe.doctor.util.RescribeConstants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.RuntimePermissions;
+
 
 /**
  * Created by jeetal on 18/8/17.
  */
-@RuntimePermissions
 public class LoginSignUpActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, HelperResponse {
     private final String TAG = this.getClass().getName();
     @BindView(R.id.container)
@@ -43,7 +40,7 @@ public class LoginSignUpActivity extends AppCompatActivity implements LoginFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_signup_layout);
         ButterKnife.bind(this);
-        LoginSignUpActivityPermissionsDispatcher.askToReadMessageWithCheck(LoginSignUpActivity.this);
+       // LoginSignUpActivityPermissionsDispatcher.askToReadMessageWithCheck(LoginSignUpActivity.this);
         String key = CommonMethods.printKeyHash(LoginSignUpActivity.this);
         CommonMethods.Log(TAG, key);
         init();
@@ -58,22 +55,22 @@ public class LoginSignUpActivity extends AppCompatActivity implements LoginFragm
         fragmentTransaction.replace(R.id.container, loginFragment);
         fragmentTransaction.commit();
     }
+//
+//    @NeedsPermission(Manifest.permission.READ_SMS)
+//    public void askToReadMessage() {
+//        //Do nothing
+//    }
+//
+//    @OnPermissionDenied({Manifest.permission.READ_SMS})
+//    void deniedReadSms() {
+//        //Do nothing
+//    }
 
-    @NeedsPermission(Manifest.permission.READ_SMS)
-    public void askToReadMessage() {
-        //Do nothing
-    }
-
-    @OnPermissionDenied({Manifest.permission.READ_SMS})
-    void deniedReadSms() {
-        //Do nothing
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        LoginSignUpActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//      //  LoginSignUpActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+//    }
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {

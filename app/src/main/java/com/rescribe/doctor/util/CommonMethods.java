@@ -949,7 +949,8 @@ public class CommonMethods {
     public static void logout(Context mContext, AppDBHelper appDBHelper) {
 
         // cancel all uploadings.
-        //UploadService.stopAllUploads();
+       // UploadService.stopAllUploads();
+
 
         String mobileNoGmail = "";
         String passwordGmail = "";

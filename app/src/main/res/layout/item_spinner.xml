@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="@dimen/dp5"
+
+    android:layout_height="wrap_content">
+
+    <com.rescribe.doctor.ui.customesViews.CustomTextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="5"
+        android:singleLine="false"
+        android:textColor="@color/about_doctor_color"
+        android:textSize="@dimen/sp14"
+        android:textStyle="normal"
+        app:customFont="@string/roboto_regular"
+        tools:text="hhfdkdskldkfljjjjjjjjjjskdlslsld;ldlfmfdks;lddfmddnskldcnkslfsdfjkjkfksdlldkldkdfldldlsndkskdnjjdjdjdjjdffjkslldldjddjjnncndjjdnncsjdncnccjdjdjdjncncnjddjjccndjjdjdjjdjkskscnndjjdjdjjsnnxdjksk" />
+</LinearLayout>

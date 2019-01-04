@@ -41,6 +41,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.adapters.book_appointment.ClinicLocactionSpinnerAdapter;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.bottom_menus.BottomMenuAdapter;
@@ -266,8 +267,11 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                 // mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getArea() + ", " + mArrayListDoctorLocationModel.get(i).getCity());
                 mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getAddress());
             }
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.clinic_spinner_layout, mClinicname);
-            clinicNameSpinner.setAdapter(arrayAdapter);
+         //;   ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.clinic_spinner_layout, mClinicname);
+
+            ClinicLocactionSpinnerAdapter clinicLocactionSpinnerAdapter = new ClinicLocactionSpinnerAdapter(ProfileActivity.this,R.layout.clinic_spinner_layout,R.layout.clinic_spinner_layout,mClinicname);
+
+            clinicNameSpinner.setAdapter(clinicLocactionSpinnerAdapter);
 
             clinicNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override

@@ -150,6 +150,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     private ColorGenerator mColorGenerator;
     private int OPD_ID_SEVER = 1;
     private int OT_ID_SEVER = 2;
+    private int OTHER_ID_SEVER = 3;
     private DashBoardAppointmentListAdapter mDashBoardAppointmentListAdapter;
 
     @Override
@@ -298,7 +299,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
         if (calendarTypeList != null) {
             if (calendarTypeList.size() > 0) {
-                String optOrOTRequired = getOtAndOpdRequiredString(calendarTypeList);
+                String optOrOTRequired = getOtAndOpdAndOtherRequiredString(calendarTypeList);
                 RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
                 if (animator instanceof SimpleItemAnimator)
                     ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
@@ -333,10 +334,11 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
 
     }
 
-    private String getOtAndOpdRequiredString(ArrayList<CalendarTypeList> calendarTypeList) {
+    private String getOtAndOpdAndOtherRequiredString(ArrayList<CalendarTypeList> calendarTypeList) {
         String otOrOpdRequiredString = "";
         boolean isOpdRequired = false;
         boolean isOtRequired = false;
+        boolean isOtherRequired = false;
         for (CalendarTypeList calendarTypeListObject : calendarTypeList) {
             if (calendarTypeListObject.getId().equals(OPD_ID_SEVER)) {
                 isOpdRequired = true;
@@ -344,10 +346,15 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             if (calendarTypeListObject.getId().equals(OT_ID_SEVER)) {
                 isOtRequired = true;
             }
+            if (calendarTypeListObject.getId().equals(OTHER_ID_SEVER)) {
+                isOtherRequired = true;
+            }
         }
-        if (isOpdRequired && isOtRequired) {
+        if (isOpdRequired && isOtRequired && isOtherRequired) {
+            otOrOpdRequiredString = RescribeConstants.OT_AND_OPD_AND_OTHER;
+        } else  if (isOpdRequired && isOtRequired) {
             otOrOpdRequiredString = RescribeConstants.OT_AND_OPD;
-        } else if (isOpdRequired) {
+        }else if (isOpdRequired) {
             otOrOpdRequiredString = RescribeConstants.OPD;
         } else if (isOtRequired) {
             otOrOpdRequiredString = RescribeConstants.OT;

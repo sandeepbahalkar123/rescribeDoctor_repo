@@ -375,6 +375,7 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                                         selectTimeDateExpandableView.expandGroup(selectedSlotPosition, true);
                                 } else {
                                     noTimeSlotMessageTextView.setVisibility(View.VISIBLE);
+                                    noTimeSlotMessageTextView.setText(slotListBaseModel.getCommon().getStatusMessage());
                                     selectTimeDateExpandableView.setVisibility(View.GONE);
                                     appointmentTypeIsBookButton.setVisibility(View.GONE);
                                 }
@@ -397,6 +398,7 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                                     selectTimeDateExpandableView.expandGroup(selectedSlotPosition, true);
                             } else {
                                 noTimeSlotMessageTextView.setVisibility(View.VISIBLE);
+                                noTimeSlotMessageTextView.setText(slotListBaseModel.getCommon().getStatusMessage());
                                 selectTimeDateExpandableView.setVisibility(View.GONE);
                                 appointmentTypeIsBookButton.setVisibility(View.GONE);
                             }

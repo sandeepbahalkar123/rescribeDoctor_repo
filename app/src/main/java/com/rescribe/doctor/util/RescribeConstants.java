@@ -186,6 +186,7 @@ public class RescribeConstants {
     public static final String[] SALUTATION = {"Mr. ", "Mrs. ", "Miss ", ""};
     public static final String[] GENDER = {"MALE", "FEMALE", "TRANSGENDER"};
     public static String OT_AND_OPD = "ot_and_opd";
+    public static String OT_AND_OPD_AND_OTHER = "ot_and_opd_and_other";
     public static String OPD = "opd";
     public static String OT = "ot";
 

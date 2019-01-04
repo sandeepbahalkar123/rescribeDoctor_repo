@@ -108,7 +108,10 @@ public class LoadAllPatientsService extends Service {
             if (intent.getAction().equals(RescribeConstants.STARTFOREGROUND_ACTION)) {
                 Log.i(LOG_TAG, "Received Start Foreground Intent ");
                 // Start Downloading
-                request(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, LoadAllPatientsService.this));
+                if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, this).equals(RescribeConstants.YES))
+                    request(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PATIENT_DOWNLOAD, LoadAllPatientsService.this));
+                else
+                    stopSelf();
             }
         } else stopSelf();
         return super.onStartCommand(intent, flags, startId);
@@ -193,8 +196,12 @@ public class LoadAllPatientsService extends Service {
                                     isFailed = false;
                                     restored(patientList.size());
                                 } else {
-                                    request(isDownloaded);
-                                    pageCount += 1;
+                                    if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, LoadAllPatientsService.this).equals(RescribeConstants.YES)) {
+                                        request(isDownloaded);
+                                        pageCount += 1;
+                                    } else
+                                        stopSelf();
+
                                 }
                             }
                         }
@@ -257,4 +264,6 @@ public class LoadAllPatientsService extends Service {
         super.onDestroy();
         Log.i(LOG_TAG, "In onDestroy");
     }
+
+
 }
