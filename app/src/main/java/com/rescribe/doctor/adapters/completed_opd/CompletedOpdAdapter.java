@@ -94,7 +94,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
             //Spannable condition for PatientName
             if (patientObject.getPatientName().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
                 SpannableString spannableString = new SpannableString(patientName);
-                Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Pattern pattern = Pattern.implementation(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(patientName);
                 while (matcher.find()) {
                     spannableString.setSpan(new ForegroundColorSpan(
@@ -110,7 +110,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
 
             if (patientObject.getPatientPhon().toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
                 SpannableString spannablePhoneString = new SpannableString(patientObject.getPatientPhon());
-                Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Pattern pattern = Pattern.implementation(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(patientObject.getPatientPhon());
                 while (matcher.find()) {
                     spannablePhoneString.setSpan(new ForegroundColorSpan(
@@ -127,7 +127,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
             if (dataToShowInPatientID.toLowerCase().contains(patientObject.getSpannableString().toLowerCase())) {
 
                 SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
-                Pattern pattern = Pattern.compile(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Pattern pattern = Pattern.implementation(patientObject.getSpannableString(), Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
 
                 while (matcher.find()) {

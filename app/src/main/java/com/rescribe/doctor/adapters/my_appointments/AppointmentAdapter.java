@@ -159,7 +159,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             //Spannable condition for PatientName
             if (patientList.getPatientName().toLowerCase().contains(patientList.getSpannableString().toLowerCase())) {
                 SpannableString spannableString = new SpannableString(patientName);
-                Pattern pattern = Pattern.compile(patientList.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Pattern pattern = Pattern.implementation(patientList.getSpannableString(), Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(patientName);
                 while (matcher.find()) {
                     spannableString.setSpan(new ForegroundColorSpan(
@@ -175,7 +175,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
             if (patientList.getPatientPhone().toLowerCase().contains(patientList.getSpannableString().toLowerCase())) {
                 SpannableString spannablePhoneString = new SpannableString(patientList.getPatientPhone());
-                Pattern pattern = Pattern.compile(patientList.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Pattern pattern = Pattern.implementation(patientList.getSpannableString(), Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(patientList.getPatientPhone());
                 while (matcher.find()) {
                     spannablePhoneString.setSpan(new ForegroundColorSpan(
@@ -191,7 +191,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             if (dataToShowInPatientID.toLowerCase().contains(patientList.getSpannableString().toLowerCase())) {
 
                 SpannableString spannableIdString = new SpannableString(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
-                Pattern pattern = Pattern.compile(patientList.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Pattern pattern = Pattern.implementation(patientList.getSpannableString(), Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(mContext.getString(R.string.id) + " " + dataToShowInPatientID);
 
                 while (matcher.find()) {
