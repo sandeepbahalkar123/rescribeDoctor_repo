@@ -32,22 +32,31 @@ import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.TimeoutError;
 import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
 import com.android.volley.request.SimpleMultiPartRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.bottom_menus.BottomMenu;
 import com.rescribe.doctor.bottom_menus.BottomMenuActivity;
 import com.rescribe.doctor.bottom_menus.BottomMenuAdapter;
+import com.rescribe.doctor.helpers.database.AppDBHelper;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.login.ClinicList;
 import com.rescribe.doctor.model.login.DocDetail;
+import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.model.profile_photo.ProfilePhotoResponse;
+import com.rescribe.doctor.model.requestmodel.login.LoginRequestModel;
+import com.rescribe.doctor.network.RequestPool;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
 import com.rescribe.doctor.singleton.RescribeApplication;
@@ -63,16 +72,23 @@ import com.rescribe.doctor.util.ImageUtils;
 import com.rescribe.doctor.util.RescribeConstants;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.android.volley.Request.Method.POST;
 import static com.rescribe.doctor.ui.activities.MapActivityShowDoctorLocation.ADDRESS;
 import static com.rescribe.doctor.util.ImageUtils.FILEPATH;
+import static com.rescribe.doctor.util.RescribeConstants.INVALID_LOGIN_PASSWORD;
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 /**
  * Created by jeetal on 16/2/18.
@@ -154,10 +170,9 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     CustomTextView aboutDoctorDescription;
     @BindView(R.id.aboutLayout)
     LinearLayout aboutLayout;
-
+    CustomProgressDialog mCustomProgressDialog;
     private Context mContext;
     private BottomSheetDialog mBottomSheetDialog;
-
     private ArrayList<DoctorLocationModel> mArrayListDoctorLocationModel = new ArrayList<>();
     private DoctorLocationModel doctorLocationModel;
     private ArrayList<String> mServices = new ArrayList<>();
@@ -166,7 +181,8 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     private String authorizationString;
     private Device device;
     private String docId;
-    CustomProgressDialog mCustomProgressDialog;
+    private Gson gson = new Gson();
+    private AppDBHelper appDBHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -180,6 +196,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     @SuppressLint("CheckResult")
     private void initialize() {
         mContext = ProfileActivity.this;
+        appDBHelper = new AppDBHelper(mContext);
         ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
         imageutils = new ImageUtils(this);
         device = Device.getInstance(ProfileActivity.this);
@@ -413,6 +430,182 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
     }
 
+    @Override
+    public void image_attachment(int from, Bitmap file, Uri uri) {
+        //file path is given below to generate new image as required i.e jpg format
+        String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
+        imageutils.createImage(file, path, false);
+        mCustomProgressDialog = new CustomProgressDialog(this);
+        uploadProfileImage(FILEPATH);
+
+
+    }
+
+    public void uploadProfileImage(final String filePath) {
+
+        mCustomProgressDialog.show();
+
+        HashMap<String, String> mapHeaders = new HashMap<String, String>();
+        mapHeaders.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
+        mapHeaders.put(RescribeConstants.DEVICEID, device.getDeviceId());
+        mapHeaders.put(RescribeConstants.OS, device.getOS());
+        mapHeaders.put(RescribeConstants.OSVERSION, device.getOSVersion());
+        mapHeaders.put(RescribeConstants.DEVICE_TYPE, device.getDeviceType());
+        mapHeaders.put("docid", String.valueOf(docId));
+
+        SimpleMultiPartRequest profilePhotoUploadRequest = new SimpleMultiPartRequest(Request.Method.POST, Url,
+                new Response.Listener<String>() {
+                    @SuppressLint("CheckResult")
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("Response profile photo", response);
+                        //On Profile Image Upload on Server is completed that event is captured in this function.
+
+                        String bodyAsString = response;
+                        CommonMethods.Log(TAG, bodyAsString);
+
+                        ProfilePhotoResponse profilePhotoResponse = new Gson().fromJson(bodyAsString, ProfilePhotoResponse.class);
+                        if (profilePhotoResponse.getCommon().isSuccess()) {
+                            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, profilePhotoResponse.getData().getDocImgUrl(), mContext);
+                            Toast.makeText(ProfileActivity.this, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                            RequestOptions requestOptions = new RequestOptions();
+                            requestOptions.dontAnimate();
+                            requestOptions.skipMemoryCache(true);
+                            requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+
+                            Glide.with(mContext)
+                                    .load(filePath)
+                                    .apply(requestOptions).thumbnail(0.5f)
+                                    .into(profileImage);
+                            mCustomProgressDialog.dismiss();
+                        } else {
+                            mCustomProgressDialog.dismiss();
+                            Toast.makeText(ProfileActivity.this, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                    if (error instanceof TimeoutError) {
+                        if (error.getMessage().equalsIgnoreCase("java.io.IOException: No authentication challenges found") || error.getMessage().equalsIgnoreCase("invalid_grant")) {
+                            tokenRefreshRequest(filePath);
+                        } else {
+                            mCustomProgressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
+                        }
+                    } else if (error instanceof AuthFailureError) {
+                        tokenRefreshRequest(filePath);
+                    } else {
+                        mCustomProgressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    mCustomProgressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        profilePhotoUploadRequest.setHeaders(mapHeaders);
+        profilePhotoUploadRequest.addFile("docImage", filePath);
+        RescribeApplication.getInstance().addToRequestQueue(profilePhotoUploadRequest);
+    }
+
+    private void tokenRefreshRequest(final String filePath) {
+        CommonMethods.Log(TAG, "Refresh token while sending refresh token api: ");
+        String url = Config.BASE_URL + Config.LOGIN_URL;
+
+        LoginRequestModel loginRequestModel = new LoginRequestModel();
+
+        loginRequestModel.setEmailId(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.EMAIL, mContext));
+        loginRequestModel.setPassword(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, mContext));
+        if (!(RescribeConstants.BLANK.equalsIgnoreCase(loginRequestModel.getEmailId()) &&
+                RescribeConstants.BLANK.equalsIgnoreCase(loginRequestModel.getPassword()))) {
+
+            JSONObject jsonObject = null;
+            try {
+                String jsonString = gson.toJson(loginRequestModel);
+                CommonMethods.Log(TAG, "jsonRequest:--" + jsonString);
+                if (!jsonString.equals("null"))
+                    jsonObject = new JSONObject(jsonString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            LoginModel loginModel = gson.fromJson(response.toString(), LoginModel.class);
+                            if (loginModel.getCommon().getStatusCode().equals(SUCCESS)) {
+                                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, loginModel.getDoctorLoginData().getAuthToken(), mContext);
+                                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, mContext);
+                                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, String.valueOf(loginModel.getDoctorLoginData().getDocDetail().getDocId()), mContext);
+                                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, loginModel.getDoctorLoginData().getAuthToken(), mContext);
+                                uploadProfileImage(filePath);
+                            } else if (!loginModel.getCommon().isSuccess() && loginModel.getCommon().getStatusCode().equals(INVALID_LOGIN_PASSWORD)) {
+                                CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
+                                CommonMethods.logout(mContext, appDBHelper);
+                            } else
+                                CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    CommonMethods.showToast(mContext, "Failed to refresh token.");
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Device device = Device.getInstance(mContext);
+                    Map<String, String> headerParams = new HashMap<>();
+                    headerParams.put(RescribeConstants.CONTENT_TYPE, RescribeConstants.APPLICATION_JSON);
+                    headerParams.put(RescribeConstants.DEVICEID, device.getDeviceId());
+                    headerParams.put(RescribeConstants.OS, device.getOS());
+                    headerParams.put(RescribeConstants.OSVERSION, device.getOSVersion());
+                    headerParams.put(RescribeConstants.DEVICE_TYPE, device.getDeviceType());
+                    CommonMethods.Log(TAG, "setHeaderParams:" + headerParams.toString());
+                    return headerParams;
+                }
+            };
+            jsonRequest.setRetryPolicy(new DefaultRetryPolicy(1000 * 60, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            jsonRequest.setTag("LoginRequest");
+            RequestPool.getInstance(this).addToRequestQueue(jsonRequest);
+        }
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                //get image URI and set to create image of jpg format.
+                Uri resultUri = result.getUri();
+//                String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
+                imageutils.callImageCropMethod(resultUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//                Exception error = result.getError();
+            }
+        } else {
+            imageutils.onActivityResult(requestCode, resultCode, data);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        imageutils.request_permission_result(requestCode, permissions, grantResults);
+    }
+
     class DialogServicesListAdapter extends BaseAdapter {
         Context mContext;
         private ArrayList<String> mDocServiceList;
@@ -457,7 +650,6 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         }
     }
 
-
     public class DocServicesListAdapter extends BaseAdapter {
         Context mContext;
         private ArrayList<String> mDocServiceList;
@@ -495,102 +687,5 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             dataView.setText("" + mDocServiceList.get(position));
             return view;
         }
-    }
-
-    @Override
-    public void image_attachment(int from, Bitmap file, Uri uri) {
-        //file path is given below to generate new image as required i.e jpg format
-        String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
-        imageutils.createImage(file, path, false);
-        mCustomProgressDialog = new CustomProgressDialog(this);
-        uploadProfileImage(FILEPATH);
-
-
-    }
-
-    public void uploadProfileImage(final String filePath) {
-
-        mCustomProgressDialog.show();
-
-        HashMap<String, String> mapHeaders = new HashMap<String, String>();
-        mapHeaders.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
-        mapHeaders.put(RescribeConstants.DEVICEID, device.getDeviceId());
-        mapHeaders.put(RescribeConstants.OS, device.getOS());
-        mapHeaders.put(RescribeConstants.OSVERSION, device.getOSVersion());
-        mapHeaders.put(RescribeConstants.DEVICE_TYPE, device.getDeviceType());
-        mapHeaders.put("docid", String.valueOf(docId));
-
-        SimpleMultiPartRequest profilePhotoUploadRequest = new SimpleMultiPartRequest(Request.Method.POST, Url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("Response profile photo", response);
-                        //On Profile Image Upload on Server is completed that event is captured in this function.
-
-                        String bodyAsString = response;
-                        CommonMethods.Log(TAG, bodyAsString);
-
-                        ProfilePhotoResponse profilePhotoResponse = new Gson().fromJson(bodyAsString, ProfilePhotoResponse.class);
-                        if (profilePhotoResponse.getCommon().isSuccess()) {
-                            RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PROFILE_PHOTO, profilePhotoResponse.getData().getDocImgUrl(), mContext);
-                            Toast.makeText(ProfileActivity.this, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
-                            RequestOptions requestOptions = new RequestOptions();
-                            requestOptions.dontAnimate();
-                            requestOptions.skipMemoryCache(true);
-                            requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
-
-                            Glide.with(mContext)
-                                    .load(filePath)
-                                    .apply(requestOptions).thumbnail(0.5f)
-                                    .into(profileImage);
-                            mCustomProgressDialog.dismiss();
-                        } else {
-                            mCustomProgressDialog.dismiss();
-                            Toast.makeText(ProfileActivity.this, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mCustomProgressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
-
-            }
-        });
-
-        profilePhotoUploadRequest.setHeaders(mapHeaders);
-        profilePhotoUploadRequest.addFile("docImage", filePath);
-        RescribeApplication.getInstance().addToRequestQueue(profilePhotoUploadRequest);
-
-
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                //get image URI and set to create image of jpg format.
-                Uri resultUri = result.getUri();
-//                String path = Environment.getExternalStorageDirectory() + File.separator + "DrRescribe" + File.separator + "ProfilePhoto" + File.separator;
-                imageutils.callImageCropMethod(resultUri);
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                Exception error = result.getError();
-            }
-        } else {
-            imageutils.onActivityResult(requestCode, resultCode, data);
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        imageutils.request_permission_result(requestCode, permissions, grantResults);
     }
 }

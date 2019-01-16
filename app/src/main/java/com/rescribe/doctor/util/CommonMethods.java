@@ -3,6 +3,7 @@ package com.rescribe.doctor.util;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -38,8 +39,6 @@ import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
 
-//import net.gotev.uploadservice.UploadService;
-
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -59,13 +58,17 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
+//import net.gotev.uploadservice.UploadService;
+
 public class CommonMethods {
 
     private static final String TAG = "Rescribe/CommonMethods";
+    private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
     private static boolean encryptionIsOn = true;
     private static String aBuffer = "";
     private static CheckIpConnection mCheckIpConnection;
-    private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
     private int mYear, mMonth, mDay, mHour, mMinute;
     private DatePickerDialogListener mDatePickerDialogListener;
 
@@ -819,53 +822,6 @@ public class CommonMethods {
         return mDoctorLocations;
     }
 
-    public void datePickerDialog(Context context, DatePickerDialogListener datePickerDialogListener, Date dateToSet, final Boolean isFromDateClicked, final Date date) {
-        // Get Current Date
-        final Calendar c = Calendar.getInstance();
-        if (dateToSet != null) {
-            c.setTime(dateToSet);
-        }
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
-
-        mDatePickerDialogListener = datePickerDialogListener;
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(context,
-                new DatePickerDialog.OnDateSetListener() {
-
-
-                    @Override
-                    public void onDateSet(DatePicker view, int year,
-                                          int monthOfYear, int dayOfMonth) {
-
-                        if (isFromDateClicked) {
-                            mDatePickerDialogListener.getSelectedDate(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        } else {
-                            mDatePickerDialogListener.getSelectedDate(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        }
-
-
-                    }
-                }, mYear, mMonth, mDay);
-        if (isFromDateClicked) {
-            datePickerDialog.getDatePicker().setCalendarViewShown(false);
-            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-            datePickerDialog.show();
-        } else {
-            if (date != null) {
-                datePickerDialog.getDatePicker().setCalendarViewShown(false);
-                datePickerDialog.getDatePicker().setMinDate(date.getTime());
-                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-                datePickerDialog.show();
-            } else {
-                datePickerDialog.getDatePicker().setCalendarViewShown(false);
-                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-                datePickerDialog.show();
-            }
-        }
-    }
-
     public static String getExtension(String filePath) {
         return filePath.substring(filePath.lastIndexOf(".") + 1);
     }
@@ -1000,8 +956,60 @@ public class CommonMethods {
         RescribePreferencesManager.putString(mContext.getString(R.string.logout), "" + 1, mContext);
 
         Intent intent = new Intent(mContext, LoginSignUpActivity.class);
-        mContext.startActivity(intent);
-        ((AppCompatActivity) mContext).finishAffinity();
+        if (mContext instanceof Activity) {
+            mContext.startActivity(intent);
+            ((Activity) mContext).finishAffinity();
+        } else if (mContext instanceof Service) {
+            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+        }
+    }
+
+    public void datePickerDialog(Context context, DatePickerDialogListener datePickerDialogListener, Date dateToSet, final Boolean isFromDateClicked, final Date date) {
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        if (dateToSet != null) {
+            c.setTime(dateToSet);
+        }
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        mDatePickerDialogListener = datePickerDialogListener;
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context,
+                new DatePickerDialog.OnDateSetListener() {
+
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+
+                        if (isFromDateClicked) {
+                            mDatePickerDialogListener.getSelectedDate(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        } else {
+                            mDatePickerDialogListener.getSelectedDate(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        }
+
+
+                    }
+                }, mYear, mMonth, mDay);
+        if (isFromDateClicked) {
+            datePickerDialog.getDatePicker().setCalendarViewShown(false);
+            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+            datePickerDialog.show();
+        } else {
+            if (date != null) {
+                datePickerDialog.getDatePicker().setCalendarViewShown(false);
+                datePickerDialog.getDatePicker().setMinDate(date.getTime());
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                datePickerDialog.show();
+            } else {
+                datePickerDialog.getDatePicker().setCalendarViewShown(false);
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                datePickerDialog.show();
+            }
+        }
     }
 }
 

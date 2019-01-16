@@ -456,7 +456,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
 
                     mHeaderParams.put(RescribeConstants.AUTHORIZATION_TOKEN, loginModel.getDoctorLoginData().getAuthToken());
                     connect();
-                }else if (!loginModel.getCommon().isSuccess() && loginModel.getCommon().getStatusCode().equals(INVALID_LOGIN_PASSWORD)){
+                } else if (!loginModel.getCommon().isSuccess() && loginModel.getCommon().getStatusCode().equals(INVALID_LOGIN_PASSWORD)){
                     CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
                     CommonMethods.logout(mContext, dbHelper);
                 } else {
@@ -675,16 +675,14 @@ public class RequestManager extends ConnectRequest implements Connector, Request
     @Override
     public void onTimeout(RequestTimer requestTimer) {
         if (mContext instanceof AppCompatActivity) {
-            if (mContext != null) {
-                ((AppCompatActivity) this.mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                            mProgressDialog.dismiss();
-                        }
+            ((AppCompatActivity) this.mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                        mProgressDialog.dismiss();
                     }
-                });
-            }
+                }
+            });
         }
 
         RequestPool.getInstance(mContext)
@@ -706,10 +704,6 @@ public class RequestManager extends ConnectRequest implements Connector, Request
     }
 
     private void tokenRefreshRequest() {
-        loginRequest();
-    }
-
-    private void loginRequest() {
         CommonMethods.Log(TAG, "Refresh token while sending refresh token api: ");
         String url = Config.BASE_URL + Config.LOGIN_URL;
 

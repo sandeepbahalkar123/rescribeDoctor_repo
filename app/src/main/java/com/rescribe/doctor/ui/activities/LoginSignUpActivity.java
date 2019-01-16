@@ -123,6 +123,11 @@ public class LoginSignUpActivity extends AppCompatActivity implements LoginFragm
     }
 
     @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
+
+    @Override
     public void onServerError(String mOldDataTag, String serverErrorMessage) {
         CommonMethods.Log(TAG, serverErrorMessage);
     }
