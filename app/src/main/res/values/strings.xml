@@ -378,5 +378,6 @@
     <string name="initializing">Initializing</string>
     <string name="initialized">Initialized</string>
     <string name="action_clear_all">Clear All Pages</string>
+    <string name="delete_appointment">Delete Appointment</string>
 
 </resources>

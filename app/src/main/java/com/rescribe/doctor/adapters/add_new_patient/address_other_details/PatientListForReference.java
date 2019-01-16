@@ -66,7 +66,7 @@ public class PatientListForReference extends RecyclerView.Adapter<PatientListFor
         if (idAndValueDataModel.getSpannableString() != null) {
             if (idAndValueDataModel.getPatientName().toLowerCase().contains(idAndValueDataModel.getSpannableString().toLowerCase())) {
                 SpannableString spannablePhoneString = new SpannableString(idAndValueDataModel.getPatientName());
-                Pattern pattern = Pattern.implementation(idAndValueDataModel.getSpannableString(), Pattern.CASE_INSENSITIVE);
+                Pattern pattern = Pattern.compile(idAndValueDataModel.getSpannableString(), Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(idAndValueDataModel.getPatientName());
                 while (matcher.find()) {
                     spannablePhoneString.setSpan(new ForegroundColorSpan(

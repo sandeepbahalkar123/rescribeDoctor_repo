@@ -198,7 +198,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             return true;
         } else {
             String expression = "^[a-z_A-Z0-9]*$";
-            Pattern pattern = Pattern.implementation(expression);
+            Pattern pattern = Pattern.compile(expression);
             Matcher matcher = pattern.matcher(str);
             if (matcher.matches()) {
                 isValid = true;

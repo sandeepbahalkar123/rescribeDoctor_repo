@@ -24,7 +24,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp5"
                 android:layout_marginStart="@dimen/dp5"
-                tools:src="@drawable/uren_pic" />
+                tools:src="@drawable/support" />
 
             <LinearLayout
                 android:layout_width="match_parent"

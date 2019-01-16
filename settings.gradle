@@ -1,1 +1,1 @@
-include ':app', ':materialdrawer', ':filepicker', ':slideview', ':crystalrangeseekbar', ':fabmenu', ':advanced_recycler', ':bottomsheetpickers', ':smartPenCore'
+include ':app', ':materialdrawer', ':filepicker', ':slideview', ':crystalrangeseekbar', ':fabmenu', ':advanced_recycler', ':bottomsheetpickers', ':smartPenCore', ':easyswipemenulibrary'

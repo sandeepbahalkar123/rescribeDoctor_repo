@@ -53,7 +53,7 @@ public class IdAndValueDataAdapter extends RecyclerView.Adapter<IdAndValueDataAd
         if (idAndValueDataModel.getSpannableSearchedText() != null) {
             if (idAndValueDataModel.getIdValue().toLowerCase().contains(idAndValueDataModel.getSpannableSearchedText().toLowerCase())) {
                 SpannableString spannablePhoneString = new SpannableString(idAndValueDataModel.getIdValue());
-                Pattern pattern = Pattern.implementation(idAndValueDataModel.getSpannableSearchedText(), Pattern.CASE_INSENSITIVE);
+                Pattern pattern = Pattern.compile(idAndValueDataModel.getSpannableSearchedText(), Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(idAndValueDataModel.getIdValue());
                 while (matcher.find()) {
                     spannablePhoneString.setSpan(new ForegroundColorSpan(

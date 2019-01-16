@@ -110,7 +110,7 @@
                     android:layout_height="@dimen/dp67"
                     android:layout_marginLeft="@dimen/dp10"
                     android:layout_marginStart="@dimen/dp10"
-                    tools:src="@drawable/uren_pic" />
+                    tools:src="@drawable/support" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"

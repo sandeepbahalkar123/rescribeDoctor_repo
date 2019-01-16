@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/home/yogeshgaikwad/AndroidStudioProjects/rescribeDoctor_repo_2/smartPenCore/src/main/assets"/><source path="/home/yogeshgaikwad/AndroidStudioProjects/rescribeDoctor_repo_2/smartPenCore/build/generated/assets/shaders/release"/></dataSet><dataSet config="release"><source path="/home/yogeshgaikwad/AndroidStudioProjects/rescribeDoctor_repo_2/smartPenCore/src/release/assets"/></dataSet></merger>
