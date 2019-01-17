@@ -65,10 +65,10 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
             holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.select_all));
         } else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.send_sms))) {
             holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.send_sms));
-        } /*else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.send_mail))) {
-            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.send_email));
-        }*/ else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.waiting_list))) {
+        } else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.waiting_list))) {
             holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.add_waiting_list));
+        } else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.cancel_appointment))) {
+            holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.select_all));
         }
         holder.menuBottomLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,16 +111,11 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
     }
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.spaceView)
-        View spaceView;
+
         @BindView(R.id.menuBottomIcon)
         AppCompatImageView menuBottomIcon;
-        @BindView(R.id.showCountTextView)
-        TextView showCountTextView;
         @BindView(R.id.bottomMenuName)
         TextView bottomMenuName;
-        @BindView(R.id.bottomMenuTab)
-        TextView bottomMenuTab;
         @BindView(R.id.menuBottomLayout)
         LinearLayout menuBottomLayout;
         View view;

@@ -173,6 +173,7 @@
     <string name="moderateRange">Moderate</string>
     <string name="severeRange">Severe</string>
     <string name="select_all">Select All</string>
+    <string name="cancel_appointment">Cancel Appointment</string>
     <string name="send_sms">Send SMS</string>
     <string name="waiting_list">Waiting List</string>
     <string name="bp_max">BpMax</string>
