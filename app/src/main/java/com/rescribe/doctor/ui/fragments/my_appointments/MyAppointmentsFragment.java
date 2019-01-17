@@ -359,6 +359,16 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     }
 
     @Override
+    public void onGroupAppointmentDelete(Integer aptId, Integer patientId, int groupPosition) {
+
+    }
+
+    @Override
+    public void onAppointmentDelete(Integer aptId, Integer patientId, int childPosition, int groupPosition) {
+
+    }
+
+    @Override
     public void onAppointmentReshedule(PatientList patientList, String text, String cityName, String areaName) {
         Intent intent = new Intent(getActivity(), SelectSlotToBookAppointmentBaseActivity.class);
         com.rescribe.doctor.model.patient.doctor_patients.PatientList patientListforBookAppointment = new com.rescribe.doctor.model.patient.doctor_patients.PatientList();

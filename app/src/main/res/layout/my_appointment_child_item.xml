@@ -1,9 +1,9 @@
 <com.guanaj.easyswipemenulibrary.EasySwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/swipe_layout"
     app:contentView="@+id/front_layout"
     app:leftMenuView="@+id/left_layout"
     app:rightMenuView="@+id/right_layout">
@@ -347,7 +347,7 @@
 
     <FrameLayout
         android:id="@+id/left_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp120"
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -356,15 +356,15 @@
             android:layout_marginStart="@dimen/dp4"
             android:layout_marginEnd="@dimen/dp4"
             android:layout_marginBottom="@dimen/dp4"
-            android:gravity="center"
             android:background="@drawable/result_white_box_copy"
+            android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp30"
-                android:src="@drawable/delete"
-                android:tint="@color/red"/>
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp3"
+                app:srcCompat="@drawable/ic_delete_button" />
 
             <TextView
                 android:id="@+id/deleteButton"

@@ -115,6 +115,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-runtime-classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-verifier" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-apk" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-resources" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant_app_manifest" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant_run_app_info_output_file" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant_run_main_apk_resources" />
@@ -217,6 +218,24 @@
     <orderEntry type="library" name="Gradle: com.github.bumptech.glide:glide:4.3.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-places:11.0.4@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.crashlytics.sdk.android:beta:1.2.7@aar" level="project" />
+    <orderEntry type="module" module-name="advanced_recycler" />
+    <orderEntry type="module" module-name="smartPenCore" />
+    <orderEntry type="module" module-name="easyswipemenulibrary" />
+    <orderEntry type="module" module-name="materialdrawer" />
+    <orderEntry type="module" module-name="crystalrangeseekbar" />
+    <orderEntry type="module" module-name="slideview" />
+    <orderEntry type="module" module-name="fabmenu" />
+    <orderEntry type="module" module-name="bottomsheetpickers" />
+    <orderEntry type="module" module-name="filepicker" />
+    <orderEntry type="module" module-name="advanced_recycler" />
+    <orderEntry type="module" module-name="smartPenCore" />
+    <orderEntry type="module" module-name="easyswipemenulibrary" />
+    <orderEntry type="module" module-name="materialdrawer" />
+    <orderEntry type="module" module-name="crystalrangeseekbar" />
+    <orderEntry type="module" module-name="slideview" />
+    <orderEntry type="module" module-name="fabmenu" />
+    <orderEntry type="module" module-name="bottomsheetpickers" />
+    <orderEntry type="module" module-name="filepicker" />
     <orderEntry type="module" module-name="advanced_recycler" />
     <orderEntry type="module" module-name="smartPenCore" />
     <orderEntry type="module" module-name="easyswipemenulibrary" />
