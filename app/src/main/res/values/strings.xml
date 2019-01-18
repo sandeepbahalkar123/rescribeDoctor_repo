@@ -175,7 +175,7 @@
     <string name="moderateRange">Moderate</string>
     <string name="severeRange">Severe</string>
     <string name="select_all">Select All</string>
-    <string name="cancel_appointment">Cancel Appointment</string>
+    <string name="bulk_cancel">Bulk Cancel</string>
     <string name="send_sms">Send SMS</string>
     <string name="waiting_list">Waiting List</string>
     <string name="bp_max">BpMax</string>
@@ -380,5 +380,8 @@
     <string name="initialized">Initialized</string>
     <string name="action_clear_all">Clear All Pages</string>
     <string name="delete_appointment">Delete Appointment</string>
+    <string name="add_new_temp">Add New</string>
+    <string name="notify_delay">Notify Delay</string>
+    <string name="please_select_book_confirm_patients">Select booked and confirm appointments.</string>
 
 </resources>

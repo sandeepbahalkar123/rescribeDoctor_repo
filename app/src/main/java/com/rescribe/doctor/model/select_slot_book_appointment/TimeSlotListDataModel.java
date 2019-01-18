@@ -15,6 +15,11 @@ public class TimeSlotListDataModel {
     @SerializedName("isOpen")
     @Expose
     private boolean isOpen;
+
+    @SerializedName("appointmentFormat")
+    @Expose
+    private int appointmentFormat;
+
     @SerializedName("timeSlots")
     @Expose
     private ArrayList<TimeSlotsInfoList> timeSlotsInfoList = new ArrayList<>();
@@ -44,4 +49,11 @@ public class TimeSlotListDataModel {
         this.timeSlotsInfoList = timeSlotsInfoList;
     }
 
+    public int getAppointmentFormat() {
+        return appointmentFormat;
+    }
+
+    public void setAppointmentFormat(int appointmentFormat) {
+        this.appointmentFormat = appointmentFormat;
+    }
 }

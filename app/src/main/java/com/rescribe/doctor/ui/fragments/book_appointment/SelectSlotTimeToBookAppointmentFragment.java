@@ -368,7 +368,7 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                                     noTimeSlotMessageTextView.setVisibility(View.GONE);
                                     selectTimeDateExpandableView.setVisibility(View.VISIBLE);
                                     appointmentTypeIsBookButton.setVisibility(View.VISIBLE);
-                                    mSelectSlotToBookAppointmentAdapter = new SelectSlotToBookAppointmentAdapter(getActivity(), selectSlotList.getTimeSlotsInfoList(), mSelectedTimeSlotDate);
+                                    mSelectSlotToBookAppointmentAdapter = new SelectSlotToBookAppointmentAdapter(getActivity(), selectSlotList.getTimeSlotsInfoList(), mSelectedTimeSlotDate,selectSlotList.getAppointmentFormat());
                                     selectTimeDateExpandableView.setAdapter(mSelectSlotToBookAppointmentAdapter);
                                     int selectedSlotPosition = getSelectedSlotPosition(selectSlotList.getTimeSlotsInfoList());
                                     if (selectedSlotPosition != -1)
@@ -391,7 +391,7 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
                                 noTimeSlotMessageTextView.setVisibility(View.GONE);
                                 selectTimeDateExpandableView.setVisibility(View.VISIBLE);
                                 appointmentTypeIsBookButton.setVisibility(View.VISIBLE);
-                                mSelectSlotToBookAppointmentAdapter = new SelectSlotToBookAppointmentAdapter(getActivity(), selectSlotList.getTimeSlotsInfoList(), mSelectedTimeSlotDate);
+                                mSelectSlotToBookAppointmentAdapter = new SelectSlotToBookAppointmentAdapter(getActivity(), selectSlotList.getTimeSlotsInfoList(), mSelectedTimeSlotDate,selectSlotList.getAppointmentFormat());
                                 selectTimeDateExpandableView.setAdapter(mSelectSlotToBookAppointmentAdapter);
                                 int selectedSlotPosition = getSelectedSlotPosition(selectSlotList.getTimeSlotsInfoList());
                                 if (selectedSlotPosition != -1)

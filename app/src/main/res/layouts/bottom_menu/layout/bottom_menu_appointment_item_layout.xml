@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp8"
-                tools:src="@drawable/md_ic_arrow_drop_down"
+                tools:src="@drawable/add_waiting_list"
                 android:adjustViewBounds="true"/>
 
         </RelativeLayout>

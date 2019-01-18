@@ -30,6 +30,10 @@ public class ClinicListForSms implements Parcelable ,Cloneable{
     private ArrayList<PatientInfoList> patientInfoList = new ArrayList<PatientInfoList>();
     private String clinicName;
 
+    @SerializedName("templateCategory")
+    @Expose
+    private String templateCategory;
+
     public final static Parcelable.Creator<ClinicListForSms> CREATOR = new Creator<ClinicListForSms>() {
 
 
@@ -54,6 +58,7 @@ public class ClinicListForSms implements Parcelable ,Cloneable{
         in.readList(this.patientInfoList, (PatientInfoList.class.getClassLoader()));
         this.templateContent = ((String) in.readValue((String.class.getClassLoader())));
         this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
+        this.templateCategory = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public ClinicListForSms() {
@@ -106,6 +111,14 @@ public class ClinicListForSms implements Parcelable ,Cloneable{
         this.clinicName = clinicName;
     }
 
+    public String getTemplateCategory() {
+        return templateCategory;
+    }
+
+    public void setTemplateCategory(String templateCategory) {
+        this.templateCategory = templateCategory;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(clinicId);
         dest.writeValue(docId);
@@ -113,6 +126,7 @@ public class ClinicListForSms implements Parcelable ,Cloneable{
         dest.writeList(patientInfoList);
         dest.writeValue(templateContent);
         dest.writeValue(clinicName);
+        dest.writeValue(templateCategory);
     }
 
     public int describeContents() {

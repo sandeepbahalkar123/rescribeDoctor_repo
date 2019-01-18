@@ -67,7 +67,7 @@ public class BottomMenuAppointmentAdapter extends RecyclerView.Adapter<BottomMen
             holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.send_sms));
         } else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.waiting_list))) {
             holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.add_waiting_list));
-        } else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.cancel_appointment))) {
+        } else if (mBottomMenu.getMenuName().equalsIgnoreCase(mContext.getString(R.string.bulk_cancel))) {
             holder.menuBottomIcon.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.select_all));
         }
         holder.menuBottomLayout.setOnClickListener(new View.OnClickListener() {

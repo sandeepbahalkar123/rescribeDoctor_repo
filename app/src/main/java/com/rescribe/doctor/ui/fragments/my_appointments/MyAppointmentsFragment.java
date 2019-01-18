@@ -114,7 +114,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     FloatingActionButton leftFabForAppointment;
     private AppointmentAdapter mAppointmentAdapter;
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
-    private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List", "Cancel Appointment"};
+    private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List", "Bulk Cancel"};
     private int lastExpandedPosition = -1;
     private String charString = "";
     private AppointmentHelper mAppointmentHelper;
@@ -554,7 +554,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 mBottomMenuAppointmentAdapter.notifyDataSetChanged();
                 Toast.makeText(getContext(), getString(R.string.you_cannot_add_waiting_list), Toast.LENGTH_SHORT).show();
             }
-        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.cancel_appointment))) {
+        } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.bulk_cancel))) {
             tempSelectedList.clear();
             CancelAppointmentList cancelAppointmentList = new CancelAppointmentList();
             cancelAppointmentList.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
@@ -581,11 +581,9 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             if (!cancelAppointmentList.getPatientDetails().isEmpty()) {
                 mAppointmentHelper.cancelAppointmentBulk(cancelAppointmentList);
             } else {
-                CommonMethods.showToast(getActivity(), getString(R.string.please_select_patients));
+                CommonMethods.showToast(getActivity(), getString(R.string.please_select_book_confirm_patients));
             }
         }
-
-
     }
 
 
@@ -621,6 +619,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 activity.getActivityDrawerLayout().openDrawer(GravityCompat.END);
                 break;
             case R.id.leftFabForAppointment:
+                isLongPressed=false;
                 Intent intent = new Intent(getActivity(), ShowMyPatientsListActivity.class);
                 intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM, RescribeConstants.MY_APPOINTMENTS);
                 startActivityForResult(intent, Activity.RESULT_OK);
@@ -686,45 +685,45 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
             if (templateBaseModel.getTemplateDataModel() != null) {
                 ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
-                if (!templateLists.isEmpty()) {
+             //   if (!templateLists.isEmpty()) {
                     Intent intent = new Intent(getActivity(), TemplateListActivity.class);
                     intent.putParcelableArrayListExtra(RescribeConstants.APPOINTMENT_LIST, mAppointmentLists);
                     intent.putParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST, templateLists);
                     startActivity(intent);
-                } else {
-                    //  showSendSmsDialog(clinicListForSms);
-
-                    ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
-                    for (AppointmentList appointmentList : mAppointmentLists) {
-                        patientListsToShowOnSmsScreen.addAll(appointmentList.getPatientList());
-                    }
-
-                    ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
-                    for (AppointmentList appointmentList : mAppointmentLists) {
-                        ClinicListForSms listForSms = new ClinicListForSms();
-                        ArrayList<PatientInfoList> patientInfoLists = new ArrayList<>();
-                        listForSms.setClinicId(appointmentList.getClinicId());
-                        listForSms.setClinicName(appointmentList.getClinicName());
-                        listForSms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
-                        listForSms.setLocationId(appointmentList.getLocationId());
-                        listForSms.setTemplateContent("");
-                        for (PatientList patientList : appointmentList.getPatientList()) {
-                            PatientInfoList patientInfoList = new PatientInfoList();
-                            patientInfoList.setHospitalPatId(patientList.getHospitalPatId());
-                            patientInfoList.setPatientId(patientList.getPatientId());
-                            patientInfoList.setPatientPhone(patientList.getPatientPhone());
-                            patientInfoList.setPatientName(patientList.getPatientName());
-                            patientInfoLists.add(patientInfoList);
-                        }
-                        listForSms.setPatientInfoList(patientInfoLists);
-                        clinicListForSms.add(listForSms);
-                    }
-
-                    Intent intent = new Intent(getActivity(), SendSmsActivity.class);
-                    intent.putExtra(RescribeConstants.SMS_DETAIL_LIST, clinicListForSms);
-                    intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW, patientListsToShowOnSmsScreen);
-                    startActivityForResult(intent, RESULT_SMS_SEND);
-                }
+//                } else {
+//                    //  showSendSmsDialog(clinicListForSms);
+//
+//                    ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
+//                    for (AppointmentList appointmentList : mAppointmentLists) {
+//                        patientListsToShowOnSmsScreen.addAll(appointmentList.getPatientList());
+//                    }
+//
+//                    ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
+//                    for (AppointmentList appointmentList : mAppointmentLists) {
+//                        ClinicListForSms listForSms = new ClinicListForSms();
+//                        ArrayList<PatientInfoList> patientInfoLists = new ArrayList<>();
+//                        listForSms.setClinicId(appointmentList.getClinicId());
+//                        listForSms.setClinicName(appointmentList.getClinicName());
+//                        listForSms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getContext())));
+//                        listForSms.setLocationId(appointmentList.getLocationId());
+//                        listForSms.setTemplateContent("");
+//                        for (PatientList patientList : appointmentList.getPatientList()) {
+//                            PatientInfoList patientInfoList = new PatientInfoList();
+//                            patientInfoList.setHospitalPatId(patientList.getHospitalPatId());
+//                            patientInfoList.setPatientId(patientList.getPatientId());
+//                            patientInfoList.setPatientPhone(patientList.getPatientPhone());
+//                            patientInfoList.setPatientName(patientList.getPatientName());
+//                            patientInfoLists.add(patientInfoList);
+//                        }
+//                        listForSms.setPatientInfoList(patientInfoLists);
+//                        clinicListForSms.add(listForSms);
+//                    }
+//
+//                    Intent intent = new Intent(getActivity(), SendSmsActivity.class);
+//                    intent.putExtra(RescribeConstants.SMS_DETAIL_LIST, clinicListForSms);
+//                    intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW, patientListsToShowOnSmsScreen);
+//                    startActivityForResult(intent, RESULT_SMS_SEND);
+//                }
             } else {
                 ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
                 ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();

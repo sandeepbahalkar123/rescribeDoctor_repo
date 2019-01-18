@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -65,6 +66,14 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
     RecyclerView recyclerView;
     @BindView(R.id.emptyListView)
     RelativeLayout emptyListView;
+
+    @BindView(R.id.addNewTempButton)
+    Button addNewTempButton;
+
+    @BindView(R.id.notifyDelayButton)
+    Button notifyDelayButton;
+
+
     private TemplateListActivity mContext;
     private AppointmentHelper mAppointmentHelper;
     private TemplateAdapter mTemplateAdapter;
@@ -102,8 +111,93 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
             recyclerView.setAdapter(mTemplateAdapter);
         } else {
-
+            recyclerView.setVisibility(View.GONE);
+            emptyListView.setVisibility(View.VISIBLE);
         }
+
+
+        addNewTempButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
+                ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
+                for (AppointmentList appointmentList : appointmentList) {
+                    patientListsToShowOnSmsScreen.addAll(appointmentList.getPatientList());
+                }
+
+                for (AppointmentList appointmentList : appointmentList) {
+                    ClinicListForSms listForSms = new ClinicListForSms();
+                    ArrayList<PatientInfoList> patientInfoLists = new ArrayList<>();
+                    listForSms.setClinicId(appointmentList.getClinicId());
+                    listForSms.setClinicName(appointmentList.getClinicName());
+                    listForSms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+                    listForSms.setLocationId(appointmentList.getLocationId());
+                    listForSms.setTemplateContent("");
+                    listForSms.setTemplateCategory("");
+                    for (PatientList patientList : appointmentList.getPatientList()) {
+                        PatientInfoList patientInfoList = new PatientInfoList();
+                        patientInfoList.setHospitalPatId(patientList.getHospitalPatId());
+                        patientInfoList.setPatientId(patientList.getPatientId());
+                        patientInfoList.setPatientPhone(patientList.getPatientPhone());
+                        patientInfoList.setPatientName(patientList.getPatientName());
+                        patientInfoLists.add(patientInfoList);
+                    }
+                    listForSms.setPatientInfoList(patientInfoLists);
+                    clinicListForSms.add(listForSms);
+
+                }
+                //  showSendSmsDialog(clinicListForSms);
+                Intent intent = new Intent(mContext, SendSmsActivity.class);
+                intent.putExtra(RescribeConstants.SMS_DETAIL_LIST, clinicListForSms);
+                intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW, patientListsToShowOnSmsScreen);
+                startActivityForResult(intent, RESULT_SMS_SEND);
+
+
+            }
+        });
+
+        notifyDelayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String delayMsg="Because of emergency we are rescheduling all appointment by 30 minutes. Requesting you to please plan accordingly";
+                ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
+                ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
+                for (AppointmentList appointmentList : appointmentList) {
+                    patientListsToShowOnSmsScreen.addAll(appointmentList.getPatientList());
+                }
+
+                for (AppointmentList appointmentList : appointmentList) {
+                    ClinicListForSms listForSms = new ClinicListForSms();
+                    ArrayList<PatientInfoList> patientInfoLists = new ArrayList<>();
+                    listForSms.setClinicId(appointmentList.getClinicId());
+                    listForSms.setClinicName(appointmentList.getClinicName());
+                    listForSms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+                    listForSms.setLocationId(appointmentList.getLocationId());
+                    listForSms.setTemplateContent(delayMsg);
+                    listForSms.setTemplateCategory("notify");
+                    for (PatientList patientList : appointmentList.getPatientList()) {
+                        PatientInfoList patientInfoList = new PatientInfoList();
+                        patientInfoList.setHospitalPatId(patientList.getHospitalPatId());
+                        patientInfoList.setPatientId(patientList.getPatientId());
+                        patientInfoList.setPatientPhone(patientList.getPatientPhone());
+                        patientInfoList.setPatientName(patientList.getPatientName());
+                        patientInfoLists.add(patientInfoList);
+                    }
+                    listForSms.setPatientInfoList(patientInfoLists);
+                    clinicListForSms.add(listForSms);
+
+                }
+                //  showSendSmsDialog(clinicListForSms);
+                Intent intent = new Intent(mContext, SendSmsActivity.class);
+                intent.putExtra(RescribeConstants.SMS_DETAIL_LIST, clinicListForSms);
+                intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW, patientListsToShowOnSmsScreen);
+                startActivityForResult(intent, RESULT_SMS_SEND);
+
+
+            }
+        });
+
 
     }
 
@@ -123,6 +217,7 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
             listForSms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
             listForSms.setLocationId(appointmentList.getLocationId());
             listForSms.setTemplateContent(templateList.getTemplateContent());
+            listForSms.setTemplateCategory("");
             for (PatientList patientList : appointmentList.getPatientList()) {
                 PatientInfoList patientInfoList = new PatientInfoList();
                 patientInfoList.setHospitalPatId(patientList.getHospitalPatId());

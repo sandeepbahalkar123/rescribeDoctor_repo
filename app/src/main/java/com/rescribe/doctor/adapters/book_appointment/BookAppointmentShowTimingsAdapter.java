@@ -30,13 +30,14 @@ public class BookAppointmentShowTimingsAdapter extends RecyclerView.Adapter<Book
     private String mSelectedDate;
     private Context mContext;
     private ArrayList<TimeSlotData> mDataList;
+    private int appointmentFormat;
 
-    public BookAppointmentShowTimingsAdapter(Context mContext, ArrayList<TimeSlotData> dataList, String mSelectedDate) {
+    public BookAppointmentShowTimingsAdapter(Context mContext, ArrayList<TimeSlotData> dataList, String mSelectedDate, int appointmentFormat) {
         this.mDataList = dataList;
         this.mContext = mContext;
         this.mSelectedDate = mSelectedDate;
         mFormattedCurrentDateString = CommonMethods.formatDateTime(CommonMethods.getCurrentDate(RescribeConstants.DD_MM_YYYY), RescribeConstants.DATE_PATTERN.YYYY_MM_DD, RescribeConstants.DD_MM_YYYY, RescribeConstants.DATE);
-
+        this.appointmentFormat=appointmentFormat;
     }
 
     @Override
@@ -53,8 +54,12 @@ public class BookAppointmentShowTimingsAdapter extends RecyclerView.Adapter<Book
         String fromTime = timeSlotData.getFromTime();
 
         //-----------
-        String s = CommonMethods.formatDateTime(fromTime, RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm, RescribeConstants.TIME);
-        holder.showTime.setText(s);
+        if (appointmentFormat==24){
+            holder.showTime.setText(fromTime);
+        }else {
+            String s = CommonMethods.formatDateTime(fromTime, RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm, RescribeConstants.TIME);
+            holder.showTime.setText(s);
+        }
         //-----------
 
         holder.view.setOnClickListener(new View.OnClickListener() {
