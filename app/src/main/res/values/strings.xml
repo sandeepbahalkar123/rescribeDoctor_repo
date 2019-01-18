@@ -58,9 +58,11 @@
     <string name="submit">Submit</string>
     <string name="save">Save</string>
     <string name="err_email_invalid">Enter valid email.</string>
+    <string name="err_ref_email_invalid">Enter valid referred email.</string>
     <string name="err_otp_invalid">Enter valid OTP</string>
     <string name="err_maximum_otp_retries">You have exceeded maximum retry of OTP generation, please try after sometime.</string>
     <string name="err_invalid_mobile_no">Enter valid mobile no.</string>
+    <string name="err_invalid_ref_mobile_no">Enter valid referred mobile no.</string>
     <string name="enter_password">Password</string>
     <string name="error_too_small_password">Password should be 6 characters long.</string>
     <string name="title">Title</string>
@@ -376,5 +378,6 @@
     <string name="initializing">Initializing</string>
     <string name="initialized">Initialized</string>
     <string name="action_clear_all">Clear All Pages</string>
+    <string name="delete_appointment">Delete Appointment</string>
 
 </resources>

@@ -83,12 +83,8 @@ import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class AddNewPatientWebViewActivity extends AppCompatActivity implements HelperResponse {
 
-    private static final String TAG = "AddPatient";
-
-
-    private ArrayList<IdAndValueDataModel> mAreaListBasedOnCity = new ArrayList<>();
-
     public static final int ADD_PATIENT_REQUEST = 121;
+    private static final String TAG = "AddPatient";
     //---------
     @BindView(R.id.mainParentScrollViewLayout)
     ScrollView mMainParentScrollViewLayout;
@@ -130,20 +126,14 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     EditText mAddressLine;
     @BindView(R.id.addressDetailLayout)
     LinearLayout mAddressDetailLayout;
-
     @BindView(R.id.layoutReferenceId)
     LinearLayout mLayoutReferenceId;
-
-
     @BindView(R.id.referredDetailsTextInputLayout)
     TextInputLayout mReferredDetailsTextInputLayout;
-
     @BindView(R.id.referredDetails)
     EditText referredDetails;
-
     @BindView(R.id.salutationSpinnerRef)
     Spinner mSalutationSpinnerRef;
-
     //----------
     @BindView(R.id.stateEditText)
     EditText mStateEditText;
@@ -158,10 +148,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     //--------
     @BindView(R.id.referenceBySpinner)
     Spinner mReferenceBySpinner;
-
     @BindView(R.id.relationSpinner)
     Spinner mRelationSpinner;
-
     @BindView(R.id.referredBy)
     EditText mReferredBy;
     @BindView(R.id.referredByTextInputLayout)
@@ -175,10 +163,15 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     //-------
     @BindView(R.id.mainParentLayout)
     LinearLayout mainParentLayout;
-
     @BindView(R.id.referenceDetailPerson)
     LinearLayout mReferenceDetailPerson;
-
+    int mSelectedSalutationOfPatient = 1;
+    int mSelectedSalutationOfPatientRef = 1;
+    int mSelectedStateID = -1;
+    int mSelectedCityID = -1;
+    int mSelectedAreaID = -1;
+    List<ReferenceType> referenceTypes;
+    private ArrayList<IdAndValueDataModel> mAreaListBasedOnCity = new ArrayList<>();
     //---------
     private int hospitalId;
     private boolean isCalled = false;
@@ -192,18 +185,27 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private String mRelation = "Self";
     private int mAddNewPatientSelectedOption = -1;
     private AppointmentHelper mAppointmentHelper;
-    int mSelectedSalutationOfPatient = 1;
-    int mSelectedSalutationOfPatientRef = 1;
-    int mSelectedStateID = -1;
-    int mSelectedCityID = -1;
-    int mSelectedAreaID = -1;
     private int mSelectedReferenceTypeID = 0;
     private String mSelectedReferenceTypeName = "";
     private DoctorData mSelectedDoctorReference;
     private PatientList mSelectedPatientReference;
     private String mActivityStartFrom;
     private HashMap<String, HashSet<String>> mOfflineCityAndAreaMap = null;
-    List<ReferenceType> referenceTypes;
+
+    public static boolean isEnteredRefIDIsValid(String str) {
+        boolean isValid = false;
+        if (str.isEmpty()) {
+            return true;
+        } else {
+            String expression = "^[a-z_A-Z0-9]*$";
+            Pattern pattern = Pattern.compile(expression);
+            Matcher matcher = pattern.matcher(str);
+            if (matcher.matches()) {
+                isValid = true;
+            }
+        }
+        return isValid;
+    }
 
     //--------
     @Override
@@ -413,7 +415,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                                 mReferredEmail.setText(data.getPatientEmail());
                                 mReferredPhone.setText("" + data.getPatientPhone());
                                 mSelectedPatientReference = data;
-                                mSelectedSalutationOfPatientRef= data.getSalutation();
+                                mSelectedSalutationOfPatientRef = data.getSalutation();
 
                             }
                         });
@@ -561,7 +563,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         });
     }
 
-
     private void callNextActivity(String patientId, String hospitalPatId) {
 
         isCalled = true;
@@ -611,6 +612,12 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             CommonMethods.showToast(this, message);
         } else if ((!age.isEmpty()) && Integer.parseInt(age) > 101) {
             message = getString(R.string.age_err_msg);
+            CommonMethods.showToast(this, message);
+        } else if (!refMob.isEmpty() && ((refMob.trim().length() < 10) || !(refMob.trim().startsWith("6") || refMob.trim().startsWith("7") || refMob.trim().startsWith("8") || refMob.trim().startsWith("9")))) {
+            message = getString(R.string.err_invalid_ref_mobile_no);
+            CommonMethods.showToast(this, message);
+        } else if (!refEmail.isEmpty() && !CommonMethods.isValidEmail(refEmail)) {
+            message = getString(R.string.err_ref_email_invalid);
             CommonMethods.showToast(this, message);
         } else if (!enteredRefIDIsValid) {
             message = getString(R.string.reference_id_input_err_msg);
@@ -673,12 +680,11 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         ref.setEmailId("");
                         ref.setReferredTypeId("");
                     }
-                }
-                else if(mSelectedReferenceTypeName.toLowerCase().equalsIgnoreCase("person")){
-                   ref.setDocId("");
-                   ref.setPatientId("0");
+                } else if (mSelectedReferenceTypeName.toLowerCase().equalsIgnoreCase("person")) {
+                    ref.setDocId("");
+                    ref.setPatientId("0");
                     ref.setSalutation(mSelectedSalutationOfPatientRef);
-                }else {
+                } else {
                     ref.setDocId("");
                     ref.setPatientId("");
                     ref.setName("");
@@ -731,21 +737,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             CommonMethods.showToast(this, message);
         }*/
         return patientList;
-    }
-
-    public static boolean isEnteredRefIDIsValid(String str) {
-        boolean isValid = false;
-        if (str.isEmpty()) {
-            return true;
-        } else {
-            String expression = "^[a-z_A-Z0-9]*$";
-            Pattern pattern = Pattern.compile(expression);
-            Matcher matcher = pattern.matcher(str);
-            if (matcher.matches()) {
-                isValid = true;
-            }
-        }
-        return isValid;
     }
 
     @Override
@@ -1082,21 +1073,21 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int Selectedrel = position;
-                Log.e("position---",""+position);
+                Log.e("position---", "" + position);
                 List<String> listRelation;
-                if(genderMale.isChecked()){
-                     listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
-                    Log.e("mRelation MR",listRelation.get(Selectedrel));
-                      mRelation=listRelation.get(Selectedrel);
+                if (genderMale.isChecked()) {
+                    listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+                    Log.e("mRelation MR", listRelation.get(Selectedrel));
+                    mRelation = listRelation.get(Selectedrel);
 
-                }else if (genderFemale.isChecked()){
+                } else if (genderFemale.isChecked()) {
                     listRelation = Arrays.asList(getResources().getStringArray(R.array.mrs_relation_entries));
-                    Log.e("mRelation MRS",listRelation.get(Selectedrel));
-                    mRelation=listRelation.get(Selectedrel);
-                }else if(genderOther.isChecked()){
+                    Log.e("mRelation MRS", listRelation.get(Selectedrel));
+                    mRelation = listRelation.get(Selectedrel);
+                } else if (genderOther.isChecked()) {
                     listRelation = Arrays.asList(getResources().getStringArray(R.array.other_relation_entries));
-                    Log.e("mRelation Other",listRelation.get(Selectedrel));
-                    mRelation=listRelation.get(Selectedrel);
+                    Log.e("mRelation Other", listRelation.get(Selectedrel));
+                    mRelation = listRelation.get(Selectedrel);
 
 
                 }

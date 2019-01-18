@@ -1,24 +1,24 @@
-<com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.guanaj.easyswipemenulibrary.EasySwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/divider"
-    app:dragEdge="right"
-    app:mode="same_level">
+    app:contentView="@+id/front_layout"
+    app:leftMenuView="@+id/left_layout"
+    app:rightMenuView="@+id/right_layout">
 
     <FrameLayout
-        android:id="@+id/delete_layout"
+        android:id="@+id/right_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dp4"
-            android:layout_marginEnd="@dimen/dp4"
             android:layout_marginStart="@dimen/dp4"
+            android:layout_marginEnd="@dimen/dp4"
+            android:layout_marginBottom="@dimen/dp4"
             android:background="@drawable/result_white_box_copy"
             android:orientation="vertical">
 
@@ -36,8 +36,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginEnd="@dimen/dp3"
                 android:layout_marginStart="@dimen/dp3"
+                android:layout_marginEnd="@dimen/dp3"
                 android:background="@color/tagColor" />
 
             <Button
@@ -50,11 +50,12 @@
                 android:textAllCaps="false"
                 android:textColor="@color/red"
                 android:textSize="@dimen/sp12" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginEnd="@dimen/dp3"
                 android:layout_marginStart="@dimen/dp3"
+                android:layout_marginEnd="@dimen/dp3"
                 android:background="@color/tagColor" />
 
             <Button
@@ -81,9 +82,9 @@
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp4"
-            android:layout_marginEnd="@dimen/dp7"
             android:layout_marginStart="@dimen/dp7"
+            android:layout_marginEnd="@dimen/dp7"
+            android:layout_marginBottom="@dimen/dp4"
             android:background="@drawable/result_white_box"
             android:orientation="vertical">
 
@@ -97,8 +98,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:paddingLeft="@dimen/dp2"
                     android:paddingStart="@dimen/dp2"
+                    android:paddingLeft="@dimen/dp2"
                     android:paddingTop="@dimen/dp2"
                     app:srcCompat="@drawable/result_blue_line"
                     tools:ignore="ContentDescription,RtlSymmetry" />
@@ -110,8 +111,8 @@
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/bluelineImageView"
                     android:layout_toRightOf="@id/bluelineImageView"
-                    android:paddingLeft="@dimen/dp13"
                     android:paddingStart="@dimen/dp13"
+                    android:paddingLeft="@dimen/dp13"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp13"
                     app:customFont="@string/roboto_medium"
@@ -143,8 +144,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="13dp"
                     android:layout_marginRight="13dp"
-                    android:layout_toLeftOf="@+id/appointmentTime"
                     android:layout_toStartOf="@+id/appointmentTime"
+                    android:layout_toLeftOf="@+id/appointmentTime"
                     android:visibility="gone"
                     app:srcCompat="@drawable/waiting"
                     tools:ignore="ContentDescription"
@@ -169,24 +170,24 @@
                 android:id="@+id/patientDetailsClickLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp6"
                 android:clickable="true"
-                android:focusable="true"
-                android:layout_marginBottom="@dimen/dp6">
+                android:focusable="true">
 
                 <com.rescribe.doctor.ui.customesViews.CircularImageView
                     android:id="@+id/patientImageView"
                     android:layout_width="@dimen/dp67"
                     android:layout_height="@dimen/dp67"
-                    android:layout_marginLeft="@dimen/dp10"
                     android:layout_marginStart="@dimen/dp10"
-                    tools:src="@drawable/uren_pic" />
+                    android:layout_marginLeft="@dimen/dp10"
+                    tools:src="@drawable/support" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dp11"
                     android:layout_marginStart="@dimen/dp11"
+                    android:layout_marginLeft="@dimen/dp11"
                     android:layout_toEndOf="@id/patientImageView"
                     android:layout_toRightOf="@id/patientImageView"
                     android:orientation="vertical"
@@ -196,12 +197,12 @@
                         android:id="@+id/patientNameTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp15"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:paddingEnd="@dimen/dp6"
                         android:paddingRight="@dimen/dp6"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp15"
                         app:customFont="@string/roboto_bold"
                         tools:text="Mr. Uren Chhadva" />
 
@@ -271,16 +272,16 @@
                 android:id="@+id/blueLineDivider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp1"
-                android:layout_marginEnd="@dimen/dp2"
                 android:layout_marginStart="@dimen/dp2"
+                android:layout_marginEnd="@dimen/dp2"
                 android:background="@color/tagColor" />
 
             <LinearLayout
                 android:id="@+id/patientInfoDetailLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp8"
-                android:layout_marginTop="@dimen/dp3">
+                android:layout_marginTop="@dimen/dp3"
+                android:layout_marginBottom="@dimen/dp8">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -292,9 +293,9 @@
                         android:id="@+id/patientPhoneNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/mobile_icon"
                         android:drawableLeft="@drawable/mobile_icon"
                         android:drawablePadding="@dimen/dp9"
-                        android:drawableStart="@drawable/mobile_icon"
                         android:textColor="@color/rating_color"
                         android:textSize="@dimen/sp12"
                         app:customFont="@string/roboto_medium"
@@ -312,10 +313,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginEnd="@dimen/dp10"
-                    android:layout_marginLeft="@dimen/dp20"
-                    android:layout_marginRight="@dimen/dp10"
                     android:layout_marginStart="@dimen/dp20"
+                    android:layout_marginLeft="@dimen/dp20"
+                    android:layout_marginEnd="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
                     android:layout_weight=".6"
                     android:gravity="center"
                     android:orientation="horizontal">
@@ -344,4 +345,38 @@
         </LinearLayout>
     </FrameLayout>
 
-</com.rescribe.doctor.ui.customesViews.swipeable_recyclerview.SwipeRevealLayout>
+    <FrameLayout
+        android:id="@+id/left_layout"
+        android:layout_width="@dimen/dp120"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp4"
+            android:layout_marginEnd="@dimen/dp4"
+            android:layout_marginBottom="@dimen/dp4"
+            android:background="@drawable/result_white_box_copy"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp3"
+                app:srcCompat="@drawable/ic_delete_button" />
+
+            <TextView
+                android:id="@+id/deleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp10"
+                android:text="@string/delete_appointment"
+                android:textColor="@color/red"
+                android:textSize="@dimen/sp12" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+
+</com.guanaj.easyswipemenulibrary.EasySwipeMenuLayout>

@@ -8,7 +8,7 @@
       - The "pivotX/Y" properties set the center of rotation of the group.
       - They have been given values half those of the vector's
       - "viewportWidth/Height"; using relative values, e.g. 50%p, will
-      - not compile.
+      - not implementation.
      -->
     <group
         android:name="rotationGroup"

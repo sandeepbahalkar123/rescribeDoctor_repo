@@ -174,7 +174,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 if (mAppointmentAdapter != null && !charString.equals(s.toString())) {
                     charString = s.toString();
                     mAppointmentAdapter.getFilter().filter(s);
-                    mAppointmentAdapter.openedChildGroupPos = "";
+//                    mAppointmentAdapter.openedChildGroupPos = "";
                 }
             }
         });
@@ -355,6 +355,16 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         mRequestAppointmentCancelModel.setStatus(status);
         mRequestAppointmentCancelModel.setType(type);
         mAppointmentHelper.doAppointmentCancelOrComplete(mRequestAppointmentCancelModel);
+
+    }
+
+    @Override
+    public void onGroupAppointmentDelete(Integer aptId, Integer patientId, int groupPosition) {
+
+    }
+
+    @Override
+    public void onAppointmentDelete(Integer aptId, Integer patientId, int childPosition, int groupPosition) {
 
     }
 

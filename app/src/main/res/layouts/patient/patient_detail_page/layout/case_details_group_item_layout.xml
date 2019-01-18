@@ -49,12 +49,13 @@
                     app:customFont="@string/roboto_bold"
                     tools:text="@string/enter_password" />
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/deleteAttachments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/ic_delete_24dp" />
+                    android:tint="@color/tagColor"
+                    app:srcCompat="@drawable/ic_delete_button" />
 
             </LinearLayout>
 

@@ -48,20 +48,18 @@ import static com.rescribe.doctor.util.Config.GET_PATIENTS_SYNC;
 import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class LoadAllPatientsService extends Service {
-    private static final String CHANNEL_PATIENT_DOWNLOAD = "patient_download";
-    private static final String TAG = "LOAD_ALL_PATIENT";
-    public static boolean RUNNING = false;
-
-    private static final String LOG_TAG = "LoadAllPatientsService";
     public static final String STATUS = "status";
     public static final String LOAD_ALL_PATIENTS = "com.rescribe.doctor.LOAD_ALL_PATIENTS";
-
+    private static final String CHANNEL_PATIENT_DOWNLOAD = "patient_download";
+    private static final String TAG = "LOAD_ALL_PATIENT";
+    private static final String LOG_TAG = "LoadAllPatientsService";
+    private static final int RECORD_COUNT = 50;
+    public static boolean RUNNING = false;
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
     private int pageCount = 0;
     private boolean isFailed = true;
     private AppDBHelper appDBHelper;
-    private static final int RECORD_COUNT = 50;
     private Gson gson;
 
     @Override
