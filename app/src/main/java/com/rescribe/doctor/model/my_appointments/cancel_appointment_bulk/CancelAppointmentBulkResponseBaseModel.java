@@ -7,16 +7,16 @@ import com.rescribe.doctor.model.Common;
 
 public class CancelAppointmentBulkResponseBaseModel implements CustomResponse {
 
-@SerializedName("common")
-@Expose
-private Common common;
+    @SerializedName("common")
+    @Expose
+    private Common common;
 
-public Common getCommon() {
-return common;
-}
+    public Common getCommon() {
+        return common;
+    }
 
-public void setCommon(Common common) {
-this.common = common;
-}
+    public void setCommon(Common common) {
+        this.common = common;
+    }
 
 }

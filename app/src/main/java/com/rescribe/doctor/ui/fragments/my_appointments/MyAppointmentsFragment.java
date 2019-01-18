@@ -36,9 +36,9 @@ import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.my_appointments.AppointmentList;
-import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
 import com.rescribe.doctor.model.my_appointments.PatientList;
+import com.rescribe.doctor.model.my_appointments.RequestAppointmentDeleteModel;
 import com.rescribe.doctor.model.my_appointments.cancel_appointment_bulk.CancelAppointmentBulkResponseBaseModel;
 import com.rescribe.doctor.model.my_appointments.cancel_appointment_bulk.CancelAppointmentList;
 import com.rescribe.doctor.model.my_appointments.cancel_appointment_bulk.CancelAppointmentPatientDetail;
@@ -80,7 +80,6 @@ import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.BOOK
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.COMPLETED;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
-import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 
 /**
@@ -125,6 +124,15 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     private ArrayList<AddToList> addToArrayList;
     private String mUserSelectedDate = "";
     private ArrayList<PatientList> tempSelectedList = new ArrayList<>();
+
+    public static MyAppointmentsFragment newInstance(MyAppointmentsDataModel myAppointmentsDataModel, String mDateSelectedByUser) {
+        MyAppointmentsFragment myAppointmentsFragment = new MyAppointmentsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(RescribeConstants.DATE, mDateSelectedByUser);
+        bundle.putParcelable(APPOINTMENT_DATA, myAppointmentsDataModel);
+        myAppointmentsFragment.setArguments(bundle);
+        return myAppointmentsFragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -182,22 +190,14 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 if (mAppointmentAdapter != null && !charString.equals(s.toString())) {
                     charString = s.toString();
                     mAppointmentAdapter.getFilter().filter(s);
-                    expandableListView.setVisibility(View.VISIBLE);                }
+                    expandableListView.setVisibility(View.VISIBLE);
+                }
             }
         });
 
         mUserSelectedDate = getArguments().getString(RescribeConstants.DATE);
         MyAppointmentsDataModel myAppointmentsDataModel = getArguments().getParcelable(APPOINTMENT_DATA);
         setFilteredData(myAppointmentsDataModel);
-    }
-
-    public static MyAppointmentsFragment newInstance(MyAppointmentsDataModel myAppointmentsDataModel, String mDateSelectedByUser) {
-        MyAppointmentsFragment myAppointmentsFragment = new MyAppointmentsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(RescribeConstants.DATE, mDateSelectedByUser);
-        bundle.putParcelable(APPOINTMENT_DATA, myAppointmentsDataModel);
-        myAppointmentsFragment.setArguments(bundle);
-        return myAppointmentsFragment;
     }
 
     public void expandAll() {
@@ -363,17 +363,26 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         mRequestAppointmentCancelModel.setStatus(status);
         mRequestAppointmentCancelModel.setType(type);
         mAppointmentHelper.doAppointmentCancelOrComplete(mRequestAppointmentCancelModel);
-
     }
 
     @Override
     public void onGroupAppointmentDelete(Integer aptId, Integer patientId, int groupPosition) {
-
+        childPos = 0;
+        groupPos = groupPosition;
+        RequestAppointmentDeleteModel requestAppointmentDeleteModel = new RequestAppointmentDeleteModel();
+        requestAppointmentDeleteModel.setAptId(aptId);
+        requestAppointmentDeleteModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+        mAppointmentHelper.doAppointmentDelete(requestAppointmentDeleteModel);
     }
 
     @Override
     public void onAppointmentDelete(Integer aptId, Integer patientId, int childPosition, int groupPosition) {
-
+        childPos = childPosition;
+        groupPos = groupPosition;
+        RequestAppointmentDeleteModel requestAppointmentDeleteModel = new RequestAppointmentDeleteModel();
+        requestAppointmentDeleteModel.setAptId(aptId);
+        requestAppointmentDeleteModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
+        mAppointmentHelper.doAppointmentDelete(requestAppointmentDeleteModel);
     }
 
     @Override
@@ -619,7 +628,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 activity.getActivityDrawerLayout().openDrawer(GravityCompat.END);
                 break;
             case R.id.leftFabForAppointment:
-                isLongPressed=false;
+                isLongPressed = false;
                 Intent intent = new Intent(getActivity(), ShowMyPatientsListActivity.class);
                 intent.putExtra(RescribeConstants.ACTIVITY_LAUNCHED_FROM, RescribeConstants.MY_APPOINTMENTS);
                 startActivityForResult(intent, Activity.RESULT_OK);
@@ -680,16 +689,15 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 Toast.makeText(getActivity(), templateBaseModel.getCommon().getStatusMessage() + "", Toast.LENGTH_SHORT).show();
             }
 
-        }
-        if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
+        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
             if (templateBaseModel.getTemplateDataModel() != null) {
                 ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
-             //   if (!templateLists.isEmpty()) {
-                    Intent intent = new Intent(getActivity(), TemplateListActivity.class);
-                    intent.putParcelableArrayListExtra(RescribeConstants.APPOINTMENT_LIST, mAppointmentLists);
-                    intent.putParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST, templateLists);
-                    startActivity(intent);
+                //   if (!templateLists.isEmpty()) {
+                Intent intent = new Intent(getActivity(), TemplateListActivity.class);
+                intent.putParcelableArrayListExtra(RescribeConstants.APPOINTMENT_LIST, mAppointmentLists);
+                intent.putParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST, templateLists);
+                startActivity(intent);
 //                } else {
 //                    //  showSendSmsDialog(clinicListForSms);
 //
@@ -775,20 +783,36 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 mAppointmentAdapter.notifyDataSetChanged();
                 if (mAppointmentAdapter.getGroupList().isEmpty()) {
                     expandableListView.setVisibility(View.GONE);
-                   emptyListView.setVisibility(View.VISIBLE);
+                    emptyListView.setVisibility(View.VISIBLE);
                 }
                 isLongPressed = false;
 
             } else {
                 Toast.makeText(getActivity(), cancelAppointmentBulkResponseBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
-
             }
+        } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_APPOINTMENT_DELETE)) {
+            CancelAppointmentBulkResponseBaseModel deleteAppointmentResponseBaseModel = (CancelAppointmentBulkResponseBaseModel) customResponse;
+            if (deleteAppointmentResponseBaseModel.getCommon().isSuccess()) {
+                Toast.makeText(getActivity(), deleteAppointmentResponseBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
 
+                mAppointmentAdapter.getGroupList().get(groupPos).getPatientList().remove(childPos);
+                if (mAppointmentAdapter.getGroupList().get(groupPos).getPatientList().isEmpty())
+                    mAppointmentAdapter.getGroupList().remove(groupPos);
+                else
+                    mAppointmentAdapter.getGroupList().get(groupPos).setPatientHeader(mAppointmentAdapter.getGroupList().get(groupPos).getPatientList().get(0));
 
+                mAppointmentAdapter.notifyDataSetChanged();
+                if (mAppointmentAdapter.getGroupList().isEmpty()) {
+                    expandableListView.setVisibility(View.GONE);
+                    emptyListView.setVisibility(View.VISIBLE);
+                }
+                isLongPressed = false;
+
+            } else {
+                Toast.makeText(getActivity(), deleteAppointmentResponseBaseModel.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
-
-
 
 
     private void showDialogForWaitingStatus(ArrayList<AddToWaitingResponse> addToWaitingResponse) {

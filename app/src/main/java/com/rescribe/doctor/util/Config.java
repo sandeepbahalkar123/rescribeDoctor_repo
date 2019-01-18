@@ -37,6 +37,7 @@ public class Config {
     public static final String DELETE_OPD_NOTE= "doctor/api/appointment/deleteOpdNotes";
     public static final String CANCEL_APPOINTMENT_BULK= "doctor/api/appointment/cancelAppointments";
     public static final String GET_OPD_NOTE= "doctor/api/appointment/getOPDNotes?"; // docId=2860&patientId=624914&pageNo=0&paginationSize=1
+    public static final String DELETE_APPOINTMENT = "doctor/api/appointment/deleteAppointment";
 
 
     //---------------LOCAL SERVER URL START-----------------------

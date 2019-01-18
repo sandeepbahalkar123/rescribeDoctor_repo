@@ -627,6 +627,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         CancelAppointmentBulkResponseBaseModel cancelAppointmentBulkResponseBaseModel = new Gson().fromJson(data, CancelAppointmentBulkResponseBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, cancelAppointmentBulkResponseBaseModel, mOldDataTag);
                         break;
+                    case RescribeConstants.TASK_APPOINTMENT_DELETE: //This is for Cancel Appointment In Bulk
+                        CancelAppointmentBulkResponseBaseModel deleteAppointmentResponseBaseModel = new Gson().fromJson(data, CancelAppointmentBulkResponseBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, deleteAppointmentResponseBaseModel, mOldDataTag);
+                        break;
                     default:
 
 

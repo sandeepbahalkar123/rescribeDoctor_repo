@@ -8,6 +8,7 @@ import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.my_appointments.RequestAppointmentData;
+import com.rescribe.doctor.model.my_appointments.RequestAppointmentDeleteModel;
 import com.rescribe.doctor.model.my_appointments.cancel_appointment_bulk.CancelAppointmentList;
 import com.rescribe.doctor.model.my_appointments.request_cancel_or_complete_appointment.RequestAppointmentCancelModel;
 import com.rescribe.doctor.model.my_patient_filter.LocationsRequest;
@@ -88,7 +89,7 @@ public class AppointmentHelper implements ConnectionListener {
 
     public void doGetAppointmentData(String userSelectedDate) {
 
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_APPOINTMENT_DATA, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_APPOINTMENT_DATA, Request.Method.POST, false);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mRequestAppointmentData.setDate(userSelectedDate);
@@ -100,7 +101,7 @@ public class AppointmentHelper implements ConnectionListener {
 
 
     public void doGetSearchResult(RequestSearchPatients mRequestSearchPatients, boolean isProgressShow) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, isProgressShow, RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, isProgressShow, RescribeConstants.TASK_GET_SEARCH_RESULT_MY_PATIENT, Request.Method.POST, false);
         mConnectionFactory.setPostParams(mRequestSearchPatients);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_MY_PATIENTS_LIST);
@@ -108,14 +109,14 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void doGetDoctorTemplate() {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE, Request.Method.GET, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE, Request.Method.GET, false);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.GET_SMS_TEMPLATE + Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE);
     }
 
     public void doRequestSendSMS(ArrayList<ClinicListForSms> clinicListForSms) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_REQUEST_SEND_SMS, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_REQUEST_SEND_SMS, Request.Method.POST, false);
         RequestSendSmsModel mRequestSendSmsModel = new RequestSendSmsModel();
         mRequestSendSmsModel.setClinicListForSms(clinicListForSms);
         mConnectionFactory.setPostParams(mRequestSendSmsModel);
@@ -126,7 +127,7 @@ public class AppointmentHelper implements ConnectionListener {
 
     public void doGetWaitingList() {
 
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_WAITING_LIST, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_WAITING_LIST, Request.Method.POST, false);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
@@ -138,7 +139,7 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void doAddToWaitingListFromMyPatients(RequestToAddWaitingList mRequestForWaitingListPatients) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ADD_TO_WAITING_LIST, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ADD_TO_WAITING_LIST, Request.Method.POST, false);
         mConnectionFactory.setPostParams(mRequestForWaitingListPatients);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.ADD_TO_WAITING_LIST);
@@ -147,7 +148,7 @@ public class AppointmentHelper implements ConnectionListener {
 
     //---------- Waiting list API : START-------
     public void doDeleteWaitingList(RequestWaitingListStatusChangeBaseModel mRequestDeleteBaseModel) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_WAITING_LIST, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DELETE_WAITING_LIST, Request.Method.POST, false);
         mConnectionFactory.setPostParams(mRequestDeleteBaseModel);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.DELETE_WAITING_LIST);
@@ -156,7 +157,7 @@ public class AppointmentHelper implements ConnectionListener {
 
     //Use to change waiting list status to in-consultation or completed.
     public void doUpdateWaitingListStatus(RequestWaitingListStatusChangeBaseModel mRequestDeleteBaseModel) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_INCONSULATION_OR_COMPLETED_WAITING_LIST, Request.Method.POST, false);
         mConnectionFactory.setPostParams(mRequestDeleteBaseModel);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.INCONSULATION_OR_COMPLETED_WAITING_LIST);
@@ -165,15 +166,17 @@ public class AppointmentHelper implements ConnectionListener {
 
     //----------- Waiting list API :END------
     public void doAppointmentCancelOrComplete(RequestAppointmentCancelModel mRequestAppointmentCancelModel) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE, Request.Method.POST, false);
         mConnectionFactory.setPostParams(mRequestAppointmentCancelModel);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.CANCEL_OR_COMPLETE_APPOINTMENT);
         mConnectionFactory.createConnection(RescribeConstants.TASK_APPOINTMENT_CANCEL_OR_COMPLETE);
     }
 
+    //----------- Waiting list API :END------
+
     public void doDargAndDropApi(RequestForDragAndDropBaseModel requestForDragAndDropBaseModel) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DARG_DROP, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DARG_DROP, Request.Method.POST, false);
         mConnectionFactory.setPostParams(requestForDragAndDropBaseModel);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.DRAG_AND_DROP_API);
@@ -182,7 +185,7 @@ public class AppointmentHelper implements ConnectionListener {
 
     public void doGetCompletedOpdList() {
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_COMPLETED_OPD, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_COMPLETED_OPD, Request.Method.POST, false);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mRequestAppointmentData.setDate(date);
@@ -194,7 +197,7 @@ public class AppointmentHelper implements ConnectionListener {
 
     public void doGetNewPatientList() {
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_NEW_PATIENT_LIST, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_NEW_PATIENT_LIST, Request.Method.POST, false);
         RequestAppointmentData mRequestAppointmentData = new RequestAppointmentData();
         mRequestAppointmentData.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mRequestAppointmentData.setDate(date);
@@ -205,7 +208,7 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
     public void getFilterLocationList() {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_DOCTOR_PATIENT_CITY, Request.Method.POST, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_DOCTOR_PATIENT_CITY, Request.Method.POST, false);
         LocationsRequest locationsRequest = new LocationsRequest();
         locationsRequest.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
         mConnectionFactory.setPostParams(locationsRequest);
@@ -217,7 +220,7 @@ public class AppointmentHelper implements ConnectionListener {
     public void getTimeSlotToBookAppointmentWithDoctor(String docId, int locationID, String date, boolean isReqDoctorData, int patientID) {
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_APP_DATE, date, mContext);
 
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT, Request.Method.GET, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT, Request.Method.GET, false);
         mConnectionFactory.setHeaderParams();
 
         String currentTimeStamp = CommonMethods.getCurrentTimeStamp(RescribeConstants.DATE_PATTERN.HH_mm);
@@ -235,6 +238,14 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.CANCEL_APPOINTMENT_BULK);
         mConnectionFactory.createConnection(RescribeConstants.TASK_CANCEL_APPOINTMENT_BULK);
+    }
+
+    public void doAppointmentDelete(RequestAppointmentDeleteModel mRequestAppointmentDeleteModel) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_APPOINTMENT_DELETE, Request.Method.PUT, false);
+        mConnectionFactory.setPostParams(mRequestAppointmentDeleteModel);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.DELETE_APPOINTMENT);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_APPOINTMENT_DELETE);
     }
 
     public void doConfirmAppointmentRequest(int docId, int locationID, String date, TimeSlotData timeSlotData, Reschedule reschedule, int patientID) {
@@ -316,7 +327,7 @@ public class AppointmentHelper implements ConnectionListener {
 
 
     public void getReferenceList(int mClinicId) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_REFERENCE_LIST, Request.Method.GET, true);
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_REFERENCE_LIST, Request.Method.GET, false);
         mConnectionFactory.setHeaderParams();
         String url = Config.GET_REFERENCE_LIST + "clinicId=" + mClinicId;
         mConnectionFactory.setUrl(url);
