@@ -356,6 +356,7 @@
             android:layout_marginStart="@dimen/dp4"
             android:layout_marginEnd="@dimen/dp4"
             android:layout_marginBottom="@dimen/dp4"
+            android:padding="@dimen/dp8"
             android:background="@drawable/result_white_box_copy"
             android:gravity="center"
             android:orientation="vertical">
@@ -371,6 +372,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/dp10"
+                android:gravity="center"
                 android:text="@string/delete_appointment"
                 android:textColor="@color/red"
                 android:textSize="@dimen/sp12" />

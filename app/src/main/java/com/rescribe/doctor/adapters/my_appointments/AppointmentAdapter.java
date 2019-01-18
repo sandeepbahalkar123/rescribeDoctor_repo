@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.guanaj.easyswipemenulibrary.EasySwipeMenuLayout;
+import com.guanaj.easyswipemenulibrary.State;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.my_appointments.PatientList;
@@ -63,6 +65,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     private ArrayList<AppointmentList> mAppointmentListTemp;
     private Context mContext;
     private ArrayList<AppointmentList> mDataList;
+    private EasySwipeMenuLayout swipe_layout;
 
     public AppointmentAdapter(Context context, ArrayList<AppointmentList> mAppointmentList, OnDownArrowClicked mOnDownArrowClicked) {
         this.mContext = context;
@@ -102,7 +105,22 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         final String areaName = mAppointmentListTemp.get(groupPosition).getArea();
         bind(patientObject, groupPosition, childPosition, viewHolder, cityName, areaName);
 
-        viewHolder.swipe_layout.resetStatus();
+        viewHolder.swipe_layout.setOnMoveListener(new EasySwipeMenuLayout.MoveListener() {
+            @Override
+            public void move(State result) {
+                Log.d("MOVE_COMPLETE_RESULT : ", result + " viewHolder");
+
+                if (result != State.CLOSE) {
+                    if (swipe_layout != null) {
+                        if (swipe_layout != viewHolder.swipe_layout)
+                            swipe_layout.handlerSwipeMenu(State.CLOSE);
+                    }
+
+                    swipe_layout = viewHolder.swipe_layout;
+                }
+            }
+        });
+
         if (patientObject.getAppointmentStatusId().equals(BOOKED) || patientObject.getAppointmentStatusId().equals(CONFIRM))
             viewHolder.swipe_layout.setCanRightSwipe(true);
         else
@@ -271,6 +289,11 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder.checkbox.setVisibility(View.VISIBLE);
         else viewHolder.checkbox.setVisibility(View.GONE);
 
+
+        viewHolder.swipe_layout.resetStatus();
+        if (swipe_layout != null)
+            swipe_layout.resetStatus();
+
         viewHolder.patientDetailsClickLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -283,6 +306,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                viewHolder.swipe_layout.resetStatus();
                 mOnDownArrowClicked.onClickOfPatientDetails(mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition), mAppointmentListTemp.get(groupPosition).getClinicId(), viewHolder.patientAgeTextView.getText().toString() + viewHolder.patientGenderTextView.getText().toString());
             }
         });
@@ -341,7 +365,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
                 ViewGroup.LayoutParams layoutParams1 = viewHolder.left_layout.getLayoutParams();
                 layoutParams1.height = viewHolder.front_layout.getMeasuredHeight();
-                layoutParams1.width = (int) (viewHolder.front_layout.getMeasuredWidth() / 2.4);
+                layoutParams1.width = (int) (viewHolder.front_layout.getMeasuredWidth() / 3.5);
                 viewHolder.left_layout.setLayoutParams(layoutParams1);
             }
         });
@@ -399,7 +423,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         final AppointmentList appointmentListObject = mAppointmentListTemp.get(groupPosition);
         bindGroupItem(appointmentListObject, groupPosition, isExpanded, groupViewHolder);
 
-        groupViewHolder.swipe_layout.resetStatus();
         if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(BOOKED) || appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(CONFIRM))
             groupViewHolder.swipe_layout.setCanRightSwipe(true);
         else
@@ -526,10 +549,32 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
                 .apply(requestOptions).thumbnail(0.5f)
                 .into(groupViewHolder.mPatientImageView);
 
+        groupViewHolder.swipe_layout.setOnMoveListener(new EasySwipeMenuLayout.MoveListener() {
+            @Override
+            public void move(State result) {
+                Log.d("MOVE_COMPLETE_RESULT : ", result + " groupViewHolder");
+                if (result != null) {
+                    if (result != State.CLOSE) {
+                        if (swipe_layout != null) {
+                            if (swipe_layout != groupViewHolder.swipe_layout)
+                                swipe_layout.handlerSwipeMenu(State.CLOSE);
+                        }
+
+                        swipe_layout = groupViewHolder.swipe_layout;
+                    }
+                }
+            }
+        });
+
+        groupViewHolder.swipe_layout.resetStatus();
+        if (swipe_layout != null)
+            swipe_layout.resetStatus();
+
         groupViewHolder.mHospitalDetailsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mOnDownArrowClicked.onDownArrowSetClick(groupPosition, isExpanded);
+                groupViewHolder.swipe_layout.resetStatus();
             }
         });
         groupViewHolder.mGroupCheckbox.setChecked(appointmentListObject.isSelectedGroupCheckbox());
@@ -584,6 +629,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.mPatientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                groupViewHolder.swipe_layout.resetStatus();
                 mOnDownArrowClicked.onClickOfPatientDetails(appointmentListObject.getPatientHeader(), appointmentListObject.getClinicId(), groupViewHolder.mPatientAgeTextView.getText().toString() + groupViewHolder.mPatientGenderTextView.getText().toString());
             }
         });
@@ -601,7 +647,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             public void onClick(View view) {
                 mOnDownArrowClicked.onGroupAppointmentDelete(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), groupPosition);
                 groupViewHolder.swipe_layout.resetStatus();
-                notifyDataSetChanged();
             }
         });
 
@@ -610,7 +655,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             public void onClick(View view) {
                 mOnDownArrowClicked.onGroupAppointmentClicked(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 3, "complete", groupPosition);
                 groupViewHolder.swipe_layout.resetStatus();
-                notifyDataSetChanged();
             }
         });
         groupViewHolder.mAppointmentReschedule.setOnClickListener(new View.OnClickListener() {
@@ -619,7 +663,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
                 mOnDownArrowClicked.onAppointmentReshedule(appointmentListObject.getPatientHeader(), groupViewHolder.mPatientAgeTextView.getText().toString() + groupViewHolder.mPatientGenderTextView.getText().toString(), appointmentListObject.getCity(), appointmentListObject.getArea());
                 groupViewHolder.swipe_layout.resetStatus();
-                notifyDataSetChanged();
 
             }
         });
@@ -628,7 +671,6 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             public void onClick(View view) {
                 mOnDownArrowClicked.onGroupAppointmentCancelled(appointmentListObject.getPatientHeader().getAptId(), appointmentListObject.getPatientHeader().getPatientId(), 4, "cancel", groupPosition);
                 groupViewHolder.swipe_layout.resetStatus();
-                notifyDataSetChanged();
 
             }
         });
@@ -654,7 +696,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
 
                 ViewGroup.LayoutParams layoutParams1 = groupViewHolder.left_layout.getLayoutParams();
                 layoutParams1.height = groupViewHolder.front_layout.getMeasuredHeight();
-                layoutParams1.width = (int) (groupViewHolder.front_layout.getMeasuredWidth() / 2.4);
+                layoutParams1.width = (int) (groupViewHolder.front_layout.getMeasuredWidth() / 3.5);
                 groupViewHolder.left_layout.setLayoutParams(layoutParams1);
             }
         });
