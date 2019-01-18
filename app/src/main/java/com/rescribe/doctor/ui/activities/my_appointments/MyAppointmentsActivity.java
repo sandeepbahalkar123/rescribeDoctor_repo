@@ -109,7 +109,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         month = CommonMethods.getCurrentDate("MM");
         mYear = CommonMethods.getCurrentDate("yyyy");
         String day = CommonMethods.getCurrentDate("dd");
-        mDateSelectedByUser = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.d_M_YYYY);
+        mDateSelectedByUser = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         String toDisplay = day + "<sup>" + CommonMethods.getSuffixForNumber(Integer.parseInt(day)) + "</sup> " + CommonMethods.getCurrentDate("MMM'' yy");
 
         Spanned dateToDisplay;
@@ -324,7 +324,8 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
 
         int monthOfYearToShow = monthOfYear + 1;
-        mDateSelectedByUser = dayOfMonth + "-" + monthOfYearToShow + "-" + year;
+       // mDateSelectedByUser = dayOfMonth + "-" + monthOfYearToShow + "-" + year;
+        mDateSelectedByUser = year + "-" + monthOfYearToShow + "-" + dayOfMonth;
         dateTextview.setVisibility(View.VISIBLE);
         String timeToShow = CommonMethods.formatDateTime(dayOfMonth + "-" + monthOfYearToShow + "-" + year, RescribeConstants.DATE_PATTERN.MMM_YY,
                 RescribeConstants.DATE_PATTERN.DD_MM_YYYY, RescribeConstants.DATE).toLowerCase();

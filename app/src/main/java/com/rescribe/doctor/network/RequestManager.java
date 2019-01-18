@@ -6,12 +6,10 @@ package com.rescribe.doctor.network;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -29,12 +27,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.helpers.database.AppDBHelper;
-import com.rescribe.doctor.model.new_patient.ReferenceBaseModel;
-import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaDetailsBaseModel;
-import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.city_details.StateAndCityBaseModel;
-import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorListBaseModel;
-import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.states_details.StatesDetailsBaseModel;
-import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.Connector;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -51,10 +43,16 @@ import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseMo
 import com.rescribe.doctor.model.doctor_location.DoctorLocationBaseModel;
 import com.rescribe.doctor.model.login.ActiveStatusModel;
 import com.rescribe.doctor.model.login.LoginModel;
-import com.rescribe.doctor.model.login.SignUpModel;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
+import com.rescribe.doctor.model.my_appointments.cancel_appointment_bulk.CancelAppointmentBulkResponseBaseModel;
 import com.rescribe.doctor.model.my_patient_filter.LocationsModel;
 import com.rescribe.doctor.model.new_patient.NewPatientBaseModel;
+import com.rescribe.doctor.model.new_patient.ReferenceBaseModel;
+import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaDetailsBaseModel;
+import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.city_details.StateAndCityBaseModel;
+import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorListBaseModel;
+import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.states_details.StatesDetailsBaseModel;
+import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.SyncPatientsModel;
 import com.rescribe.doctor.model.patient.patient_connect.ChatPatientConnectModel;
 import com.rescribe.doctor.model.patient.patient_connect.PatientConnectBaseModel;
@@ -67,7 +65,6 @@ import com.rescribe.doctor.model.waiting_list.WaitingListBaseModel;
 import com.rescribe.doctor.model.waiting_list.response_add_to_waiting_list.AddToWaitingListBaseModel;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.Device;
-import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
 import com.rescribe.doctor.ui.customesViews.CustomProgressDialog;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
@@ -82,8 +79,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 import static com.rescribe.doctor.util.RescribeConstants.INVALID_LOGIN_PASSWORD;
+import static com.rescribe.doctor.util.RescribeConstants.SUCCESS;
 
 public class RequestManager extends ConnectRequest implements Connector, RequestTimer.RequestTimerListener {
     private final String TAG = this.getClass().getName();
@@ -185,9 +182,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
             public void onErrorResponse(VolleyError error) {
                 errorResponse(error, isTokenExpired);
             }
-        })
-
-        {
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 if (headerParams == null) {
@@ -236,9 +231,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
             public void onErrorResponse(VolleyError error) {
                 errorResponse(error, false);
             }
-        })
-
-        {
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 if (mHeaderParams == null) {
@@ -456,7 +449,7 @@ public class RequestManager extends ConnectRequest implements Connector, Request
 
                     mHeaderParams.put(RescribeConstants.AUTHORIZATION_TOKEN, loginModel.getDoctorLoginData().getAuthToken());
                     connect();
-                }else if (!loginModel.getCommon().isSuccess() && loginModel.getCommon().getStatusCode().equals(INVALID_LOGIN_PASSWORD)){
+                } else if (!loginModel.getCommon().isSuccess() && loginModel.getCommon().getStatusCode().equals(INVALID_LOGIN_PASSWORD)) {
                     CommonMethods.showToast(mContext, loginModel.getCommon().getStatusMessage());
                     CommonMethods.logout(mContext, dbHelper);
                 } else {
@@ -630,7 +623,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         ReferenceBaseModel referenceBaseModel = new Gson().fromJson(data, ReferenceBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, referenceBaseModel, mOldDataTag);
                         break;
-
+                    case RescribeConstants.TASK_CANCEL_APPOINTMENT_BULK: //This is for Cancel Appointment In Bulk
+                        CancelAppointmentBulkResponseBaseModel cancelAppointmentBulkResponseBaseModel = new Gson().fromJson(data, CancelAppointmentBulkResponseBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, cancelAppointmentBulkResponseBaseModel, mOldDataTag);
+                        break;
                     default:
 
 

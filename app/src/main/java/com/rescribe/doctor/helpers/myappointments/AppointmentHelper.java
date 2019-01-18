@@ -4,16 +4,17 @@ import android.content.Context;
 
 import com.android.volley.Request;
 import com.rescribe.doctor.R;
-import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
-import com.rescribe.doctor.model.patient.add_new_patient.SyncPatientsRequest;
-import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.city_details.CityData;
-import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.my_appointments.RequestAppointmentData;
+import com.rescribe.doctor.model.my_appointments.cancel_appointment_bulk.CancelAppointmentList;
 import com.rescribe.doctor.model.my_appointments.request_cancel_or_complete_appointment.RequestAppointmentCancelModel;
 import com.rescribe.doctor.model.my_patient_filter.LocationsRequest;
+import com.rescribe.doctor.model.patient.add_new_patient.PatientDetail;
+import com.rescribe.doctor.model.patient.add_new_patient.SyncPatientsRequest;
+import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.city_details.CityData;
+import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.RequestSendSmsModel;
 import com.rescribe.doctor.model.request_appointment_confirmation.RequestAppointmentConfirmationModel;
@@ -30,11 +31,7 @@ import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.rescribe.doctor.util.RescribeConstants.TASK_GET_TIME_SLOTS_TO_BOOK_APPOINTMENT;
 
@@ -231,6 +228,15 @@ public class AppointmentHelper implements ConnectionListener {
 
     }
 
+
+    public void cancelAppointmentBulk(CancelAppointmentList cancelAppointmentList) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_CANCEL_APPOINTMENT_BULK, Request.Method.POST, false);
+        mConnectionFactory.setPostParams(cancelAppointmentList);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.CANCEL_APPOINTMENT_BULK);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_CANCEL_APPOINTMENT_BULK);
+    }
+
     public void doConfirmAppointmentRequest(int docId, int locationID, String date, TimeSlotData timeSlotData, Reschedule reschedule, int patientID) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_CONFIRM_APPOINTMENT, Request.Method.POST, false);
         mConnectionFactory.setHeaderParams();
@@ -307,7 +313,6 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.setUrl(Config.GET_ALL_AREA_OF_CITIES_TO_ADD_PATIENT);
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_AREA_TO_ADD_NEW_PATIENT);
     }
-
 
 
     public void getReferenceList(int mClinicId) {
