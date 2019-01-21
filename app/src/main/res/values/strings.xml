@@ -382,6 +382,6 @@
     <string name="delete_appointment">Delete Appointment</string>
     <string name="add_new_temp">Add New</string>
     <string name="notify_delay">Notify Delay</string>
-    <string name="please_select_book_confirm_patients">Select booked and confirm appointments.</string>
+    <string name="please_select_book_confirm_patients">Select booked and confirmed appointments to cancel.</string>
 
 </resources>

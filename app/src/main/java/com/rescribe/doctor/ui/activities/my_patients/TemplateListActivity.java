@@ -34,6 +34,7 @@ import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicLis
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.rescribe.doctor.ui.activities.my_patients.SendSmsActivity.RESULT_SMS_SEND;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.BOOKED;
+import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
 
 /**
  * Created by jeetal on 21/2/18.
@@ -163,8 +166,20 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
                 String delayMsg="Because of emergency we are rescheduling all appointment by 30 minutes. Requesting you to please plan accordingly";
                 ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
                 ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
+//                for (AppointmentList appointmentList : appointmentList) {
+//                    patientListsToShowOnSmsScreen.addAll(appointmentList.getPatientList());
+//                }
+
                 for (AppointmentList appointmentList : appointmentList) {
-                    patientListsToShowOnSmsScreen.addAll(appointmentList.getPatientList());
+
+                    for (PatientList patientList : appointmentList.getPatientList()) {
+                        if (patientList.getAppointmentStatusId().equals(BOOKED) || patientList.getAppointmentStatusId().equals(CONFIRM)) {
+                                patientListsToShowOnSmsScreen.add(patientList);
+                            }
+
+                    }
+
+
                 }
 
                 for (AppointmentList appointmentList : appointmentList) {
@@ -189,10 +204,14 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
 
                 }
                 //  showSendSmsDialog(clinicListForSms);
-                Intent intent = new Intent(mContext, SendSmsActivity.class);
-                intent.putExtra(RescribeConstants.SMS_DETAIL_LIST, clinicListForSms);
-                intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW, patientListsToShowOnSmsScreen);
-                startActivityForResult(intent, RESULT_SMS_SEND);
+                if (!patientListsToShowOnSmsScreen.isEmpty()) {
+                    Intent intent = new Intent(mContext, SendSmsActivity.class);
+                    intent.putExtra(RescribeConstants.SMS_DETAIL_LIST, clinicListForSms);
+                    intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW, patientListsToShowOnSmsScreen);
+                    startActivityForResult(intent, RESULT_SMS_SEND);
+                }else {
+                    CommonMethods.showToast(mContext,"Select booked and confirmed appointments for notify delay.");
+                }
 
 
             }

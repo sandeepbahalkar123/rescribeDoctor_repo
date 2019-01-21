@@ -270,5 +270,6 @@ public class RescribePreferencesManager {
 
         String SELECTED_APP_DATE = "selected_app_date";
         String SELECTED_APP_CLINIC = "selected_app_clinic";
+        String COACHMARK_DELETE_APPOINTMENT ="COACHMARK_DELETE_APPOINTMENT" ;
     }
 }

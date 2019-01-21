@@ -121,12 +121,12 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             }
         });
 
-        if (patientObject.getAppointmentStatusId().equals(BOOKED) || patientObject.getAppointmentStatusId().equals(CONFIRM))
+        if (patientObject.getAppointmentStatusId().equals(BOOKED) )
             viewHolder.swipe_layout.setCanRightSwipe(true);
         else
             viewHolder.swipe_layout.setCanRightSwipe(false);
 
-        if (patientObject.getAppointmentStatusId().equals(BOOKED))
+        if (patientObject.getAppointmentStatusId().equals(BOOKED) || patientObject.getAppointmentStatusId().equals(CONFIRM))
             viewHolder.swipe_layout.setCanLeftSwipe(true);
         else viewHolder.swipe_layout.setCanLeftSwipe(false);
 
@@ -314,6 +314,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.left_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 mOnDownArrowClicked.onAppointmentDelete(patientList.getAptId(), patientList.getPatientId(), childPosition, groupPosition);
                 viewHolder.swipe_layout.resetStatus();
                 notifyDataSetChanged();
@@ -423,12 +424,12 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         final AppointmentList appointmentListObject = mAppointmentListTemp.get(groupPosition);
         bindGroupItem(appointmentListObject, groupPosition, isExpanded, groupViewHolder);
 
-        if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(BOOKED) || appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(CONFIRM))
+        if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(BOOKED))
             groupViewHolder.swipe_layout.setCanRightSwipe(true);
         else
             groupViewHolder.swipe_layout.setCanRightSwipe(false);
 
-        if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(BOOKED))
+        if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(BOOKED) || appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(CONFIRM))
             groupViewHolder.swipe_layout.setCanLeftSwipe(true);
         else groupViewHolder.swipe_layout.setCanLeftSwipe(false);
 

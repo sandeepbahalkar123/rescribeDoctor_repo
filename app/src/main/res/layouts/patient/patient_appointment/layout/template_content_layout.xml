@@ -56,7 +56,7 @@
             android:layout_weight="1"
             android:background="@drawable/button_selector"
             android:fontFamily="@font/roboto_bold"
-            android:text="@string/add_new_temp"
+            android:text="@string/send_sms"
             android:textColor="@color/white"
             android:textSize="@dimen/sp14"
             android:visibility="visible"

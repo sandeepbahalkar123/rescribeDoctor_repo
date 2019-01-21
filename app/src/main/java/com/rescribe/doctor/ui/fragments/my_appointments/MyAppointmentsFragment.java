@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -61,6 +64,7 @@ import com.rescribe.doctor.ui.activities.my_patients.TemplateListActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.activities.waiting_list.WaitingMainListActivity;
 import com.rescribe.doctor.ui.customesViews.EditTextWithDeleteButton;
+import com.rescribe.doctor.ui.fragments.book_appointment.CoachFragment;
 import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -111,6 +115,10 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     Unbinder unbinder;
     @BindView(R.id.leftFabForAppointment)
     FloatingActionButton leftFabForAppointment;
+
+    @BindView(R.id.coachmark)
+    ImageView coachmark;
+
     private AppointmentAdapter mAppointmentAdapter;
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
     private String[] mMenuNames = {"Select All", "Send SMS", "Waiting List", "Bulk Cancel"};
@@ -156,6 +164,19 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             mBottomMenuList.add(bottomMenu);
         }
 
+        String coachMarkStatus = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_DELETE_APPOINTMENT, getActivity());
+        if (!coachMarkStatus.equals(RescribeConstants.YES)) {
+            coachmark.setVisibility(View.VISIBLE);
+        }
+
+        coachmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_DELETE_APPOINTMENT, RescribeConstants.YES, getActivity());
+                coachmark.setVisibility(View.GONE);
+
+            }
+        });
         expandableListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
         expandableListView.setClipToPadding(false);
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
@@ -372,7 +393,9 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         RequestAppointmentDeleteModel requestAppointmentDeleteModel = new RequestAppointmentDeleteModel();
         requestAppointmentDeleteModel.setAptId(aptId);
         requestAppointmentDeleteModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-        mAppointmentHelper.doAppointmentDelete(requestAppointmentDeleteModel);
+        // mAppointmentHelper.doAppointmentDelete(requestAppointmentDeleteModel);
+        deleteCancelAppointmentDialog(requestAppointmentDeleteModel,new CancelAppointmentList(),true);
+
     }
 
     @Override
@@ -382,7 +405,46 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         RequestAppointmentDeleteModel requestAppointmentDeleteModel = new RequestAppointmentDeleteModel();
         requestAppointmentDeleteModel.setAptId(aptId);
         requestAppointmentDeleteModel.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
-        mAppointmentHelper.doAppointmentDelete(requestAppointmentDeleteModel);
+
+        deleteCancelAppointmentDialog(requestAppointmentDeleteModel, new CancelAppointmentList(), true);
+
+    }
+
+    private void deleteCancelAppointmentDialog(final RequestAppointmentDeleteModel requestAppointmentDeleteModel, final CancelAppointmentList cancelAppointmentList, final boolean isDelete) {
+
+        final Dialog dialog = new Dialog(getActivity());
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_exit);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+
+        ((TextView) dialog.findViewById(R.id.textview_sucess)).setText("Do you want to "+(isDelete ? "delete this appointment? ": "cancel selected appointments?"));
+        ((Button) dialog.findViewById(R.id.button_ok)).setText("Yes");
+        ((Button) dialog.findViewById(R.id.button_cancel)).setText("No");
+
+        dialog.findViewById(R.id.button_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isDelete)
+                    mAppointmentHelper.doAppointmentDelete(requestAppointmentDeleteModel);
+                else
+                    mAppointmentHelper.cancelAppointmentBulk(cancelAppointmentList);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+            }
+        });
+
+        dialog.show();
+
     }
 
     @Override
@@ -408,6 +470,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
         super.onDestroyView();
         unbinder.unbind();
     }
+
 
     @Override
     public void setClickOnMenuItem(int position, BottomMenu bottomMenu) {
@@ -588,7 +651,9 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             }
             cancelAppointmentList.setPatientDetails(cancelAppointmentPatientDetailList);
             if (!cancelAppointmentList.getPatientDetails().isEmpty()) {
-                mAppointmentHelper.cancelAppointmentBulk(cancelAppointmentList);
+
+                deleteCancelAppointmentDialog(new RequestAppointmentDeleteModel(), cancelAppointmentList, false);
+//                mAppointmentHelper.cancelAppointmentBulk(cancelAppointmentList);
             } else {
                 CommonMethods.showToast(getActivity(), getString(R.string.please_select_book_confirm_patients));
             }
@@ -690,6 +755,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             }
 
         } else if (mOldDataTag.equalsIgnoreCase(RescribeConstants.TASK_GET_DOCTOR_SMS_TEMPLATE)) {
+            removeCheckBox();
             TemplateBaseModel templateBaseModel = (TemplateBaseModel) customResponse;
             if (templateBaseModel.getTemplateDataModel() != null) {
                 ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
@@ -836,7 +902,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 startActivity(intent);
                 //  getActivity().finish();
                 getActivity().setResult(RESULT_CLOSE_ACTIVITY_WAITING_LIST);
-                isLongPressed = false;
+                removeCheckBox();
             }
         });
 
