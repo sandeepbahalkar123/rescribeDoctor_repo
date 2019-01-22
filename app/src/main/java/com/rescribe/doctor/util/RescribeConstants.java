@@ -264,7 +264,7 @@ public class RescribeConstants {
         String HH_mm_ss = "HH:mm:ss";
         String DD_MM_YYYY_hh_mm = "dd/MM/yyyy hh:mm aa";
         String HH_MM = "hh:mm";
-        String HH_mm = "H:mm";
+        String HH_mm = "HH:mm";
         String MMM_YYYY = "MMM, yyyy";
         String MMM_YY = "MMM, yy";
         String DD_MM_YYYY_hh_mm_ss = "dd-MM-yyyy hh:mm:ss";

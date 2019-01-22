@@ -66,12 +66,14 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     private Context mContext;
     private ArrayList<AppointmentList> mDataList;
     private EasySwipeMenuLayout swipe_layout;
+    private int appointmentFormat;
 
-    public AppointmentAdapter(Context context, ArrayList<AppointmentList> mAppointmentList, OnDownArrowClicked mOnDownArrowClicked) {
+    public AppointmentAdapter(Context context, ArrayList<AppointmentList> mAppointmentList, OnDownArrowClicked mOnDownArrowClicked, int appointmentFormat) {
         this.mContext = context;
         this.mDataList = new ArrayList<>(mAppointmentList);
         this.mAppointmentListTemp = new ArrayList<>(mAppointmentList);
         this.mOnDownArrowClicked = mOnDownArrowClicked;
+        this.appointmentFormat = appointmentFormat;
     }
 
     @Override
@@ -121,7 +123,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             }
         });
 
-        if (patientObject.getAppointmentStatusId().equals(BOOKED) )
+        if (patientObject.getAppointmentStatusId().equals(BOOKED))
             viewHolder.swipe_layout.setCanRightSwipe(true);
         else
             viewHolder.swipe_layout.setCanRightSwipe(false);
@@ -259,7 +261,11 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
 
         viewHolder.appointmentTime.setVisibility(View.VISIBLE);
-        viewHolder.appointmentTime.setText(CommonMethods.formatDateTime(patientList.getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
+        if (appointmentFormat == 24)
+            viewHolder.appointmentTime.setText(CommonMethods.formatDateTime(patientList.getAppointmentTime(), RescribeConstants.DATE_PATTERN.HH_mm, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
+        else
+            viewHolder.appointmentTime.setText(CommonMethods.formatDateTime(patientList.getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
+
         TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, patientList.getPatientName());
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
@@ -535,8 +541,15 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             groupViewHolder.mPayableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.red));
         }
 
+
         groupViewHolder.mAppointmentTime.setVisibility(View.VISIBLE);
-        groupViewHolder.mAppointmentTime.setText(CommonMethods.formatDateTime(appointmentListObject.getPatientHeader().getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
+        if (appointmentFormat == 24)
+            groupViewHolder.mAppointmentTime.setText(CommonMethods.formatDateTime(appointmentListObject.getPatientHeader().getAppointmentTime(), RescribeConstants.DATE_PATTERN.HH_mm, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
+        else
+            groupViewHolder.mAppointmentTime.setText(CommonMethods.formatDateTime(appointmentListObject.getPatientHeader().getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
+
+
+       // groupViewHolder.mAppointmentTime.setText(CommonMethods.formatDateTime(appointmentListObject.getPatientHeader().getAppointmentTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase());
         TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, appointmentListObject.getPatientHeader().getPatientName());
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();

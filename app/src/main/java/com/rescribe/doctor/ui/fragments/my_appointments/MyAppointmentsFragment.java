@@ -16,6 +16,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -847,6 +848,9 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                 mAppointmentAdapter.getGroupList().removeAll(emptyIndexList);
 
                 mAppointmentAdapter.notifyDataSetChanged();
+                if (mAppointmentAdapter.getGroupList().size()==1){
+                    expandableListView.expandGroup(0);
+                }
                 if (mAppointmentAdapter.getGroupList().isEmpty()) {
                     expandableListView.setVisibility(View.GONE);
                     emptyListView.setVisibility(View.VISIBLE);
@@ -954,8 +958,15 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
 
             if (!mAppointmentList.isEmpty()) {
                 //list is sorted for Booked and Confirmed Status appointments
-                mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointmentList, this);
+                mAppointmentAdapter = new AppointmentAdapter(getActivity(), mAppointmentList, this,myAppointmentsDataModel.getAppointmentFormat());
                 expandableListView.setAdapter(mAppointmentAdapter);
+
+                Log.e("mAppointmentAdaptersize", String.valueOf(mAppointmentAdapter.getGroupList().size()));
+
+                if (mAppointmentAdapter.getGroupList().size()==1){
+                    expandableListView.expandGroup(0);
+                }
+
 
             } else {
                 expandableListView.setVisibility(View.GONE);

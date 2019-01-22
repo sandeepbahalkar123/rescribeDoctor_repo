@@ -241,7 +241,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         recyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
         //adapter
-        mDraggableSwipeableActiveWaitingListAdapter = new DraggableSwipeableActiveWaitingListAdapter(getDataProvider());
+        mDraggableSwipeableActiveWaitingListAdapter = new DraggableSwipeableActiveWaitingListAdapter(getDataProvider(),mParentActivity.appointmentFormat);
         mDraggableSwipeableActiveWaitingListAdapter.setEventListener(new DraggableSwipeableActiveWaitingListAdapter.EventListener() {
 
             @Override

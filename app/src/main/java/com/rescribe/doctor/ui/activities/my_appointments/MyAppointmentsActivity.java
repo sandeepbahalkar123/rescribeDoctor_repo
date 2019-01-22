@@ -132,7 +132,7 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
 
                     MyAppointmentsDataModel myAppointmentsDM = new MyAppointmentsDataModel();
                     myAppointmentsDM.setAppointmentList(getBookedAndConfirmed(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentList()));
-
+                    myAppointmentsDM.setAppointmentFormat(myAppointmentsBaseMainModel.getMyAppointmentsDataModel().getAppointmentFormat());
                     mMyAppointmentsFragment = MyAppointmentsFragment.newInstance(myAppointmentsDM, mDateSelectedByUser);
                     getSupportFragmentManager().beginTransaction().replace(R.id.viewContainer, mMyAppointmentsFragment).commit();
 

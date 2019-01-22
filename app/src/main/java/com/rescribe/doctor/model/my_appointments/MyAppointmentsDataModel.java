@@ -20,6 +20,9 @@ public class MyAppointmentsDataModel implements Parcelable {
     @SerializedName("statusList")
     @Expose
     private ArrayList<StatusList> statusList = new ArrayList<StatusList>();
+    @SerializedName("appointmentFormat")
+    @Expose
+    private int appointmentFormat;
     public final static Creator<MyAppointmentsDataModel> CREATOR = new Creator<MyAppointmentsDataModel>() {
 
 
@@ -40,6 +43,7 @@ public class MyAppointmentsDataModel implements Parcelable {
         in.readList(this.clinicList, (ClinicList.class.getClassLoader()));
         in.readList(this.appointmentList, (AppointmentList.class.getClassLoader()));
         in.readList(this.statusList, (StatusList.class.getClassLoader()));
+        this.appointmentFormat = ((int) in.readValue((int.class.getClassLoader())));
     }
 
 
@@ -69,15 +73,31 @@ public class MyAppointmentsDataModel implements Parcelable {
     public void setStatusList(ArrayList<StatusList> statusList) {
         this.statusList = statusList;
     }
+
+    public int getAppointmentFormat() {
+        return appointmentFormat;
+    }
+
+    public void setAppointmentFormat(int appointmentFormat) {
+        this.appointmentFormat = appointmentFormat;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeList(clinicList);
         dest.writeList(appointmentList);
         dest.writeList(statusList);
+        dest.writeValue(appointmentFormat);
+
     }
 
     public int describeContents() {
         return 0;
     }
+
+
+
+
+
 
 }

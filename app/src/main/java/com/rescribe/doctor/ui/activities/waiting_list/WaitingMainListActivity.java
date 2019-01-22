@@ -69,6 +69,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
     @BindView(R.id.addNewPatientFAB)
     FloatingActionButton mAddNewPatientFAB;
     public ArrayList<WaitingclinicList> mWaitingClinicList;
+    public int appointmentFormat;
     private AppointmentHelper mAppointmentHelper;
     private ViewPagerAdapter mViewPagerAdapter;
     public int receivedLocationID = -1;
@@ -134,6 +135,7 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
         if (customResponse != null) {
             WaitingListBaseModel waitingListBaseModel = (WaitingListBaseModel) customResponse;
             mWaitingClinicList = waitingListBaseModel.getWaitingListDataModel().getWaitingclinicList();
+            appointmentFormat=waitingListBaseModel.getWaitingListDataModel().getAppointmentFormat();
             // pass data to fragment
             activePatientListFragment.init();
             viewAllPatientListFragment.init();

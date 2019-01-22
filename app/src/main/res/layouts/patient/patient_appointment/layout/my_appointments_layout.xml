@@ -60,6 +60,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp10"
                     android:visibility="visible"
+
+
                     app:hintText="@string/search_hint"
                     app:textSize="@dimen/sp17" />
 

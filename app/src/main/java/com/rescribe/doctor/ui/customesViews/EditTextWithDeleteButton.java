@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -78,7 +79,9 @@ public class EditTextWithDeleteButton extends LinearLayout {
         }
         editText = createEditText(context, hintText, textSize);
         clearTextButton = createImageButton(context, deleteButtonRes);
-
+        editText.setSingleLine(true);
+        editText.setEllipsize(TextUtils.TruncateAt.END);
+        editText.setMaxLines(1);
         this.addView(editText);
         this.addView(clearTextButton);
         editText.addTextChangedListener(txtEntered());

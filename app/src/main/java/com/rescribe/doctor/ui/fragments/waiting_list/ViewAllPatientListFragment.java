@@ -236,7 +236,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         recyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
         //adapter
-        myItemAdapter = new DraggableSwipeableViewAllWaitingListAdapter(getDataProvider());
+        myItemAdapter = new DraggableSwipeableViewAllWaitingListAdapter(getDataProvider(), mParentActivity.appointmentFormat);
         myItemAdapter.setEventListener(new DraggableSwipeableViewAllWaitingListAdapter.EventListener() {
 
             @Override

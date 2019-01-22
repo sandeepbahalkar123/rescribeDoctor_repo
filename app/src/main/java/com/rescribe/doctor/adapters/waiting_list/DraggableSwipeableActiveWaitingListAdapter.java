@@ -57,8 +57,8 @@ import java.util.ArrayList;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CANCEL;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.CONFIRM;
 import static com.rescribe.doctor.util.RescribeConstants.APPOINTMENT_STATUS.IN_QUEUE;
-import static com.rescribe.doctor.util.RescribeConstants.WAITING_LIST_STATUS.IN_CONSULTATION;
 import static com.rescribe.doctor.util.RescribeConstants.SALUTATION;
+import static com.rescribe.doctor.util.RescribeConstants.WAITING_LIST_STATUS.IN_CONSULTATION;
 
 public class DraggableSwipeableActiveWaitingListAdapter
         extends RecyclerView.Adapter<DraggableSwipeableActiveWaitingListAdapter.MyViewHolder>
@@ -93,6 +93,8 @@ public class DraggableSwipeableActiveWaitingListAdapter
     private EventListener mEventListener;
     private View.OnClickListener mItemViewOnClickListener;
     private View.OnClickListener mSwipeableViewContainerOnClickListener;
+    private int appointmentFormat;
+
 
     public interface EventListener {
         void onDeleteClick(int position, Active viewAll);
@@ -169,8 +171,9 @@ public class DraggableSwipeableActiveWaitingListAdapter
         }
     }
 
-    public DraggableSwipeableActiveWaitingListAdapter(AbstractDataProvider dataProvider) {
+    public DraggableSwipeableActiveWaitingListAdapter(AbstractDataProvider dataProvider, int appointmentFormat) {
         mProvider = dataProvider;
+        this.appointmentFormat = appointmentFormat;
         mItemViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,8 +277,18 @@ public class DraggableSwipeableActiveWaitingListAdapter
         holder.mPatientIdTextView.setText(holder.mPatientIdTextView.getResources().getString(R.string.id) + " " + dataToShowInPatientID);
         if (!item.getActiveAll().getWaitingInTime().equals("")) {
             holder.mAppointmentTime.setVisibility(View.VISIBLE);
-            String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
-            holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
+            //String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
+            if (appointmentFormat == 24) {
+                String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.HH_mm, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
+                holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
+            }
+            else {
+                String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
+                holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
+
+            }
+
+
         } else {
             holder.mAppointmentTime.setVisibility(View.INVISIBLE);
         }

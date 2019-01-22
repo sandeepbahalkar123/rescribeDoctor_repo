@@ -30,6 +30,11 @@ public class DashboardDetails implements Parcelable
     @SerializedName("waitingList")
     @Expose
     private DashboardWaitingList dashboardWaitingList;
+
+    @SerializedName("appointmentFormat")
+    @Expose
+    private int appointmentFormat;
+
     public final static Creator<DashboardDetails> CREATOR = new Creator<DashboardDetails>() {
 
 
@@ -54,6 +59,7 @@ public class DashboardDetails implements Parcelable
         in.readList(this.calendarTypeList, (CalendarTypeList.class.getClassLoader()));
         this.dashboardAppointmentClinicList = ((DashboardAppointmentClinicList) in.readValue((DashboardAppointmentClinicList.class.getClassLoader())));
         this.dashboardWaitingList = ((DashboardWaitingList) in.readValue((DashboardWaitingList.class.getClassLoader())));
+        this.appointmentFormat = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public DashboardDetails() {
@@ -105,6 +111,14 @@ public class DashboardDetails implements Parcelable
         this.appointmentType = appointmentType;
     }
 
+    public int getAppointmentFormat() {
+        return appointmentFormat;
+    }
+
+    public void setAppointmentFormat(int appointmentFormat) {
+        this.appointmentFormat = appointmentFormat;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(versionCode);
         dest.writeValue(appURL);
@@ -112,6 +126,7 @@ public class DashboardDetails implements Parcelable
         dest.writeValue(dashboardAppointmentClinicList);
         dest.writeValue(dashboardWaitingList);
         dest.writeValue(appointmentType);
+        dest.writeValue(appointmentFormat);
     }
 
     public int describeContents() {

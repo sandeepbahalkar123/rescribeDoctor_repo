@@ -15,6 +15,12 @@ public class WaitingListDataModel implements Parcelable
     @SerializedName("clinicList")
     @Expose
     private ArrayList<WaitingclinicList> waitingclinicList = new ArrayList<WaitingclinicList>();
+
+    @SerializedName("appointmentFormat")
+    @Expose
+    private int appointmentFormat;
+
+
     public final static Creator<WaitingListDataModel> CREATOR = new Creator<WaitingListDataModel>() {
 
 
@@ -33,6 +39,7 @@ public class WaitingListDataModel implements Parcelable
 
     protected WaitingListDataModel(Parcel in) {
         in.readList(this.waitingclinicList, (WaitingclinicList.class.getClassLoader()));
+        this.appointmentFormat = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public WaitingListDataModel() {
@@ -46,8 +53,17 @@ public class WaitingListDataModel implements Parcelable
         this.waitingclinicList = waitingclinicList;
     }
 
+    public int getAppointmentFormat() {
+        return appointmentFormat;
+    }
+
+    public void setAppointmentFormat(int appointmentFormat) {
+        this.appointmentFormat = appointmentFormat;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeList(waitingclinicList);
+        dest.writeValue(appointmentFormat);
     }
 
     public int describeContents() {

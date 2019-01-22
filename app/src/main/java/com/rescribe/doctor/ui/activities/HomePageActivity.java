@@ -304,7 +304,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
                 if (animator instanceof SimpleItemAnimator)
                     ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
                 if (isRecyclerViewRequired) {
-                    mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList(), optOrOTRequired);
+                    mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList(), optOrOTRequired,mDashboardDetails.getAppointmentFormat());
                     recyclerView.setAdapter(mDashBoardAppointmentListAdapter);
                 } else {
                     CommonMethods.Log(TAG, "Dont show recyclerView");
@@ -315,7 +315,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
             if (animator instanceof SimpleItemAnimator)
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
             if (isRecyclerViewRequired) {
-                mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList(), "");
+                mDashBoardAppointmentListAdapter = new DashBoardAppointmentListAdapter(mContext, mDashboardDetails.getDashboardAppointmentClinicList().getAppointmentClinicList(), "", mDashboardDetails.getAppointmentFormat());
                 recyclerView.setAdapter(mDashBoardAppointmentListAdapter);
             } else {
                 CommonMethods.Log(TAG, "Dont show recyclerView");
