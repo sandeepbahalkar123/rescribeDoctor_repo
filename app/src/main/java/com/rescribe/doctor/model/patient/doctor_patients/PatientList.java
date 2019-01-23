@@ -105,6 +105,11 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     @Expose
     private boolean isDead;
 
+    @SerializedName("bloodGroup")
+    @Expose
+    private String bloodGroup;
+
+
 
     //---------------
 
@@ -149,6 +154,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
         this.relation = ((String) in.readValue((String.class.getClassLoader())));
         this.isDead = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.bloodGroup = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -341,6 +347,14 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         isDead = dead;
     }
 
+    public String getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(String bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
         dest.writeValue(patientName);
@@ -366,6 +380,7 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         dest.writeValue(patientArea);
         dest.writeValue(relation);
         dest.writeValue(isDead);
+        dest.writeValue(bloodGroup);
     }
 
     public int describeContents() {

@@ -281,11 +281,11 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         holder.mPatientIdTextView.setText(holder.mPatientIdTextView.getResources().getString(R.string.id) + " " + dataToShowInPatientID);
         if (!item.getViewAll().getWaitingInTime().equals("")) {
             holder.mAppointmentTime.setVisibility(View.VISIBLE);
-            String waitingTime;
-            if (appointmentFormat == 24)
-                waitingTime = CommonMethods.formatDateTime(item.getViewAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm, RescribeConstants.TIME).toLowerCase();
-            else
-                waitingTime = CommonMethods.formatDateTime(item.getViewAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
+
+           // if (appointmentFormat == 24)
+             //   waitingTime = CommonMethods.formatDateTime(item.getViewAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm, RescribeConstants.TIME).toLowerCase();
+           // else
+            String waitingTime = CommonMethods.formatDateTime(item.getViewAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
 
             holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
         } else {

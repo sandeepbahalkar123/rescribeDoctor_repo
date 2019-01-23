@@ -29,6 +29,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.philliphsu.bottomsheetpickers.date.DatePickerDialog;
 import com.philliphsu.bottomsheetpickers.time.BottomSheetTimePickerDialog;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.adapters.book_appointment.ClinicLocactionSpinnerAdapter;
 import com.rescribe.doctor.adapters.book_appointment.SelectSlotToBookAppointmentAdapter;
 import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
@@ -42,6 +43,7 @@ import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotListBaseMo
 import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotListDataModel;
 import com.rescribe.doctor.model.select_slot_book_appointment.TimeSlotsInfoList;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.ui.activities.ProfileActivity;
 import com.rescribe.doctor.ui.activities.my_appointments.MyAppointmentsActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -299,8 +301,15 @@ public class SelectSlotTimeToBookAppointmentFragment extends Fragment implements
         if (mDoctorLocationModel.size() > 0) {
             clinicNameSpinnerParentLayout.setVisibility(View.VISIBLE);
 
-            ArrayAdapter<DoctorLocationModel> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.global_item_simple_spinner, mDoctorLocationModel);
-            clinicNameSpinner.setAdapter(arrayAdapter);
+          //  ArrayAdapter<DoctorLocationModel> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.global_item_simple_spinner, mDoctorLocationModel);
+            ArrayList<String> mClinicname = new ArrayList<>();
+            for(DoctorLocationModel doctorLocationModel :mDoctorLocationModel){
+                String name=doctorLocationModel.getClinicName()+", "+doctorLocationModel.getArea()+", "+doctorLocationModel.getCity();
+                mClinicname.add(name);
+            }
+            ClinicLocactionSpinnerAdapter clinicLocactionSpinnerAdapter = new ClinicLocactionSpinnerAdapter(getActivity(),R.layout.clinic_spinner_layout,R.layout.clinic_spinner_layout,mClinicname);
+
+            clinicNameSpinner.setAdapter(clinicLocactionSpinnerAdapter);
 
             int selectedPosition = getClinicSelectedPosition();
             clinicNameSpinner.setSelection(selectedPosition, false);

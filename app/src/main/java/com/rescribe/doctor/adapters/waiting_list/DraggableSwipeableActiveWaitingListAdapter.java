@@ -278,15 +278,15 @@ public class DraggableSwipeableActiveWaitingListAdapter
         if (!item.getActiveAll().getWaitingInTime().equals("")) {
             holder.mAppointmentTime.setVisibility(View.VISIBLE);
             //String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
-            if (appointmentFormat == 24) {
-                String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.HH_mm, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
-                holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
-            }
-            else {
+//            if (appointmentFormat == 24) {
+//                String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.HH_mm, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
+//                holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
+//            }
+//            else {
                 String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
                 holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
 
-            }
+           // }
 
 
         } else {

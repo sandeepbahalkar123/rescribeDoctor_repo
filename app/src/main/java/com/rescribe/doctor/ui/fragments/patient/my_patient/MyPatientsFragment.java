@@ -38,6 +38,7 @@ import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
+import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
@@ -356,6 +357,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     patientInfoListObject.setPatientId(patientList.getPatientId());
                     patientInfoListObject.setPatientPhone(patientList.getPatientPhone());
                     patientInfoListObject.setHospitalPatId(patientList.getHospitalPatId());
+                    patientInfoListObject.setPatBloodGroup(patientList.getBloodGroup());
+                    patientInfoListObject.setPatientGender(patientList.getGender());
+                    patientInfoListObject.setOutstandingAmt(patientList.getOutStandingAmount());
                     patientInfoLists.add(patientInfoListObject);
                     mPatientListsOriginal.add(patientList);
                 }
@@ -476,6 +480,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, String.valueOf(mLocationId), getActivity());
                     mAppointmentHelper.doGetDoctorTemplate();
                     dialog.cancel();
+                    removeCheckBox();
                 } else {
                     Toast.makeText(getActivity(), "Please select clinic location.", Toast.LENGTH_SHORT).show();
                 }

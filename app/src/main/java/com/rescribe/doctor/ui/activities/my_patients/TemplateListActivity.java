@@ -143,6 +143,9 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
                         patientInfoList.setPatientId(patientList.getPatientId());
                         patientInfoList.setPatientPhone(patientList.getPatientPhone());
                         patientInfoList.setPatientName(patientList.getPatientName());
+                        patientInfoList.setPatBloodGroup(patientList.getBloodGroup());
+                        patientInfoList.setPatientGender(patientList.getGender());
+                        patientInfoList.setOutstandingAmt(patientList.getOutStandingAmount());
                         patientInfoLists.add(patientInfoList);
                     }
                     listForSms.setPatientInfoList(patientInfoLists);
@@ -166,9 +169,7 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
                 String delayMsg="Because of emergency we are rescheduling all appointment by 30 minutes. Requesting you to please plan accordingly";
                 ArrayList<PatientList> patientListsToShowOnSmsScreen = new ArrayList<>();
                 ArrayList<ClinicListForSms> clinicListForSms = new ArrayList<>();
-//                for (AppointmentList appointmentList : appointmentList) {
-//                    patientListsToShowOnSmsScreen.addAll(appointmentList.getPatientList());
-//                }
+
 
                 for (AppointmentList appointmentList : appointmentList) {
 
@@ -197,6 +198,9 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
                         patientInfoList.setPatientId(patientList.getPatientId());
                         patientInfoList.setPatientPhone(patientList.getPatientPhone());
                         patientInfoList.setPatientName(patientList.getPatientName());
+                        patientInfoList.setPatBloodGroup(patientList.getBloodGroup());
+                        patientInfoList.setPatientGender(patientList.getGender());
+                        patientInfoList.setOutstandingAmt(patientList.getOutStandingAmount());
                         patientInfoLists.add(patientInfoList);
                     }
                     listForSms.setPatientInfoList(patientInfoLists);
@@ -243,6 +247,9 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
                 patientInfoList.setPatientId(patientList.getPatientId());
                 patientInfoList.setPatientPhone(patientList.getPatientPhone());
                 patientInfoList.setPatientName(patientList.getPatientName());
+                patientInfoList.setPatBloodGroup(patientList.getBloodGroup());
+                patientInfoList.setPatientGender(patientList.getGender());
+                patientInfoList.setOutstandingAmt(patientList.getOutStandingAmount());
                 patientInfoLists.add(patientInfoList);
             }
             listForSms.setPatientInfoList(patientInfoLists);

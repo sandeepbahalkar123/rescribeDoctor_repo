@@ -6,16 +6,7 @@
     android:layout_height="match_parent">
 
 
-    <ImageView
-        android:id="@+id/coachmark"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="@dimen/dp5"
-        android:scaleType="centerCrop"
-        android:src="@drawable/coach_mark_delete_the_appointment"
-        android:visibility="gone"
-        app:srcCompat="@drawable/coach_mark_delete_the_appointment"
-        tools:visibility="gone" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewBottom"

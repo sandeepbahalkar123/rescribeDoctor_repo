@@ -117,8 +117,7 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
     @BindView(R.id.leftFabForAppointment)
     FloatingActionButton leftFabForAppointment;
 
-    @BindView(R.id.coachmark)
-    ImageView coachmark;
+
 
     private AppointmentAdapter mAppointmentAdapter;
     private BottomMenuAppointmentAdapter mBottomMenuAppointmentAdapter;
@@ -165,19 +164,6 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
             mBottomMenuList.add(bottomMenu);
         }
 
-        String coachMarkStatus = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_DELETE_APPOINTMENT, getActivity());
-        if (!coachMarkStatus.equals(RescribeConstants.YES)) {
-            coachmark.setVisibility(View.VISIBLE);
-        }
-
-        coachmark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_DELETE_APPOINTMENT, RescribeConstants.YES, getActivity());
-                coachmark.setVisibility(View.GONE);
-
-            }
-        });
         expandableListView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.dp67));
         expandableListView.setClipToPadding(false);
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
@@ -820,6 +806,9 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                         patientInfoList.setPatientId(patientList.getPatientId());
                         patientInfoList.setPatientPhone(patientList.getPatientPhone());
                         patientInfoList.setPatientName(patientList.getPatientName());
+                        patientInfoList.setPatBloodGroup(patientList.getBloodGroup());
+                        patientInfoList.setPatientGender(patientList.getGender());
+                        patientInfoList.setOutstandingAmt(patientList.getOutStandingAmount());
                         patientInfoLists.add(patientInfoList);
                     }
                     listForSms.setPatientInfoList(patientInfoLists);

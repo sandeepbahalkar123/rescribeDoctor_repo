@@ -44,10 +44,10 @@
             android:layout_toRightOf="@id/clinicNameTextView"
             android:textColor="@color/clinic_address_color"
             android:textSize="@dimen/sp13"
-            android:ellipsize="end"
-            android:maxLines="1"
+            android:singleLine="false"
+            android:maxLines="3"
             app:customFont="@string/roboto_medium"
-            tools:text="Worli, Mumbaifgfdgfdgfgf" />
+            tools:text="Worli, Mumbaifgfdgfdgfgfahsjhdjjasdklsdlklldlllsdlldsljdklksdjksjkjkjksdjkdfjk" />
 
 
 

@@ -81,6 +81,12 @@ public class PatientList implements Parcelable, Comparable<PatientList> {
     @Expose
     private String patientArea = "";
 
+    @SerializedName("bloodGroup")
+    @Expose
+    private String bloodGroup ;
+
+
+
     private String spannableString;
     private boolean selected;
     private String patientEmail;
@@ -124,6 +130,7 @@ public class PatientList implements Parcelable, Comparable<PatientList> {
         this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
         this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
         this.referenceId = ((String) in.readValue((String.class.getClassLoader())));
+        this.bloodGroup = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientList() {
@@ -329,6 +336,14 @@ public class PatientList implements Parcelable, Comparable<PatientList> {
         this.referenceId = referenceId;
     }
 
+    public String getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(String bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
         dest.writeValue(docId);
@@ -352,6 +367,7 @@ public class PatientList implements Parcelable, Comparable<PatientList> {
         dest.writeValue(patientCity);
         dest.writeValue(patientArea);
         dest.writeValue(referenceId);
+        dest.writeValue(bloodGroup);
 
     }
 

@@ -20,6 +20,18 @@ public class PatientInfoList implements Parcelable {
     private String patientPhone;
     private String patientName;
 
+    @SerializedName("patientGender")
+    @Expose
+    private String patientGender;
+
+    @SerializedName("patBloodGroup")
+    @Expose
+    private String patBloodGroup;
+
+    @SerializedName("outstandingAmt")
+    @Expose
+    private String outstandingAmt;
+
     public final static Parcelable.Creator<PatientInfoList> CREATOR = new Creator<PatientInfoList>() {
 
 
@@ -41,6 +53,9 @@ public class PatientInfoList implements Parcelable {
         this.patientId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.patientPhone = ((String) in.readValue((String.class.getClassLoader())));
         this.patientName = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientGender = ((String) in.readValue((String.class.getClassLoader())));
+        this.patBloodGroup = ((String) in.readValue((String.class.getClassLoader())));
+        this.outstandingAmt = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PatientInfoList() {
@@ -78,12 +93,41 @@ public class PatientInfoList implements Parcelable {
         this.patientPhone = patientPhone;
     }
 
+    public String getPatientGender() {
+        return patientGender;
+    }
+
+    public void setPatientGender(String patientGender) {
+        this.patientGender = patientGender;
+    }
+
+    public String getPatBloodGroup() {
+        return patBloodGroup;
+    }
+
+    public void setPatBloodGroup(String patBloodGroup) {
+        this.patBloodGroup = patBloodGroup;
+    }
+
+    public String getOutstandingAmt() {
+        return outstandingAmt;
+    }
+
+    public void setOutstandingAmt(String outstandingAmt) {
+        this.outstandingAmt = outstandingAmt;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(hospitalPatId);
         dest.writeValue(patientId);
         dest.writeValue(patientPhone);
         dest.writeValue(patientName);
+        dest.writeValue(patientGender);
+        dest.writeValue(patBloodGroup);
+        dest.writeValue(outstandingAmt);
+
     }
+
 
     public int describeContents() {
         return 0;

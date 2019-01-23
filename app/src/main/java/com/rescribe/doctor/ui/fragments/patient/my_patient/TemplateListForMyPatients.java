@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -53,6 +54,14 @@ public class TemplateListForMyPatients extends AppCompatActivity implements Temp
     RecyclerView recyclerView;
     @BindView(R.id.emptyListView)
     RelativeLayout emptyListView;
+
+    @BindView(R.id.addNewTempButton)
+    Button addNewTempButton;
+
+    @BindView(R.id.notifyDelayButton)
+    Button notifyDelayButton;
+
+
     private TemplateListForMyPatients mContext;
     private AppointmentHelper mAppointmentHelper;
     private TemplateAdapter mTemplateAdapter;
@@ -75,6 +84,7 @@ public class TemplateListForMyPatients extends AppCompatActivity implements Temp
     private void initialize() {
         mContext = TemplateListForMyPatients.this;
         intent = getIntent();
+        notifyDelayButton.setVisibility(View.GONE);
         if (intent.getExtras() != null) {
             patientLists = intent.getParcelableArrayListExtra(RescribeConstants.PATIENT_LIST);
             mlocationId = intent.getIntExtra(RescribeConstants.LOCATION_ID, 0);
@@ -97,7 +107,19 @@ public class TemplateListForMyPatients extends AppCompatActivity implements Temp
             recyclerView.setAdapter(mTemplateAdapter);
 
         }
-
+addNewTempButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        TemplateList templateList =null;
+        Intent intent = new Intent(mContext,SendSmsPatientActivity.class);
+        intent.putExtra(RescribeConstants.LOCATION_ID, mlocationId);
+        intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
+        intent.putExtra(RescribeConstants.TEMPLATE_OBJECT,templateList);
+        intent.putExtra(RescribeConstants.CLINIC_NAME,mClinicName);
+        intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientLists);
+        startActivityForResult(intent,RESULT_SEND_SMS);
+    }
+});
     }
     @Override
     public void onCardViewClick(TemplateList templateList) {

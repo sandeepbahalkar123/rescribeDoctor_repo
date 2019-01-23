@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +30,10 @@ import com.rescribe.doctor.model.my_appointments.MyAppointmentsBaseModel;
 import com.rescribe.doctor.model.my_appointments.MyAppointmentsDataModel;
 import com.rescribe.doctor.model.my_appointments.PatientList;
 import com.rescribe.doctor.model.my_appointments.StatusList;
+import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.fragments.book_appointment.AppoinmentSwipCoachFragment;
+import com.rescribe.doctor.ui.fragments.book_appointment.CoachFragment;
 import com.rescribe.doctor.ui.fragments.my_appointments.DrawerForMyAppointment;
 import com.rescribe.doctor.ui.fragments.my_appointments.MyAppointmentsFragment;
 import com.rescribe.doctor.util.CommonMethods;
@@ -71,6 +76,10 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
     DrawerLayout drawerLayout;
     @BindView(R.id.emptyListView)
     RelativeLayout emptyListView;
+
+    @BindView(R.id.coachmarkContainer)
+    FrameLayout coachmarkContainer;
+
     private Context mContext;
     private MyAppointmentsFragment mMyAppointmentsFragment;
     private AppointmentHelper mAppointmentHelper;
@@ -96,6 +105,17 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         String date = CommonMethods.getCurrentDate(RescribeConstants.DATE_PATTERN.YYYY_MM_DD);
         mAppointmentHelper = new AppointmentHelper(this, this);
         mAppointmentHelper.doGetAppointmentData(date);
+
+        String coachMarkStatus = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_DELETE_APPOINTMENT, mContext);
+        if (!coachMarkStatus.equals(RescribeConstants.YES)) {
+            coachmarkContainer.setVisibility(View.VISIBLE);
+            FragmentManager supportFragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.coachmarkContainer, AppoinmentSwipCoachFragment.newInstance());
+            fragmentTransaction.addToBackStack("Coach");
+            fragmentTransaction.commit();
+        }
+
     }
 
     public DrawerLayout getActivityDrawerLayout() {
@@ -346,5 +366,10 @@ public class MyAppointmentsActivity extends AppCompatActivity implements HelperR
         mAppointmentHelper = new AppointmentHelper(this, this);
         isLongPressed = false;
         mAppointmentHelper.doGetAppointmentData(year + "-" + monthOfYearToShow + "-" + dayOfMonth);
+    }
+
+    public void hideCoachmarkContainer() {
+        RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.COACHMARK_DELETE_APPOINTMENT, RescribeConstants.YES, mContext);
+        coachmarkContainer.setVisibility(View.GONE);
     }
 }

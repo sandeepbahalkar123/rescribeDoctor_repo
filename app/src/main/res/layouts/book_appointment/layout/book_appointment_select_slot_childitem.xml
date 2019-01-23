@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:padding="@dimen/dp6"
+        android:padding="@dimen/dp5"
         android:textColor="@color/tagColor"
-        android:textSize="@dimen/sp14"
+        android:textSize="@dimen/sp12"
         tools:text="8:00 AM" />
 </LinearLayout>
