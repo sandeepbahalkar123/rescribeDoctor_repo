@@ -133,6 +133,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private String mPatientId;
     private String mHospitalPatId;
     private int mAptId;
+    private int mCurrentTabPos;
 
     private boolean isDead;
 
@@ -356,6 +357,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mViewpager.setOffscreenPageLimit(0);
         mViewpager.setAdapter(mViewPagerAdapter);
 
+
         //------------
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -386,6 +388,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                     mYearSpinnerSingleItem.setVisibility(View.GONE);
                     mYearSpinnerView.setVisibility(View.GONE);
                     mYearSpinnerSingleItem.setText(mYearList.get(0));
+//                    mViewpager.setCurrentItem(0);
                 } else {
                     mYearSpinnerSingleItem.setVisibility(View.GONE);
                     mYearSpinnerView.setVisibility(View.GONE);
@@ -396,6 +399,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 if (!mGeneratedRequestForYearList.contains(year)) {
                     Map<String, Map<String, ArrayList<PatientHistoryInfo>>> yearWiseSortedPatientHistoryInfo = mPatientDetailHelper.getYearWiseSortedPatientHistoryInfo();
                     if (yearWiseSortedPatientHistoryInfo.get(year) == null) {
+                        mCurrentTabPos = position;
                         mGeneratedRequestForYearList.add(year);
                         mPatientDetailHelper.doGetPatientHistory(mPatientId, year, getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
                     }
@@ -412,19 +416,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                boolean status = false;
-                for (int i = 0; i < mTimePeriodList.size(); i++) {
-                    YearsMonthsData temp = mTimePeriodList.get(i);
-                    if (temp.getYear() == Integer.parseInt(mCurrentSelectedTimePeriodTab.getYear())) {
-                        mViewpager.setCurrentItem(i);
-                        status = true;
-                        break;
-                    }
-                }
-                if (!status) {
-                    mViewpager.setCurrentItem(mTimePeriodList.size() - 1);
-                }
+                mViewpager.setCurrentItem(mCurrentTabPos);
             }
         }, 0);
         //---------
@@ -545,6 +537,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private void callAddRecordsActivity(int mLocationId, int mHospitalId, int year, int monthOfYear, int dayOfMonth, String fromString) {
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, String.valueOf(mLocationId), getActivity());
         if (fromString.equals("AddRecords")) {
+            mCurrentTabPos=0;
             Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
             intent.putExtra(RescribeConstants.OPD_ID, "0");
             intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
@@ -609,6 +602,14 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
 
             mTimePeriodList = dataModel.getFormattedYearList();
+            if (dataModel.getYearsMonthsData().size() >= 1) {
+                if (!mCurrentSelectedTimePeriodTab.getYear().equals(String.valueOf(dataModel.getYearsMonthsData().get(0).getYear()))) {
+                    if (dataModel.getPatientHistoryInfoMonthContainer().getMonthWiseSortedPatientHistory().isEmpty()) {
+                        mPatientDetailHelper.doGetPatientHistory(mPatientId, String.valueOf(mTimePeriodList.get(0).getYear()), getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
+                        return;
+                    }
+                }
+            }
 
             mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
             mTabLayout.setupWithViewPager(mViewpager);

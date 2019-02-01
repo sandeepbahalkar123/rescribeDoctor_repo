@@ -166,6 +166,7 @@
     <string name="nil">NIL</string>
     <string name="book">book</string>
     <string name="booked">Booked</string>
+    <string name="booked_for">Booked for</string>
     <string name="completed">completed</string>
     <string name="capitalcompleted">Completed</string>
     <string name="file_extension">file_extension</string>
@@ -383,5 +384,7 @@
     <string name="add_new_temp">Add New</string>
     <string name="notify_delay">Notify Delay</string>
     <string name="please_select_book_confirm_patients">Select booked and confirmed appointments to cancel.</string>
+    <string name="txt_for">for</string>
+    <string name="waiting_for">Wating for</string>
 
 </resources>

@@ -139,7 +139,8 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         View mSeparatorView;
         TextView mTokenLabelTextView;
         TextView mTokenNumber;
-
+        LinearLayout mAppointmentTypeLinearLayout;
+        TextView mAppointmentTypeTextView;
 
         MyViewHolder(View v) {
             super(v);
@@ -167,6 +168,8 @@ public class DraggableSwipeableViewAllWaitingListAdapter
             mSeparatorView = v.findViewById(R.id.separatorView);
             mTokenLabelTextView = v.findViewById(R.id.tokenLabelTextView);
             mTokenNumber = v.findViewById(R.id.tokenNumber);
+            mAppointmentTypeLinearLayout = v.findViewById(R.id.appointmentTypeLinearLayout);
+            mAppointmentTypeTextView = v.findViewById(R.id.appointmentTypeTextView);
         }
 
         @Override
@@ -324,6 +327,14 @@ public class DraggableSwipeableViewAllWaitingListAdapter
                 .load(item.getViewAll().getPatientImageUrl())
                 .apply(requestOptions)
                 .into(holder.mPatientImageView);
+
+
+        if (!item.getViewAll().getAppointmentType().isEmpty()) {
+            holder.mAppointmentTypeTextView.setText(holder.mAppointmentTypeTextView.getResources().getString(R.string.waiting_for) + " " + item.getViewAll().getAppointmentType());
+        } else {
+            holder.mAppointmentTypeLinearLayout.setVisibility(View.GONE);
+        }
+
 
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();

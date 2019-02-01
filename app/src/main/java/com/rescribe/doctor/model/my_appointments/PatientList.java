@@ -85,6 +85,18 @@ public class PatientList implements Parcelable, Comparable<PatientList> {
     @Expose
     private String bloodGroup ;
 
+    @SerializedName("appointmentType")
+    @Expose
+    private String appointmentType ;
+
+    @SerializedName("calendarType")
+    @Expose
+    private Integer calendarType;
+
+    @SerializedName("categoryId")
+    @Expose
+    private Integer categoryId;
+
 
 
     private String spannableString;
@@ -131,6 +143,10 @@ public class PatientList implements Parcelable, Comparable<PatientList> {
         this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
         this.referenceId = ((String) in.readValue((String.class.getClassLoader())));
         this.bloodGroup = ((String) in.readValue((String.class.getClassLoader())));
+        this.appointmentType = ((String) in.readValue((String.class.getClassLoader())));
+        this.calendarType = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.categoryId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+
     }
 
     public PatientList() {
@@ -344,6 +360,30 @@ public class PatientList implements Parcelable, Comparable<PatientList> {
         this.bloodGroup = bloodGroup;
     }
 
+    public String getAppointmentType() {
+        return appointmentType;
+    }
+
+    public void setAppointmentType(String appointmentType) {
+        this.appointmentType = appointmentType;
+    }
+
+    public Integer getCalendarType() {
+        return calendarType;
+    }
+
+    public void setCalendarType(Integer calendarType) {
+        this.calendarType = calendarType;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(salutation);
         dest.writeValue(docId);
@@ -368,6 +408,9 @@ public class PatientList implements Parcelable, Comparable<PatientList> {
         dest.writeValue(patientArea);
         dest.writeValue(referenceId);
         dest.writeValue(bloodGroup);
+        dest.writeValue(appointmentType);
+        dest.writeValue(calendarType);
+        dest.writeValue(categoryId);
 
     }
 

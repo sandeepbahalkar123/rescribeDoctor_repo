@@ -60,6 +60,21 @@ public class ViewAll implements Parcelable
     @Expose
     private String referenceID;
 
+    @SerializedName("appointmentType")
+    @Expose
+    private String appointmentType;
+
+
+    @SerializedName("calendarType")
+    @Expose
+    private Integer calendarType;
+
+    @SerializedName("categoryId")
+    @Expose
+    private Integer categoryId;
+
+
+
     public final static Creator<ViewAll> CREATOR = new Creator<ViewAll>() {
 
 
@@ -92,6 +107,9 @@ public class ViewAll implements Parcelable
         this.appointmentStatusId = ((String) in.readValue((String.class.getClassLoader())));
         this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.referenceID = ((String) in.readValue((String.class.getClassLoader())));
+        this.appointmentType = ((String) in.readValue((String.class.getClassLoader())));
+        this.calendarType = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.categoryId = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public ViewAll() {
@@ -217,6 +235,30 @@ public class ViewAll implements Parcelable
         this.referenceID = referenceID;
     }
 
+    public String getAppointmentType() {
+        return appointmentType;
+    }
+
+    public void setAppointmentType(String appointmentType) {
+        this.appointmentType = appointmentType;
+    }
+
+    public Integer getCalendarType() {
+        return calendarType;
+    }
+
+    public void setCalendarType(Integer calendarType) {
+        this.calendarType = calendarType;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(waitingId);
         dest.writeValue(hospitalPatId);
@@ -233,6 +275,9 @@ public class ViewAll implements Parcelable
         dest.writeValue(appointmentStatusId);
         dest.writeValue(salutation);
         dest.writeValue(referenceID);
+        dest.writeValue(appointmentType);
+        dest.writeValue(calendarType);
+        dest.writeValue(categoryId);
     }
 
     public int describeContents() {

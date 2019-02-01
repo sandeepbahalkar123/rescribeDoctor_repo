@@ -111,6 +111,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/bundle_manifest" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/check_manifest_result" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/compatible_screen_manifest" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/external_libs_dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-runtime-classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-verifier" />
@@ -123,6 +125,9 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant_run_split_apk_resources" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javac" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/legacy_multidex_aapt_derived_proguard_rules" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/legacy_multidex_main_dex_list" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/lint_jar" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifest-checker" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/merged_assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/merged_manifests" />
@@ -218,24 +223,6 @@
     <orderEntry type="library" name="Gradle: com.github.bumptech.glide:glide:4.3.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-places:11.0.4@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.crashlytics.sdk.android:beta:1.2.7@aar" level="project" />
-    <orderEntry type="module" module-name="advanced_recycler" />
-    <orderEntry type="module" module-name="easyswipemenulibrary" />
-    <orderEntry type="module" module-name="crystalrangeseekbar" />
-    <orderEntry type="module" module-name="materialdrawer" />
-    <orderEntry type="module" module-name="fabmenu" />
-    <orderEntry type="module" module-name="slideview" />
-    <orderEntry type="module" module-name="smartPenCore" />
-    <orderEntry type="module" module-name="filepicker" />
-    <orderEntry type="module" module-name="bottomsheetpickers" />
-    <orderEntry type="module" module-name="advanced_recycler" />
-    <orderEntry type="module" module-name="easyswipemenulibrary" />
-    <orderEntry type="module" module-name="crystalrangeseekbar" />
-    <orderEntry type="module" module-name="materialdrawer" />
-    <orderEntry type="module" module-name="fabmenu" />
-    <orderEntry type="module" module-name="slideview" />
-    <orderEntry type="module" module-name="smartPenCore" />
-    <orderEntry type="module" module-name="filepicker" />
-    <orderEntry type="module" module-name="bottomsheetpickers" />
     <orderEntry type="module" module-name="advanced_recycler" />
     <orderEntry type="module" module-name="easyswipemenulibrary" />
     <orderEntry type="module" module-name="crystalrangeseekbar" />

@@ -214,7 +214,7 @@ public class TemplateListActivity extends AppCompatActivity implements TemplateA
                     intent.putExtra(RescribeConstants.SMS_PATIENT_LIST_TO_SHOW, patientListsToShowOnSmsScreen);
                     startActivityForResult(intent, RESULT_SMS_SEND);
                 }else {
-                    CommonMethods.showToast(mContext,"Select booked and confirmed appointments for notify delay.");
+                    CommonMethods.showToast(mContext,"Select Booked and Confirmed appointments to notify delay.");
                 }
 
 

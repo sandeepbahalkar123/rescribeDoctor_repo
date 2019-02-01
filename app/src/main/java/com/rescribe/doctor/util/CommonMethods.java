@@ -36,9 +36,8 @@ import com.rescribe.doctor.interfaces.DatePickerDialogListener;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
 import com.rescribe.doctor.model.patient.patient_history.DatesData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
+import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.ui.activities.LoginSignUpActivity;
-
-//import net.gotev.uploadservice.UploadService;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -58,6 +57,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
+
+//import net.gotev.uploadservice.UploadService;
 
 public class CommonMethods {
 
@@ -946,10 +947,26 @@ public class CommonMethods {
         return datesDataList;
     }
 
+    public static boolean isSingleHospital() {
+        ArrayList<DoctorLocationModel> locationModels = RescribeApplication.getDoctorLocationModels();
+
+        if (!locationModels.isEmpty()) {
+            int clinicId = locationModels.get(0).getClinicId();
+            for (DoctorLocationModel locationModel : locationModels) {
+                if (locationModel.getClinicId()!=clinicId)
+                    return false;
+            }
+        }
+
+
+        return true;
+    }
+
+
     public static void logout(Context mContext, AppDBHelper appDBHelper) {
 
         // cancel all uploadings.
-       // UploadService.stopAllUploads();
+        // UploadService.stopAllUploads();
 
 
         String mobileNoGmail = "";

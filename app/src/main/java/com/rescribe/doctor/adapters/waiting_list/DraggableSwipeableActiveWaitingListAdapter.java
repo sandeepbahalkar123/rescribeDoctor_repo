@@ -135,6 +135,8 @@ public class DraggableSwipeableActiveWaitingListAdapter
         View mSeparatorView;
         TextView mTokenLabelTextView;
         TextView mTokenNumber;
+        LinearLayout mAppointmentTypeLinearLayout;
+        TextView mAppointmentTypeTextView;
 
 
         MyViewHolder(View v) {
@@ -163,6 +165,8 @@ public class DraggableSwipeableActiveWaitingListAdapter
             mSeparatorView = v.findViewById(R.id.separatorView);
             mTokenLabelTextView = v.findViewById(R.id.tokenLabelTextView);
             mTokenNumber = v.findViewById(R.id.tokenNumber);
+            mAppointmentTypeLinearLayout = v.findViewById(R.id.appointmentTypeLinearLayout);
+            mAppointmentTypeTextView = v.findViewById(R.id.appointmentTypeTextView);
         }
 
         @Override
@@ -283,10 +287,10 @@ public class DraggableSwipeableActiveWaitingListAdapter
 //                holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
 //            }
 //            else {
-                String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
-                holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
+            String waitingTime = CommonMethods.formatDateTime(item.getActiveAll().getWaitingInTime(), RescribeConstants.DATE_PATTERN.hh_mm_a, RescribeConstants.DATE_PATTERN.HH_mm_ss, RescribeConstants.TIME).toLowerCase();
+            holder.mAppointmentTime.setText(holder.mPatientIdTextView.getResources().getString(R.string.in_time) + " - " + waitingTime);
 
-           // }
+            // }
 
 
         } else {
@@ -310,6 +314,12 @@ public class DraggableSwipeableActiveWaitingListAdapter
         if (item.getActiveAll().getSalutation() != 0)
             salutation = SALUTATION[item.getActiveAll().getSalutation() - 1];
         else salutation = "";
+
+        if (!item.getActiveAll().getAppointmentType().isEmpty()) {
+            holder.mAppointmentTypeTextView.setText(holder.mAppointmentTypeTextView.getResources().getString(R.string.waiting_for) + " " + item.getActiveAll().getAppointmentType());
+        } else {
+            holder.mAppointmentTypeLinearLayout.setVisibility(View.GONE);
+        }
 
 
         holder.mPatientNameTextView.setText(salutation + CommonMethods.toCamelCase(item.getActiveAll().getPatientName()));

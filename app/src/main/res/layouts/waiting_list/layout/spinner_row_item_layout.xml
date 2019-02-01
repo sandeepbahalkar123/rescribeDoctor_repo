@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -20,6 +21,7 @@
             android:layout_marginRight="@dimen/dp8"
             android:layout_marginTop="@dimen/dp6"
             android:layout_marginBottom="@dimen/dp6"
+            android:layout_centerVertical="true"
             android:background="@drawable/circular_bullet" />
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
@@ -30,24 +32,25 @@
             android:layout_toEndOf="@id/bulletImageView"
             android:layout_toRightOf="@id/bulletImageView"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp16"
+            android:textSize="@dimen/sp13"
+            android:singleLine="false"
             app:customFont="@string/roboto_bold"
             tools:text="Shree Clinic - " />
 
-        <com.rescribe.doctor.ui.customesViews.CustomTextView
-            android:id="@+id/clinicAddress"
-            android:layout_width="match_parent"
-            android:paddingTop="@dimen/dp3"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/clinicNameTextView"
-            android:layout_toRightOf="@id/clinicNameTextView"
-            android:textColor="@color/clinic_address_color"
-            android:textSize="@dimen/sp13"
-            android:singleLine="false"
-            android:maxLines="3"
-            app:customFont="@string/roboto_medium"
-            tools:text="Worli, Mumbaifgfdgfdgfgfahsjhdjjasdklsdlklldlllsdlldsljdklksdjksjkjkjksdjkdfjk" />
+        <!--<com.rescribe.doctor.ui.customesViews.CustomTextView-->
+            <!--android:id="@+id/clinicAddress"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:paddingTop="@dimen/dp3"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_toEndOf="@id/clinicNameTextView"-->
+            <!--android:layout_toRightOf="@id/clinicNameTextView"-->
+            <!--android:textColor="@color/clinic_address_color"-->
+            <!--android:textSize="@dimen/sp13"-->
+            <!--android:singleLine="false"-->
+            <!--android:maxLines="3"-->
+            <!--app:customFont="@string/roboto_medium"-->
+            <!--tools:text="Worli, Mumbaifgfdgfdgfgfahsjhdjjasdklsdlklldlllsdlldsljdklksdjksjkjkjksdjkdfjk" />-->
 
 
 

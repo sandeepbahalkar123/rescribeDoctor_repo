@@ -164,7 +164,7 @@ public class SendSmsPatientActivity extends AppCompatActivity implements SmsRece
                         clinicListForSmsSend = new ArrayList<>();
                         ClinicListForSms clinicListForSms = new ClinicListForSms();
                         clinicListForSms.setPatientInfoList(patientLists);
-                        clinicListForSms.setLocationId(mlocationId);
+                        clinicListForSms.setLocationId(null);
                         if (editTextSmsContent.getText().toString().contains("hospitalName")) {
                             String originalMsgContent = editTextSmsContent.getText().toString();
                             String clinicName = mClinicName;

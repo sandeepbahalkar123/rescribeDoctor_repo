@@ -74,6 +74,8 @@ public class RescribeApplication extends MultiDexApplication {
         RescribeApplication.doctorLocationModels = doctorLocationModels;
     }
 
+
+
     ///////////////////////////////////////////////////
 
     public static synchronized RescribeApplication getInstance() {

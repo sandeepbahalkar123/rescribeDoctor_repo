@@ -1,11 +1,18 @@
 package com.rescribe.doctor.adapters.waiting_list;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.model.waiting_list.WaitingclinicList;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -53,9 +60,16 @@ public class WaitingListSpinnerAdapter extends BaseAdapter {
         final WaitingclinicList waitingClinicListObject = mWaitingclinicLists.get(position);
         if (waitingClinicListObject != null) {
             CustomTextView clinicNameTextView = (CustomTextView) view.findViewById(R.id.clinicNameTextView);
-            CustomTextView clinicAddress = (CustomTextView) view.findViewById(R.id.clinicAddress);
-            clinicNameTextView.setText(waitingClinicListObject.getClinicName()+" - ");
-            clinicAddress.setText(waitingClinicListObject.getArea() + ", " + waitingClinicListObject.getCity());
+
+            String clinicName = waitingClinicListObject.getClinicName() + " - ";
+            String address = waitingClinicListObject.getArea() + ", " + waitingClinicListObject.getCity();
+            SpannableString textClinicName = new SpannableString(clinicName);
+            textClinicName.setSpan(new RelativeSizeSpan(1.2f), 0, textClinicName.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            SpannableString textClinicAddress = new SpannableString(address);
+            textClinicAddress.setSpan(new ForegroundColorSpan(Color.GRAY), 0, textClinicAddress.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            clinicNameTextView.setText(TextUtils.concat(textClinicName, "", textClinicAddress));
         }
         return view;
     }

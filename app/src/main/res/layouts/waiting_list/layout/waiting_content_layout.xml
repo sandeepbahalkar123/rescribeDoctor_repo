@@ -50,6 +50,8 @@
                 android:layout_toRightOf="@id/bulletImageView"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp16"
+                android:maxLines="3"
+                android:singleLine="false"
                 app:customFont="@string/roboto_bold"
                 tools:text="Shree Clinic - " />
 

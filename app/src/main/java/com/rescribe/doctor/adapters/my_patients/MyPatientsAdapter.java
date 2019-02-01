@@ -59,14 +59,16 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     private OnDownArrowClicked mOnDownArrowClicked;
     private boolean isClickOnPatientDetailsRequired;
     private AppDBHelper appDBHelper;
+    private boolean isOneHospital;
 
-    public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired) {
+    public MyPatientsAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isClickOnPatientDetailsRequired, boolean isOneHospital) {
         this.mDataList = dataList;
         removeDuplicateElements();
         this.mContext = mContext;
         appDBHelper = new AppDBHelper(mContext);
         this.mOnDownArrowClicked = mOnDownArrowClicked;
         this.isClickOnPatientDetailsRequired = isClickOnPatientDetailsRequired;
+        this.isOneHospital=isOneHospital;
     }
 
     @Override
@@ -91,8 +93,13 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         if (patientObject.getHospitalName() == null || patientObject.getHospitalName().isEmpty())
             holder.patientClinic.setVisibility(View.GONE);
         else {
-            holder.patientClinic.setVisibility(View.VISIBLE);
-            holder.patientClinic.setText(patientObject.getHospitalName());
+
+            if (isOneHospital){
+                holder.patientClinic.setVisibility(View.GONE);
+            }else {
+                holder.patientClinic.setVisibility(View.VISIBLE);
+                holder.patientClinic.setText(patientObject.getHospitalName());
+            }
         }
 
         if (patientObject.getSalutation() != 0)

@@ -549,6 +549,8 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                                 patientsAddToWaitingListObject.setAppointmentStatusId(patientList.getAppointmentStatusId());
                                 patientsAddToWaitingListObject.setPatientId(String.valueOf(patientList.getPatientId()));
                                 patientsAddToWaitingListObject.setPatientName(patientList.getPatientName());
+                                patientsAddToWaitingListObject.setCategoryId(patientList.getCategoryId());
+                                patientsAddToWaitingListObject.setCalendarType(patientList.getCalendarType());
                                 mPatientAddToWaitingList.add(patientsAddToWaitingListObject);
                             }
                             //two different list are created to manage selected patients and patients which cannot be added in waiting list
@@ -559,6 +561,8 @@ public class MyAppointmentsFragment extends Fragment implements AppointmentAdapt
                             patientsAddToWaitingListObject.setHospitalPatId(String.valueOf(patientList.getHospitalPatId()));
                             patientsAddToWaitingListObject.setPatientId(String.valueOf(patientList.getPatientId()));
                             patientsAddToWaitingListObject.setPatientName(patientList.getPatientName());
+                            patientsAddToWaitingListObject.setCategoryId(patientList.getCategoryId());
+                            patientsAddToWaitingListObject.setCalendarType(patientList.getCalendarType());
                             mPatientListForCountOfPatientsSelected.add(patientsAddToWaitingListObject);
                         }
                     }

@@ -127,6 +127,7 @@ dependencies {
     implementation 'com.evernote:android-job:1.2.6'
     implementation project(path: ':smartPenCore')
     implementation project(path: ':easyswipemenulibrary')
+
 }
 
 task customFindbugs(type: FindBugs) {

@@ -174,8 +174,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         ArrayList<PatientList> patientLists = new ArrayList<>();
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearlayoutManager);
+        boolean isOneHospital=CommonMethods.isSingleHospital();
 
-        mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, fromActivityLaunched.equals(RescribeConstants.HOME_PAGE));
+        mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, fromActivityLaunched.equals(RescribeConstants.HOME_PAGE),isOneHospital);
 
 
         nextPage(0, NetworkUtil.getConnectivityStatusBoolean(getContext()));
@@ -455,6 +456,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             final RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
             if (mLocationId == clinicList.getLocationId()) {
                 radioButton.setChecked(true);
+                mClinicId = clinicList.getClinicId();
             } else {
                 radioButton.setChecked(false);
             }
@@ -529,7 +531,17 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             final DoctorLocationModel clinicList = mPatientListsOriginal.get(index);
 
             final RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.dialog_location_radio_item, null, false);
-            radioButton.setChecked(mLocationId == clinicList.getLocationId());
+
+            if (mLocationId == clinicList.getLocationId()) {
+                radioButton.setChecked(true);
+                mClinicId = clinicList.getClinicId();
+            } else {
+                radioButton.setChecked(false);
+            }
+
+           // radioButton.setChecked(mLocationId == clinicList.getLocationId());
+
+
             radioButton.setTag(clinicList);
             radioButton.setText(clinicList.getClinicName() + ", " + clinicList.getAddress());
             radioButton.setId(CommonMethods.generateViewId());
