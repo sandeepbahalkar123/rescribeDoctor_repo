@@ -30,6 +30,11 @@ public class WaitingclinicList implements Parcelable {
     @SerializedName("patientList")
     @Expose
     private WaitingPatientList waitingPatientList;
+
+    @SerializedName("isAppointmentTypes")
+    @Expose
+    private boolean isAppointmentTypes;
+
     public final static Creator<WaitingclinicList> CREATOR = new Creator<WaitingclinicList>() {
 
 
@@ -54,6 +59,7 @@ public class WaitingclinicList implements Parcelable {
         this.city = ((String) in.readValue((String.class.getClassLoader())));
         this.cityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.waitingPatientList = ((WaitingPatientList) in.readValue((WaitingPatientList.class.getClassLoader())));
+        this.isAppointmentTypes = ((boolean) in.readValue((boolean.class.getClassLoader())));
     }
 
     public WaitingclinicList() {
@@ -115,6 +121,14 @@ public class WaitingclinicList implements Parcelable {
         this.waitingPatientList = waitingPatientList;
     }
 
+    public boolean isAppointmentTypes() {
+        return isAppointmentTypes;
+    }
+
+    public void setAppointmentTypes(boolean appointmentTypes) {
+        isAppointmentTypes = appointmentTypes;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(clinicName);
         dest.writeValue(clinicId);
@@ -123,6 +137,7 @@ public class WaitingclinicList implements Parcelable {
         dest.writeValue(city);
         dest.writeValue(cityId);
         dest.writeValue(waitingPatientList);
+        dest.writeValue(isAppointmentTypes);
     }
 
     public int describeContents() {

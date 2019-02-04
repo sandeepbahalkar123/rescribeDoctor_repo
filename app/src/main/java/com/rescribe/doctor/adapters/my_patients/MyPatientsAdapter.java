@@ -84,10 +84,12 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
     public void onBindViewHolder(final ListViewHolder holder, final int position) {
         final PatientList patientObject = mDataList.get(position);
         holder.opdTypeTextView.setVisibility(View.GONE);
+
+
         holder.patientClinicAddress.setVisibility(View.VISIBLE);
         String area = patientObject.getPatientArea().isEmpty() ? "" : (patientObject.getPatientCity().isEmpty() ? patientObject.getPatientArea() : patientObject.getPatientArea() + ", ");
         holder.patientClinicAddress.setText(CommonMethods.toCamelCase(area + patientObject.getPatientCity()));
-        String patientName = "";
+
 
 
         if (patientObject.getHospitalName() == null || patientObject.getHospitalName().isEmpty())
@@ -101,7 +103,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
                 holder.patientClinic.setText(patientObject.getHospitalName());
             }
         }
-
+        String patientName = "";
         if (patientObject.getSalutation() != 0)
             patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
         else patientName = toCamelCase(patientObject.getPatientName());

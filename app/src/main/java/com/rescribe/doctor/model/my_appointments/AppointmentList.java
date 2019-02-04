@@ -40,6 +40,14 @@ public class AppointmentList implements Parcelable, Cloneable, Comparable<Appoin
     private PatientList patientHeader;
     private boolean selectedGroupCheckbox;
 
+    @SerializedName("isAppointmentTypes")
+    @Expose
+    private boolean isAppointmentTypes;
+
+
+
+
+
     public final static Creator<AppointmentList> CREATOR = new Creator<AppointmentList>() {
 
 
@@ -66,6 +74,7 @@ public class AppointmentList implements Parcelable, Cloneable, Comparable<Appoin
         this.address = ((String) in.readValue((String.class.getClassLoader())));
         this.cityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         in.readList(this.patientList, (PatientList.class.getClassLoader()));
+        this.isAppointmentTypes = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
     }
 
     public AppointmentList() {
@@ -151,6 +160,13 @@ public class AppointmentList implements Parcelable, Cloneable, Comparable<Appoin
         this.clinicId = clinicId;
     }
 
+    public boolean isAppointmentTypes() {
+        return isAppointmentTypes;
+    }
+
+    public void setAppointmentTypes(boolean appointmentTypes) {
+        isAppointmentTypes = appointmentTypes;
+    }
 
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
@@ -165,7 +181,7 @@ public class AppointmentList implements Parcelable, Cloneable, Comparable<Appoin
         dest.writeValue(address);
         dest.writeValue(cityId);
         dest.writeList(patientList);
-
+        dest.writeValue(isAppointmentTypes);
 
     }
 

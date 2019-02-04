@@ -175,7 +175,8 @@ public class NewPatientFragment extends Fragment implements NewPatientAdapter.On
 
             LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearlayoutManager);
-            mCompletedOpdAdapter = new NewPatientAdapter(getActivity(), mNewPatientsDetail, this);
+            boolean isOneHospital=CommonMethods.isSingleHospital();
+            mCompletedOpdAdapter = new NewPatientAdapter(getActivity(), mNewPatientsDetail, this,isOneHospital);
             recyclerView.setAdapter(mCompletedOpdAdapter);
             mCompletedOpdAdapter.isLongPressed = isLongPress;
 

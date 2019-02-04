@@ -103,6 +103,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
     private Integer mClinicID;
     private Integer mWaitingIdToBeDeleted;
     private WaitingMainListActivity mParentActivity;
+    private boolean isAppointmentTypes;
 
     public ActivePatientListFragment() {
     }
@@ -146,6 +147,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                     waitingPatientTempList = waitingclinicList.getWaitingPatientList();
                     clinicListSpinner.setVisibility(View.GONE);
                     hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
+                    isAppointmentTypes=waitingclinicList.isAppointmentTypes();
 
                     String clinicName = waitingclinicList.getClinicName() + " - ";
                     String address = waitingclinicList.getArea() + ", " + waitingclinicList.getCity();
@@ -182,6 +184,8 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
                 mLocationId = waitingclinicList.getLocationId();
                 mClinicID = waitingclinicList.getClinicId();
                 waitingPatientTempList = waitingclinicList.getWaitingPatientList();
+                isAppointmentTypes=waitingclinicList.isAppointmentTypes();
+
 
                 //-------
                 mSelectedClinicDataMap.put(RescribeConstants.CLINIC_ID, "" + mClinicID);
@@ -241,7 +245,7 @@ public class ActivePatientListFragment extends Fragment implements HelperRespons
         recyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
         //adapter
-        mDraggableSwipeableActiveWaitingListAdapter = new DraggableSwipeableActiveWaitingListAdapter(getDataProvider(),mParentActivity.appointmentFormat);
+        mDraggableSwipeableActiveWaitingListAdapter = new DraggableSwipeableActiveWaitingListAdapter(getDataProvider(),mParentActivity.appointmentFormat,isAppointmentTypes);
         mDraggableSwipeableActiveWaitingListAdapter.setEventListener(new DraggableSwipeableActiveWaitingListAdapter.EventListener() {
 
             @Override

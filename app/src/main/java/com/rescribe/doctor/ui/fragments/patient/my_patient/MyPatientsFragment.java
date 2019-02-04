@@ -363,6 +363,8 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     patientInfoListObject.setOutstandingAmt(patientList.getOutStandingAmount());
                     patientInfoLists.add(patientInfoListObject);
                     mPatientListsOriginal.add(patientList);
+
+
                 }
             }
 

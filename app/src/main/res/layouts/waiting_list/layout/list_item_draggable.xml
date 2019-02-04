@@ -103,8 +103,8 @@
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/border_patient_list"
             android:layout_margin="@dimen/dp2"
-            android:background="@drawable/bg_waiting_white_box"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -248,7 +248,7 @@
                             android:id="@+id/appointmentTypeTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="Appointment Time - "
+                            tools:text="Waiting For "
                             android:textColor="@color/black"
                             android:textSize="@dimen/sp12"
                             app:customFont="@string/roboto_medium" />

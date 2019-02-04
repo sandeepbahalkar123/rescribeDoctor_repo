@@ -99,6 +99,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
     private View.OnClickListener mItemViewOnClickListener;
     private View.OnClickListener mSwipeableViewContainerOnClickListener;
     private int appointmentFormat;
+    private boolean isAppointmentTypes;
 
     public interface EventListener {
         void onDeleteClick(int position, ViewAll viewAll);
@@ -178,9 +179,10 @@ public class DraggableSwipeableViewAllWaitingListAdapter
         }
     }
 
-    public DraggableSwipeableViewAllWaitingListAdapter(AbstractDataProvider dataProvider, int appointmentFormat) {
+    public DraggableSwipeableViewAllWaitingListAdapter(AbstractDataProvider dataProvider, int appointmentFormat, boolean isAppointmentTypes) {
         mProvider = dataProvider;
         this.appointmentFormat = appointmentFormat;
+        this.isAppointmentTypes=isAppointmentTypes;
 
         mItemViewOnClickListener = new View.OnClickListener() {
             @Override
@@ -329,7 +331,7 @@ public class DraggableSwipeableViewAllWaitingListAdapter
                 .into(holder.mPatientImageView);
 
 
-        if (!item.getViewAll().getAppointmentType().isEmpty()) {
+        if (isAppointmentTypes) {
             holder.mAppointmentTypeTextView.setText(holder.mAppointmentTypeTextView.getResources().getString(R.string.waiting_for) + " " + item.getViewAll().getAppointmentType());
         } else {
             holder.mAppointmentTypeLinearLayout.setVisibility(View.GONE);

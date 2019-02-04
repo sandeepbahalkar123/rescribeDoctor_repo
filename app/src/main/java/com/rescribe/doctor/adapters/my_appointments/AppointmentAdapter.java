@@ -105,7 +105,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         final PatientList patientObject = mAppointmentListTemp.get(groupPosition).getPatientList().get(childPosition);
         final String cityName = mAppointmentListTemp.get(groupPosition).getCity();
         final String areaName = mAppointmentListTemp.get(groupPosition).getArea();
-        bind(patientObject, groupPosition, childPosition, viewHolder, cityName, areaName);
+            boolean isAppointmentTypes=mAppointmentListTemp.get(groupPosition).isAppointmentTypes();
+        bind(patientObject, groupPosition, childPosition, viewHolder, cityName, areaName,isAppointmentTypes);
 
         viewHolder.swipe_layout.setOnMoveListener(new EasySwipeMenuLayout.MoveListener() {
             @Override
@@ -137,7 +138,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     }
 
     @SuppressLint("CheckResult")
-    private void bind(final PatientList patientList, final int groupPosition, final int childPosition, final ChildViewHolder viewHolder, final String cityName, final String areaName) {
+    private void bind(final PatientList patientList, final int groupPosition, final int childPosition, final ChildViewHolder viewHolder, final String cityName, final String areaName, boolean isAppointmentTypes) {
 
         String patientName = "";
 
@@ -231,7 +232,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         viewHolder.patientGenderTextView.setText(CommonMethods.toCamelCase(patientList.getGender()));
         if (patientList.getAppointmentStatusId().equals(BOOKED)) {
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
-            if (!patientList.getAppointmentType().isEmpty())
+            if (isAppointmentTypes)
                 viewHolder.opdTypeTextView.setText(mContext.getString(R.string.booked_for) + " " + patientList.getAppointmentType());
             else
                 viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.booked));
@@ -240,7 +241,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             viewHolder.opdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
             viewHolder.waitingIcon.setVisibility(View.INVISIBLE);
         } else if (patientList.getAppointmentStatusId().equals(CONFIRM)) {
-            if (!patientList.getAppointmentType().isEmpty())
+            if (isAppointmentTypes)
                 viewHolder.opdTypeTextView.setText(patientList.getAppointmentStatus() + " " + mContext.getString(R.string.txt_for) + " " + patientList.getAppointmentType());
             else
                 viewHolder.opdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + patientList.getAppointmentStatus());
@@ -434,7 +435,8 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         }
 
         final AppointmentList appointmentListObject = mAppointmentListTemp.get(groupPosition);
-        bindGroupItem(appointmentListObject, groupPosition, isExpanded, groupViewHolder);
+        boolean isAppointmentTypes = mAppointmentListTemp.get(groupPosition).isAppointmentTypes();
+        bindGroupItem(appointmentListObject, groupPosition, isExpanded, groupViewHolder,isAppointmentTypes);
 
         if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(BOOKED))
             groupViewHolder.swipe_layout.setCanRightSwipe(true);
@@ -449,7 +451,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
     }
 
     @SuppressLint("CheckResult")
-    private void bindGroupItem(final AppointmentList appointmentListObject, final int groupPosition, final boolean isExpanded, final GroupViewHolder groupViewHolder) {
+    private void bindGroupItem(final AppointmentList appointmentListObject, final int groupPosition, final boolean isExpanded, final GroupViewHolder groupViewHolder, boolean isAppointmentTypes) {
 
         String clinicName = appointmentListObject.getClinicName() + " - ";
         String address = appointmentListObject.getArea() + ", " + appointmentListObject.getCity();
@@ -517,7 +519,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
         groupViewHolder.mPatientGenderTextView.setText(CommonMethods.toCamelCase(appointmentListObject.getPatientHeader().getGender()));
         if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(BOOKED)) {
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.book_color));
-            if (!appointmentListObject.getPatientHeader().getAppointmentType().isEmpty())
+            if (isAppointmentTypes)
                 groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.booked_for) + " " + appointmentListObject.getPatientHeader().getAppointmentType());
             else
                 groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + mContext.getString(R.string.booked));
@@ -526,7 +528,7 @@ public class AppointmentAdapter extends BaseExpandableListAdapter implements Fil
             groupViewHolder.mOpdTypeTextView.setTextColor(ContextCompat.getColor(mContext, R.color.complete_color));
             groupViewHolder.waitingIcon.setVisibility(View.INVISIBLE);
         } else if (appointmentListObject.getPatientHeader().getAppointmentStatusId().equals(CONFIRM)) {
-            if (!appointmentListObject.getPatientHeader().getAppointmentType().isEmpty())
+            if (isAppointmentTypes)
                 groupViewHolder.mOpdTypeTextView.setText(appointmentListObject.getPatientHeader().getAppointmentStatus()+" "+mContext.getString(R.string.txt_for)+" "+appointmentListObject.getPatientHeader().getAppointmentType());
             else
                 groupViewHolder.mOpdTypeTextView.setText(mContext.getString(R.string.opd_appointment) + " " + appointmentListObject.getPatientHeader().getAppointmentStatus());

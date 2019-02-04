@@ -105,6 +105,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
     private int mWaitingIdToBeDeleted = -1;
 
     private WaitingMainListActivity mParentActivity;
+    private boolean isAppointmentTypes;
 
     public ViewAllPatientListFragment() {
     }
@@ -146,6 +147,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
                     waitingPatientTempList = mParentActivity.mWaitingClinicList.get(0).getWaitingPatientList();
                     clinicListSpinner.setVisibility(View.GONE);
                     hospitalDetailsLinearLayout.setVisibility(View.VISIBLE);
+                    isAppointmentTypes=mParentActivity.mWaitingClinicList.get(0).isAppointmentTypes();
 
                     String clinicName = mParentActivity.mWaitingClinicList.get(0).getClinicName() + " - ";
                     String address = mParentActivity.mWaitingClinicList.get(0).getArea() + ", " + mParentActivity.mWaitingClinicList.get(0).getCity();
@@ -199,6 +201,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         mLocationId = waitingclinicList.getLocationId();
         mClinicID = waitingclinicList.getClinicId();
         waitingPatientTempList = waitingclinicList.getWaitingPatientList();
+        isAppointmentTypes= waitingclinicList.isAppointmentTypes();
 
         if (waitingPatientTempList != null) {
             recyclerView.setVisibility(View.VISIBLE);
@@ -236,7 +239,7 @@ public class ViewAllPatientListFragment extends Fragment implements OnStartDragL
         recyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
         //adapter
-        myItemAdapter = new DraggableSwipeableViewAllWaitingListAdapter(getDataProvider(), mParentActivity.appointmentFormat);
+        myItemAdapter = new DraggableSwipeableViewAllWaitingListAdapter(getDataProvider(), mParentActivity.appointmentFormat,isAppointmentTypes);
         myItemAdapter.setEventListener(new DraggableSwipeableViewAllWaitingListAdapter.EventListener() {
 
             @Override

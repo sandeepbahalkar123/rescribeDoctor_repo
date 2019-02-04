@@ -48,13 +48,15 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
     private ArrayList<NewPatientsDetail> mOriginalPatientList;
     public boolean isLongPressed;
     private NewPatientAdapter.OnDownArrowClicked mOnDownArrowClicked;
+    boolean isOneHospital;
 
 
-    public NewPatientAdapter(Context mContext, ArrayList<NewPatientsDetail> dataList, NewPatientAdapter.OnDownArrowClicked mOnDownArrowClicked) {
+    public NewPatientAdapter(Context mContext, ArrayList<NewPatientsDetail> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isOneHospital) {
         this.mDataList = new ArrayList<>(dataList);
         this.mOriginalPatientList = new ArrayList<>(dataList);
         this.mContext = mContext;
         this.mOnDownArrowClicked = mOnDownArrowClicked;
+        this.isOneHospital = isOneHospital;
     }
 
     @Override
@@ -71,11 +73,27 @@ public class NewPatientAdapter extends RecyclerView.Adapter<NewPatientAdapter.Li
         holder.opdTypeTextView.setVisibility(View.VISIBLE);
         holder.opdTypeTextView.setVisibility(View.GONE);
 
-        holder.patientClinicAddress.setVisibility(View.VISIBLE);
-        holder.patientClinicAddress.setText(patientObject.getCityName());
 
-        holder.patientClinic.setVisibility(View.VISIBLE);
-        holder.patientClinic.setText(patientObject.getHospitalName());
+
+        if (!patientObject.getCityName().isEmpty()) {
+            holder.patientClinicAddress.setVisibility(View.VISIBLE);
+            holder.patientClinicAddress.setText(patientObject.getCityName());
+        }else {
+            holder.patientClinicAddress.setVisibility(View.GONE);
+        }
+
+        if (patientObject.getHospitalName() == null || patientObject.getHospitalName().isEmpty())
+            holder.patientClinic.setVisibility(View.GONE);
+        else {
+
+            if (isOneHospital){
+                holder.patientClinic.setVisibility(View.GONE);
+            }else {
+                holder.patientClinic.setVisibility(View.VISIBLE);
+                holder.patientClinic.setText(patientObject.getHospitalName());
+            }
+        }
+
         String patientName;
         holder.chatImageView.setVisibility(View.GONE);
         if (patientObject.getSalutation() != 0)

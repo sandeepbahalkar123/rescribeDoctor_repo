@@ -68,6 +68,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
 
     private int mPreLeftSwipePosition = RecyclerView.NO_POSITION;
 
+
     public ArrayList<Active> getAllItems() {
 
         ArrayList<Active> activeAll = new ArrayList<>();
@@ -94,7 +95,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
     private View.OnClickListener mItemViewOnClickListener;
     private View.OnClickListener mSwipeableViewContainerOnClickListener;
     private int appointmentFormat;
-
+    private boolean isAppointmentTypes ;
 
     public interface EventListener {
         void onDeleteClick(int position, Active viewAll);
@@ -175,7 +176,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
         }
     }
 
-    public DraggableSwipeableActiveWaitingListAdapter(AbstractDataProvider dataProvider, int appointmentFormat) {
+    public DraggableSwipeableActiveWaitingListAdapter(AbstractDataProvider dataProvider, int appointmentFormat, boolean isAppointmentTypes) {
         mProvider = dataProvider;
         this.appointmentFormat = appointmentFormat;
         mItemViewOnClickListener = new View.OnClickListener() {
@@ -193,7 +194,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
                 onSwipeableViewContainerClick(v, item);
             }
         };
-
+        this.isAppointmentTypes=isAppointmentTypes;
         // DraggableItemAdapter and SwipeableItemAdapter require stable ID, and also
         // have to implement the getItemId() method appropriately.
         setHasStableIds(true);
@@ -315,7 +316,7 @@ public class DraggableSwipeableActiveWaitingListAdapter
             salutation = SALUTATION[item.getActiveAll().getSalutation() - 1];
         else salutation = "";
 
-        if (!item.getActiveAll().getAppointmentType().isEmpty()) {
+        if (isAppointmentTypes) {
             holder.mAppointmentTypeTextView.setText(holder.mAppointmentTypeTextView.getResources().getString(R.string.waiting_for) + " " + item.getActiveAll().getAppointmentType());
         } else {
             holder.mAppointmentTypeLinearLayout.setVisibility(View.GONE);
