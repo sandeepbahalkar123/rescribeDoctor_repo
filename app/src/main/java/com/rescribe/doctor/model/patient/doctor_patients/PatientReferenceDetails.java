@@ -1,28 +1,41 @@
 
 package com.rescribe.doctor.model.patient.doctor_patients;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
 
 public class PatientReferenceDetails implements CustomResponse {
-
-    private String referredTypeId;
+    @SerializedName("referredTypeId")
+    @Expose
+    private int referredTypeId;
+    @SerializedName("patientId")
+    @Expose
     private String patientId;
+    @SerializedName("docId")
+    @Expose
     private String docId;
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("emailId")
+    @Expose
     private String emailId;
+    @SerializedName("phoneNumber")
+    @Expose
     private String phoneNumber;
+    @SerializedName("salutation")
+    @Expose
+    private String salutation;
+    @SerializedName("description")
+    @Expose
     private String description;
-    private int salutation;
 
-
-    public PatientReferenceDetails() {
-    }
-
-    public String getReferredTypeId() {
+    public int getReferredTypeId() {
         return referredTypeId;
     }
 
-    public void setReferredTypeId(String referredTypeId) {
+    public void setReferredTypeId(int referredTypeId) {
         this.referredTypeId = referredTypeId;
     }
 
@@ -66,6 +79,14 @@ public class PatientReferenceDetails implements CustomResponse {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getSalutation() {
+        return salutation;
+    }
+
+    public void setSalutation(String salutation) {
+        this.salutation = salutation;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -74,11 +95,4 @@ public class PatientReferenceDetails implements CustomResponse {
         this.description = description;
     }
 
-    public int getSalutation() {
-        return salutation;
-    }
-
-    public void setSalutation(int salutation) {
-        this.salutation = salutation;
-    }
 }

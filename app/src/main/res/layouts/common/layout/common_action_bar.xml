@@ -130,6 +130,26 @@
             app:srcCompat="@drawable/sync_patients"
             tools:ignore="RtlHardcoded,RtlSymmetry"
             tools:visibility="visible" />
+        <TextView
+            android:id="@+id/Profile_Edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp16"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="right"
+            android:paddingBottom="@dimen/dp10"
+            android:paddingEnd="@dimen/dp16"
+            android:paddingRight="@dimen/dp16"
+            android:paddingTop="@dimen/dp10"
+            android:layout_marginTop="@dimen/sp17"
+            android:padding="@dimen/dp5"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </RelativeLayout>
 

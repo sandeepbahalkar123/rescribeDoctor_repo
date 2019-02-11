@@ -267,43 +267,43 @@ public class AppointmentHelper implements ConnectionListener {
 
     }
 
-    public void addNewPatient(PatientList dataToAdd) {
+    public void addNewPatient(PatientDetail dataToAdd) {
 
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_ADD_NEW_PATIENT, Request.Method.POST, false);
-        PatientDetail patient = new PatientDetail();
-        patient.setSalutation(dataToAdd.getSalutation());
-        patient.setMobilePatientId(dataToAdd.getPatientId());
-
-        //---------
-        String[] split = dataToAdd.getPatientName().split(" ");
-        patient.setPatientFname(split[0]);
-        if (split.length > 1) {
-            if (split[1].equalsIgnoreCase("|"))
-                patient.setPatientMname("");
-            else
-                patient.setPatientMname(split[1]);
-        }
-        if (split.length > 2)
-            patient.setPatientLname(split[2]);
-        //---------
-        patient.setPatientPhone(dataToAdd.getPatientPhone());
-        patient.setPatientAge(dataToAdd.getAge());
-        patient.setPatientGender(dataToAdd.getGender());
-        patient.setClinicId(dataToAdd.getClinicId());
-        patient.setPatientDob(dataToAdd.getDateOfBirth());
-        patient.setOfflineReferenceID(dataToAdd.getReferenceID());
-        patient.setRelation(dataToAdd.getRelation());
-
-        patient.setAddressDetails(dataToAdd.getAddressDetails());
-
-        patient.setReferedDetails(dataToAdd.getReferedDetails());
+//        PatientDetail patient = new PatientDetail();
+//        patient.setSalutation(dataToAdd.getSalutation());
+//        patient.setMobilePatientId(dataToAdd.getPatientId());
+//
+//        //---------
+//        String[] split = dataToAdd.getPatientName().split(" ");
+//        patient.setPatientFname(split[0]);
+//        if (split.length > 1) {
+//            if (split[1].equalsIgnoreCase("|"))
+//                patient.setPatientMname("");
+//            else
+//                patient.setPatientMname(split[1]);
+//        }
+//        if (split.length > 2)
+//            patient.setPatientLname(split[2]);
+//        //---------
+//        patient.setPatientPhone(dataToAdd.getPatientPhone());
+//        patient.setPatientAge(dataToAdd.getAge());
+//        patient.setPatientGender(dataToAdd.getGender());
+//        patient.setClinicId(dataToAdd.getClinicId());
+//        patient.setPatientDob(dataToAdd.getDateOfBirth());
+//        patient.setReferenceId(dataToAdd.getReferenceID());
+//        patient.setRelation(dataToAdd.getRelation());
+//
+//        patient.setPatientAddressDetails(dataToAdd.getAddressDetails());
+//
+//        patient.setReferedDetails(dataToAdd.getReferedDetails());
 
         SyncPatientsRequest mSyncPatientsRequest = new SyncPatientsRequest();
         String id = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
         mSyncPatientsRequest.setDocId(id);
 
         ArrayList<PatientDetail> add = new ArrayList<PatientDetail>();
-        add.add(patient);
+        add.add(dataToAdd);
         mSyncPatientsRequest.setPatientDetails(add);
 
         mConnectionFactory.setPostParams(mSyncPatientsRequest);
@@ -326,13 +326,40 @@ public class AppointmentHelper implements ConnectionListener {
     }
 
 
-    public void getReferenceList(int mClinicId) {
+    public void getReferenceList(int mClinicId, int docID) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_REFERENCE_LIST, Request.Method.GET, false);
         mConnectionFactory.setHeaderParams();
-        String url = Config.GET_REFERENCE_LIST + "clinicId=" + mClinicId;
+        String url = Config.GET_REFERENCE_LIST + "clinicId=" + mClinicId+"&docId="+docID;
         mConnectionFactory.setUrl(url);
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_REFERENCE_LIST);
     }
+
+    public void checkPanCardNo(String cardNo) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_VALIDATE_PAN_NO, Request.Method.GET, false);
+        mConnectionFactory.setHeaderParams();
+        String url = Config.VALIDATE_PAN_AADHAR_CARD + "pan_number&fieldValue="+cardNo;
+        mConnectionFactory.setUrl(url);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_VALIDATE_PAN_NO);
+    }
+
+
+    public void checkAadharCardNo(String cardNo) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_VALIDATE_ADDHAR_NO, Request.Method.GET, false);
+        mConnectionFactory.setHeaderParams();
+        String url = Config.VALIDATE_PAN_AADHAR_CARD + "aadhaar_number&fieldValue="+cardNo;
+        mConnectionFactory.setUrl(url);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_VALIDATE_ADDHAR_NO);
+    }
+
+    public void checkReferenceNo(String reference_id) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_VALIDATE_REFERENCE_NO, Request.Method.GET, false);
+        mConnectionFactory.setHeaderParams();
+        String url = Config.VALIDATE_PAN_AADHAR_CARD + "reference_id&fieldValue="+reference_id;
+        mConnectionFactory.setUrl(url);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_VALIDATE_REFERENCE_NO);
+    }
+
+
 }
 
 

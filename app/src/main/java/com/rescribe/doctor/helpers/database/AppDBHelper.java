@@ -971,7 +971,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 //-----REFERENCE----
                 PatientReferenceDetails referedDetails = new PatientReferenceDetails();
 
-                referedDetails.setReferredTypeId("" + cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.REFFERED_TYPE_ID)));
+                referedDetails.setReferredTypeId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.REFFERED_TYPE_ID)));
                 referedDetails.setName(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_NAME)));
                 referedDetails.setEmailId(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_EMAIL)));
                 referedDetails.setPhoneNumber("" + cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_PHONE)));
@@ -1039,7 +1039,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 patient.setPatientPhone(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.MOBILE_NO)));
                 patient.setPatientAge(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.AGE)));
                 patient.setPatientGender(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.GENDER)));
-                patient.setOfflineReferenceID(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID)));
+                patient.setReferenceId(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID)));
 
 //                cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_ID));
 
@@ -1054,11 +1054,11 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 addressDetails.setPatientState(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE)));
                 addressDetails.setPatientCity(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY)));
                 addressDetails.setPatientArea(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA)));
-                patient.setAddressDetails(addressDetails);
+                patient.setPatientAddressDetails(addressDetails);
                 //-----REFERENCE----
                 PatientReferenceDetails referedDetails = new PatientReferenceDetails();
 
-                referedDetails.setReferredTypeId("" + cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.REFFERED_TYPE_ID)));
+                referedDetails.setReferredTypeId(cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.REFFERED_TYPE_ID)));
                 referedDetails.setName(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_NAME)));
                 referedDetails.setEmailId(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_EMAIL)));
                 referedDetails.setPhoneNumber("" + cursor.getInt(cursor.getColumnIndex(ADD_NEW_PATIENT.REFERENCE_PHONE)));

@@ -21,6 +21,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateList;
+import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.RescribeConstants;
@@ -67,9 +68,10 @@ public class TemplateListForMyPatients extends AppCompatActivity implements Temp
     private TemplateAdapter mTemplateAdapter;
     private Intent intent;
     private ArrayList<PatientInfoList> patientLists = new ArrayList<>();
-    private int mlocationId;
-    private int mClinicId;
-    private String mClinicName = "";
+    private ArrayList<ClinicListForSms> clinicListForSmsList = new ArrayList<>();
+  //  private int mlocationId;
+  //  private int mClinicId;
+  //  private String mClinicName = "";
     private ArrayList<TemplateList> mTemplateLists;
 
     @Override
@@ -86,10 +88,10 @@ public class TemplateListForMyPatients extends AppCompatActivity implements Temp
         intent = getIntent();
         notifyDelayButton.setVisibility(View.GONE);
         if (intent.getExtras() != null) {
-            patientLists = intent.getParcelableArrayListExtra(RescribeConstants.PATIENT_LIST);
-            mlocationId = intent.getIntExtra(RescribeConstants.LOCATION_ID, 0);
-            mClinicId = intent.getIntExtra(RescribeConstants.CLINIC_ID, 0);
-            mClinicName = intent.getStringExtra(RescribeConstants.CLINIC_NAME);
+            clinicListForSmsList = intent.getParcelableArrayListExtra(RescribeConstants.PATIENT_LIST);
+           // mlocationId = intent.getIntExtra(RescribeConstants.LOCATION_ID, 0);
+           // mClinicId = intent.getIntExtra(RescribeConstants.CLINIC_ID, 0);
+          //  mClinicName = intent.getStringExtra(RescribeConstants.CLINIC_NAME);
             mTemplateLists = intent.getParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST);
         }
 
@@ -112,11 +114,11 @@ addNewTempButton.setOnClickListener(new View.OnClickListener() {
     public void onClick(View view) {
         TemplateList templateList =null;
         Intent intent = new Intent(mContext,SendSmsPatientActivity.class);
-        intent.putExtra(RescribeConstants.LOCATION_ID, mlocationId);
-        intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
+     //   intent.putExtra(RescribeConstants.LOCATION_ID, mlocationId);
+      //  intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
         intent.putExtra(RescribeConstants.TEMPLATE_OBJECT,templateList);
-        intent.putExtra(RescribeConstants.CLINIC_NAME,mClinicName);
-        intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientLists);
+      //  intent.putExtra(RescribeConstants.CLINIC_NAME,mClinicName);
+        intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, clinicListForSmsList);
         startActivityForResult(intent,RESULT_SEND_SMS);
     }
 });
@@ -125,11 +127,11 @@ addNewTempButton.setOnClickListener(new View.OnClickListener() {
     public void onCardViewClick(TemplateList templateList) {
 
         Intent intent = new Intent(this,SendSmsPatientActivity.class);
-        intent.putExtra(RescribeConstants.LOCATION_ID, mlocationId);
-        intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
+      //  intent.putExtra(RescribeConstants.LOCATION_ID, mlocationId);
+       // intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
         intent.putExtra(RescribeConstants.TEMPLATE_OBJECT,templateList);
-        intent.putExtra(RescribeConstants.CLINIC_NAME,mClinicName);
-        intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientLists);
+     //   intent.putExtra(RescribeConstants.CLINIC_NAME,mClinicName);
+        intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, clinicListForSmsList);
         startActivityForResult(intent,RESULT_SEND_SMS);
 
     }

@@ -192,6 +192,7 @@ public class LoginFragment extends Fragment implements HelperResponse {
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.LOGIN_STATUS, RescribeConstants.YES, getActivity());
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PASSWORD, editTextPassword.getText().toString(), getActivity());
                 RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.PREMIUM, docDetail.isPremium(), getActivity());
+                RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_GENDER, docDetail.getDocEmail(), getActivity());
 
                 String doctorDetails = new Gson().toJson(docDetail);
                 RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, doctorDetails, getActivity());

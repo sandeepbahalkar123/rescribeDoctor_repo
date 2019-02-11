@@ -30,6 +30,7 @@ public class Config {
     public static final String TIME_SLOT_TO_BOOK_APPOINTMENT = "api/doctors/getDocOpenTimeSlots?";
     public static final String CONFIRM_APPOINTMENT = "api/patient/bookAppointment";
     public static final String UPLOAD_PROFILE_PHOTO = "api/upload/uploadDoctorImage";
+    public static final String PROFILE_UPLOAD = "api/upload/uploadPatientImage";
     public static final String DELETE_PATIENT_OPD_NOTES = "doctor/api/appointment/deleteOpdNotes";
     public static final String GET_REFERENCE_LIST= "doctor/api/patient/getReferredTypes?";
 
@@ -38,6 +39,7 @@ public class Config {
     public static final String CANCEL_APPOINTMENT_BULK= "doctor/api/appointment/cancelAppointments";
     public static final String GET_OPD_NOTE= "doctor/api/appointment/getOPDNotes?"; // docId=2860&patientId=624914&pageNo=0&paginationSize=1
     public static final String DELETE_APPOINTMENT = "doctor/api/appointment/deleteAppointment";
+    public static final String VALIDATE_PAN_AADHAR_CARD = "doctor/api/patient/validateField?fieldName=";
 
 
     //---------------LOCAL SERVER URL START-----------------------

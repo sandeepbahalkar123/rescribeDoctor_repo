@@ -57,7 +57,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp16"
-
             android:fillViewport="true">
 
             <LinearLayout
@@ -68,32 +67,100 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <Spinner
-                        android:id="@+id/salutationSpinner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:entries="@array/salutation_entries"></Spinner>
+                    <com.rescribe.doctor.ui.customesViews.CircularImageView
+                        android:id="@+id/profileImage"
+                        android:layout_width="@dimen/dp100"
+                        android:layout_height="@dimen/dp100"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/default_profile_pic"
+                        app:border="true"
+                        app:border_width="@dimen/dp1"
+                        app:border_color="@color/white"
+                        android:layout_marginBottom="@dimen/dp10"
+                        app:shadow="true" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layoutFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                        <Spinner
+                            android:id="@+id/salutationSpinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:entries="@array/salutation_entries"></Spinner>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="?actionBarSize"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            app:theme="@style/text_edit">
+
+                            <EditText
+                                android:id="@+id/firstName"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@null"
+                                android:fontFamily="@font/roboto_regular"
+                                android:gravity="center|left"
+                                android:hint="@string/first_name"
+                                android:inputType="text"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="@dimen/sp16" />
+
+                        </android.support.design.widget.TextInputLayout>
+
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black"></View>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layoutMiddleName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="?actionBarSize"
-                        android:layout_weight="1"
+                        android:layout_marginTop="@dimen/dp10"
                         android:background="@null"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
                         app:theme="@style/text_edit">
 
                         <EditText
-                            android:id="@+id/firstName"
+                            android:id="@+id/middleName"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
                             android:fontFamily="@font/roboto_regular"
                             android:gravity="center|left"
-                            android:hint="@string/first_name"
+                            android:hint="@string/middle_name"
                             android:inputType="text"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
@@ -101,208 +168,415 @@
 
                     </android.support.design.widget.TextInputLayout>
 
-
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black"></View>
                 </LinearLayout>
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp1"
-                    android:background="@color/black"></View>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_marginTop="@dimen/dp10"
-                    android:background="@null"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
-                    app:theme="@style/text_edit">
-
-                    <EditText
-                        android:id="@+id/middleName"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        android:fontFamily="@font/roboto_regular"
-                        android:gravity="center|left"
-                        android:hint="@string/middle_name"
-                        android:inputType="text"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="@dimen/sp16" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp1"
-                    android:background="@color/black"></View>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_marginTop="@dimen/dp10"
-                    android:background="@null"
-                    android:textColor="@color/black"
-
-                    android:textColorHint="@color/black"
-                    app:theme="@style/text_edit">
-
-                    <EditText
-                        android:id="@+id/lastName"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        android:fontFamily="@font/roboto_regular"
-                        android:gravity="center|left"
-                        android:hint="@string/last_name"
-                        android:inputType="text"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="@dimen/sp16" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp1"
-                    android:background="@color/black"></View>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_marginTop="@dimen/dp10"
-                    android:background="@null"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
-                    app:theme="@style/text_edit">
-
-                    <EditText
-                        android:id="@+id/mobNo"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        android:fontFamily="@font/roboto_regular"
-                        android:gravity="center|left"
-                        android:hint="@string/enter_mobile_no"
-                        android:inputType="number"
-                        android:maxLength="10"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="@dimen/sp16" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp1"
-                    android:background="@color/black"></View>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_marginTop="@dimen/dp10"
-                    android:background="@null"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
-                    app:theme="@style/text_edit">
-
-                    <EditText
-                        android:id="@+id/age"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        android:fontFamily="@font/roboto_regular"
-                        android:gravity="center|left"
-                        android:hint="@string/age"
-                        android:inputType="number"
-                        android:maxLength="3"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="@dimen/sp16" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp1"
-                    android:background="@color/black"></View>
-
-                <RadioGroup
-                    android:id="@+id/genderRadioGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_marginTop="@dimen/dp10"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/genderMale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:button="@drawable/radio_button_selector"
-                        android:padding="@dimen/dp3"
-                        android:text="@string/male" />
-
-                    <RadioButton
-                        android:id="@+id/genderFemale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:button="@drawable/radio_button_selector"
-                        android:padding="@dimen/dp3"
-                        android:text="@string/female" />
-
-                    <RadioButton
-                        android:id="@+id/genderOther"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:button="@drawable/radio_button_selector"
-                        android:padding="@dimen/dp3"
-                        android:text="@string/transgender" />
-                </RadioGroup>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp1"
-                    android:background="@color/black"></View>
 
 
                 <LinearLayout
+                    android:id="@+id/layoutLastName"
                     android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_marginTop="@dimen/dp10"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <com.rescribe.doctor.ui.customesViews.CustomTextView
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.5"
-                        android:gravity="center|left"
-                        android:text="@string/relation"
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sp16" />
 
-                    <Spinner
-                        android:id="@+id/relationSpinner"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:entries="@array/mr_relation_entries"></Spinner>
+                        android:textColorHint="@color/black"
+                        app:theme="@style/text_edit">
 
+                        <EditText
+                            android:id="@+id/lastName"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/last_name"
+                            android:inputType="text"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
                 </LinearLayout>
 
-                <View
+
+                <LinearLayout
+                    android:id="@+id/layoutContactNo"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp1"
-                    android:background="@color/black"></View>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/mobNo"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            tools:hint="@string/enter_mobile_no"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layoutAltPhn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/alt_phn"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/enter_mobile_no_alt_phn"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layoutAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/age"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/age"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layoutDob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/dob"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/dob"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:focusable="false"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <RadioGroup
+                        android:id="@+id/genderRadioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/genderMale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:button="@drawable/radio_button_selector"
+                            android:padding="@dimen/dp3"
+                            android:text="@string/male" />
+
+                        <RadioButton
+                            android:id="@+id/genderFemale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:button="@drawable/radio_button_selector"
+                            android:padding="@dimen/dp3"
+                            android:text="@string/female" />
+
+                        <RadioButton
+                            android:id="@+id/genderOther"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:button="@drawable/radio_button_selector"
+                            android:padding="@dimen/dp3"
+                            android:text="@string/transgender" />
+                    </RadioGroup>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layoutEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/email"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/enter_email_id"
+                            android:inputType="textEmailAddress"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutPanNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/panNo"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/pan_no"
+                            android:inputType="text"
+                            android:maxLength="10"
+                            android:textAllCaps="true"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutAadhaarNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/aadhaarNo"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/aadhaar_no"
+                            android:inputType="number"
+                            android:maxLength="12"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layoutBloodGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:orientation="horizontal">
+
+                        <com.rescribe.doctor.ui.customesViews.CustomTextView
+                            android:layout_width="@dimen/dp0"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:gravity="center|left"
+                            android:text="@string/blood_group"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                        <Spinner
+                            android:id="@+id/bloodGroupSpinner"
+                            android:layout_width="@dimen/dp0"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:entries="@array/mr_relation_entries"></Spinner>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black"></View>
+
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/layoutReferenceId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:orientation="vertical">
 
 
@@ -340,6 +614,86 @@
 
                 </LinearLayout>
 
+
+
+                <LinearLayout
+                    android:id="@+id/layoutRegisteredFor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/registeredFor"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/registeredFor"
+                            android:inputType="text"
+                            android:maxLength="70"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutRelation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                   >
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:orientation="horizontal">
+
+                        <com.rescribe.doctor.ui.customesViews.CustomTextView
+                            android:layout_width="@dimen/dp0"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:gravity="center|left"
+                            android:text="@string/relation"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                        <Spinner
+                            android:id="@+id/relationSpinner"
+                            android:layout_width="@dimen/dp0"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:entries="@array/mr_relation_entries"></Spinner>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black" />
+                </LinearLayout>
+
+
+
                 <LinearLayout
                     android:id="@+id/addressDetailLayout"
                     android:layout_width="match_parent"
@@ -364,7 +718,7 @@
                             android:background="@null"
                             android:fontFamily="@font/roboto_regular"
                             android:gravity="center|left"
-                            android:hint="@string/address_line"
+                            android:hint="@string/enter_address"
                             android:maxLength="50"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
@@ -377,6 +731,36 @@
                         android:layout_height="@dimen/dp1"
                         android:background="@color/black"></View>
 
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:visibility="visible"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/addressLine2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/address_line2"
+                            android:maxLength="50"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black"></View>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="?actionBarSize"
@@ -501,6 +885,38 @@
                             android:background="@color/black"></View>
 
                     </LinearLayout>
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginTop="@dimen/dp10"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:visibility="visible"
+                        app:theme="@style/text_edit">
+
+                        <EditText
+                            android:id="@+id/pinCode"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center|left"
+                            android:hint="@string/pin_code"
+                            android:maxLength="6"
+                            android:inputType="number"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/sp16" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp1"
+                        android:background="@color/black"></View>
                 </LinearLayout>
 
                 <LinearLayout
@@ -541,6 +957,8 @@
 
                     <include layout="@layout/add_new_reference_details" />
                 </LinearLayout>
+
+
 
                 <Button
                     android:id="@+id/btnAddPatientSubmit"

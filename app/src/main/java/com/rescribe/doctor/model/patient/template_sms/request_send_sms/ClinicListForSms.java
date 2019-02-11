@@ -28,6 +28,9 @@ public class ClinicListForSms implements Parcelable ,Cloneable{
     @SerializedName("patientIds")
     @Expose
     private ArrayList<PatientInfoList> patientInfoList = new ArrayList<PatientInfoList>();
+
+    @SerializedName("clinicName")
+    @Expose
     private String clinicName;
 
     @SerializedName("templateCategory")

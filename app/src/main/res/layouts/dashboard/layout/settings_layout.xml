@@ -73,6 +73,7 @@
                 android:id="@+id/showOtherSettingForOfflinePatient"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -177,6 +178,7 @@
             android:textAllCaps="false"
             android:textColor="@color/tagColor"
             android:textSize="@dimen/sp16" />
+
 
         <Button
             android:id="@+id/logoutButton"

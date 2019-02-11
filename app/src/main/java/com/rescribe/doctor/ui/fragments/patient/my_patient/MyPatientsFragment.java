@@ -38,12 +38,12 @@ import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.doctor_location.DoctorLocationModel;
-import com.rescribe.doctor.model.my_appointments.AppointmentList;
 import com.rescribe.doctor.model.patient.doctor_patients.MyPatientBaseModel;
 import com.rescribe.doctor.model.patient.doctor_patients.PatientList;
 import com.rescribe.doctor.model.patient.doctor_patients.sync_resp.PatientUpdateDetail;
 import com.rescribe.doctor.model.patient.template_sms.TemplateBaseModel;
 import com.rescribe.doctor.model.patient.template_sms.TemplateList;
+import com.rescribe.doctor.model.patient.template_sms.request_send_sms.ClinicListForSms;
 import com.rescribe.doctor.model.patient.template_sms.request_send_sms.PatientInfoList;
 import com.rescribe.doctor.model.request_patients.RequestSearchPatients;
 import com.rescribe.doctor.model.waiting_list.new_request_add_to_waiting_list.AddToList;
@@ -112,6 +112,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
     private ArrayList<DoctorLocationModel> mDoctorLocationModel = new ArrayList<>();
     private ArrayList<PatientAddToWaitingList> patientsListAddToWaitingLists;
     private ArrayList<PatientInfoList> patientInfoLists;
+    private ArrayList<ClinicListForSms> clinicListForSmsList;
 
     private String mClinicName = "";
     //-------
@@ -174,9 +175,9 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         ArrayList<PatientList> patientLists = new ArrayList<>();
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearlayoutManager);
-        boolean isOneHospital=CommonMethods.isSingleHospital();
+        boolean isOneHospital = CommonMethods.isSingleHospital();
 
-        mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, fromActivityLaunched.equals(RescribeConstants.HOME_PAGE),isOneHospital);
+        mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, fromActivityLaunched.equals(RescribeConstants.HOME_PAGE), isOneHospital);
 
 
         nextPage(0, NetworkUtil.getConnectivityStatusBoolean(getContext()));
@@ -348,11 +349,27 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
             //Send SMS
         } else if (bottomMenu.getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
+
+            clinicListForSmsList = new ArrayList<>();
             patientInfoLists = new ArrayList<>();
             ArrayList<PatientList> mPatientListsOriginal = new ArrayList<>();
+
             for (int childIndex = 0; childIndex < mMyPatientsAdapter.getGroupList().size(); childIndex++) {
                 PatientList patientList = mMyPatientsAdapter.getGroupList().get(childIndex);
+
                 if (patientList.isSelected()) {
+
+                    ClinicListForSms sms = null;
+                    int foundPos = checkIsExits(patientList, clinicListForSmsList);
+                    if (foundPos == -1) {
+                        sms = new ClinicListForSms();
+                        sms.setClinicId(patientList.getClinicId());
+                        sms.setClinicName(patientList.getHospitalName());
+                        clinicListForSmsList.add(sms);
+                    } else {
+                        sms = clinicListForSmsList.get(foundPos);
+                    }
+
                     PatientInfoList patientInfoListObject = new PatientInfoList();
                     patientInfoListObject.setPatientName(patientList.getPatientName());
                     patientInfoListObject.setPatientId(patientList.getPatientId());
@@ -361,24 +378,16 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     patientInfoListObject.setPatBloodGroup(patientList.getBloodGroup());
                     patientInfoListObject.setPatientGender(patientList.getGender());
                     patientInfoListObject.setOutstandingAmt(patientList.getOutStandingAmount());
-                    patientInfoLists.add(patientInfoListObject);
-                    mPatientListsOriginal.add(patientList);
 
-
+                    sms.getPatientInfoList().add(patientInfoListObject);
                 }
             }
 
 
-            if (!patientInfoLists.isEmpty()) {
-                if (mDoctorLocationModel.size() == 1) {
-                    mLocationId = mDoctorLocationModel.get(0).getLocationId();
-                    mClinicName = mDoctorLocationModel.get(0).getClinicName();
-                    mClinicArea = mDoctorLocationModel.get(0).getArea();
-                    mClinicCity = mDoctorLocationModel.get(0).getCity();
-                    mAppointmentHelper.doGetDoctorTemplate();
-                } else {
-                    showDialogForSmsLocationSelection(mDoctorLocationModel);
-                }
+            if (!clinicListForSmsList.isEmpty()) {
+
+                mAppointmentHelper.doGetDoctorTemplate();
+
 
                 for (int i = 0; i < mBottomMenuAppointmentAdapter.getList().size(); i++) {
                     if (mBottomMenuAppointmentAdapter.getList().get(i).getMenuName().equalsIgnoreCase(getString(R.string.send_sms))) {
@@ -439,6 +448,18 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             }
         }
 
+    }
+
+    private int checkIsExits(PatientList patientList, ArrayList<ClinicListForSms> clinicListForSmsList) {
+
+        for (int i = 0; i < clinicListForSmsList.size(); i++) {
+            ClinicListForSms sms = clinicListForSmsList.get(i);
+            if (sms.getClinicId() == patientList.getClinicId()) {
+                return i;
+            }
+
+        }
+        return -1;
     }
 
     private void showDialogForSmsLocationSelection(ArrayList<DoctorLocationModel> mDoctorLocationModel) {
@@ -541,7 +562,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                 radioButton.setChecked(false);
             }
 
-           // radioButton.setChecked(mLocationId == clinicList.getLocationId());
+            // radioButton.setChecked(mLocationId == clinicList.getLocationId());
 
 
             radioButton.setTag(clinicList);
@@ -722,19 +743,13 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             ArrayList<TemplateList> templateLists = templateBaseModel.getTemplateDataModel().getTemplateList();
             if (!templateLists.isEmpty()) {
                 Intent intent = new Intent(getActivity(), TemplateListForMyPatients.class);
-                intent.putExtra(LOCATION_ID, mLocationId);
-                intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
-                intent.putExtra(RescribeConstants.CLINIC_NAME, mClinicName);
-                intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientInfoLists);
+
+                intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, clinicListForSmsList);
                 intent.putParcelableArrayListExtra(RescribeConstants.TEMPLATE_LIST, templateLists);
                 startActivity(intent);
             } else {
 
                 Intent intent = new Intent(getActivity(), SendSmsPatientActivity.class);
-                intent.putExtra(LOCATION_ID, mLocationId);
-                intent.putExtra(RescribeConstants.CLINIC_ID, mClinicId);
-//                intent.putExtra(RescribeConstants.TEMPLATE_OBJECT, templateList);
-                intent.putExtra(RescribeConstants.CLINIC_NAME, mClinicName);
                 intent.putParcelableArrayListExtra(RescribeConstants.PATIENT_LIST, patientInfoLists);
                 startActivityForResult(intent, RESULT_SEND_SMS);
             }

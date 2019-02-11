@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Dr Rescribe</string>
     <string name="enter_mobile_no">Mobile No. *</string>
+    <string name="enter_mobile_no_alt_phn">Alternate Phone number</string>
     <string name="enter_mobile_no_error">Mobile No.</string>
     <string name="enter_ref_mobile_no">Mobile No.</string>
     <string name="log_in">Login</string>
@@ -62,6 +63,7 @@
     <string name="err_otp_invalid">Enter valid OTP</string>
     <string name="err_maximum_otp_retries">You have exceeded maximum retry of OTP generation, please try after sometime.</string>
     <string name="err_invalid_mobile_no">Enter valid mobile no.</string>
+    <string name="err_invalid_alter_mobile_no">Enter valid alternate mobile no.</string>
     <string name="err_invalid_ref_mobile_no">Enter valid referred mobile no.</string>
     <string name="enter_password">Password</string>
     <string name="error_too_small_password">Password should be 6 characters long.</string>
@@ -201,6 +203,7 @@
     <string name="enter_address">Enter Address</string>
     <string name="address_details">Address Details</string>
     <string name="address_line">Address line</string>
+    <string name="address_line2">Address line2</string>
     <string name="area">Area</string>
     <string name="referenced_details">Reference Details</string>
     <string name="next">Next</string>
@@ -337,6 +340,14 @@
         <item>Husband</item>
     </string-array>
 
+
+    <string-array name="mr_gender_entries">
+        <item>Select Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Transgender</item>
+    </string-array>
+
     <string-array name="mrs_relation_entries">
         <item>Self</item>
         <item>Daughter</item>
@@ -386,5 +397,19 @@
     <string name="please_select_book_confirm_patients">Select booked and confirmed appointments to cancel.</string>
     <string name="txt_for">for</string>
     <string name="waiting_for">Wating for</string>
+    <string name="dob">Dob</string>
+    <string name="blood_group">Blood Group</string>
+    <string name="pan_no">Pan Number</string>
+    <string name="aadhaar_no">Aadhaar Number</string>
+    <string name="pin_code">Pin Code</string>
+    <string name="registeredFor">Registered For</string>
+    <string name="plz_enter_your_correct_pan_num">Enter correct pan number.</string>
+    <string name="plz_enter_your_correct_aadhar_num">Enter correct aadhar number.</string>
+    <string name="plz_enter_valid_pin_code">Enter Valid Pin Code.</string>
+    <string name="web_url">Web Url</string>
+    <string name="speciality">Speciality</string>
+    <string name="education">Education</string>
+    <string name="about">About</string>
+    <string name="update_profile">Update Profile</string>
 
 </resources>

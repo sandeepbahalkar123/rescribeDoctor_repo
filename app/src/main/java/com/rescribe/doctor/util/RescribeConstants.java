@@ -98,6 +98,9 @@ public class RescribeConstants {
     public static final String TASK_CANCEL_APPOINTMENT_BULK= "46";
 
     public static final String TASK_APPOINTMENT_DELETE = "47";
+    public static final String TASK_VALIDATE_PAN_NO = "48";
+    public static final String TASK_VALIDATE_ADDHAR_NO = "49";
+    public static final String TASK_VALIDATE_REFERENCE_NO = "50";
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;

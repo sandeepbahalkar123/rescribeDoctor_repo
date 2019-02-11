@@ -21,13 +21,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -156,6 +156,9 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
     @BindView(R.id.aboutLayout)
     LinearLayout aboutLayout;
 
+    @BindView(R.id.Profile_Edit)
+    TextView Profile_Edit;
+
     private Context mContext;
     private BottomSheetDialog mBottomSheetDialog;
 
@@ -190,7 +193,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         int size = mArrayListDoctorLocationModel.size();
         titleTextView.setText(getString(R.string.profile));
         backImageView.setVisibility(View.GONE);
-
+        Profile_Edit.setVisibility(View.VISIBLE);
         String doctorNameToDisplay;
         if (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext).toLowerCase().contains("Dr."))
             doctorNameToDisplay = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, mContext);
@@ -267,9 +270,9 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                 // mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getArea() + ", " + mArrayListDoctorLocationModel.get(i).getCity());
                 mClinicname.add(mArrayListDoctorLocationModel.get(i).getClinicName() + ", " + mArrayListDoctorLocationModel.get(i).getAddress());
             }
-         //;   ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.clinic_spinner_layout, mClinicname);
+            //;   ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(mContext, R.layout.clinic_spinner_layout, mClinicname);
 
-            ClinicLocactionSpinnerAdapter clinicLocactionSpinnerAdapter = new ClinicLocactionSpinnerAdapter(ProfileActivity.this,R.layout.clinic_spinner_layout,R.layout.clinic_spinner_layout,mClinicname);
+            ClinicLocactionSpinnerAdapter clinicLocactionSpinnerAdapter = new ClinicLocactionSpinnerAdapter(ProfileActivity.this, R.layout.clinic_spinner_layout, R.layout.clinic_spinner_layout, mClinicname);
 
             clinicNameSpinner.setAdapter(clinicLocactionSpinnerAdapter);
 
@@ -361,7 +364,7 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
         super.onBottomMenuClick(bottomMenu);
     }
 
-    @OnClick({R.id.profileImage, R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices, R.id.viewAllClinicsOnMap})
+    @OnClick({R.id.profileImage, R.id.backImageView, R.id.titleTextView, R.id.userInfoTextView, R.id.readMoreDocServices, R.id.viewAllClinicsOnMap,R.id.Profile_Edit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -390,7 +393,11 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                 break;
             case R.id.profileImage:
                 //onclick of profile image imagepicker dialog called.
-                imageutils.imagepicker(1);
+              //  imageutils.imagepicker(1);
+                break;
+            case R.id.Profile_Edit:
+                        Intent intent = new Intent(ProfileActivity.this,UpdateProfileActivity.class);
+                        startActivity(intent);
                 break;
         }
     }

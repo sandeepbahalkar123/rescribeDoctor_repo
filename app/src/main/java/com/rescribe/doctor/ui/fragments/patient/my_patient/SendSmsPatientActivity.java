@@ -73,11 +73,11 @@ public class SendSmsPatientActivity extends AppCompatActivity implements SmsRece
     private TemplateList mTemplateList = new TemplateList();
     private AppointmentHelper mAppointmentHelper;
     private boolean isSendEnabled;
-    private int mlocationId;
-    private int mClinicId;
-    private ArrayList<ClinicListForSms> clinicListForSmsSend;
+    // private int mlocationId;
+    //private int mClinicId;
+    private ArrayList<ClinicListForSms> clinicListForSmsSend = new ArrayList<>();
     private SmsRecepientPatientListAdapter mSmsRecepientPatientListAdapter;
-    private String mClinicName = "";
+    //  private String mClinicName = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,13 +92,22 @@ public class SendSmsPatientActivity extends AppCompatActivity implements SmsRece
         intent = getIntent();
         titleTextView.setText(getString(R.string.send_sms));
         if (intent.getExtras() != null) {
-            patientLists = intent.getParcelableArrayListExtra(RescribeConstants.PATIENT_LIST);
+            clinicListForSmsSend = intent.getParcelableArrayListExtra(RescribeConstants.PATIENT_LIST);
             mTemplateList = intent.getParcelableExtra(RescribeConstants.TEMPLATE_OBJECT);
-            mlocationId = intent.getIntExtra(RescribeConstants.LOCATION_ID, 0);
-            mClinicId = intent.getIntExtra(RescribeConstants.CLINIC_ID, 0);
-            mClinicName = intent.getStringExtra(RescribeConstants.CLINIC_NAME);
+            //  mlocationId = intent.getIntExtra(RescribeConstants.LOCATION_ID, 0);
+            //  mClinicId = intent.getIntExtra(RescribeConstants.CLINIC_ID, 0);
+            //  mClinicName = intent.getStringExtra(RescribeConstants.CLINIC_NAME);
         }
         recyclerView.setVisibility(View.VISIBLE);
+
+        for (int i = 0; i < clinicListForSmsSend.size(); i++) {
+            ClinicListForSms listForSms = clinicListForSmsSend.get(i);
+            ArrayList<PatientInfoList> patientInfoLists = listForSms.getPatientInfoList();
+            for (PatientInfoList infoList : patientInfoLists) {
+                patientLists.add(infoList);
+            }
+        }
+
 
         mSmsRecepientPatientListAdapter = new SmsRecepientPatientListAdapter(mContext, patientLists, this);
 
@@ -113,9 +122,9 @@ public class SendSmsPatientActivity extends AppCompatActivity implements SmsRece
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 10);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(1, 10);
         recyclerView.setAdapter(mSmsRecepientPatientListAdapter);
-        if(mTemplateList==null) {
+        if (mTemplateList == null) {
             editTextSmsContent.setHint(getString(R.string.enter_sms_text_here));
-        }else{
+        } else {
             editTextSmsContent.setText(mTemplateList.getTemplateContent());
 
         }
@@ -160,22 +169,29 @@ public class SendSmsPatientActivity extends AppCompatActivity implements SmsRece
             case R.id.sendSmsButton:
                 if (!editTextSmsContent.getText().toString().equals("") && mSmsRecepientPatientListAdapter.getSmsReciptentList().size() > 0) {
                     setSendEnabled(false);
-                    if (!patientLists.isEmpty()) {
-                        clinicListForSmsSend = new ArrayList<>();
-                        ClinicListForSms clinicListForSms = new ClinicListForSms();
-                        clinicListForSms.setPatientInfoList(patientLists);
-                        clinicListForSms.setLocationId(null);
-                        if (editTextSmsContent.getText().toString().contains("hospitalName")) {
-                            String originalMsgContent = editTextSmsContent.getText().toString();
-                            String clinicName = mClinicName;
-                            String messageContent = originalMsgContent.replaceAll("hospitalName", clinicName);
-                            clinicListForSms.setTemplateContent(messageContent);
-                        } else {
-                            clinicListForSms.setTemplateContent(editTextSmsContent.getText().toString());
+                    if (!clinicListForSmsSend.isEmpty()) {
+                        for (ClinicListForSms sms : clinicListForSmsSend) {
+
+                            sms.setLocationId(null);
+                            if (editTextSmsContent.getText().toString().contains("hospitalName")) {
+                                String originalMsgContent = editTextSmsContent.getText().toString();
+                                String clinicName = sms.getClinicName();
+                                String messageContent = originalMsgContent.replaceAll("hospitalName", clinicName);
+                                sms.setTemplateContent(messageContent);
+                            } else {
+                                sms.setTemplateContent(editTextSmsContent.getText().toString());
+                            }
+                            sms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
+
                         }
-                        clinicListForSms.setDocId(Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext)));
-                        clinicListForSms.setClinicId(mClinicId);
-                        clinicListForSmsSend.add(clinicListForSms);
+
+
+//                        clinicListForSmsSend = new ArrayList<>();
+//                        ClinicListForSms clinicListForSms = new ClinicListForSms();
+//                        clinicListForSms.setPatientInfoList(patientLists);
+//
+//                        clinicListForSms.setClinicId(mClinicId);
+//                        clinicListForSmsSend.add(clinicListForSms);
                     }
                     mAppointmentHelper = new AppointmentHelper(mContext, this);
                     mAppointmentHelper.doRequestSendSMS(clinicListForSmsSend);

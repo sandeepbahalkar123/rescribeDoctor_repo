@@ -11,6 +11,7 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 
 public class PatientList implements Parcelable, Comparable<PatientList>, CustomResponse {
 
+
     @SerializedName("salutation")
     @Expose
     private Integer salutation;

@@ -48,6 +48,7 @@ import com.rescribe.doctor.model.my_appointments.cancel_appointment_bulk.CancelA
 import com.rescribe.doctor.model.my_patient_filter.LocationsModel;
 import com.rescribe.doctor.model.new_patient.NewPatientBaseModel;
 import com.rescribe.doctor.model.new_patient.ReferenceBaseModel;
+import com.rescribe.doctor.model.new_patient.ResponsePanAadharExist;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.area_details.AreaDetailsBaseModel;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.city_details.StateAndCityBaseModel;
 import com.rescribe.doctor.model.patient.add_new_patient.address_other_details.reference_details.DoctorListBaseModel;
@@ -630,6 +631,18 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_APPOINTMENT_DELETE: //This is for Cancel Appointment In Bulk
                         CancelAppointmentBulkResponseBaseModel deleteAppointmentResponseBaseModel = new Gson().fromJson(data, CancelAppointmentBulkResponseBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, deleteAppointmentResponseBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_VALIDATE_PAN_NO:
+                        ResponsePanAadharExist responsePan = new Gson().fromJson(data, ResponsePanAadharExist.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, responsePan, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_VALIDATE_ADDHAR_NO:
+                        ResponsePanAadharExist responseAadharExist = new Gson().fromJson(data, ResponsePanAadharExist.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, responseAadharExist, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_VALIDATE_REFERENCE_NO:
+                        ResponsePanAadharExist responseReferenceExist = new Gson().fromJson(data, ResponsePanAadharExist.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, responseReferenceExist, mOldDataTag);
                         break;
                     default:
 

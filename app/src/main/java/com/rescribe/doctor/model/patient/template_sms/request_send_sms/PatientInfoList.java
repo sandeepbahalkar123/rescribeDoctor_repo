@@ -32,8 +32,8 @@ public class PatientInfoList implements Parcelable {
     @Expose
     private String outstandingAmt;
 
-    public final static Parcelable.Creator<PatientInfoList> CREATOR = new Creator<PatientInfoList>() {
 
+    public final static Parcelable.Creator<PatientInfoList> CREATOR = new Creator<PatientInfoList>() {
 
         @SuppressWarnings({
                 "unchecked"
@@ -56,6 +56,7 @@ public class PatientInfoList implements Parcelable {
         this.patientGender = ((String) in.readValue((String.class.getClassLoader())));
         this.patBloodGroup = ((String) in.readValue((String.class.getClassLoader())));
         this.outstandingAmt = ((String) in.readValue((String.class.getClassLoader())));
+
     }
 
     public PatientInfoList() {
@@ -117,6 +118,8 @@ public class PatientInfoList implements Parcelable {
         this.outstandingAmt = outstandingAmt;
     }
 
+
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(hospitalPatId);
         dest.writeValue(patientId);
@@ -125,7 +128,6 @@ public class PatientInfoList implements Parcelable {
         dest.writeValue(patientGender);
         dest.writeValue(patBloodGroup);
         dest.writeValue(outstandingAmt);
-
     }
 
 

@@ -8,85 +8,73 @@ import com.rescribe.doctor.model.patient.doctor_patients.PatientReferenceDetails
 
 public class PatientDetail implements CustomResponse {
 
-    @SerializedName("salutation")
-    @Expose
-    private int salutation;
-    @SerializedName("mobilePatientId")
-    @Expose
-    private int mobilePatientId;
-    @SerializedName("patientFname")
-    @Expose
-    private String patientFname;
-    @SerializedName("patientMname")
-    @Expose
-    private String patientMname;
-    @SerializedName("patientLname")
-    @Expose
-    private String patientLname;
-    @SerializedName("clinicId")
-    @Expose
-    private int clinicId;
     @SerializedName("patientAge")
     @Expose
     private String patientAge;
-    @SerializedName("patientDob")
+    @SerializedName("clinicId")
     @Expose
-    private String patientDob;
+    private int clinicId;
     @SerializedName("patientPhone")
     @Expose
     private String patientPhone;
+    @SerializedName("patientLname")
+    @Expose
+    private String patientLname;
+    @SerializedName("patientFname")
+    @Expose
+    private String patientFname;
+    @SerializedName("salutation")
+    @Expose
+    private int salutation;
     @SerializedName("patientGender")
     @Expose
     private String patientGender;
+    @SerializedName("patientDob")
+    @Expose
+    private String patientDob;
+    @SerializedName("patientMname")
+    @Expose
+    private String patientMname;
     @SerializedName("referenceId")
     @Expose
-    private String offlineReferenceID;
-
+    private String referenceId;
+    @SerializedName("mobilePatientId")
+    @Expose
+    private int mobilePatientId;
     @SerializedName("relation")
     @Expose
     private String relation;
-
-    //-------fields for adding patient in offline mode--------
-    @SerializedName("patientAddressDetails")
+    @SerializedName("panNumber")
     @Expose
-    private PatientAddressDetails addressDetails;
-
+    private String panNumber;
+    @SerializedName("adharNumber")
+    @Expose
+    private String adharNumber;
+    @SerializedName("bloodGroup")
+    @Expose
+    private int bloodGroup;
+    @SerializedName("patientAltNumber")
+    @Expose
+    private String patientAltNumber;
+    @SerializedName("registerFor")
+    @Expose
+    private String registerFor;
+    @SerializedName("patientEmailId")
+    @Expose
+    private String patientEmailId;
     @SerializedName("referedDetails")
     @Expose
     private PatientReferenceDetails referedDetails;
-    //---------------
+    @SerializedName("patientAddressDetails")
+    @Expose
+    private PatientAddressDetails patientAddressDetails;
 
-
-    public int getMobilePatientId() {
-        return mobilePatientId;
+    public String getPatientAge() {
+        return patientAge;
     }
 
-    public void setMobilePatientId(int mobilePatientId) {
-        this.mobilePatientId = mobilePatientId;
-    }
-
-    public String getPatientFname() {
-        return patientFname;
-    }
-
-    public void setPatientFname(String patientFname) {
-        this.patientFname = patientFname;
-    }
-
-    public String getPatientMname() {
-        return patientMname;
-    }
-
-    public void setPatientMname(String patientMname) {
-        this.patientMname = patientMname;
-    }
-
-    public String getPatientLname() {
-        return patientLname;
-    }
-
-    public void setPatientLname(String patientLname) {
-        this.patientLname = patientLname;
+    public void setPatientAge(String patientAge) {
+        this.patientAge = patientAge;
     }
 
     public int getClinicId() {
@@ -97,22 +85,6 @@ public class PatientDetail implements CustomResponse {
         this.clinicId = clinicId;
     }
 
-    public String getPatientAge() {
-        return patientAge;
-    }
-
-    public void setPatientAge(String patientAge) {
-        this.patientAge = patientAge;
-    }
-
-    public String getPatientDob() {
-        return patientDob;
-    }
-
-    public void setPatientDob(String patientDob) {
-        this.patientDob = patientDob;
-    }
-
     public String getPatientPhone() {
         return patientPhone;
     }
@@ -121,28 +93,20 @@ public class PatientDetail implements CustomResponse {
         this.patientPhone = patientPhone;
     }
 
-    public String getPatientGender() {
-        return patientGender;
+    public String getPatientLname() {
+        return patientLname;
     }
 
-    public void setPatientGender(String patientGender) {
-        this.patientGender = patientGender;
+    public void setPatientLname(String patientLname) {
+        this.patientLname = patientLname;
     }
 
-    public String getOfflineReferenceID() {
-        return offlineReferenceID;
+    public String getPatientFname() {
+        return patientFname;
     }
 
-    public void setOfflineReferenceID(String offlineReferenceID) {
-        this.offlineReferenceID = offlineReferenceID;
-    }
-
-    public PatientReferenceDetails getReferedDetails() {
-        return referedDetails;
-    }
-
-    public void setReferedDetails(PatientReferenceDetails referedDetails) {
-        this.referedDetails = referedDetails;
+    public void setPatientFname(String patientFname) {
+        this.patientFname = patientFname;
     }
 
     public int getSalutation() {
@@ -153,12 +117,44 @@ public class PatientDetail implements CustomResponse {
         this.salutation = salutation;
     }
 
-    public PatientAddressDetails getAddressDetails() {
-        return addressDetails;
+    public String getPatientGender() {
+        return patientGender;
     }
 
-    public void setAddressDetails(PatientAddressDetails addressDetails) {
-        this.addressDetails = addressDetails;
+    public void setPatientGender(String patientGender) {
+        this.patientGender = patientGender;
+    }
+
+    public String getPatientDob() {
+        return patientDob;
+    }
+
+    public void setPatientDob(String patientDob) {
+        this.patientDob = patientDob;
+    }
+
+    public String getPatientMname() {
+        return patientMname;
+    }
+
+    public void setPatientMname(String patientMname) {
+        this.patientMname = patientMname;
+    }
+
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
+    public int getMobilePatientId() {
+        return mobilePatientId;
+    }
+
+    public void setMobilePatientId(int mobilePatientId) {
+        this.mobilePatientId = mobilePatientId;
     }
 
     public String getRelation() {
@@ -168,4 +164,69 @@ public class PatientDetail implements CustomResponse {
     public void setRelation(String relation) {
         this.relation = relation;
     }
+
+    public String getPanNumber() {
+        return panNumber;
+    }
+
+    public void setPanNumber(String panNumber) {
+        this.panNumber = panNumber;
+    }
+
+    public String getAdharNumber() {
+        return adharNumber;
+    }
+
+    public void setAdharNumber(String adharNumber) {
+        this.adharNumber = adharNumber;
+    }
+
+    public int getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(int bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
+    public String getPatientAltNumber() {
+        return patientAltNumber;
+    }
+
+    public void setPatientAltNumber(String patientAltNumber) {
+        this.patientAltNumber = patientAltNumber;
+    }
+
+    public String getRegisterFor() {
+        return registerFor;
+    }
+
+    public void setRegisterFor(String registerFor) {
+        this.registerFor = registerFor;
+    }
+
+    public String getPatientEmailId() {
+        return patientEmailId;
+    }
+
+    public void setPatientEmailId(String patientEmailId) {
+        this.patientEmailId = patientEmailId;
+    }
+
+    public PatientReferenceDetails getReferedDetails() {
+        return referedDetails;
+    }
+
+    public void setReferedDetails(PatientReferenceDetails referedDetails) {
+        this.referedDetails = referedDetails;
+    }
+
+    public PatientAddressDetails getPatientAddressDetails() {
+        return patientAddressDetails;
+    }
+
+    public void setPatientAddressDetails(PatientAddressDetails patientAddressDetails) {
+        this.patientAddressDetails = patientAddressDetails;
+    }
+
 }

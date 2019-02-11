@@ -88,14 +88,14 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
         //-------------
         boolean aBoolean = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, mContext);
         mAddPatientRadioSwitch.setCheckedNoEvent(aBoolean);
-        if (aBoolean) {
-            //the values are inverted bcaz logic implemented based on clicked ;)
-            addressDetailSwitch.setCheckedNoEvent(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_ADDRESS_DETAILS, mContext));
-            referenceDetailSwitch.setCheckedNoEvent(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, mContext));
-            mShowOtherSettingForOfflinePatient.setVisibility(View.VISIBLE);
-        } else
-            mShowOtherSettingForOfflinePatient.setVisibility(View.GONE);
-        //-------------
+//        if (aBoolean) {
+//            //the values are inverted bcaz logic implemented based on clicked ;)
+//          //  addressDetailSwitch.setCheckedNoEvent(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_ADDRESS_DETAILS, mContext));
+//         //   referenceDetailSwitch.setCheckedNoEvent(RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, mContext));
+//           // mShowOtherSettingForOfflinePatient.setVisibility(View.VISIBLE);
+//        } else
+//            mShowOtherSettingForOfflinePatient.setVisibility(View.GONE);
+//        //-------------
 
         mAddPatientRadioSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -109,19 +109,19 @@ public class SettingsActivity extends BottomMenuActivity implements BottomMenuAd
             }
         });
 
-        addressDetailSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_ADDRESS_DETAILS, isChecked, mContext);
-            }
-        });
-
-        referenceDetailSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, isChecked, mContext);
-            }
-        });
+//        addressDetailSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_ADDRESS_DETAILS, isChecked, mContext);
+//            }
+//        });
+//
+//        referenceDetailSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                RescribePreferencesManager.putBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS_REFERENCES_DETAILS, isChecked, mContext);
+//            }
+//        });
     }
 
 
