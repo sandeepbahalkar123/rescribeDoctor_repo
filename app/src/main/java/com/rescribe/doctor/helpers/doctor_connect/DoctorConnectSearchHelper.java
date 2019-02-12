@@ -3,13 +3,16 @@ package com.rescribe.doctor.helpers.doctor_connect;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.Request;
 import com.google.gson.Gson;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
 import com.rescribe.doctor.network.ConnectRequest;
+import com.rescribe.doctor.network.ConnectionFactory;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.io.IOException;
@@ -63,6 +66,15 @@ public class DoctorConnectSearchHelper implements ConnectionListener {
     public void onTimeout(ConnectRequest request) {
 
     }
+
+
+    public void getDoctorSpecialityList() {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST, Request.Method.GET, true);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.GET_DOCTOR_SPECIALIST_LIST);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST);
+    }
+
 
 }
 

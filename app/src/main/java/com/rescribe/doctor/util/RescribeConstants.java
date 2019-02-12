@@ -101,6 +101,7 @@ public class RescribeConstants {
     public static final String TASK_VALIDATE_PAN_NO = "48";
     public static final String TASK_VALIDATE_ADDHAR_NO = "49";
     public static final String TASK_VALIDATE_REFERENCE_NO = "50";
+    public static final String TASK_DOCTOR_SPECIALIST_LIST = "51";
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;

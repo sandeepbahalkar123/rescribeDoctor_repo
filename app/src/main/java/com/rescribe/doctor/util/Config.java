@@ -40,8 +40,7 @@ public class Config {
     public static final String GET_OPD_NOTE= "doctor/api/appointment/getOPDNotes?"; // docId=2860&patientId=624914&pageNo=0&paginationSize=1
     public static final String DELETE_APPOINTMENT = "doctor/api/appointment/deleteAppointment";
     public static final String VALIDATE_PAN_AADHAR_CARD = "doctor/api/patient/validateField?fieldName=";
-
-
+    public static final String GET_DOCTOR_SPECIALIST_LIST = "api/patient/getDoctorSpeciality";
     //---------------LOCAL SERVER URL START-----------------------
     /*public static String BASE_URL = "http://172.16.100.219:3003/";
     public static final String FORGOT_PASSWORD_URL = "http://172.16.100.219:3003/app.html#/access/forgotPassword";

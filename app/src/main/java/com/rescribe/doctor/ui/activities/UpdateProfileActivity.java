@@ -13,12 +13,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +33,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectSearchHelper;
+import com.rescribe.doctor.helpers.profile.ProfileHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
 import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.model.profile_photo.ProfilePhotoResponse;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -49,7 +52,9 @@ import com.rescribe.doctor.util.RescribeConstants;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,14 +73,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
     EditText editName;
     @BindView(R.id.layoutName)
     LinearLayout layoutName;
-    @BindView(R.id.genderMale)
-    RadioButton genderMale;
-    @BindView(R.id.genderFemale)
-    RadioButton genderFemale;
-    @BindView(R.id.genderOther)
-    RadioButton genderOther;
-    @BindView(R.id.genderRadioGroup)
-    RadioGroup genderRadioGroup;
     @BindView(R.id.layoutGender)
     LinearLayout layoutGender;
     @BindView(R.id.mobNo)
@@ -111,6 +108,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
     LinearLayout layoutExprince;
     @BindView(R.id.editSpeciality)
     EditText editSpeciality;
+    @BindView(R.id.genderSpinner)
+    Spinner genderSpinner;
     private Context mContext;
 
 
@@ -120,7 +119,9 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
     private Device device;
     private String docId;
     CustomProgressDialog mCustomProgressDialog;
-
+    private String mselectedGender;
+    ProfileHelper profileHelper;
+    DoctorConnectSearchHelper doctorConnectSearchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,9 +134,11 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
 
     private void initialize() {
         mContext = UpdateProfileActivity.this;
+        profileHelper = new ProfileHelper(this, this);
+        doctorConnectSearchHelper = new DoctorConnectSearchHelper(this, this);
         mWebViewTitle.setText(getString(R.string.update_profile));
         ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
-
+        doctorConnectSearchHelper.getDoctorSpecialityList();
         imageutils = new ImageUtils(this);
         device = Device.getInstance(UpdateProfileActivity.this);
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
@@ -154,7 +157,18 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
         editExprince.setText(docDetail.getDocExperience());
         editAbout.setText(docDetail.getDocInfo());
         editWebUrl.setText("");
-        editSpeciality.setText(docDetail.getDocDegree());
+        editSpeciality.setText(docDetail.getDocSpaciality());
+        editWebUrl.setText(docDetail.getWebsite());
+        mobNo.setText(docDetail.getDocPhone());
+        mselectedGender = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_GENDER, this);
+        ;
+        if (mselectedGender.equalsIgnoreCase("male")) {
+            genderSpinner.setSelection(1);
+        } else if (mselectedGender.equalsIgnoreCase("female")) {
+            genderSpinner.setSelection(2);
+        } else if (mselectedGender.equalsIgnoreCase("Transgender")) {
+            genderSpinner.setSelection(3);
+        }
 
         int color2 = mColorGenerator.getColor(mDoctorName);
         TextDrawable drawable = TextDrawable.builder()
@@ -176,10 +190,32 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
                 .into(profileImage);
 
 
+        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                List<String> listgender = Arrays.asList(getResources().getStringArray(R.array.mr_gender_entries));
+                Log.e("listgender", listgender.get(position));
+
+                if (position != 0) {
+                    mselectedGender = listgender.get(position);
+                } else {
+
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
     }
 
 
-    @OnClick({R.id.backButton, R.id.btnAddPatientSubmit,R.id.profileImage})
+    @OnClick({R.id.backButton, R.id.btnAddPatientSubmit, R.id.profileImage})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backButton:
@@ -196,6 +232,11 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
 
     @Override
     public void onSuccess(String mOldDataTag, CustomResponse customResponse) {
+        switch (mOldDataTag) {
+            case RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST:
+                DoctorConnectSearchBaseModel doctorConnectSearchBaseModel = (DoctorConnectSearchBaseModel) customResponse;
+                break;
+        }
 
     }
 
@@ -281,7 +322,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -305,7 +345,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         imageutils.request_permission_result(requestCode, permissions, grantResults);
     }
-
 
 
 }

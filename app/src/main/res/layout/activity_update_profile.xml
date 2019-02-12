@@ -153,10 +153,11 @@
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/sp14" />
                             <Spinner
-                                android:id="@+id/bloodGroupSpinner"
+                                android:id="@+id/genderSpinner"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:entries="@array/mr_gender_entries"/>
+                                android:entries="@array/mr_gender_entries"
+                                android:layout_marginBottom="@dimen/dp10"/>
 
                         </LinearLayout>
 

@@ -9,11 +9,15 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class DocDetail implements Parcelable {
+public class DocDetail implements Parcelable
+{
 
     @SerializedName("docId")
     @Expose
     private int docId;
+    @SerializedName("premium")
+    @Expose
+    private boolean premium;
     @SerializedName("docName")
     @Expose
     private String docName;
@@ -35,19 +39,21 @@ public class DocDetail implements Parcelable {
     @SerializedName("docExperience")
     @Expose
     private String docExperience;
+    @SerializedName("docGender")
+    @Expose
+    private String docGender;
+    @SerializedName("docPhone")
+    @Expose
+    private String docPhone;
+    @SerializedName("website")
+    @Expose
+    private String website;
     @SerializedName("docInfo")
     @Expose
     private String docInfo;
-    @SerializedName("cityId")
-    @Expose
-    private Integer cityId;
     @SerializedName("clinicList")
     @Expose
-    private ArrayList<ClinicList> clinicList = new ArrayList<ClinicList>();
-    @SerializedName("premium")
-    @Expose
-    private boolean premium;
-
+    private ArrayList<ClinicList> clinicList = null;
     public final static Parcelable.Creator<DocDetail> CREATOR = new Creator<DocDetail>() {
 
 
@@ -62,10 +68,12 @@ public class DocDetail implements Parcelable {
             return (new DocDetail[size]);
         }
 
-    };
+    }
+            ;
 
     protected DocDetail(Parcel in) {
         this.docId = ((int) in.readValue((int.class.getClassLoader())));
+        this.premium = ((boolean) in.readValue((boolean.class.getClassLoader())));
         this.docName = ((String) in.readValue((String.class.getClassLoader())));
         this.docEmail = ((String) in.readValue((String.class.getClassLoader())));
         this.docSpaciality = ((String) in.readValue((String.class.getClassLoader())));
@@ -73,29 +81,14 @@ public class DocDetail implements Parcelable {
         this.docImgUrl = ((String) in.readValue((String.class.getClassLoader())));
         this.docDegree = ((String) in.readValue((String.class.getClassLoader())));
         this.docExperience = ((String) in.readValue((String.class.getClassLoader())));
+        this.docGender = ((String) in.readValue((String.class.getClassLoader())));
+        this.docPhone = ((String) in.readValue((String.class.getClassLoader())));
+        this.website = ((String) in.readValue((String.class.getClassLoader())));
         this.docInfo = ((String) in.readValue((String.class.getClassLoader())));
-        this.premium = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.cityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         in.readList(this.clinicList, (ClinicList.class.getClassLoader()));
     }
 
     public DocDetail() {
-    }
-
-    public Integer getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(Integer cityId) {
-        this.cityId = cityId;
-    }
-
-    public boolean isPremium() {
-        return premium;
-    }
-
-    public void setPremium(boolean premium) {
-        this.premium = premium;
     }
 
     public int getDocId() {
@@ -104,6 +97,14 @@ public class DocDetail implements Parcelable {
 
     public void setDocId(int docId) {
         this.docId = docId;
+    }
+
+    public boolean isPremium() {
+        return premium;
+    }
+
+    public void setPremium(boolean premium) {
+        this.premium = premium;
     }
 
     public String getDocName() {
@@ -162,6 +163,30 @@ public class DocDetail implements Parcelable {
         this.docExperience = docExperience;
     }
 
+    public String getDocGender() {
+        return docGender;
+    }
+
+    public void setDocGender(String docGender) {
+        this.docGender = docGender;
+    }
+
+    public String getDocPhone() {
+        return docPhone;
+    }
+
+    public void setDocPhone(String docPhone) {
+        this.docPhone = docPhone;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
     public String getDocInfo() {
         return docInfo;
     }
@@ -169,7 +194,6 @@ public class DocDetail implements Parcelable {
     public void setDocInfo(String docInfo) {
         this.docInfo = docInfo;
     }
-
 
     public ArrayList<ClinicList> getClinicList() {
         return clinicList;
@@ -181,6 +205,7 @@ public class DocDetail implements Parcelable {
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(docId);
+        dest.writeValue(premium);
         dest.writeValue(docName);
         dest.writeValue(docEmail);
         dest.writeValue(docSpaciality);
@@ -188,8 +213,10 @@ public class DocDetail implements Parcelable {
         dest.writeValue(docImgUrl);
         dest.writeValue(docDegree);
         dest.writeValue(docExperience);
+        dest.writeValue(docGender);
+        dest.writeValue(docPhone);
+        dest.writeValue(website);
         dest.writeValue(docInfo);
-        dest.writeValue(cityId);
         dest.writeList(clinicList);
     }
 
@@ -208,4 +235,5 @@ public class DocDetail implements Parcelable {
 
         return states;
     }
+
 }
