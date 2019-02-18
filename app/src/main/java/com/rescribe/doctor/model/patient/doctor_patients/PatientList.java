@@ -11,112 +11,121 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 
 public class PatientList implements Parcelable, Comparable<PatientList>, CustomResponse {
 
-
-    @SerializedName("salutation")
+    @SerializedName("patientId")
     @Expose
-    private Integer salutation;
+    private int patientId;
+    @SerializedName("relation")
+    @Expose
+    private String relation;
     @SerializedName("patientName")
     @Expose
     private String patientName;
-    @SerializedName("age")
+    @SerializedName("patientFName")
     @Expose
-    private String age;
-    @SerializedName("patientDob")
+    private String patientFName;
+    @SerializedName("patientMName")
     @Expose
-    private String dateOfBirth;
+    private String patientMName;
+    @SerializedName("patientLName")
+    @Expose
+    private String patientLName;
     @SerializedName("gender")
     @Expose
     private String gender;
-    @SerializedName("outstandingAmount")
+    @SerializedName("bloodGroup")
     @Expose
-    private String outStandingAmount;
-    @SerializedName("patientId")
+    private String bloodGroup;
+    @SerializedName("salutation")
     @Expose
-    private Integer patientId;
-    @SerializedName("patientPhone")
-    @Expose
-    private String patientPhone;
-    @SerializedName("patientImageUrl")
-    @Expose
-    private String patientImageUrl;
+    private int salutation;
     @SerializedName("patientEmail")
     @Expose
     private String patientEmail;
-    @SerializedName("clinicId")
-    @Expose
-    private int clinicId;
     @SerializedName("clinicName")
     @Expose
     private String clinicName;
-
+    @SerializedName("referenceId")
+    @Expose
+    private String referenceId;
+    @SerializedName("hospitalPatId")
+    @Expose
+    private int hospitalPatId;
     @SerializedName("hospitalName")
     @Expose
     private String hospitalName;
+    @SerializedName("clinicId")
+    @Expose
+    private int clinicId;
+    @SerializedName("patientPhone")
+    @Expose
+    private String patientPhone;
+    @SerializedName("patientArea")
+    @Expose
+    private String patientArea;
+    @SerializedName("patientCity")
+    @Expose
+    private String patientCity;
+    @SerializedName("patientCityId")
+    @Expose
+    private int patientCityId;
+    @SerializedName("age")
+    @Expose
+    private String age;
+    @SerializedName("onlineStatus")
+    @Expose
+    private String onlineStatus;
+    @SerializedName("patientDob")
+    @Expose
+    private String patientDob;
+    @SerializedName("outstandingAmount")
+    @Expose
+    private String outstandingAmount;
+    @SerializedName("creationDate")
+    @Expose
+    private String creationDate;
+    @SerializedName("isDead")
+    @Expose
+    private boolean isDead;
+    @SerializedName("patientImageUrl")
+    @Expose
+    private String patientImageUrl;
+    @SerializedName("panNumber")
+    @Expose
+    private String panNumber;
+    @SerializedName("aadharNumber")
+    @Expose
+    private String aadharNumber;
+    @SerializedName("patAltPhoneNumber")
+    @Expose
+    private String patAltPhoneNumber;
+    @SerializedName("registerFor")
+    @Expose
+    private String registerFor;
+    @SerializedName("referedDetails")
+    @Expose
+    private PatientReferenceDetails referedDetails;
+
+
+    @SerializedName("patientAddressDetails")
+    @Expose
+    private PatientAddressDetails patientAddressDetails;
 
     @SerializedName("patInfoFlag")
     @Expose
     private String patInfoFlag = "";
 
-    @SerializedName("hospitalPatId")
-    @Expose
-    private Integer hospitalPatId;
-
-    @SerializedName("patientCityId")
-    @Expose
-    private int patientCityId;
-
-    @SerializedName("patientCity")
-    @Expose
-    private String patientCity = "";
-
-    @SerializedName("patientArea")
-    @Expose
-    private String patientArea = "";
     @SerializedName("aptId")
     @Expose
     private Integer aptId;
-
-    @SerializedName("creationDate")
-    @Expose
-    private String creationDate;
-    @SerializedName("referenceId")
-    @Expose
-    private String referenceID;
 
     private String spannableString;
     private boolean selected;
     private boolean isAddedMiddleName;
     //--Added for offline adding patient.
 
-    //-------fields for adding patient in offline mode--------
+    private boolean isOfflinePatientSynced = true;
 
-    @SerializedName("referedDetails")
-    @Expose
-    private PatientReferenceDetails referedDetails;
-
-    @SerializedName("patientAddressDetails")
-    @Expose
-    private PatientAddressDetails addressDetails;
-    @SerializedName("relation")
-    @Expose
-    private String relation;
-
-
-    @SerializedName("isDead")
-    @Expose
-    private boolean isDead;
-
-    @SerializedName("bloodGroup")
-    @Expose
-    private String bloodGroup;
-
-
-
-    //---------------
-
-    private boolean isOfflinePatientSynced = true; //considered always sync with server.
-
-    public final static Creator<PatientList> CREATOR = new Creator<PatientList>() {
+    public final static Parcelable.Creator<PatientList> CREATOR = new Creator<PatientList>() {
 
 
         @SuppressWarnings({
@@ -130,43 +139,63 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
             return (new PatientList[size]);
         }
 
-    };
+    }
+            ;
 
     protected PatientList(Parcel in) {
-        this.salutation = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.patientName = ((String) in.readValue((String.class.getClassLoader())));
-        this.age = ((String) in.readValue((String.class.getClassLoader())));
-        this.dateOfBirth = ((String) in.readValue((String.class.getClassLoader())));
-        this.gender = ((String) in.readValue((String.class.getClassLoader())));
-        this.outStandingAmount = ((String) in.readValue((String.class.getClassLoader())));
-        this.patientId = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.patientPhone = ((String) in.readValue((String.class.getClassLoader())));
-        this.patientImageUrl = ((String) in.readValue((String.class.getClassLoader())));
-        this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
-        this.clinicId = ((int) in.readValue((int.class.getClassLoader())));
-        this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
-        this.hospitalName = ((String) in.readValue((String.class.getClassLoader())));
-        this.patInfoFlag = ((String) in.readValue((String.class.getClassLoader())));
-        this.hospitalPatId = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.patientCityId = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
-        this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.creationDate = ((String) in.readValue((String.class.getClassLoader())));
-        this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientId = ((int) in.readValue((int.class.getClassLoader())));
         this.relation = ((String) in.readValue((String.class.getClassLoader())));
-        this.isDead = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.patientName = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientFName = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientMName = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientLName = ((String) in.readValue((String.class.getClassLoader())));
+        this.gender = ((String) in.readValue((String.class.getClassLoader())));
         this.bloodGroup = ((String) in.readValue((String.class.getClassLoader())));
+        this.salutation = ((int) in.readValue((int.class.getClassLoader())));
+        this.patientEmail = ((String) in.readValue((String.class.getClassLoader())));
+        this.clinicName = ((String) in.readValue((String.class.getClassLoader())));
+        this.referenceId = ((String) in.readValue((String.class.getClassLoader())));
+        this.hospitalPatId = ((int) in.readValue((int.class.getClassLoader())));
+        this.hospitalName = ((String) in.readValue((String.class.getClassLoader())));
+        this.clinicId = ((int) in.readValue((int.class.getClassLoader())));
+        this.patientPhone = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientArea = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientCity = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientCityId = ((int) in.readValue((int.class.getClassLoader())));
+        this.age = ((String) in.readValue((String.class.getClassLoader())));
+        this.onlineStatus = ((String) in.readValue((String.class.getClassLoader())));
+        this.patientDob = ((String) in.readValue((String.class.getClassLoader())));
+        this.outstandingAmount = ((String) in.readValue((String.class.getClassLoader())));
+        this.creationDate = ((String) in.readValue((String.class.getClassLoader())));
+        this.isDead = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.patientImageUrl = ((String) in.readValue((String.class.getClassLoader())));
+        this.panNumber = ((String) in.readValue((String.class.getClassLoader())));
+        this.aadharNumber = ((String) in.readValue((String.class.getClassLoader())));
+        this.patAltPhoneNumber = ((String) in.readValue((String.class.getClassLoader())));
+        this.registerFor = ((String) in.readValue((String.class.getClassLoader())));
+        this.referedDetails = ((PatientReferenceDetails) in.readValue((PatientReferenceDetails.class.getClassLoader())));
+        this.patientAddressDetails = ((PatientAddressDetails) in.readValue((PatientAddressDetails.class.getClassLoader())));
+        this.patInfoFlag = ((String) in.readValue((String.class.getClassLoader())));
+        this.aptId = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public PatientList() {
     }
 
-    public Integer getSalutation() {
-        return salutation;
+    public int getPatientId() {
+        return patientId;
     }
 
-    public void setSalutation(Integer salutation) {
-        this.salutation = salutation;
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
+    }
+
+    public String getRelation() {
+        return relation;
+    }
+
+    public void setRelation(String relation) {
+        this.relation = relation;
     }
 
     public String getPatientName() {
@@ -177,20 +206,28 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientName = patientName;
     }
 
-    public String getAge() {
-        return age;
+    public String getPatientFName() {
+        return patientFName;
     }
 
-    public void setAge(String age) {
-        this.age = age;
+    public void setPatientFName(String patientFName) {
+        this.patientFName = patientFName;
     }
 
-    public String getDateOfBirth() {
-        return dateOfBirth;
+    public String getPatientMName() {
+        return patientMName;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setPatientMName(String patientMName) {
+        this.patientMName = patientMName;
+    }
+
+    public String getPatientLName() {
+        return patientLName;
+    }
+
+    public void setPatientLName(String patientLName) {
+        this.patientLName = patientLName;
     }
 
     public String getGender() {
@@ -201,36 +238,20 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.gender = gender;
     }
 
-    public String getOutStandingAmount() {
-        return outStandingAmount;
+    public String getBloodGroup() {
+        return bloodGroup;
     }
 
-    public void setOutStandingAmount(String outStandingAmount) {
-        this.outStandingAmount = outStandingAmount;
+    public void setBloodGroup(String bloodGroup) {
+        this.bloodGroup = bloodGroup;
     }
 
-    public Integer getPatientId() {
-        return patientId;
+    public int getSalutation() {
+        return salutation;
     }
 
-    public void setPatientId(Integer patientId) {
-        this.patientId = patientId;
-    }
-
-    public String getPatientPhone() {
-        return patientPhone;
-    }
-
-    public void setPatientPhone(String patientPhone) {
-        this.patientPhone = patientPhone;
-    }
-
-    public String getPatientImageUrl() {
-        return patientImageUrl;
-    }
-
-    public void setPatientImageUrl(String patientImageUrl) {
-        this.patientImageUrl = patientImageUrl;
+    public void setSalutation(int salutation) {
+        this.salutation = salutation;
     }
 
     public String getPatientEmail() {
@@ -241,44 +262,28 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientEmail = patientEmail;
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
-    public String getSpannableString() {
-        return spannableString;
-    }
-
-    public void setSpannableString(String spannableString) {
-        this.spannableString = spannableString;
-    }
-
-    public Integer getAptId() {
-        return aptId;
-    }
-
-    public void setAptId(Integer aptId) {
-        this.aptId = aptId;
-    }
-
-    public int getClinicId() {
-        return clinicId;
-    }
-
-    public void setClinicId(int clinicId) {
-        this.clinicId = clinicId;
-    }
-
     public String getClinicName() {
         return clinicName;
     }
 
     public void setClinicName(String clinicName) {
         this.clinicName = clinicName;
+    }
+
+    public String getReferenceID() {
+        return referenceId;
+    }
+
+    public void setReferenceID(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
+    public Integer getHospitalPatId() {
+        return hospitalPatId;
+    }
+
+    public void setHospitalPatId(int hospitalPatId) {
+        this.hospitalPatId = hospitalPatId;
     }
 
     public String getHospitalName() {
@@ -289,28 +294,28 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.hospitalName = hospitalName;
     }
 
-    public String getPatInfoFlag() {
-        return patInfoFlag;
+    public int getClinicId() {
+        return clinicId;
     }
 
-    public void setPatInfoFlag(String patInfoFlag) {
-        this.patInfoFlag = patInfoFlag;
+    public void setClinicId(int clinicId) {
+        this.clinicId = clinicId;
     }
 
-    public Integer getHospitalPatId() {
-        return hospitalPatId;
+    public String getPatientPhone() {
+        return patientPhone;
     }
 
-    public void setHospitalPatId(Integer hospitalPatId) {
-        this.hospitalPatId = hospitalPatId;
+    public void setPatientPhone(String patientPhone) {
+        this.patientPhone = patientPhone;
     }
 
-    public int getPatientCityId() {
-        return patientCityId;
+    public String getPatientArea() {
+        return patientArea;
     }
 
-    public void setPatientCityId(int patientCityId) {
-        this.patientCityId = patientCityId;
+    public void setPatientArea(String patientArea) {
+        this.patientArea = patientArea;
     }
 
     public String getPatientCity() {
@@ -321,8 +326,44 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         this.patientCity = patientCity;
     }
 
-    public void setPatientArea(String patientArea) {
-        this.patientArea = patientArea;
+    public int getPatientCityId() {
+        return patientCityId;
+    }
+
+    public void setPatientCityId(int patientCityId) {
+        this.patientCityId = patientCityId;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(String onlineStatus) {
+        this.onlineStatus = onlineStatus;
+    }
+
+    public String getDateOfBirth() {
+        return patientDob;
+    }
+
+    public void setDateOfBirth(String patientDob) {
+        this.patientDob = patientDob;
+    }
+
+    public String getOutStandingAmount() {
+        return outstandingAmount;
+    }
+
+    public void setOutStandingAmount(String outstandingAmount) {
+        this.outstandingAmount = outstandingAmount;
     }
 
     public String getCreationDate() {
@@ -332,71 +373,38 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
-    public String getRelation() {
-        return relation;
-    }
-
-    public void setRelation(String relation) {
-        this.relation = relation;
-    }
 
     public boolean isDead() {
         return isDead;
     }
 
-    public void setDead(boolean dead) {
-        isDead = dead;
+    public void setDead(boolean isDead) {
+        this.isDead = isDead;
     }
 
-    public String getBloodGroup() {
-        return bloodGroup;
+    public String getSpannableString() {
+        return spannableString;
     }
 
-    public void setBloodGroup(String bloodGroup) {
-        this.bloodGroup = bloodGroup;
+    public void setSpannableString(String spannableString) {
+        this.spannableString = spannableString;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(salutation);
-        dest.writeValue(patientName);
-        dest.writeValue(age);
-        dest.writeValue(dateOfBirth);
-        dest.writeValue(gender);
-        dest.writeValue(outStandingAmount);
-        dest.writeValue(patientId);
-        dest.writeValue(patientPhone);
-        dest.writeValue(patientImageUrl);
-        dest.writeValue(patientEmail);
-        dest.writeValue(clinicId);
-        dest.writeValue(clinicName);
-
-        dest.writeValue(hospitalName);
-        dest.writeValue(patInfoFlag);
-
-        dest.writeValue(hospitalPatId);
-        dest.writeValue(patientCityId);
-        dest.writeValue(patientCity);
-        dest.writeValue(aptId);
-        dest.writeValue(creationDate);
-        dest.writeValue(patientArea);
-        dest.writeValue(relation);
-        dest.writeValue(isDead);
-        dest.writeValue(bloodGroup);
+    public boolean isSelected() {
+        return selected;
     }
 
-    public int describeContents() {
-        return 0;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
-    @Override
-    public int compareTo(@NonNull PatientList o) {
-        return 0;
+    public boolean isAddedMiddleName() {
+        return isAddedMiddleName;
     }
 
-    public String getPatientArea() {
-        return patientArea;
+    public void setAddedMiddleName(boolean addedMiddleName) {
+        isAddedMiddleName = addedMiddleName;
     }
-
 
     public boolean isOfflinePatientSynced() {
         return isOfflinePatientSynced;
@@ -406,12 +414,44 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
         isOfflinePatientSynced = offlinePatientSynced;
     }
 
-    public String getReferenceID() {
-        return referenceID;
+    public String getPatientImageUrl() {
+        return patientImageUrl;
     }
 
-    public void setReferenceID(String referenceID) {
-        this.referenceID = referenceID;
+    public void setPatientImageUrl(String patientImageUrl) {
+        this.patientImageUrl = patientImageUrl;
+    }
+
+    public String getPanNumber() {
+        return panNumber;
+    }
+
+    public void setPanNumber(String panNumber) {
+        this.panNumber = panNumber;
+    }
+
+    public String getAadharNumber() {
+        return aadharNumber;
+    }
+
+    public void setAadharNumber(String aadharNumber) {
+        this.aadharNumber = aadharNumber;
+    }
+
+    public String getPatAltPhoneNumber() {
+        return patAltPhoneNumber;
+    }
+
+    public void setPatAltPhoneNumber(String patAltPhoneNumber) {
+        this.patAltPhoneNumber = patAltPhoneNumber;
+    }
+
+    public String getRegisterFor() {
+        return registerFor;
+    }
+
+    public void setRegisterFor(String registerFor) {
+        this.registerFor = registerFor;
     }
 
     public PatientReferenceDetails getReferedDetails() {
@@ -423,12 +463,76 @@ public class PatientList implements Parcelable, Comparable<PatientList>, CustomR
     }
 
     public PatientAddressDetails getAddressDetails() {
-        return addressDetails;
+        return patientAddressDetails;
     }
 
-    public void setAddressDetails(PatientAddressDetails addressDetails) {
-        this.addressDetails = addressDetails;
+    public void setAddressDetails(PatientAddressDetails patientAddressDetails) {
+        this.patientAddressDetails = patientAddressDetails;
+    }
+
+    public String getPatInfoFlag() {
+        return patInfoFlag;
+    }
+
+    public void setPatInfoFlag(String patInfoFlag) {
+        this.patInfoFlag = patInfoFlag;
+    }
+
+    public Integer getAptId() {
+        return aptId;
+    }
+
+    public void setAptId(Integer aptId) {
+        this.aptId = aptId;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(patientId);
+        dest.writeValue(relation);
+        dest.writeValue(patientName);
+        dest.writeValue(patientFName);
+        dest.writeValue(patientMName);
+        dest.writeValue(patientLName);
+        dest.writeValue(gender);
+        dest.writeValue(bloodGroup);
+        dest.writeValue(salutation);
+        dest.writeValue(patientEmail);
+        dest.writeValue(clinicName);
+        dest.writeValue(referenceId);
+        dest.writeValue(hospitalPatId);
+        dest.writeValue(hospitalName);
+        dest.writeValue(clinicId);
+        dest.writeValue(patientPhone);
+        dest.writeValue(patientArea);
+        dest.writeValue(patientCity);
+        dest.writeValue(patientCityId);
+        dest.writeValue(age);
+        dest.writeValue(onlineStatus);
+        dest.writeValue(patientDob);
+        dest.writeValue(outstandingAmount);
+        dest.writeValue(creationDate);
+        dest.writeValue(isDead);
+        dest.writeValue(patientImageUrl);
+        dest.writeValue(panNumber);
+        dest.writeValue(aadharNumber);
+        dest.writeValue(patAltPhoneNumber);
+        dest.writeValue(registerFor);
+        dest.writeValue(referedDetails);
+        dest.writeValue(patientAddressDetails);
+        dest.writeValue(patInfoFlag);
+        dest.writeValue(aptId);
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public int compareTo(@NonNull PatientList patientList) {
+        return 0;
     }
 
 
 }
+
+

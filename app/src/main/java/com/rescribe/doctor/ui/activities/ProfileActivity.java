@@ -318,6 +318,11 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initialize();
+    }
 
     private void setServicesInView(ArrayList<String> receivedDocService) {
         //---------
@@ -555,9 +560,11 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
                                     .apply(requestOptions).thumbnail(0.5f)
                                     .into(profileImage);
                             mCustomProgressDialog.dismiss();
+                            FILEPATH=null;
                         } else {
                             mCustomProgressDialog.dismiss();
                             Toast.makeText(ProfileActivity.this, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                            FILEPATH=null;
                         }
                     }
                 }, new Response.ErrorListener() {

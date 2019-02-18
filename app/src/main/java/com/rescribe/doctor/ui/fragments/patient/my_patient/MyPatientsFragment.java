@@ -148,6 +148,12 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        init();
+    }
+
     private void init() {
 
         appDBHelper = new AppDBHelper(getContext());
@@ -326,6 +332,17 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
             emptyListView.setVisibility(View.VISIBLE);
         else
             emptyListView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onEditPatientClick(PatientList patientList) {
+
+        Intent intent = new Intent(getContext(), AddNewPatientWebViewActivity.class);
+        intent.putExtra(RescribeConstants.START_FROM, RescribeConstants.EDIT_PATIENT);
+        intent.putExtra(RescribeConstants.PATIENT_DETAILS, patientList);
+
+        startActivity(intent);
+
     }
 
     @Override
@@ -602,6 +619,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                         Intent i = new Intent(getActivity(), AddNewPatientWebViewActivity.class);
                         //  Intent i = new Intent(getActivity(), AddNewPatientActivity.class);
                         i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
+                        i.putExtra(RescribeConstants.START_FROM, RescribeConstants.PATIENT_LIST);
                         getActivity().startActivityForResult(i, ADD_PATIENT_REQUEST);
 
                         CommonMethods.Log("DOC_ID", "" + Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));

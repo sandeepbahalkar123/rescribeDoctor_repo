@@ -1,11 +1,18 @@
 
 package com.rescribe.doctor.model.patient.doctor_patients;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rescribe.doctor.interfaces.CustomResponse;
 
-public class PatientReferenceDetails implements CustomResponse {
+public class PatientReferenceDetails implements Parcelable, CustomResponse {
+
+    @SerializedName("detailedId")
+    @Expose
+    private int detailedId;
     @SerializedName("referredTypeId")
     @Expose
     private int referredTypeId;
@@ -26,10 +33,48 @@ public class PatientReferenceDetails implements CustomResponse {
     private String phoneNumber;
     @SerializedName("salutation")
     @Expose
-    private String salutation;
+    private int salutation;
     @SerializedName("description")
     @Expose
     private String description;
+    public final static Parcelable.Creator<PatientReferenceDetails> CREATOR = new Creator<PatientReferenceDetails>() {
+
+
+        @SuppressWarnings({
+                "unchecked"
+        })
+        public PatientReferenceDetails createFromParcel(Parcel in) {
+            return new PatientReferenceDetails(in);
+        }
+
+        public PatientReferenceDetails[] newArray(int size) {
+            return (new PatientReferenceDetails[size]);
+        }
+
+    };
+
+    protected PatientReferenceDetails(Parcel in) {
+        this.detailedId = ((int) in.readValue((int.class.getClassLoader())));
+        this.referredTypeId = ((int) in.readValue((int.class.getClassLoader())));
+        this.patientId = ((String) in.readValue((String.class.getClassLoader())));
+        this.docId = ((String) in.readValue((String.class.getClassLoader())));
+        this.name = ((String) in.readValue((String.class.getClassLoader())));
+        this.emailId = ((String) in.readValue((String.class.getClassLoader())));
+        this.phoneNumber = ((String) in.readValue((String.class.getClassLoader())));
+        this.salutation = ((int) in.readValue((int.class.getClassLoader())));
+        this.description = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public PatientReferenceDetails() {
+    }
+
+    public int getDetailedId() {
+        return detailedId;
+    }
+
+    public void setDetailedId(int detailedId) {
+        this.detailedId = detailedId;
+    }
 
     public int getReferredTypeId() {
         return referredTypeId;
@@ -79,11 +124,11 @@ public class PatientReferenceDetails implements CustomResponse {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getSalutation() {
+    public int getSalutation() {
         return salutation;
     }
 
-    public void setSalutation(String salutation) {
+    public void setSalutation(int salutation) {
         this.salutation = salutation;
     }
 
@@ -93,6 +138,22 @@ public class PatientReferenceDetails implements CustomResponse {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(detailedId);
+        dest.writeValue(referredTypeId);
+        dest.writeValue(patientId);
+        dest.writeValue(docId);
+        dest.writeValue(name);
+        dest.writeValue(emailId);
+        dest.writeValue(phoneNumber);
+        dest.writeValue(salutation);
+        dest.writeValue(description);
+    }
+
+    public int describeContents() {
+        return 0;
     }
 
 }

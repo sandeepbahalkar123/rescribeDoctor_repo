@@ -964,8 +964,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 PatientAddressDetails addressDetails = new PatientAddressDetails();
 
                 addressDetails.setPatientAddress(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_LINE)));
-                addressDetails.setPatientState(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE)));
-                addressDetails.setPatientCity(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY)));
+                addressDetails.setPatientState(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE))));
+                addressDetails.setPatientCity(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY))));
                 addressDetails.setPatientArea(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA)));
                 patient.setAddressDetails(addressDetails);
                 //-----REFERENCE----
@@ -1051,8 +1051,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 PatientAddressDetails addressDetails = new PatientAddressDetails();
 
                 addressDetails.setPatientAddress(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_LINE)));
-                addressDetails.setPatientState(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE)));
-                addressDetails.setPatientCity(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY)));
+                addressDetails.setPatientState(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_STATE))));
+                addressDetails.setPatientCity(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_CITY))));
                 addressDetails.setPatientArea(cursor.getString(cursor.getColumnIndex(ADD_NEW_PATIENT.PATIENT_ADDRESS_AREA)));
                 patient.setPatientAddressDetails(addressDetails);
                 //-----REFERENCE----

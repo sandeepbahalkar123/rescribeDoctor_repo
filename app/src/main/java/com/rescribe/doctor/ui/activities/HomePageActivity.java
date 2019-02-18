@@ -207,6 +207,7 @@ public class HomePageActivity extends BottomMenuActivity implements HelperRespon
     protected void onResume() {
         mDashboardHelper.doGetDashboardResponse();
         setUpImage();
+        initialize();
         super.onResume();
     }
 

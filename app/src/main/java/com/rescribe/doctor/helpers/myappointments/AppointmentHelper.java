@@ -312,6 +312,18 @@ public class AppointmentHelper implements ConnectionListener {
         mConnectionFactory.createConnection(RescribeConstants.TASK_ADD_NEW_PATIENT);
     }
 
+
+
+    public void updatePatient(PatientDetail dataToAdd) {
+
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_UPDATE_PATIENT, Request.Method.POST, false);
+        mConnectionFactory.setPostParams(dataToAdd);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.UPDATE_PATIENT);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_UPDATE_PATIENT);
+    }
+
+
     public void getAreaOfSelectedCity(int mCityID) {
         ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_AREA_TO_ADD_NEW_PATIENT, Request.Method.POST, false);
 

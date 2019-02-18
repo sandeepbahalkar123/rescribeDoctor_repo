@@ -66,6 +66,7 @@
                 tools:text="03:20 pm"
                 tools:visibility="gone" />
 
+
             <ImageView
                 android:id="@+id/chatImageView"
                 android:layout_width="wrap_content"
@@ -77,7 +78,19 @@
                 android:visibility="gone"
                 app:srcCompat="@drawable/chat_icon"
                 tools:ignore="ContentDescription"
-                tools:visibility="visible" />
+                />
+            <ImageView
+                android:id="@+id/editImageView"
+                android:layout_width="@dimen/dp32"
+                android:layout_height="@dimen/dp32"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="@dimen/dp16"
+                android:padding="@dimen/dp5"
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dp16"
+                app:srcCompat="@drawable/editpatient"
+                tools:ignore="ContentDescription" />
 
         </RelativeLayout>
 

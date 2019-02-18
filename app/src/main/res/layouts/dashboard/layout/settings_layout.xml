@@ -20,14 +20,16 @@
             android:textAllCaps="true"
             android:textColor="@color/Gray"
             android:textSize="@dimen/sp16"
-            app:customFont="@string/roboto_regular" />
+            app:customFont="@string/roboto_regular"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp5"
             android:background="@color/white"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -149,7 +151,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp1"
-            android:background="@color/divider" />
+            android:background="@color/divider"
+            android:visibility="gone"/>
 
         <com.rescribe.doctor.ui.customesViews.CustomTextView
             android:layout_width="match_parent"
@@ -163,7 +166,8 @@
             android:textAllCaps="true"
             android:textColor="@color/Gray"
             android:textSize="@dimen/sp16"
-            app:customFont="@string/roboto_regular" />
+            app:customFont="@string/roboto_regular"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/changePasswordButton"

@@ -8,6 +8,27 @@ import com.rescribe.doctor.model.patient.doctor_patients.PatientReferenceDetails
 
 public class PatientDetail implements CustomResponse {
 
+    @SerializedName("patientId")
+    @Expose
+    private int patientId;
+
+    @SerializedName("docId")
+    @Expose
+    private int docId;
+
+    @SerializedName("patientName")
+    @Expose
+    private String patientName;
+
+    @SerializedName("isDead")
+    @Expose
+    private boolean isDead;
+
+    @SerializedName("hospitalPatId")
+    @Expose
+    private int hospitalPatId;
+
+
     @SerializedName("patientAge")
     @Expose
     private String patientAge;
@@ -229,4 +250,43 @@ public class PatientDetail implements CustomResponse {
         this.patientAddressDetails = patientAddressDetails;
     }
 
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
+    }
+
+    public int getDocId() {
+        return docId;
+    }
+
+    public void setDocId(int docId) {
+        this.docId = docId;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
+    }
+
+    public int getHospitalPatId() {
+        return hospitalPatId;
+    }
+
+    public void setHospitalPatId(int hospitalPatId) {
+        this.hospitalPatId = hospitalPatId;
+    }
 }

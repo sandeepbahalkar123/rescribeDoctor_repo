@@ -10,10 +10,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -37,7 +39,10 @@ import com.rescribe.doctor.helpers.doctor_connect.DoctorConnectSearchHelper;
 import com.rescribe.doctor.helpers.profile.ProfileHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.CommonBaseModelContainer;
+import com.rescribe.doctor.model.UpdateDoctorRequestModel;
 import com.rescribe.doctor.model.doctor_connect_search.DoctorConnectSearchBaseModel;
+import com.rescribe.doctor.model.doctor_connect_search.DoctorSpeciality;
 import com.rescribe.doctor.model.login.DocDetail;
 import com.rescribe.doctor.model.profile_photo.ProfilePhotoResponse;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
@@ -52,9 +57,11 @@ import com.rescribe.doctor.util.RescribeConstants;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,34 +101,40 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
     EditText editAbout;
     @BindView(R.id.layoutAbout)
     LinearLayout layoutAbout;
-    @BindView(R.id.btnAddPatientSubmit)
-    Button btnAddPatientSubmit;
+    @BindView(R.id.btnAddDocUpdate)
+    Button btnAddDocUpdate;
     @BindView(R.id.mainParentLayout)
     LinearLayout mainParentLayout;
     @BindView(R.id.mainParentScrollViewLayout)
     ScrollView mainParentScrollViewLayout;
     @BindView(R.id.webViewLayout)
     WebView webViewLayout;
-    @BindView(R.id.editExprince)
-    EditText editExprince;
+
     @BindView(R.id.layoutExprince)
     LinearLayout layoutExprince;
-    @BindView(R.id.editSpeciality)
-    EditText editSpeciality;
+
     @BindView(R.id.genderSpinner)
     Spinner genderSpinner;
+    @BindView(R.id.specialitySpinner)
+    Spinner specialitySpinner;
+    @BindView(R.id.editExperience)
+    EditText editExperience;
     private Context mContext;
 
-
+    List<String> specialities;
     private ImageUtils imageutils;
     private String Url = Config.BASE_URL + Config.UPLOAD_PROFILE_PHOTO;
     private String authorizationString;
     private Device device;
     private String docId;
     CustomProgressDialog mCustomProgressDialog;
-    private String mselectedGender;
+    private String mSelectedGender;
+    private String mSelectedSpeciality = "";
     ProfileHelper profileHelper;
     DoctorConnectSearchHelper doctorConnectSearchHelper;
+    UpdateDoctorRequestModel mUpdateDoctorRequestModel;
+    String docName, mob, webUrl, education, experience, about;
+    DocDetail docDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,22 +165,26 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
 
         editName.setText(mDoctorName);
         String doctorDetails = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, this);
-        final DocDetail docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
+        docDetail = new Gson().fromJson(doctorDetails, DocDetail.class);
         editEducation.setText(docDetail.getDocDegree());
-        editExprince.setText(docDetail.getDocExperience());
+        editExperience.setText(docDetail.getDocExperience());
         editAbout.setText(docDetail.getDocInfo());
         editWebUrl.setText("");
-        editSpeciality.setText(docDetail.getDocSpaciality());
         editWebUrl.setText(docDetail.getWebsite());
         mobNo.setText(docDetail.getDocPhone());
-        mselectedGender = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_GENDER, this);
-        ;
-        if (mselectedGender.equalsIgnoreCase("male")) {
+        mSelectedGender = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_GENDER, this);
+
+        if (docDetail.getDocSpaciality() != null)
+            mSelectedSpeciality = docDetail.getDocSpaciality();
+
+        if (mSelectedGender.equalsIgnoreCase("male")) {
             genderSpinner.setSelection(1);
-        } else if (mselectedGender.equalsIgnoreCase("female")) {
+        } else if (mSelectedGender.equalsIgnoreCase("female")) {
             genderSpinner.setSelection(2);
-        } else if (mselectedGender.equalsIgnoreCase("Transgender")) {
+        } else if (mSelectedGender.equalsIgnoreCase("Transgender")) {
             genderSpinner.setSelection(3);
+        }else{
+            genderSpinner.setSelection(0);
         }
 
         int color2 = mColorGenerator.getColor(mDoctorName);
@@ -198,7 +215,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
                 Log.e("listgender", listgender.get(position));
 
                 if (position != 0) {
-                    mselectedGender = listgender.get(position);
+                    mSelectedGender = listgender.get(position);
                 } else {
 
 
@@ -212,10 +229,87 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
         });
 
 
+        specialitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position != 0) {
+                    mSelectedSpeciality =specialities.get(position);
+                } else {
+                    mSelectedSpeciality="";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        editAbout.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                if (editAbout.hasFocus()) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & MotionEvent.ACTION_MASK){
+                        case MotionEvent.ACTION_SCROLL:
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+
+
     }
 
 
-    @OnClick({R.id.backButton, R.id.btnAddPatientSubmit, R.id.profileImage})
+    public UpdateDoctorRequestModel validate() {
+
+        String message;
+        String enter = getString(R.string.enter);
+        UpdateDoctorRequestModel doctorRequestModel = null;
+        docName = editName.getText().toString().trim();
+        mob = mobNo.getText().toString().trim();
+        webUrl = editWebUrl.getText().toString().trim();
+        education = editEducation.getText().toString().trim();
+        experience = editExperience.getText().toString().trim();
+        about = editAbout.getText().toString().trim();
+
+
+        if (docName.isEmpty()) {
+            message = enter + getString(R.string.name).toLowerCase(Locale.US);
+            CommonMethods.showToast(this, message);
+        } else if (mob.isEmpty() && mob.length() < 10) {
+            message = enter + getString(R.string.enter_mobile_no_error);
+            CommonMethods.showToast(this, message);
+        } else if ((mob.trim().length() < 10) || !(mob.trim().startsWith("6") || mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9"))) {
+            message = getString(R.string.err_invalid_mobile_no);
+            CommonMethods.showToast(this, message);
+        } else {
+
+            if (experience.isEmpty())
+                experience = "0";
+
+            doctorRequestModel = new UpdateDoctorRequestModel();
+            doctorRequestModel.setDoctorName(docName);
+            doctorRequestModel.setDoctorPhone(mob);
+            doctorRequestModel.setAboutMe(about);
+            doctorRequestModel.setDocId(Integer.parseInt(docId));
+            doctorRequestModel.setDoctorWebsite(webUrl);
+            doctorRequestModel.setDoctorSpeciality(mSelectedSpeciality);
+            doctorRequestModel.setDoctorExperience(Integer.parseInt(experience));
+            doctorRequestModel.setDoctorGender(mSelectedGender);
+            doctorRequestModel.setDoctorDegree(education);
+        }
+
+
+        return doctorRequestModel;
+    }
+
+
+    @OnClick({R.id.backButton, R.id.btnAddDocUpdate, R.id.profileImage})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backButton:
@@ -224,7 +318,11 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
             case R.id.profileImage:
                 imageutils.imagepicker(1);
                 break;
-            case R.id.btnAddPatientSubmit:
+            case R.id.btnAddDocUpdate:
+                mUpdateDoctorRequestModel = validate();
+                if (mUpdateDoctorRequestModel != null) {
+                    profileHelper.doctorProfileUpdate(mUpdateDoctorRequestModel);
+                }
                 break;
 
         }
@@ -235,6 +333,52 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
         switch (mOldDataTag) {
             case RescribeConstants.TASK_DOCTOR_FILTER_DOCTOR_SPECIALITY_LIST:
                 DoctorConnectSearchBaseModel doctorConnectSearchBaseModel = (DoctorConnectSearchBaseModel) customResponse;
+                if (doctorConnectSearchBaseModel.getCommon().isSuccess()) {
+                    ArrayList<DoctorSpeciality> doctorSpecialities = doctorConnectSearchBaseModel.getSearchDataModel().getDoctorSpecialities();
+                    specialities = new ArrayList<>();
+                    specialities.add("Select Speciality");
+                    int pos = 0;
+                    for (int i = 0; i < doctorSpecialities.size(); i++) {
+                        DoctorSpeciality doctorSpeciality = doctorSpecialities.get(i);
+                        specialities.add(doctorSpeciality.getSpeciality());
+                        if (doctorSpeciality.getSpeciality().equalsIgnoreCase(mSelectedSpeciality.toLowerCase())) {
+                            pos = i;
+                        }
+                    }
+                    ArrayAdapter spinnerArrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, specialities);
+                    specialitySpinner.setAdapter(spinnerArrayAdapter);
+                    if (!mSelectedSpeciality.isEmpty()) {
+                        specialitySpinner.setSelection(pos + 1);
+                    }
+                }
+                break;
+            case RescribeConstants.TASK_DOCTOR_PROFILE_UPDATE:
+                CommonBaseModelContainer updateResponse = (CommonBaseModelContainer) customResponse;
+
+                if (updateResponse.getCommonRespose().isSuccess()) {
+                    CommonMethods.showToast(mContext, updateResponse.getCommonRespose().getStatusMessage());
+                    DocDetail docDetail1 = new DocDetail();
+                    docDetail1.setDocName(docName);
+                    docDetail1.setDocDegree(education);
+                    docDetail1.setDocGender(mSelectedGender);
+                    docDetail1.setDocExperience(experience);
+                    docDetail1.setDocInfo(about);
+                    docDetail1.setWebsite(webUrl);
+                    docDetail1.setDocSpaciality(mSelectedSpeciality);
+                    docDetail1.setDocPhone(mob);
+                    docDetail1.setClinicList(docDetail.getClinicList());
+
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_NAME, docDetail1.getDocName(), mContext);
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SPECIALITY, docDetail1.getDocSpaciality(), mContext);
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.USER_GENDER, docDetail1.getDocGender(), mContext);
+                    String doctorDetails = new Gson().toJson(docDetail1);
+                    RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_INFO, doctorDetails, mContext);
+                    onBackPressed();
+                } else {
+                    CommonMethods.showToast(mContext, updateResponse.getCommonRespose().getStatusMessage());
+                }
+
+
                 break;
         }
 

@@ -29,6 +29,7 @@ import com.rescribe.doctor.ui.activities.ChatActivity;
 import com.rescribe.doctor.ui.customesViews.CircularImageView;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.util.CommonMethods;
+import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import org.joda.time.DateTime;
@@ -86,10 +87,11 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.opdTypeTextView.setVisibility(View.GONE);
 
 
-        holder.patientClinicAddress.setVisibility(View.VISIBLE);
-        String area = patientObject.getPatientArea().isEmpty() ? "" : (patientObject.getPatientCity().isEmpty() ? patientObject.getPatientArea() : patientObject.getPatientArea() + ", ");
-        holder.patientClinicAddress.setText(CommonMethods.toCamelCase(area + patientObject.getPatientCity()));
-
+        if (patientObject.getPatientArea()!=null) {
+            holder.patientClinicAddress.setVisibility(View.VISIBLE);
+            String area = patientObject.getPatientArea().isEmpty() ? "" : (patientObject.getPatientCity().isEmpty() ? patientObject.getPatientArea() : patientObject.getPatientArea() + ", ");
+            holder.patientClinicAddress.setText(CommonMethods.toCamelCase(area + patientObject.getPatientCity()));
+        }
 
 
         if (patientObject.getHospitalName() == null || patientObject.getHospitalName().isEmpty())
@@ -305,6 +307,24 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         });
 
 
+        if (NetworkUtil.getConnectivityStatusBoolean(mContext)){
+            holder.editImageView.setVisibility(View.VISIBLE);
+        }else {
+            holder.editImageView.setVisibility(View.GONE);
+        }
+
+        holder.editImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
+                    mOnDownArrowClicked.onEditPatientClick(patientObject);
+                }
+                else {
+                    CommonMethods.showToast(mContext,mContext.getString(R.string.internet));
+                }
+            }
+        });
+
     }
 
     @Override
@@ -370,6 +390,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         void onPhoneNoClick(String patientPhone);
 
         void onRecordFound(boolean isListEmpty);
+        void onEditPatientClick(PatientList patientList);
     }
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
@@ -413,6 +434,11 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
 
         @BindView(R.id.patientDetailsClickLinearLayout)
         RelativeLayout patientDetailsClickLinearLayout;
+
+
+        @BindView(R.id.editImageView)
+        ImageView editImageView;
+
 
         View view;
 

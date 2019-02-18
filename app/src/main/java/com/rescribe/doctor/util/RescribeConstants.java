@@ -101,7 +101,8 @@ public class RescribeConstants {
     public static final String TASK_VALIDATE_PAN_NO = "48";
     public static final String TASK_VALIDATE_ADDHAR_NO = "49";
     public static final String TASK_VALIDATE_REFERENCE_NO = "50";
-    public static final String TASK_DOCTOR_SPECIALIST_LIST = "51";
+    public static final String TASK_DOCTOR_PROFILE_UPDATE = "51";
+    public static final String TASK_UPDATE_PATIENT = "52";
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -164,6 +165,8 @@ public class RescribeConstants {
     public static final String CLINIC_NAME = "clinic_name";
     public static final String ACTIVITY_LAUNCHED_FROM = "activity_launched_from";
     public static final String WAITING_LIST = "waiting_list";
+    public static final String EDIT_PATIENT = "edit_patient";
+
     public static final String HOME_PAGE = "home_page";
     public static final String OPD_TIME = "opd_time";
     public static final String IS_CALL_FROM_MY_PATIENTS = "call_from_my_patients_chat";

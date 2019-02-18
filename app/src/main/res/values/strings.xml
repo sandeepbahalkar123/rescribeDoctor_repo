@@ -6,7 +6,7 @@
     <string name="enter_ref_mobile_no">Mobile No.</string>
     <string name="log_in">Login</string>
     <string name="enter_full_name">Name</string>
-    <string name="enter_email_id">Email ID</string>
+    <string name="enter_email_id">Email</string>
     <string name="enter_details">Description</string>
     <string name="internet">Please check your Internet Connection</string>
     <string name="timeout">Timeout error</string>
@@ -202,7 +202,7 @@
     <string name="enter_date">Enter Date</string>
     <string name="enter_address">Enter Address</string>
     <string name="address_details">Address Details</string>
-    <string name="address_line">Address line</string>
+    <string name="address_line">Address line1</string>
     <string name="address_line2">Address line2</string>
     <string name="area">Area</string>
     <string name="referenced_details">Reference Details</string>
@@ -406,10 +406,15 @@
     <string name="plz_enter_your_correct_pan_num">Enter correct pan number.</string>
     <string name="plz_enter_your_correct_aadhar_num">Enter correct aadhar number.</string>
     <string name="plz_enter_valid_pin_code">Enter Valid Pin Code.</string>
-    <string name="web_url">Web Url</string>
+    <string name="web_url">WebSite URL</string>
     <string name="speciality">Speciality</string>
     <string name="education">Education</string>
     <string name="about">About</string>
     <string name="update_profile">Update Profile</string>
+    <string name="experience">Experience</string>
+    <string name="deceased_patient">Deceased Patient</string>
+    <string name="patient_no_more">Patient No More</string>
+    <string name="patient_update">Patient Update</string>
+    <string name="deceased_patient_dialog_text">If you click this checkbox then you cannot modify deceased patient\'s data.</string>
 
 </resources>

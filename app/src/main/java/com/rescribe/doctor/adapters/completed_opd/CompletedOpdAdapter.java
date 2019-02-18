@@ -48,13 +48,15 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
     private ArrayList<CompletedOpd> mOriginalPatientList;
     public boolean isLongPressed;
     private CompletedOpdAdapter.OnDownArrowClicked mOnDownArrowClicked;
+    private boolean isOneHospital;
 
 
-    public CompletedOpdAdapter(Context mContext, ArrayList<CompletedOpd> dataList, CompletedOpdAdapter.OnDownArrowClicked mOnDownArrowClicked) {
+    public CompletedOpdAdapter(Context mContext, ArrayList<CompletedOpd> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean isOneHospital) {
         this.mDataList = new ArrayList<>(dataList);
         this.mOriginalPatientList = new ArrayList<>(dataList);
         this.mContext = mContext;
         this.mOnDownArrowClicked = mOnDownArrowClicked;
+        this.isOneHospital = isOneHospital;
     }
 
     @Override
@@ -69,7 +71,13 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
     public void onBindViewHolder(final CompletedOpdAdapter.ListViewHolder holder, final int position) {
         final CompletedOpd patientObject = mDataList.get(position);
         holder.opdTypeTextView.setVisibility(View.VISIBLE);
-        holder.patientClinicAddress.setVisibility(View.VISIBLE);
+
+        if (isOneHospital) {
+            holder.patientClinicAddress.setVisibility(View.GONE);
+        } else {
+            holder.patientClinicAddress.setText(patientObject.getHospitalName());
+            holder.patientClinicAddress.setVisibility(View.VISIBLE);
+        }
 
         if (patientObject.getOpdFollowUpStatus().equals(0)) {
             holder.opdTypeTextView.setText(mContext.getString(R.string.consultation));
@@ -208,7 +216,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
 //            }
 //        });
 
-        holder.patientClinicAddress.setText(patientObject.getHospitalName());
+
         holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -218,7 +226,7 @@ public class CompletedOpdAdapter extends RecyclerView.Adapter<CompletedOpdAdapte
         holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnDownArrowClicked.onClickOfPatientDetails(patientObject,holder.patientAgeTextView.getText().toString()+holder.patientGenderTextView.getText().toString());
+                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, holder.patientAgeTextView.getText().toString() + holder.patientGenderTextView.getText().toString());
             }
         });
 

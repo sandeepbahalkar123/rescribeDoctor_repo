@@ -644,6 +644,16 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         ResponsePanAadharExist responseReferenceExist = new Gson().fromJson(data, ResponsePanAadharExist.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, responseReferenceExist, mOldDataTag);
                         break;
+                    case RescribeConstants.TASK_DOCTOR_PROFILE_UPDATE:
+                        CommonBaseModelContainer docProfileUpdate = new Gson().fromJson(data, CommonBaseModelContainer.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, docProfileUpdate, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_UPDATE_PATIENT:
+                        CommonBaseModelContainer patientUpdate = new Gson().fromJson(data, CommonBaseModelContainer.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, patientUpdate, mOldDataTag);
+                        break;
+
+
                     default:
 
 

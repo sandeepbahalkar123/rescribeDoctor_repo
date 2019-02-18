@@ -41,6 +41,8 @@ public class Config {
     public static final String DELETE_APPOINTMENT = "doctor/api/appointment/deleteAppointment";
     public static final String VALIDATE_PAN_AADHAR_CARD = "doctor/api/patient/validateField?fieldName=";
     public static final String GET_DOCTOR_SPECIALIST_LIST = "api/patient/getDoctorSpeciality";
+    public static final String UPDATE_DOCTOR_PROFILE= "doctor/api/doctor/updateDoctorProfile";
+
     //---------------LOCAL SERVER URL START-----------------------
     /*public static String BASE_URL = "http://172.16.100.219:3003/";
     public static final String FORGOT_PASSWORD_URL = "http://172.16.100.219:3003/app.html#/access/forgotPassword";
@@ -98,6 +100,7 @@ public class Config {
     public static final String GET_ALL_STATE = "doctor/api/patient/getStateDetails";
     public static final String GET_ALL_AREA_OF_CITIES_TO_ADD_PATIENT = "doctor/api/patient/getAreaDetails";
     public static final String GET_DOC_LIST_FOR_REFERENCE_TO_ADD_PATIENT = "api/patient/getDoctorNameList";
+    public static final String UPDATE_PATIENT = "api/patient/updatePatientProfile";
 
 }
 

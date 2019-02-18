@@ -2,11 +2,14 @@ package com.rescribe.doctor.ui.activities.my_patients.add_new_patient;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,9 +20,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -28,6 +33,8 @@ import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -37,6 +44,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.error.VolleyError;
@@ -52,6 +61,7 @@ import com.rescribe.doctor.helpers.myappointments.AppointmentHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.Common;
+import com.rescribe.doctor.model.CommonBaseModelContainer;
 import com.rescribe.doctor.model.new_patient.BloodGroup;
 import com.rescribe.doctor.model.new_patient.ReferenceBaseModel;
 import com.rescribe.doctor.model.new_patient.ReferenceType;
@@ -246,18 +256,35 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
     @BindView(R.id.registeredFor)
     EditText registeredFor;
+    @BindView(R.id.addressLine2)
+    EditText addressLine2;
 
-    @BindView(R.id.profileImage)
+    @BindView(R.id.TextInputLayoutMobileNo)
+    TextInputLayout TextInputLayoutMobileNo;
+
+
+    @BindView(R.id.patientProfileImage)
     CircularImageView profileImage;
+
+    @BindView(R.id.checkboxDeceasedPatient)
+    CheckBox checkboxDeceasedPatient;
+    @BindView(R.id.layoutDeceasedPatient)
+    LinearLayout layoutDeceasedPatient;
+
+    @BindView(R.id.layoutIsPatientNoMore)
+    LinearLayout layoutIsPatientNoMore;
+
 
     int mSelectedSalutationOfPatient = 1;
     int mSelectedSalutationOfPatientRef = 1;
     int mSelectedStateID = -1;
     int mSelectedCityID = -1;
-    int mSelectedAreaID = -1;
+    String mSelectedAreaID = "0";
     int mSelectedBloodGroupID = -1;
     List<ReferenceType> referenceTypes;
     List<BloodGroup> bloodGroups;
+
+
     private ArrayList<IdAndValueDataModel> mAreaListBasedOnCity = new ArrayList<>();
     //---------
     private int hospitalId;
@@ -291,6 +318,11 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     private boolean isAadharValid = false;
     private boolean isMobileNoMandatory = true;
     private boolean isReferenceNo = false;
+    List<String> bloodGroupNames;
+    List<String> listRelation;
+    List<String> referenceNames;
+    PatientList editPatientData = null;
+    private boolean isPatientDead = false;
 
     public static boolean isEnteredRefIDIsValid(String str) {
         boolean isValid = false;
@@ -301,8 +333,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             Pattern pattern = Pattern.compile(expression);
             Matcher matcher = pattern.matcher(str);
             if (matcher.matches()) {
-
-
                 isValid = true;
             }
         }
@@ -316,9 +346,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.add_new_patient);
         ButterKnife.bind(this);
-
         initialize();
-        doSpinnerItemSelectedListener();
     }
 
     @SuppressLint("CheckResult")
@@ -329,15 +357,30 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         authorizationString = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.AUTHTOKEN, AddNewPatientWebViewActivity.this);
         device = Device.getInstance(AddNewPatientWebViewActivity.this);
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
-
+        editPanNo.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         //------------
+
+
         mActivityStartFrom = getIntent().getStringExtra(RescribeConstants.START_FROM);
 
-        Bundle extras = getIntent().getBundleExtra(RescribeConstants.PATIENT_DETAILS);
-        hospitalId = extras.getInt(RescribeConstants.CLINIC_ID);
-        locationID = extras.getString(RescribeConstants.LOCATION_ID);
-        cityID = extras.getInt(RescribeConstants.CITY_ID);
-        cityName = extras.getString(RescribeConstants.CITY_NAME);
+
+        if (mActivityStartFrom.equalsIgnoreCase(RescribeConstants.WAITING_LIST) || mActivityStartFrom.equalsIgnoreCase(RescribeConstants.PATIENT_LIST)) {
+            Bundle extras = getIntent().getBundleExtra(RescribeConstants.PATIENT_DETAILS);
+            hospitalId = extras.getInt(RescribeConstants.CLINIC_ID);
+            locationID = extras.getString(RescribeConstants.LOCATION_ID);
+            cityID = extras.getInt(RescribeConstants.CITY_ID);
+            cityName = extras.getString(RescribeConstants.CITY_NAME);
+            mWebViewTitle.setText(getString(R.string.patient_registration));
+
+        } else if (mActivityStartFrom.equalsIgnoreCase(RescribeConstants.EDIT_PATIENT)) {
+            editPatientData = getIntent().getExtras().getParcelable(RescribeConstants.PATIENT_DETAILS);
+            hospitalId = editPatientData.getClinicId();
+            cityID = editPatientData.getPatientCityId();
+            cityName = editPatientData.getPatientCity();
+            mSubmit.setText(getString(R.string.update));
+            mWebViewTitle.setText(getString(R.string.patient_update));
+        }
+
         int docID = Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, this));
         mAppointmentHelper.getReferenceList(hospitalId, docID);
         Log.e("CLINIC_ID", "--" + hospitalId);
@@ -346,7 +389,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         String urlData = Config.ADD_NEW_PATIENT_WEB_URL + docID + "/" +
                 hospitalId + "/" + locationID + "/" + cityID;
 
-        mWebViewTitle.setText(getString(R.string.patient_registration));
 
         mAddPatientOfflineSetting = RescribePreferencesManager.getBoolean(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.ADD_PATIENT_OFFLINE_SETTINGS, this);
         //-------------
@@ -362,15 +404,202 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             mWebViewObject.setVisibility(View.GONE);
             mMainParentScrollViewLayout.setVisibility(View.VISIBLE);
 
-            //--- show addresss /referecens details based on setting done in SettingActivity. : START
-
-
-            //--- show addresss /referecens details based on setting done in SettingActivity. : END
         }
 
-        validatePanCardNo();
-        validateAadharCardNo();
-        referenceNo();
+        if (!NetworkUtil.getConnectivityStatusBoolean(mContext)) {
+            TextInputLayoutMobileNo.setHint(getString(R.string.enter_mobile_no));
+        }
+    }
+
+    private void enableDisableView(View view, boolean enabled) {
+        view.setEnabled(enabled);
+
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+
+            for (int idx = 0; idx < group.getChildCount(); idx++) {
+                enableDisableView(group.getChildAt(idx), enabled);
+            }
+        }
+    }
+
+    private void setEditPatientData(PatientList patientList) {
+
+        if (patientList.isDead()) {
+            enableDisableView(mainParentLayout, false);
+            layoutIsPatientNoMore.setVisibility(View.VISIBLE);
+            checkboxDeceasedPatient.setChecked(true);
+            mSubmit.setVisibility(View.GONE);
+        }
+
+        isPatientDead = patientList.isDead();
+        ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
+        String patName = patientList.getPatientName();
+        String patientProfileImage = patientList.getPatientImageUrl();
+
+        int color2 = mColorGenerator.getColor(patName);
+        TextDrawable drawable = TextDrawable.builder()
+                .beginConfig()
+                .width(Math.round(getResources().getDimension(R.dimen.dp40))) // width in px
+                .height(Math.round(getResources().getDimension(R.dimen.dp40))) // height in px
+                .endConfig()
+                .buildRound(("" + patName.charAt(0)).toUpperCase(), color2);
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.dontAnimate();
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+        requestOptions.skipMemoryCache(true);
+        requestOptions.placeholder(drawable);
+        requestOptions.error(drawable);
+        Glide.with(mContext)
+                .load(patientProfileImage)
+                .apply(requestOptions).thumbnail(0.5f)
+                .into(profileImage);
+
+        if (patientList.getSalutation() == 1)
+            mSalutationSpinner.setSelection(0);
+        else if (patientList.getSalutation() == 2)
+            mSalutationSpinner.setSelection(1);
+        else if (patientList.getSalutation() == 3)
+            mSalutationSpinner.setSelection(2);
+
+        mFirstName.setText(patientList.getPatientFName());
+        mMiddleName.setText(patientList.getPatientMName());
+        mLastName.setText(patientList.getPatientLName());
+        mMobNo.setText(patientList.getPatientPhone());
+        alt_phn.setText(patientList.getPatAltPhoneNumber());
+        mAge.setText(patientList.getAge());
+        email.setText(patientList.getPatientEmail());
+        editPanNo.setText(patientList.getPanNumber());
+        editAadhaarNo.setText(patientList.getAadharNumber());
+
+        if (!patientList.getPanNumber().isEmpty()) {
+            isPanValid = true;
+        }
+        if (!patientList.getAadharNumber().isEmpty()) {
+            isAadharValid = true;
+        }
+
+        if (!patientList.getReferenceID().isEmpty()){
+            isReferenceNo=true;
+        }
+        if (!patientList.getBloodGroup().isEmpty()) {
+            int bloodGroupPos = 0;
+            for (int i = 0; i < bloodGroupNames.size(); i++) {
+                if (bloodGroupNames.get(i).equalsIgnoreCase(patientList.getBloodGroup())) {
+                    bloodGroupPos = i;
+                }
+
+            }
+
+            BloodGroup bloodGroup = bloodGroups.get(bloodGroupPos - 1);
+            mSelectedBloodGroupID = bloodGroup.getId();
+            bloodGroupSpinner.setSelection(bloodGroupPos);
+        }
+        mReferenceID.setText(patientList.getReferenceID());
+        registeredFor.setText(patientList.getRegisterFor());
+        if (patientList.getGender().equalsIgnoreCase("male")) {
+            genderMale.setChecked(true);
+            listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+        } else if (patientList.getGender().equalsIgnoreCase("female")) {
+            genderFemale.setChecked(true);
+            listRelation = Arrays.asList(getResources().getStringArray(R.array.mrs_relation_entries));
+        } else {
+            genderOther.setChecked(true);
+            listRelation = Arrays.asList(getResources().getStringArray(R.array.other_relation_entries));
+        }
+
+
+        //     mRelationSpinner.setSelection(2);
+
+        if (!patientList.getRelation().isEmpty()) {
+            for (int i = 0; i < listRelation.size(); i++) {
+                if (listRelation.get(i).equalsIgnoreCase(patientList.getRelation())) {
+                    mRelationSpinner.setSelection(i);
+                }
+            }
+            mRelation = patientList.getRelation();
+        }
+
+
+        mAddressLine.setText(patientList.getAddressDetails().getPatientAddress());
+        addressLine2.setText(patientList.getAddressDetails().getPatientAddress2());
+        pinCode.setText(patientList.getAddressDetails().getPinCode());
+        mStateEditText.setText(patientList.getAddressDetails().getPatientStateName());
+        mSelectedStateID = patientList.getAddressDetails().getPatientState();
+        mCityEditText.setText(patientList.getAddressDetails().getPatientCityName());
+        mSelectedCityID = patientList.getAddressDetails().getPatientCity();
+        mAreaEditText.setText(patientList.getAddressDetails().getPatientAreaName());
+        mSelectedAreaID = patientList.getAddressDetails().getPatientArea();
+
+
+        if (patientList.getReferedDetails().getReferredTypeId() != 0) {
+            for (int i = 0; i < referenceTypes.size(); i++) {
+                if (referenceTypes.get(i).getId() == patientList.getReferedDetails().getReferredTypeId()) {
+                    mReferenceBySpinner.setSelection(i+1);
+                }
+
+            }
+            mSelectedReferenceTypeID = patientList.getReferedDetails().getReferredTypeId();
+        }
+
+        if (patientList.getReferedDetails().getReferredTypeId() == 1)
+            mSalutationSpinnerRef.setVisibility(View.GONE);
+
+
+        if (patientList.getReferedDetails().getReferredTypeId() == 2 || patientList.getReferedDetails().getReferredTypeId() == 3) {
+            if (patientList.getReferedDetails().getSalutation() == 1)
+                mSalutationSpinnerRef.setSelection(0);
+            else if (patientList.getSalutation() == 2)
+                mSalutationSpinnerRef.setSelection(1);
+            else if (patientList.getSalutation() == 3)
+                mSalutationSpinnerRef.setSelection(2);
+        }
+
+        mReferredBy.setText(patientList.getReferedDetails().getName());
+        mReferredPhone.setText(patientList.getReferedDetails().getPhoneNumber());
+        mReferredEmail.setText(patientList.getReferedDetails().getEmailId());
+        referredDetails.setText(patientList.getReferedDetails().getDescription());
+
+        checkboxDeceasedPatient.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b){
+                    showSetDeadDialog();
+                }else {
+                    isPatientDead=false;
+                }
+            }
+        });
+    }
+
+    private void showSetDeadDialog() {
+        // closeDrawer();
+        final Dialog dialog = new Dialog(mContext);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_exit);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+       TextView textView=dialog.findViewById(R.id.textview_sucess);
+        textView.setText(R.string.deceased_patient_dialog_text);
+        dialog.findViewById(R.id.button_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+               isPatientDead=true;
+            }
+        });
+        dialog.findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                isPatientDead=false;
+                checkboxDeceasedPatient.setChecked(false);
+            }
+        });
+
+        dialog.show();
 
     }
 
@@ -384,9 +613,11 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
             @Override
             public void afterTextChanged(Editable editable) {
+
+
                 if (editable.length() == 12) {
                     String s = editable.toString(); // get your editext value here
-                    Pattern pattern = Pattern.compile("^[2-9]{1}[0-9]{11}$");
+                    Pattern pattern = Pattern.compile("^[0-9]{12}$");
                     Matcher matcher = pattern.matcher(s);
                     // Check if pattern matches
                     if (matcher.matches()) {
@@ -417,7 +648,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 if (hasFocus) {
                 } else {
                     String refno = mReferenceID.getText().toString();
-
                     if (!refno.isEmpty()) {
                         if (isEnteredRefIDIsValid(refno)) {
                             mAppointmentHelper.checkReferenceNo(refno);
@@ -464,7 +694,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         });
     }
 
-    @OnClick({R.id.backButton, R.id.btnAddPatientSubmit, R.id.stateEditText, R.id.cityEditText, R.id.areaEditText, R.id.referredBy, R.id.referredByTextInputLayout, R.id.dob, R.id.profileImage})
+    @OnClick({R.id.backButton, R.id.btnAddPatientSubmit, R.id.stateEditText, R.id.cityEditText, R.id.areaEditText, R.id.referredBy, R.id.referredByTextInputLayout, R.id.dob, R.id.patientProfileImage})
     public void back(View view) {
 
         final FragmentManager fm = getFragmentManager();
@@ -479,6 +709,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     if (RescribeConstants.WAITING_LIST.equalsIgnoreCase(mActivityStartFrom)) {
                         mAddNewPatientSelectedOption = 1;
                         doAddNewPatientOnSelectedOption();
+                    } else if (RescribeConstants.EDIT_PATIENT.equalsIgnoreCase(mActivityStartFrom)) {
+                        mAppointmentHelper.updatePatient(patientDetail);
                     } else {
                         if (NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this)) {
                             showDialogToSelectOption();
@@ -563,7 +795,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
                         @Override
                         public void onItemClicked(int id, String value) {
-                            mSelectedAreaID = id;
+                            if (id==0){
+                                mSelectedAreaID=value;
+                            }else
+                            mSelectedAreaID = String.valueOf(id);
                             mAreaEditText.setText("" + value);
                         }
                     });
@@ -635,7 +870,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 datePickerDialog.setMaxDate(Calendar.getInstance());
                 datePickerDialog.show(this.getSupportFragmentManager(), "AddRecords");
                 break;
-            case R.id.profileImage:
+            case R.id.patientProfileImage:
                 imageutils.imagepicker(1);
                 break;
         }
@@ -858,32 +1093,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         } else if (!isMobileNoMandatory && (!mob.isEmpty() && !(mob.trim().startsWith("6") || mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9")))) {
             message = getString(R.string.err_invalid_mobile_no);
             CommonMethods.showToast(this, message);
-        }
-
-
-//        else if (isMobileNoMandatory) {
-//
-//            if (mob.isEmpty() && mob.length() < 10) {
-//                message = enter + getString(R.string.enter_mobile_no_error);
-//                CommonMethods.showToast(this, message);
-//            } else if ((mob.trim().length() < 10) || !(mob.trim().startsWith("6") || mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9"))) {
-//                message = getString(R.string.err_invalid_mobile_no);
-//                CommonMethods.showToast(this, message);
-//            }
-//        }
-//
-//        else if (!isMobileNoMandatory){
-//            if (!mob.isEmpty() && mob.length() < 10) {
-//                message = enter + getString(R.string.enter_mobile_no_error);
-//                CommonMethods.showToast(this, message);
-//            } else if (!mob.isEmpty() && !(mob.trim().startsWith("6") || mob.trim().startsWith("7") || mob.trim().startsWith("8") || mob.trim().startsWith("9"))) {
-//                message = getString(R.string.err_invalid_mobile_no);
-//                CommonMethods.showToast(this, message);
-//            }
-//        }
-//
-
-        else if (!altPhnNo.isEmpty() && altPhnNo.length() < 10) {
+        } else if (!altPhnNo.isEmpty() && altPhnNo.length() < 10) {
             message = enter + getString(R.string.enter_mobile_no_alt_phn);
             CommonMethods.showToast(this, message);
         } else if (!altPhnNo.isEmpty() && !(altPhnNo.trim().startsWith("6") || altPhnNo.trim().startsWith("7") || altPhnNo.trim().startsWith("8") || altPhnNo.trim().startsWith("9"))) {
@@ -901,7 +1111,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         } else if (!refEmail.isEmpty() && !CommonMethods.isValidEmail(refEmail)) {
             message = getString(R.string.err_ref_email_invalid);
             CommonMethods.showToast(this, message);
-        } else if (!enteredRefIDIsValid && !isReferenceNo) {
+        } else if (!refID.isEmpty() && enteredRefIDIsValid && !isReferenceNo) {
+            mAppointmentHelper.checkReferenceNo(refID);
             message = getString(R.string.reference_id_input_err_msg);
             CommonMethods.showToast(this, message);
         } else if (!panNo.isEmpty() && ((panNo.trim().length() < 10))) {
@@ -925,9 +1136,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             int id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
             patientList.setPatientId(id);
             if (middleName.trim().length() == 0) {
-                middleName = "|";
+                middleName = "";
             }
             patientList.setPatientName(firstName + " " + middleName + " " + lastName);
+            patientDetail.setPatientName(firstName + " " + middleName + " " + lastName);
             patientDetail.setPatientFname(firstName);
             patientDetail.setPatientMname(middleName);
             patientDetail.setPatientLname(lastName);
@@ -969,9 +1181,20 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             patientDetail.setPanNumber(panNo);
             patientDetail.setBloodGroup(mSelectedBloodGroupID);
             patientDetail.setRegisterFor(registeredFor.getText().toString());
+
+            if (editPatientData != null) {
+                patientDetail.setDead(isPatientDead);
+                patientDetail.setDocId(Integer.parseInt(docId));
+                patientDetail.setPatientId(editPatientData.getPatientId());
+                patientDetail.setHospitalPatId(editPatientData.getHospitalPatId());
+            }
+
             //------ reference details----
             if (mReferenceDetailLayout.getVisibility() == View.VISIBLE) {
                 PatientReferenceDetails ref = new PatientReferenceDetails();
+                if (editPatientData != null) {
+                    ref.setDetailedId(editPatientData.getReferedDetails().getDetailedId());
+                }
                 ref.setName(refName);
                 ref.setPhoneNumber(refMob);
                 ref.setEmailId(refEmail);
@@ -990,7 +1213,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 } else if (mSelectedReferenceTypeName.toLowerCase().equalsIgnoreCase("patient")) {
                     if (mSelectedPatientReference != null) {
                         ref.setPatientId(String.valueOf(mSelectedPatientReference.getPatientId()));
-                        ref.setSalutation(String.valueOf(mSelectedSalutationOfPatientRef));
+                        ref.setSalutation(mSelectedSalutationOfPatientRef);
                     } else {
                         ref.setName("");
                         ref.setPhoneNumber("");
@@ -1000,7 +1223,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 } else if (mSelectedReferenceTypeName.toLowerCase().equalsIgnoreCase("person")) {
                     ref.setDocId("");
                     ref.setPatientId("0");
-                    ref.setSalutation(String.valueOf(mSelectedSalutationOfPatientRef));
+                    ref.setSalutation(mSelectedSalutationOfPatientRef);
                 } else {
                     ref.setDocId("");
                     ref.setPatientId("");
@@ -1026,20 +1249,21 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             if (mAddressDetailLayout.getVisibility() == View.VISIBLE) {
                 PatientAddressDetails address = new PatientAddressDetails();
                 address.setPatientAddress(mAddressLine.getText().toString().trim());
+                address.setPatientAddress2(addressLine2.getText().toString().trim());
 
                 if (mSelectedStateID != -1)
-                    address.setPatientState("" + mSelectedStateID);
+                    address.setPatientState(mSelectedStateID);
                 else
-                    address.setPatientState("");
+                    address.setPatientState(0);
 
                 if (mSelectedCityID != -1)
-                    address.setPatientCity("" + mSelectedCityID);
+                    address.setPatientCity(mSelectedCityID);
                 else
-                    address.setPatientCity("");
-                if (mSelectedAreaID != -1)
-                    address.setPatientArea("" + mSelectedAreaID);
+                    address.setPatientCity(0);
+                if (!mSelectedAreaID.equalsIgnoreCase("0"))
+                    address.setPatientArea(mSelectedAreaID);
                 else
-                    address.setPatientArea("");
+                    address.setPatientArea(mSelectedAreaID);
 
                 address.setPinCode(pinCodeNo);
                 patientList.setAddressDetails(address);
@@ -1053,9 +1277,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 //This is done, bzac wrong imeplementation at server
                 PatientAddressDetails address = new PatientAddressDetails();
                 address.setPatientAddress("");
-                address.setPatientState("");
-                address.setPatientCity("");
-                address.setPatientArea("");
+                address.setPatientAddress2("");
+                address.setPatientState(0);
+                address.setPatientCity(0);
+                address.setPatientArea("0");
                 address.setPinCode("");
                 patientList.setAddressDetails(address);
                 patientDetail.setPatientAddressDetails(address);
@@ -1191,7 +1416,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
 
                     referenceTypes = referenceBaseModel.getReferenceData().getReferenceTypeList();
-                    List<String> referenceNames = new ArrayList<>();
+                    referenceNames = new ArrayList<>();
                     referenceNames.add("Select reference");
                     for (ReferenceType referenceType : referenceTypes) {
                         referenceNames.add(referenceType.getType());
@@ -1200,7 +1425,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     mReferenceBySpinner.setAdapter(spinnerArrayAdapter);
 
                     bloodGroups = referenceBaseModel.getReferenceData().getBloodGroups();
-                    List<String> bloodGroupNames = new ArrayList<>();
+                    bloodGroupNames = new ArrayList<>();
                     bloodGroupNames.add("Select Blood Group");
                     for (BloodGroup bloodGroup : bloodGroups) {
                         if (!bloodGroup.getBloodGroup().equalsIgnoreCase("Select one"))
@@ -1209,6 +1434,17 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     ArrayAdapter spinnerArrayAdapterBloodGroup = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, bloodGroupNames);
                     bloodGroupSpinner.setAdapter(spinnerArrayAdapterBloodGroup);
                     initializeView(referenceBaseModel.getReferenceData().getRegistrationFieldList());
+
+                    if (mActivityStartFrom.equalsIgnoreCase(RescribeConstants.EDIT_PATIENT))
+                        setEditPatientData(editPatientData);
+
+
+                    validatePanCardNo();
+                    validateAadharCardNo();
+                    referenceNo();
+                    doSpinnerItemSelectedListener();
+
+
                 }
                 // CommonMethods.showToast(this, referenceBaseModel.getCommon().getStatusMessage());
 
@@ -1253,13 +1489,27 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
                     boolean isExists = panAadharExist.getResponseIsExist().isIsExists();
                     if (isExists) {
-                        CommonMethods.showToast(mContext, "This reference no is already exist");
+                        CommonMethods.showToast(mContext, "Reference Id already exists");
                         isReferenceNo = false;
                     } else {
                         isReferenceNo = true;
                     }
 
                 }
+
+            }
+            break;
+            case RescribeConstants.TASK_UPDATE_PATIENT: {
+                CommonBaseModelContainer container = (CommonBaseModelContainer) customResponse;
+                if (container.getCommonRespose().isSuccess()) {
+                    CommonMethods.showToast(mContext, container.getCommonRespose().getStatusMessage());
+                    if (FILEPATH != null)
+                        uploadProfileImage(FILEPATH, editPatientData.getPatientId());
+                    onBackPressed();
+                } else {
+                    CommonMethods.showToast(mContext, container.getCommonRespose().getStatusMessage());
+                }
+
 
             }
             break;
@@ -1294,9 +1544,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         isMobileNoMandatory = registrationField.isMandatory();
                         layoutContactNo.setVisibility(View.VISIBLE);
                         if (registrationField.isMandatory()) {
-                            mMobNo.setHint(getString(R.string.enter_mobile_no));
+                            TextInputLayoutMobileNo.setHint(getString(R.string.enter_mobile_no));
                         } else {
-                            mMobNo.setHint(getString(R.string.enter_ref_mobile_no));
+                            TextInputLayoutMobileNo.setHint(getString(R.string.enter_ref_mobile_no));
                         }
                     } else
                         layoutContactNo.setVisibility(View.GONE);
@@ -1381,6 +1631,17 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     else
                         layoutAadhaarNo.setVisibility(View.GONE);
                     break;
+
+                case "is_dead":
+                    if (mActivityStartFrom.equalsIgnoreCase(RescribeConstants.EDIT_PATIENT)) {
+                        if (registrationField.isFieldValue())
+                            layoutDeceasedPatient.setVisibility(View.VISIBLE);
+                        else
+                            layoutDeceasedPatient.setVisibility(View.GONE);
+                    }
+                    break;
+
+
             }
         }
 
@@ -1516,9 +1777,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
                     }
 
-                    mReferredBy.setText("");
-                    mReferredEmail.setText("");
-                    mReferredPhone.setText("");
+                   // mReferredBy.setText("");
+                   // mReferredEmail.setText("");
+                   // mReferredPhone.setText("");
                 } else {
                     Log.e("position else", "" + position);
                     mSelectedReferenceTypeID = 0;
@@ -1610,7 +1871,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int Selectedrel = position;
                 Log.e("position---", "" + position);
-                List<String> listRelation;
+
                 if (genderMale.isChecked()) {
                     listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
                     Log.e("mRelation MR", listRelation.get(Selectedrel));
@@ -1624,8 +1885,6 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                     listRelation = Arrays.asList(getResources().getStringArray(R.array.other_relation_entries));
                     Log.e("mRelation Other", listRelation.get(Selectedrel));
                     mRelation = listRelation.get(Selectedrel);
-
-
                 }
 
             }
@@ -1686,8 +1945,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
 
     public void uploadProfileImage(final String filePath, Integer patientId) {
-
-        mCustomProgressDialog.show();
+        if (mCustomProgressDialog != null)
+            mCustomProgressDialog.show();
 
         HashMap<String, String> mapHeaders = new HashMap<String, String>();
         mapHeaders.put(RescribeConstants.AUTHORIZATION_TOKEN, authorizationString);
@@ -1722,15 +1981,18 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                                     .apply(requestOptions).thumbnail(0.5f)
                                     .into(profileImage);
                             mCustomProgressDialog.dismiss();
+                            FILEPATH=null;
                         } else {
                             mCustomProgressDialog.dismiss();
                             Toast.makeText(AddNewPatientWebViewActivity.this, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                            FILEPATH=null;
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mCustomProgressDialog.dismiss();
+                FILEPATH=null;
                 Toast.makeText(getApplicationContext(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
 
             }

@@ -68,21 +68,43 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="vertical">
 
-                    <com.rescribe.doctor.ui.customesViews.CircularImageView
-                        android:id="@+id/profileImage"
+                    <RelativeLayout
                         android:layout_width="@dimen/dp100"
-                        android:layout_height="@dimen/dp100"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="@dimen/dp10"
-                        app:border="true"
-                        app:border_color="@color/white"
-                        app:border_width="@dimen/dp1"
-                        app:shadow="true"
-                        app:srcCompat="@drawable/default_profile_pic" />
+                        android:layout_height="@dimen/dp100">
+
+                        <com.rescribe.doctor.ui.customesViews.CircularImageView
+                            android:id="@+id/profileImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="@dimen/dp10"
+                            app:border="true"
+                            app:border_color="@color/white"
+                            app:border_width="@dimen/dp1"
+                            app:shadow="true"
+                            app:srcCompat="@drawable/default_profile_pic" />
+
+                        <ImageView
+                            android:layout_width="@dimen/dp32"
+                            android:layout_height="@dimen/dp32"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/photo_camera"
+                            android:padding="@dimen/dp10"
+                            android:tint="@color/black"
+                            android:layout_alignParentEnd="true"
+                            android:background="@drawable/circle_profile_camera"
+                            android:layout_marginEnd="@dimen/dp12"
+                            android:layout_marginRight="@dimen/dp12"
+                            android:layout_marginBottom="@dimen/dp12"/>
+                    </RelativeLayout>
+
 
                 </LinearLayout>
+
 
 
                 <LinearLayout
@@ -252,30 +274,28 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <android.support.design.widget.TextInputLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="?actionBarSize"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp10"
-                        android:background="@null"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        app:theme="@style/text_edit">
+                        android:orientation="vertical">
 
-                        <EditText
-                            android:id="@+id/editSpeciality"
-                            android:layout_width="match_parent"
+                        <com.rescribe.doctor.ui.customesViews.CustomTextView
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:background="@null"
-                            android:fontFamily="@font/roboto_regular"
                             android:gravity="center|left"
-                            android:hint="@string/speciality"
-                            android:inputType="text"
-                            android:maxLength="100"
+                            android:text="@string/speciality"
                             android:textColor="@color/black"
-                            android:textColorHint="@color/black"
-                            android:textSize="@dimen/sp16" />
+                            android:textSize="@dimen/sp14" />
+                        <Spinner
+                            android:id="@+id/specialitySpinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="@dimen/dp10"/>
 
-                    </android.support.design.widget.TextInputLayout>
+                    </LinearLayout>
+
+
 
                     <View
                         android:layout_width="match_parent"
@@ -304,7 +324,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
-                            android:focusable="false"
                             android:fontFamily="@font/roboto_regular"
                             android:gravity="center|left"
                             android:hint="@string/education"
@@ -341,14 +360,13 @@
                         app:theme="@style/text_edit">
 
                         <EditText
-                            android:id="@+id/editExprince"
+                            android:id="@+id/editExperience"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
-                            android:focusable="false"
                             android:fontFamily="@font/roboto_regular"
                             android:gravity="center|left"
-                            android:hint="@string/education"
+                            android:hint="@string/experience"
                             android:inputType="number"
                             android:maxLength="10"
                             android:textColor="@color/black"
@@ -384,19 +402,19 @@
                         <EditText
                             android:id="@+id/editAbout"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="@dimen/dp100"
                             android:background="@null"
                             android:fontFamily="@font/roboto_regular"
                             android:hint="@string/about"
+                            android:paddingTop="@dimen/dp5"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
                             android:textSize="@dimen/sp16"
                             android:inputType="text|textMultiLine"
-                            android:lines="10"
-                            android:minLines="5"
-                            android:gravity="top|left"
-                            android:maxLines="15"
-
+                            android:gravity="top|start"
+                            android:overScrollMode="always"
+                            android:scrollbarStyle="insideInset"
+                            android:scrollbars="vertical"
                             />
 
                     </android.support.design.widget.TextInputLayout>
@@ -414,7 +432,7 @@
 
 
                 <Button
-                    android:id="@+id/btnAddPatientSubmit"
+                    android:id="@+id/btnAddDocUpdate"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:layout_gravity="center"
@@ -423,7 +441,7 @@
                     android:background="@color/tagColor"
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="center"
-                    android:text="@string/save"
+                    android:text="@string/update"
                     android:textAllCaps="true"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/sp16" />

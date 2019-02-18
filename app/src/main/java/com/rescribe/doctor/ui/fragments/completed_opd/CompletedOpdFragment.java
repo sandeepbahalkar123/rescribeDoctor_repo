@@ -180,9 +180,10 @@ public class CompletedOpdFragment extends Fragment implements CompletedOpdAdapte
 
             boolean isLongPress = mCompletedOpdAdapter != null && mCompletedOpdAdapter.isLongPressed;
 
+            boolean isOneHospital=CommonMethods.isSingleHospital();
             LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearlayoutManager);
-            mCompletedOpdAdapter = new CompletedOpdAdapter(getActivity(), mCompletedOpdArrayList, this);
+            mCompletedOpdAdapter = new CompletedOpdAdapter(getActivity(), mCompletedOpdArrayList, this,isOneHospital);
             recyclerView.setAdapter(mCompletedOpdAdapter);
             mCompletedOpdAdapter.isLongPressed = isLongPress;
 

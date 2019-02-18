@@ -6,6 +6,7 @@ import com.android.volley.Request;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.UpdateDoctorRequestModel;
 import com.rescribe.doctor.model.login.ActiveRequest;
 import com.rescribe.doctor.model.login.LoginModel;
 import com.rescribe.doctor.network.ConnectRequest;
@@ -31,11 +32,9 @@ public class ProfileHelper implements ConnectionListener {
         switch (responseResult) {
             case ConnectionListener.RESPONSE_OK:
                 switch (mOldDataTag) {
-                    case RescribeConstants.TASK_DOCTOR_SPECIALIST_LIST:
-                        LoginModel loginModel = (LoginModel) customResponse;
-                        mHelperResponseManager.onSuccess(mOldDataTag, loginModel);
+                    case RescribeConstants.TASK_DOCTOR_PROFILE_UPDATE:
+                        mHelperResponseManager.onSuccess(mOldDataTag, customResponse);
                         break;
-
                 }
                 break;
             case ConnectionListener.PARSE_ERR0R:
@@ -61,20 +60,13 @@ public class ProfileHelper implements ConnectionListener {
     }
 
 
-    public void getDoctorSpecialityList() {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DOCTOR_SPECIALIST_LIST, Request.Method.GET, true);
-        mConnectionFactory.setHeaderParams();
-        mConnectionFactory.setUrl(Config.GET_DOCTOR_SPECIALIST_LIST);
-        mConnectionFactory.createConnection(RescribeConstants.TASK_DOCTOR_SPECIALIST_LIST);
-    }
 
-    // Logout
-    public void doLogout(ActiveRequest activeRequest) {
-        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.LOGOUT, Request.Method.POST, false);
+    public void doctorProfileUpdate(UpdateDoctorRequestModel doctorRequestModel) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_DOCTOR_PROFILE_UPDATE, Request.Method.POST, false);
         mConnectionFactory.setHeaderParams();
-        mConnectionFactory.setPostParams(activeRequest);
-        mConnectionFactory.setUrl(Config.LOGOUT);
-        mConnectionFactory.createConnection(RescribeConstants.LOGOUT);
+        mConnectionFactory.setPostParams(doctorRequestModel);
+        mConnectionFactory.setUrl(Config.UPDATE_DOCTOR_PROFILE);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_DOCTOR_PROFILE_UPDATE);
     }
 
 }
