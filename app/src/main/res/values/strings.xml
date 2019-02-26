@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Dr Rescribe</string>
     <string name="enter_mobile_no">Mobile No. *</string>
-    <string name="enter_mobile_no_alt_phn">Alternate Phone number</string>
+    <string name="enter_mobile_no_alt_phn">Alternate Mobile No.</string>
     <string name="enter_mobile_no_error">Mobile No.</string>
     <string name="enter_ref_mobile_no">Mobile No.</string>
     <string name="log_in">Login</string>
@@ -338,6 +338,7 @@
         <item>Son</item>
         <item>Father</item>
         <item>Husband</item>
+        <item>Other</item>
     </string-array>
 
 
@@ -353,6 +354,7 @@
         <item>Daughter</item>
         <item>Mother</item>
         <item>Wife</item>
+        <item>Other</item>
     </string-array>
 
     <string-array name="other_relation_entries">
@@ -363,6 +365,7 @@
         <item>Daughter</item>
         <item>Mother</item>
         <item>Wife</item>
+        <item>Other</item>
     </string-array>
 
     <string name="action_settings">Page Size</string>
@@ -406,7 +409,7 @@
     <string name="plz_enter_your_correct_pan_num">Enter correct pan number.</string>
     <string name="plz_enter_your_correct_aadhar_num">Enter correct aadhar number.</string>
     <string name="plz_enter_valid_pin_code">Enter Valid Pin Code.</string>
-    <string name="web_url">WebSite URL</string>
+    <string name="web_url">Website URL</string>
     <string name="speciality">Speciality</string>
     <string name="education">Education</string>
     <string name="about">About</string>
@@ -414,7 +417,7 @@
     <string name="experience">Experience</string>
     <string name="deceased_patient">Deceased Patient</string>
     <string name="patient_no_more">Patient No More</string>
-    <string name="patient_update">Patient Update</string>
+    <string name="patient_update">Update Patient</string>
     <string name="deceased_patient_dialog_text">If you click this checkbox then you cannot modify deceased patient\'s data.</string>
 
 </resources>

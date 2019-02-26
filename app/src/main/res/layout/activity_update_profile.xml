@@ -136,7 +136,7 @@
                                 android:fontFamily="@font/roboto_regular"
                                 android:gravity="center|left"
                                 android:hint="@string/name"
-                                android:inputType="text"
+                                android:inputType="textPersonName|textCapWords"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black"
                                 android:textSize="@dimen/sp16" />
@@ -327,8 +327,7 @@
                             android:fontFamily="@font/roboto_regular"
                             android:gravity="center|left"
                             android:hint="@string/education"
-                            android:inputType="text"
-                            android:maxLength="50"
+                            android:inputType="textPersonName|textCapWords"                                 android:maxLength="50"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
                             android:textSize="@dimen/sp16" />
@@ -410,7 +409,7 @@
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
                             android:textSize="@dimen/sp16"
-                            android:inputType="text|textMultiLine"
+                            android:inputType="textPersonName|textCapWords|textMultiLine"
                             android:gravity="top|start"
                             android:overScrollMode="always"
                             android:scrollbarStyle="insideInset"
@@ -427,8 +426,6 @@
 
 
                 </LinearLayout>
-
-
 
 
                 <Button

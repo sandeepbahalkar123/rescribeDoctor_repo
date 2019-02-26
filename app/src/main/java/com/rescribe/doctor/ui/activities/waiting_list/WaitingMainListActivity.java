@@ -27,6 +27,7 @@ import com.rescribe.doctor.ui.activities.my_patients.add_new_patient.AddNewPatie
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
 import com.rescribe.doctor.ui.fragments.waiting_list.ActivePatientListFragment;
 import com.rescribe.doctor.ui.fragments.waiting_list.ViewAllPatientListFragment;
+import com.rescribe.doctor.util.CommonMethods;
 import com.rescribe.doctor.util.NetworkUtil;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -174,30 +175,34 @@ public class WaitingMainListActivity extends AppCompatActivity implements Helper
                 break;
             case R.id.addNewPatientFAB: {
 
-                if (mViewPagerAdapter != null) {
-                    HashMap<String, String> selectedClinicDataMap = null;
-                    switch (viewpager.getCurrentItem()) {
-                        case 0:
-                            selectedClinicDataMap = activePatientListFragment.getSelectedClinicDataMap();
-                            break;
-                        case 1:
-                            selectedClinicDataMap = viewAllPatientListFragment.getSelectedClinicDataMap();
-                            break;
-                    }
-                    if (selectedClinicDataMap != null) {
-                        Bundle b = new Bundle();
-                        b.putInt(RescribeConstants.CLINIC_ID, Integer.parseInt(selectedClinicDataMap.get(RescribeConstants.CLINIC_ID)));
-                        b.putInt(RescribeConstants.CITY_ID, Integer.parseInt(selectedClinicDataMap.get(RescribeConstants.CITY_ID)));
-                        b.putString(RescribeConstants.CITY_NAME, selectedClinicDataMap.get(RescribeConstants.CITY_NAME));
-                        b.putString(RescribeConstants.LOCATION_ID, selectedClinicDataMap.get(RescribeConstants.LOCATION_ID));
+                if (NetworkUtil.getConnectivityStatusBoolean(WaitingMainListActivity.this)) {
+                    if (mViewPagerAdapter != null) {
+                        HashMap<String, String> selectedClinicDataMap = null;
+                        switch (viewpager.getCurrentItem()) {
+                            case 0:
+                                selectedClinicDataMap = activePatientListFragment.getSelectedClinicDataMap();
+                                break;
+                            case 1:
+                                selectedClinicDataMap = viewAllPatientListFragment.getSelectedClinicDataMap();
+                                break;
+                        }
 
-                        Intent i = new Intent(WaitingMainListActivity.this, AddNewPatientWebViewActivity.class);
-                        //  Intent i = new Intent(getActivity(), AddNewPatientActivity.class);
-                        i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
-                        i.putExtra(RescribeConstants.START_FROM, RescribeConstants.WAITING_LIST);
-                        startActivityForResult(i, 121);
-                    }
 
+                        if (selectedClinicDataMap != null && !selectedClinicDataMap.isEmpty()) {
+                            Bundle b = new Bundle();
+                            b.putInt(RescribeConstants.CLINIC_ID, Integer.parseInt(selectedClinicDataMap.get(RescribeConstants.CLINIC_ID)));
+                            b.putInt(RescribeConstants.CITY_ID, Integer.parseInt(selectedClinicDataMap.get(RescribeConstants.CITY_ID)));
+                            b.putString(RescribeConstants.CITY_NAME, selectedClinicDataMap.get(RescribeConstants.CITY_NAME));
+                            b.putString(RescribeConstants.LOCATION_ID, selectedClinicDataMap.get(RescribeConstants.LOCATION_ID));
+
+                            Intent i = new Intent(WaitingMainListActivity.this, AddNewPatientWebViewActivity.class);
+                            //  Intent i = new Intent(getActivity(), AddNewPatientActivity.class);
+                            i.putExtra(RescribeConstants.PATIENT_DETAILS, b);
+                            i.putExtra(RescribeConstants.START_FROM, RescribeConstants.WAITING_LIST);
+                            startActivityForResult(i, 121);
+                        }
+
+                    }
                 }
                 //   showDialogToSelectLocation();
                 break;

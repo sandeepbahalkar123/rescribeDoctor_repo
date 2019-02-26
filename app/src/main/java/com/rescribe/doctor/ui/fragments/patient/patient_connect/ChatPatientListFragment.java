@@ -119,7 +119,8 @@ public class ChatPatientListFragment extends Fragment implements ChatPatientList
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
 
         ArrayList<PatientList> patientLists = new ArrayList<>();
-        mMyPatientsAdapter = new ChatPatientListAdapter(getActivity(), patientLists, this, mFromWhichActivity.equals(RescribeConstants.MY_APPOINTMENTS));
+        boolean isOneHospital = CommonMethods.isSingleHospital();
+        mMyPatientsAdapter = new ChatPatientListAdapter(getActivity(), patientLists, this, mFromWhichActivity.equals(RescribeConstants.MY_APPOINTMENTS),isOneHospital);
         recyclerView.setAdapter(mMyPatientsAdapter);
 
         nextPage(0);

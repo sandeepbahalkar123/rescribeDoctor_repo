@@ -49,12 +49,14 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
     public boolean isLongPressed;
     private OnDownArrowClicked mOnDownArrowClicked;
     private ArrayList<PatientList> mListToShowAfterFilter;
+    private  boolean isOneHospital;
 
-    public ChatPatientListAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean fromMyAppointmentOrfromPatientConnect) {
+    public ChatPatientListAdapter(Context mContext, ArrayList<PatientList> dataList, OnDownArrowClicked mOnDownArrowClicked, boolean fromMyAppointmentOrfromPatientConnect, boolean isOneHospital) {
         this.mListToShowAfterFilter = dataList;
         mDataList.addAll(dataList);
         this.mContext = mContext;
         this.mOnDownArrowClicked = mOnDownArrowClicked;
+        this.isOneHospital = isOneHospital;
     }
 
     @Override
@@ -83,8 +85,13 @@ public class ChatPatientListAdapter extends RecyclerView.Adapter<ChatPatientList
         if (patientObject.getHospitalName() == null || patientObject.getHospitalName().isEmpty())
             holder.patientClinic.setVisibility(View.GONE);
         else {
-            holder.patientClinic.setVisibility(View.VISIBLE);
-            holder.patientClinic.setText(patientObject.getHospitalName());
+            if (isOneHospital){
+                holder.patientClinic.setVisibility(View.GONE);
+            }else {
+                holder.patientClinic.setVisibility(View.VISIBLE);
+                holder.patientClinic.setText(patientObject.getHospitalName());
+            }
+
         }
 
 

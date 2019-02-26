@@ -211,9 +211,15 @@ public class ProfileActivity extends BottomMenuActivity implements BottomMenuAda
             aboutDoctorDescription.setText(docDetail.getDocInfo());
         }
 
-        countDoctorExperience.setText(docDetail.getDocExperience());
-        doctorExperience.setText(docDetail.getDocExperience() + " years of experience");
-        doctorSpecialization.setText(docDetail.getDocDegree());
+
+        if(docDetail.getDocExperience().isEmpty()){
+            doctorExperienceLayout.setVisibility(View.GONE);
+        }else {
+            doctorExperienceLayout.setVisibility(View.VISIBLE);
+            countDoctorExperience.setText(docDetail.getDocExperience());
+            doctorExperience.setText(docDetail.getDocExperience() + " years of experience");
+            doctorSpecialization.setText(docDetail.getDocDegree());
+        }
 
         if (docDetail.isPremium()) {
             premiumType.setText(RescribeConstants.PREMIUM);

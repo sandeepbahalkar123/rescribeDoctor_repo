@@ -182,7 +182,6 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
         LinearLayoutManager linearlayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearlayoutManager);
         boolean isOneHospital = CommonMethods.isSingleHospital();
-
         mMyPatientsAdapter = new MyPatientsAdapter(getActivity(), patientLists, this, fromActivityLaunched.equals(RescribeConstants.HOME_PAGE), isOneHospital);
 
 
@@ -715,6 +714,7 @@ public class MyPatientsFragment extends Fragment implements MyPatientsAdapter.On
                     bundle.putString(RescribeConstants.LOCATION_ID, String.valueOf(mDoctorLocationModel.get(0).getLocationId()));
                     Intent intent = new Intent(getActivity(), AddNewPatientWebViewActivity.class);
                     intent.putExtra(RescribeConstants.PATIENT_DETAILS, bundle);
+                    intent.putExtra(RescribeConstants.START_FROM, RescribeConstants.PATIENT_LIST);
                     getActivity().startActivityForResult(intent, ADD_PATIENT_REQUEST);
                     CommonMethods.Log("DOC_ID", "" + Integer.valueOf(RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, getActivity())));
                 } else {

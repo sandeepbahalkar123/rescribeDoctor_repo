@@ -276,6 +276,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
 
     int mSelectedSalutationOfPatient = 1;
+    String mSalutationNameOfPatient = "Mr.";
     int mSelectedSalutationOfPatientRef = 1;
     int mSelectedStateID = -1;
     int mSelectedCityID = -1;
@@ -323,6 +324,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     List<String> referenceNames;
     PatientList editPatientData = null;
     private boolean isPatientDead = false;
+    ArrayAdapter<String> spinnerRelationArrayAdapter;
 
     public static boolean isEnteredRefIDIsValid(String str) {
         boolean isValid = false;
@@ -359,7 +361,8 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         docId = RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext);
         editPanNo.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         //------------
-
+        listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+        setRelationSpinnerAdapter(listRelation);
 
         mActivityStartFrom = getIntent().getStringExtra(RescribeConstants.START_FROM);
 
@@ -371,6 +374,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             cityID = extras.getInt(RescribeConstants.CITY_ID);
             cityName = extras.getString(RescribeConstants.CITY_NAME);
             mWebViewTitle.setText(getString(R.string.patient_registration));
+            genderMale.setChecked(true);
 
         } else if (mActivityStartFrom.equalsIgnoreCase(RescribeConstants.EDIT_PATIENT)) {
             editPatientData = getIntent().getExtras().getParcelable(RescribeConstants.PATIENT_DETAILS);
@@ -409,6 +413,11 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         if (!NetworkUtil.getConnectivityStatusBoolean(mContext)) {
             TextInputLayoutMobileNo.setHint(getString(R.string.enter_mobile_no));
         }
+    }
+
+    private void setRelationSpinnerAdapter(List<String> listRelation) {
+        spinnerRelationArrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, listRelation);
+        mRelationSpinner.setAdapter(spinnerRelationArrayAdapter);
     }
 
     private void enableDisableView(View view, boolean enabled) {
@@ -455,16 +464,58 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 .apply(requestOptions).thumbnail(0.5f)
                 .into(profileImage);
 
-        if (patientList.getSalutation() == 1)
+        if (patientList.getSalutation() == 0) {
             mSalutationSpinner.setSelection(0);
-        else if (patientList.getSalutation() == 2)
+            genderMale.setChecked(true);
+            listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+            setRelationSpinnerAdapter(listRelation);
+        } else if (patientList.getSalutation() == 1) {
+            mSalutationSpinner.setSelection(0);
+            genderMale.setChecked(true);
+            listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+            setRelationSpinnerAdapter(listRelation);
+        } else if (patientList.getSalutation() == 2) {
             mSalutationSpinner.setSelection(1);
-        else if (patientList.getSalutation() == 3)
+            genderFemale.setChecked(true);
+            listRelation = Arrays.asList(getResources().getStringArray(R.array.mrs_relation_entries));
+            setRelationSpinnerAdapter(listRelation);
+        } else if (patientList.getSalutation() == 3) {
             mSalutationSpinner.setSelection(2);
+            genderFemale.setChecked(true);
+            listRelation = Arrays.asList(getResources().getStringArray(R.array.mrs_relation_entries));
+            setRelationSpinnerAdapter(listRelation);
+        } else if (patientList.getSalutation() == 4) {
+            mSalutationSpinner.setSelection(3);
+            genderOther.setChecked(true);
+            listRelation = Arrays.asList(getResources().getStringArray(R.array.other_relation_entries));
+            setRelationSpinnerAdapter(listRelation);
+        }
 
-        mFirstName.setText(patientList.getPatientFName());
-        mMiddleName.setText(patientList.getPatientMName());
-        mLastName.setText(patientList.getPatientLName());
+
+        String fName = patientList.getPatientFName();
+        String mName = patientList.getPatientMName();
+        String lName = patientList.getPatientLName();
+        if (fName == null || lName == null) {
+            String fullName = patientList.getPatientName();
+            String[] separated = fullName.split(" ");
+            if (separated.length == 3) {
+                fName = separated[0];
+                mName = separated[1];
+                lName = separated[2];
+            } else if (separated.length == 2) {
+                fName = separated[0];
+                mName = "";
+                lName = separated[1];
+            }
+
+        }
+
+
+        mFirstName.setText(CommonMethods.toCamelCase(fName));
+        mMiddleName.setText(CommonMethods.toCamelCase(mName));
+        mLastName.setText(CommonMethods.toCamelCase(lName));
+
+
         mMobNo.setText(patientList.getPatientPhone());
         alt_phn.setText(patientList.getPatAltPhoneNumber());
         mAge.setText(patientList.getAge());
@@ -472,17 +523,17 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         editPanNo.setText(patientList.getPanNumber());
         editAadhaarNo.setText(patientList.getAadharNumber());
 
-        if (!patientList.getPanNumber().isEmpty()) {
+        if (patientList.getPanNumber() != null && !patientList.getPanNumber().isEmpty()) {
             isPanValid = true;
         }
-        if (!patientList.getAadharNumber().isEmpty()) {
+        if (patientList.getAadharNumber() != null && !patientList.getAadharNumber().isEmpty()) {
             isAadharValid = true;
         }
 
-        if (!patientList.getReferenceID().isEmpty()){
-            isReferenceNo=true;
+        if (patientList.getReferenceID() != null && !patientList.getReferenceID().isEmpty()) {
+            isReferenceNo = true;
         }
-        if (!patientList.getBloodGroup().isEmpty()) {
+        if (patientList.getBloodGroup() != null && !patientList.getBloodGroup().isEmpty()) {
             int bloodGroupPos = 0;
             for (int i = 0; i < bloodGroupNames.size(); i++) {
                 if (bloodGroupNames.get(i).equalsIgnoreCase(patientList.getBloodGroup())) {
@@ -497,32 +548,43 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         }
         mReferenceID.setText(patientList.getReferenceID());
         registeredFor.setText(patientList.getRegisterFor());
+
         if (patientList.getGender().equalsIgnoreCase("male")) {
             genderMale.setChecked(true);
             listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+            setRelationSpinnerAdapter(listRelation);
+            mSalutationSpinner.setSelection(0);
         } else if (patientList.getGender().equalsIgnoreCase("female")) {
             genderFemale.setChecked(true);
             listRelation = Arrays.asList(getResources().getStringArray(R.array.mrs_relation_entries));
-        } else {
+            setRelationSpinnerAdapter(listRelation);
+            mSalutationSpinner.setSelection(1);
+
+        } else if (patientList.getGender().equalsIgnoreCase("transgender")) {
             genderOther.setChecked(true);
             listRelation = Arrays.asList(getResources().getStringArray(R.array.other_relation_entries));
+            setRelationSpinnerAdapter(listRelation);
+            mSalutationSpinner.setSelection(3);
+
+        } else {
+            genderMale.setChecked(true);
+            listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+            setRelationSpinnerAdapter(listRelation);
+            mSalutationSpinner.setSelection(0);
         }
 
 
-        //     mRelationSpinner.setSelection(2);
-
-        if (!patientList.getRelation().isEmpty()) {
+        if (patientList.getRelation() != null && !patientList.getRelation().isEmpty()) {
             for (int i = 0; i < listRelation.size(); i++) {
-                if (listRelation.get(i).equalsIgnoreCase(patientList.getRelation())) {
+                if (listRelation.get(i).toLowerCase().equalsIgnoreCase(patientList.getRelation())) {
                     mRelationSpinner.setSelection(i);
                 }
             }
             mRelation = patientList.getRelation();
         }
 
-
-        mAddressLine.setText(patientList.getAddressDetails().getPatientAddress());
-        addressLine2.setText(patientList.getAddressDetails().getPatientAddress2());
+        mAddressLine.setText(CommonMethods.toCamelCase(patientList.getAddressDetails().getPatientAddress()));
+        addressLine2.setText(CommonMethods.toCamelCase(patientList.getAddressDetails().getPatientAddress2()));
         pinCode.setText(patientList.getAddressDetails().getPinCode());
         mStateEditText.setText(patientList.getAddressDetails().getPatientStateName());
         mSelectedStateID = patientList.getAddressDetails().getPatientState();
@@ -535,7 +597,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         if (patientList.getReferedDetails().getReferredTypeId() != 0) {
             for (int i = 0; i < referenceTypes.size(); i++) {
                 if (referenceTypes.get(i).getId() == patientList.getReferedDetails().getReferredTypeId()) {
-                    mReferenceBySpinner.setSelection(i+1);
+                    mReferenceBySpinner.setSelection(i + 1);
                 }
 
             }
@@ -563,10 +625,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         checkboxDeceasedPatient.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
+                if (b) {
                     showSetDeadDialog();
-                }else {
-                    isPatientDead=false;
+                } else {
+                    isPatientDead = false;
                 }
             }
         });
@@ -581,20 +643,20 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         dialog.setContentView(R.layout.dialog_exit);
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
-       TextView textView=dialog.findViewById(R.id.textview_sucess);
+        TextView textView = dialog.findViewById(R.id.textview_sucess);
         textView.setText(R.string.deceased_patient_dialog_text);
         dialog.findViewById(R.id.button_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-               isPatientDead=true;
+                isPatientDead = true;
             }
         });
         dialog.findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                isPatientDead=false;
+                isPatientDead = false;
                 checkboxDeceasedPatient.setChecked(false);
             }
         });
@@ -639,26 +701,26 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         });
     }
 
-    private void referenceNo() {
-
-
-        mReferenceID.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                } else {
-                    String refno = mReferenceID.getText().toString();
-                    if (!refno.isEmpty()) {
-                        if (isEnteredRefIDIsValid(refno)) {
-                            mAppointmentHelper.checkReferenceNo(refno);
-                        }
-                    }
-                }
-            }
-        });
-
-
-    }
+//    private void referenceNo() {
+//
+//
+//        mReferenceID.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean hasFocus) {
+//                if (hasFocus) {
+//                } else {
+//                    String refno = mReferenceID.getText().toString();
+//                    if (!refno.isEmpty()) {
+//                        if (isEnteredRefIDIsValid(refno)) {
+//                            mAppointmentHelper.checkReferenceNo(refno);
+//                        }
+//                    }
+//                }
+//            }
+//        });
+//
+//
+//    }
 
     private void validatePanCardNo() {
         editPanNo.addTextChangedListener(new TextWatcher() {
@@ -694,6 +756,35 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         });
     }
 
+    public void setGenderChangeListner() {
+
+        mGenderRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+
+                switch (radioGroup.getCheckedRadioButtonId()) {
+                    case R.id.genderMale:
+                        mSalutationSpinner.setSelection(0);
+                        listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+                        setRelationSpinnerAdapter(listRelation);
+                        break;
+                    case R.id.genderFemale:
+                        mSalutationSpinner.setSelection(1);
+                        listRelation = Arrays.asList(getResources().getStringArray(R.array.mrs_relation_entries));
+                        setRelationSpinnerAdapter(listRelation);
+                        break;
+                    case R.id.genderOther:
+                        mSalutationSpinner.setSelection(3);
+                        listRelation = Arrays.asList(getResources().getStringArray(R.array.other_relation_entries));
+                        setRelationSpinnerAdapter(listRelation);
+                        break;
+                }
+
+
+            }
+        });
+    }
+
     @OnClick({R.id.backButton, R.id.btnAddPatientSubmit, R.id.stateEditText, R.id.cityEditText, R.id.areaEditText, R.id.referredBy, R.id.referredByTextInputLayout, R.id.dob, R.id.patientProfileImage})
     public void back(View view) {
 
@@ -704,23 +795,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 onBackPressed();
                 break;
             case R.id.btnAddPatientSubmit:
-                mAddedPatientListData = validate();
-                if (mAddedPatientListData != null) {
-                    if (RescribeConstants.WAITING_LIST.equalsIgnoreCase(mActivityStartFrom)) {
-                        mAddNewPatientSelectedOption = 1;
-                        doAddNewPatientOnSelectedOption();
-                    } else if (RescribeConstants.EDIT_PATIENT.equalsIgnoreCase(mActivityStartFrom)) {
-                        mAppointmentHelper.updatePatient(patientDetail);
-                    } else {
-                        if (NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this)) {
-                            showDialogToSelectOption();
-                        } else {
-                            mAddNewPatientSelectedOption = 0;
-                            mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
-                            addOfflinePatient();
-                        }
-                    }
-                }
+                addpatient();
                 break;
             case R.id.stateEditText:
                 Bundle iState = new Bundle();
@@ -795,10 +870,10 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
                         @Override
                         public void onItemClicked(int id, String value) {
-                            if (id==0){
-                                mSelectedAreaID=value;
-                            }else
-                            mSelectedAreaID = String.valueOf(id);
+                            if (id == 0) {
+                                mSelectedAreaID = value;
+                            } else
+                                mSelectedAreaID = String.valueOf(id);
                             mAreaEditText.setText("" + value);
                         }
                     });
@@ -873,6 +948,26 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             case R.id.patientProfileImage:
                 imageutils.imagepicker(1);
                 break;
+        }
+    }
+
+    private void addpatient() {
+        mAddedPatientListData = validate();
+        if (mAddedPatientListData != null) {
+            if (RescribeConstants.WAITING_LIST.equalsIgnoreCase(mActivityStartFrom)) {
+                mAddNewPatientSelectedOption = 1;
+                doAddNewPatientOnSelectedOption();
+            } else if (RescribeConstants.EDIT_PATIENT.equalsIgnoreCase(mActivityStartFrom)) {
+                mAppointmentHelper.updatePatient(patientDetail);
+            } else {
+                if (NetworkUtil.isInternetAvailable(AddNewPatientWebViewActivity.this)) {
+                    showDialogToSelectOption();
+                } else {
+                    mAddNewPatientSelectedOption = 0;
+                    mDoOperationTaskID = RescribeConstants.TASK_ADD_NEW_PATIENT;
+                    addOfflinePatient();
+                }
+            }
         }
     }
 
@@ -1111,10 +1206,11 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
         } else if (!refEmail.isEmpty() && !CommonMethods.isValidEmail(refEmail)) {
             message = getString(R.string.err_ref_email_invalid);
             CommonMethods.showToast(this, message);
-        } else if (!refID.isEmpty() && enteredRefIDIsValid && !isReferenceNo) {
-            mAppointmentHelper.checkReferenceNo(refID);
+        } else if (!refID.isEmpty() && !enteredRefIDIsValid) {
             message = getString(R.string.reference_id_input_err_msg);
             CommonMethods.showToast(this, message);
+        } else if (!refID.isEmpty() && !isReferenceNo) {
+            mAppointmentHelper.checkReferenceNo(refID);
         } else if (!panNo.isEmpty() && ((panNo.trim().length() < 10))) {
             message = getString(R.string.plz_enter_your_correct_pan_num);
             CommonMethods.showToast(this, message);
@@ -1162,9 +1258,13 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                 patientList.setGender(viewById.getText().toString());
                 patientDetail.setPatientGender(viewById.getText().toString());
             } else {
-                patientList.setGender("");
+                patientList.setGender("Male");
                 patientDetail.setPatientGender("Male");
             }
+
+
+            List<String> listSalutation = Arrays.asList(getResources().getStringArray(R.array.salutation_entries));
+            mSalutationNameOfPatient = listSalutation.get(mSelectedSalutationOfPatient - 1);
 
             patientList.setReferenceID(refID);
             patientDetail.setReferenceId(refID);
@@ -1325,8 +1425,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         ContextCompat.startForegroundService(mContext, intentMQTT);
 
                         Bundle bundle = new Bundle();
-                        String replace = mAddedPatientListData.getPatientName().replace("|", "");
-
+                        String replace = mSalutationNameOfPatient + " " + mAddedPatientListData.getPatientName().replace("|", "");
+                        if (mSalutationNameOfPatient.equalsIgnoreCase("other"))
+                            replace = mAddedPatientListData.getPatientName().replace("|", "");
                         bundle.putString(RescribeConstants.PATIENT_NAME, replace);
                         //------------
                         String patientInfo = "";
@@ -1441,8 +1542,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
                     validatePanCardNo();
                     validateAadharCardNo();
-                    referenceNo();
+                   // referenceNo();
                     doSpinnerItemSelectedListener();
+                    setGenderChangeListner();
 
 
                 }
@@ -1493,6 +1595,7 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                         isReferenceNo = false;
                     } else {
                         isReferenceNo = true;
+                        addpatient();
                     }
 
                 }
@@ -1517,132 +1620,137 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
     }
 
     private void initializeView(List<RegistrationField> registrationFieldList) {
-        for (RegistrationField registrationField : registrationFieldList) {
-            switch (registrationField.getFieldName()) {
-                case "first_name":
-                    if (registrationField.isFieldValue())
-                        layoutFirstName.setVisibility(View.VISIBLE);
-                    else
-                        layoutFirstName.setVisibility(View.GONE);
-                    break;
-                case "middle_name":
-                    if (registrationField.isFieldValue())
-                        layoutMiddleName.setVisibility(View.VISIBLE);
-                    else
-                        layoutMiddleName.setVisibility(View.GONE);
-                    break;
-
-                case "last_name":
-                    if (registrationField.isFieldValue())
-                        layoutLastName.setVisibility(View.VISIBLE);
-                    else
-                        layoutLastName.setVisibility(View.GONE);
-                    break;
-
-                case "mobile":
-                    if (registrationField.isFieldValue()) {
-                        isMobileNoMandatory = registrationField.isMandatory();
-                        layoutContactNo.setVisibility(View.VISIBLE);
-                        if (registrationField.isMandatory()) {
-                            TextInputLayoutMobileNo.setHint(getString(R.string.enter_mobile_no));
-                        } else {
-                            TextInputLayoutMobileNo.setHint(getString(R.string.enter_ref_mobile_no));
-                        }
-                    } else
-                        layoutContactNo.setVisibility(View.GONE);
-                    break;
-
-                case "alt_phn":
-                    if (registrationField.isFieldValue())
-                        layoutAltPhn.setVisibility(View.VISIBLE);
-                    else
-                        layoutAltPhn.setVisibility(View.GONE);
-                    break;
-
-                case "dob":
-                    if (registrationField.isFieldValue())
-                        layoutAge.setVisibility(View.VISIBLE);
-                    else
-                        layoutAge.setVisibility(View.GONE);
-                    break;
-
-                case "gender":
-                    if (registrationField.isFieldValue())
-                        layoutGender.setVisibility(View.VISIBLE);
-                    else
-                        layoutGender.setVisibility(View.GONE);
-                    break;
-
-                case "email":
-                    if (registrationField.isFieldValue())
-                        layoutEmail.setVisibility(View.VISIBLE);
-                    else
-                        layoutEmail.setVisibility(View.GONE);
-                    break;
-
-                case "blood_group":
-                    if (registrationField.isFieldValue())
-                        layoutBloodGroup.setVisibility(View.VISIBLE);
-                    else
-                        layoutBloodGroup.setVisibility(View.GONE);
-                    break;
-
-                case "reference_id":
-                    if (registrationField.isFieldValue()) {
-                        if (!isReferenceIdSetting)
-                            mLayoutReferenceId.setVisibility(View.VISIBLE);
-                    } else
-                        mLayoutReferenceId.setVisibility(View.GONE);
-                    break;
-
-                case "address_Details":
-                    if (registrationField.isFieldValue())
-                        mAddressDetailLayout.setVisibility(View.VISIBLE);
-                    else {
-                        mAddressDetailLayout.setVisibility(View.GONE);
-                    }
-                    break;
-
-                case "refere_Setting":
-                    if (registrationField.isFieldValue())
-                        mReferenceDetailLayout.setVisibility(View.VISIBLE);
-                    else {
-                        mReferenceDetailLayout.setVisibility(View.GONE);
-                    }
-                    break;
-
-                case "registeredFor":
-                    if (registrationField.isFieldValue())
-                        layoutRegisteredFor.setVisibility(View.VISIBLE);
-                    else
-                        layoutRegisteredFor.setVisibility(View.GONE);
-                    break;
-
-                case "pan_number":
-                    if (registrationField.isFieldValue())
-                        layoutPanNo.setVisibility(View.VISIBLE);
-                    else
-                        layoutPanNo.setVisibility(View.GONE);
-                    break;
-
-                case "aadhaar_number":
-                    if (registrationField.isFieldValue())
-                        layoutAadhaarNo.setVisibility(View.VISIBLE);
-                    else
-                        layoutAadhaarNo.setVisibility(View.GONE);
-                    break;
-
-                case "is_dead":
-                    if (mActivityStartFrom.equalsIgnoreCase(RescribeConstants.EDIT_PATIENT)) {
+        if (!registrationFieldList.isEmpty()) {
+            for (RegistrationField registrationField : registrationFieldList) {
+                switch (registrationField.getFieldName()) {
+                    case "first_name":
                         if (registrationField.isFieldValue())
-                            layoutDeceasedPatient.setVisibility(View.VISIBLE);
+                            layoutFirstName.setVisibility(View.VISIBLE);
                         else
-                            layoutDeceasedPatient.setVisibility(View.GONE);
-                    }
-                    break;
+                            layoutFirstName.setVisibility(View.GONE);
+                        break;
+                    case "middle_name":
+                        if (registrationField.isFieldValue())
+                            layoutMiddleName.setVisibility(View.VISIBLE);
+                        else
+                            layoutMiddleName.setVisibility(View.GONE);
+                        break;
+
+                    case "last_name":
+                        if (registrationField.isFieldValue())
+                            layoutLastName.setVisibility(View.VISIBLE);
+                        else
+                            layoutLastName.setVisibility(View.GONE);
+                        break;
+
+                    case "mobile":
+                        if (registrationField.isFieldValue()) {
+                            isMobileNoMandatory = registrationField.isMandatory();
+                            layoutContactNo.setVisibility(View.VISIBLE);
+                            if (registrationField.isMandatory()) {
+                                TextInputLayoutMobileNo.setHint(getString(R.string.enter_mobile_no));
+                            } else {
+                                TextInputLayoutMobileNo.setHint(getString(R.string.enter_ref_mobile_no));
+                            }
+                        } else
+                            layoutContactNo.setVisibility(View.GONE);
+                        break;
+
+                    case "alt_phn":
+                        if (registrationField.isFieldValue())
+                            layoutAltPhn.setVisibility(View.VISIBLE);
+                        else
+                            layoutAltPhn.setVisibility(View.GONE);
+                        break;
+
+                    case "dob":
+                        if (registrationField.isFieldValue())
+                            layoutAge.setVisibility(View.VISIBLE);
+                        else
+                            layoutAge.setVisibility(View.GONE);
+                        break;
+
+                    case "gender":
+                        if (registrationField.isFieldValue())
+                            layoutGender.setVisibility(View.VISIBLE);
+                        else
+                            layoutGender.setVisibility(View.GONE);
+                        break;
+
+                    case "email":
+                        if (registrationField.isFieldValue())
+                            layoutEmail.setVisibility(View.VISIBLE);
+                        else
+                            layoutEmail.setVisibility(View.GONE);
+                        break;
+
+                    case "blood_group":
+                        if (registrationField.isFieldValue())
+                            layoutBloodGroup.setVisibility(View.VISIBLE);
+                        else
+                            layoutBloodGroup.setVisibility(View.GONE);
+                        break;
+
+                    case "reference_id":
+                        if (registrationField.isFieldValue()) {
+                            if (!isReferenceIdSetting)
+                                mLayoutReferenceId.setVisibility(View.VISIBLE);
+                        } else
+                            mLayoutReferenceId.setVisibility(View.GONE);
+                        break;
+
+                    case "address_Details":
+                        if (registrationField.isFieldValue())
+                            mAddressDetailLayout.setVisibility(View.VISIBLE);
+                        else {
+                            mAddressDetailLayout.setVisibility(View.GONE);
+                        }
+                        break;
+
+                    case "refere_Setting":
+                        if (registrationField.isFieldValue())
+                            mReferenceDetailLayout.setVisibility(View.VISIBLE);
+                        else {
+                            mReferenceDetailLayout.setVisibility(View.GONE);
+                        }
+                        break;
+
+                    case "registeredFor":
+                        if (registrationField.isFieldValue())
+                            layoutRegisteredFor.setVisibility(View.VISIBLE);
+                        else
+                            layoutRegisteredFor.setVisibility(View.GONE);
+                        break;
+
+                    case "pan_number":
+                        if (registrationField.isFieldValue())
+                            layoutPanNo.setVisibility(View.VISIBLE);
+                        else
+                            layoutPanNo.setVisibility(View.GONE);
+                        break;
+
+                    case "aadhaar_number":
+                        if (registrationField.isFieldValue())
+                            layoutAadhaarNo.setVisibility(View.VISIBLE);
+                        else
+                            layoutAadhaarNo.setVisibility(View.GONE);
+                        break;
+
+                    case "is_dead":
+                        if (mActivityStartFrom.equalsIgnoreCase(RescribeConstants.EDIT_PATIENT)) {
+                            if (registrationField.isFieldValue())
+                                layoutDeceasedPatient.setVisibility(View.VISIBLE);
+                            else
+                                layoutDeceasedPatient.setVisibility(View.GONE);
+                        }
+                        break;
 
 
+                }
             }
+        } else {
+            isMobileNoMandatory = true;
+            TextInputLayoutMobileNo.setHint(getString(R.string.enter_mobile_no));
         }
 
 
@@ -1777,9 +1885,9 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
 
                     }
 
-                   // mReferredBy.setText("");
-                   // mReferredEmail.setText("");
-                   // mReferredPhone.setText("");
+                    // mReferredBy.setText("");
+                    // mReferredEmail.setText("");
+                    // mReferredPhone.setText("");
                 } else {
                     Log.e("position else", "" + position);
                     mSelectedReferenceTypeID = 0;
@@ -1806,24 +1914,23 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mSelectedSalutationOfPatient = position + 1;
 
-                ArrayAdapter<String> spinnerArrayAdapter;
 
                 switch (position) {
                     case 0:
                         genderMale.setChecked(true);
-                        spinnerArrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.mr_relation_entries));
-                        mRelationSpinner.setAdapter(spinnerArrayAdapter);
+                        listRelation = Arrays.asList(getResources().getStringArray(R.array.mr_relation_entries));
+                        spinnerRelationArrayAdapter.notifyDataSetChanged();
                         break;
                     case 1:
                     case 2:
                         genderFemale.setChecked(true);
-                        spinnerArrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.mrs_relation_entries));
-                        mRelationSpinner.setAdapter(spinnerArrayAdapter);
+                        listRelation = Arrays.asList(getResources().getStringArray(R.array.mrs_relation_entries));
+                        spinnerRelationArrayAdapter.notifyDataSetChanged();
                         break;
                     case 3:
                         genderOther.setChecked(true);
-                        spinnerArrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.other_relation_entries));
-                        mRelationSpinner.setAdapter(spinnerArrayAdapter);
+                        listRelation = Arrays.asList(getResources().getStringArray(R.array.other_relation_entries));
+                        spinnerRelationArrayAdapter.notifyDataSetChanged();
                         break;
                 }
             }
@@ -1981,18 +2088,18 @@ public class AddNewPatientWebViewActivity extends AppCompatActivity implements H
                                     .apply(requestOptions).thumbnail(0.5f)
                                     .into(profileImage);
                             mCustomProgressDialog.dismiss();
-                            FILEPATH=null;
+                            FILEPATH = null;
                         } else {
                             mCustomProgressDialog.dismiss();
                             Toast.makeText(AddNewPatientWebViewActivity.this, profilePhotoResponse.getCommon().getStatusMessage(), Toast.LENGTH_SHORT).show();
-                            FILEPATH=null;
+                            FILEPATH = null;
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mCustomProgressDialog.dismiss();
-                FILEPATH=null;
+                FILEPATH = null;
                 Toast.makeText(getApplicationContext(), getString(R.string.server_error), Toast.LENGTH_LONG).show();
 
             }

@@ -176,7 +176,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         }
 
         if (getArguments().getString(RescribeConstants.PATIENT_NAME) != null) {
-            titleTextView.setText(getArguments().getString(RescribeConstants.PATIENT_NAME));
+            String patientName=CommonMethods.toCamelCase(getArguments().getString(RescribeConstants.PATIENT_NAME));
+            titleTextView.setText(patientName);
             userInfoTextView.setVisibility(View.VISIBLE);
             userInfoTextView.setText(getArguments().getString(RescribeConstants.PATIENT_INFO));
             mHospitalPatId = getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID);

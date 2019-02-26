@@ -69,7 +69,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         appDBHelper = new AppDBHelper(mContext);
         this.mOnDownArrowClicked = mOnDownArrowClicked;
         this.isClickOnPatientDetailsRequired = isClickOnPatientDetailsRequired;
-        this.isOneHospital=isOneHospital;
+        this.isOneHospital = isOneHospital;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.opdTypeTextView.setVisibility(View.GONE);
 
 
-        if (patientObject.getPatientArea()!=null) {
+        if (patientObject.getPatientArea() != null) {
             holder.patientClinicAddress.setVisibility(View.VISIBLE);
             String area = patientObject.getPatientArea().isEmpty() ? "" : (patientObject.getPatientCity().isEmpty() ? patientObject.getPatientArea() : patientObject.getPatientArea() + ", ");
             holder.patientClinicAddress.setText(CommonMethods.toCamelCase(area + patientObject.getPatientCity()));
@@ -98,9 +98,9 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.patientClinic.setVisibility(View.GONE);
         else {
 
-            if (isOneHospital){
+            if (isOneHospital) {
                 holder.patientClinic.setVisibility(View.GONE);
-            }else {
+            } else {
                 holder.patientClinic.setVisibility(View.VISIBLE);
                 holder.patientClinic.setText(patientObject.getHospitalName());
             }
@@ -110,12 +110,11 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             patientName = RescribeConstants.SALUTATION[patientObject.getSalutation() - 1] + toCamelCase(patientObject.getPatientName());
         else patientName = toCamelCase(patientObject.getPatientName());
 
-        if(patientObject.isDead()){
+        if (patientObject.isDead()) {
             holder.patientNameTextView.setTextColor(mContext.getResources().getColor(R.color.bsp_red));
-        }else {
+        } else {
             holder.patientNameTextView.setTextColor(mContext.getResources().getColor(R.color.black));
         }
-
 
 
         //---- START: Setting of hospitalID or referecne ID, reference is IS high priority than hospitalID.-----
@@ -221,7 +220,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             holder.payableAmountTextView.setTextColor(ContextCompat.getColor(mContext, R.color.red));
         }
 
-       // holder.chatImageView.setVisibility(View.VISIBLE);
+        // holder.chatImageView.setVisibility(View.VISIBLE);
         TextDrawable textDrawable = CommonMethods.getTextDrawable(mContext, patientObject.getPatientName());
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.dontAnimate();
@@ -244,11 +243,10 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             }
         });
         if (isLongPressed) {
-            if(!patientObject.isDead()) {
+            if (!patientObject.isDead()) {
                 holder.checkbox.setVisibility(View.VISIBLE);
             }
-        }
-        else
+        } else
             holder.checkbox.setVisibility(View.GONE);
 
         holder.patientDetailsClickLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
@@ -261,23 +259,23 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
             }
         });
 
-            holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        holder.patientDetailsClickLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                    //THis is done, bcz not getting proper data from age n gender view.
-                    String patientInfo = "";
-                    if (!patientObject.getAge().isEmpty() && !patientObject.getGender().isEmpty())
-                        patientInfo = patientObject.getAge() + " yrs - " + patientObject.getGender();
-                    else if (!patientObject.getAge().isEmpty())
-                        patientInfo = patientObject.getAge() + " yrs";
-                    else if (!patientObject.getGender().isEmpty())
-                        patientInfo = patientObject.getGender();
+                //THis is done, bcz not getting proper data from age n gender view.
+                String patientInfo = "";
+                if (!patientObject.getAge().isEmpty() && !patientObject.getGender().isEmpty())
+                    patientInfo = patientObject.getAge() + " yrs - " + patientObject.getGender();
+                else if (!patientObject.getAge().isEmpty())
+                    patientInfo = patientObject.getAge() + " yrs";
+                else if (!patientObject.getGender().isEmpty())
+                    patientInfo = patientObject.getGender();
 
 
-                    mOnDownArrowClicked.onClickOfPatientDetails(patientObject, patientInfo, isClickOnPatientDetailsRequired);
-                }
-            });
+                mOnDownArrowClicked.onClickOfPatientDetails(patientObject, patientInfo, isClickOnPatientDetailsRequired);
+            }
+        });
 
 
         holder.chatImageView.setOnClickListener(new View.OnClickListener() {
@@ -298,29 +296,31 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         holder.patientPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!patientObject.isDead()) {
+                if (!patientObject.isDead()) {
                     mOnDownArrowClicked.onPhoneNoClick(patientObject.getPatientPhone());
-                }else {
-                    CommonMethods.showInfoDialog(mContext.getResources().getString(R.string.can_not_call_patient),mContext,false);
+                } else {
+                    CommonMethods.showInfoDialog(mContext.getResources().getString(R.string.can_not_call_patient), mContext, false);
                 }
             }
         });
 
 
-        if (NetworkUtil.getConnectivityStatusBoolean(mContext)){
+        if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
             holder.editImageView.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.editImageView.setVisibility(View.GONE);
         }
+        if (!isClickOnPatientDetailsRequired)
+            holder.editImageView.setVisibility(View.GONE);
+
 
         holder.editImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (NetworkUtil.getConnectivityStatusBoolean(mContext)) {
                     mOnDownArrowClicked.onEditPatientClick(patientObject);
-                }
-                else {
-                    CommonMethods.showToast(mContext,mContext.getString(R.string.internet));
+                } else {
+                    CommonMethods.showToast(mContext, mContext.getString(R.string.internet));
                 }
             }
         });
@@ -390,6 +390,7 @@ public class MyPatientsAdapter extends RecyclerView.Adapter<MyPatientsAdapter.Li
         void onPhoneNoClick(String patientPhone);
 
         void onRecordFound(boolean isListEmpty);
+
         void onEditPatientClick(PatientList patientList);
     }
 

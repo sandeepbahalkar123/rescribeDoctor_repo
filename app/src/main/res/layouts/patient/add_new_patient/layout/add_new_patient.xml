@@ -174,10 +174,10 @@
                                 android:fontFamily="@font/roboto_regular"
                                 android:gravity="center|left"
                                 android:hint="@string/first_name"
-                                android:inputType="text"
-                                android:textColor="@color/black"
+                                android:inputType="textPersonName|textCapWords"                                android:textColor="@color/black"
                                 android:textColorHint="@color/black"
-                                android:textSize="@dimen/sp16" />
+                                android:textSize="@dimen/sp16"
+                               />
 
                         </android.support.design.widget.TextInputLayout>
 
@@ -196,7 +196,8 @@
                     android:id="@+id/layoutMiddleName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    >
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
@@ -215,8 +216,7 @@
                             android:fontFamily="@font/roboto_regular"
                             android:gravity="center|left"
                             android:hint="@string/middle_name"
-                            android:inputType="text"
-                            android:textColor="@color/black"
+                            android:inputType="textPersonName|textCapWords"                            android:textColor="@color/black"
                             android:textColorHint="@color/black"
                             android:textSize="@dimen/sp16" />
 
@@ -252,8 +252,7 @@
                             android:fontFamily="@font/roboto_regular"
                             android:gravity="center|left"
                             android:hint="@string/last_name"
-                            android:inputType="text"
-                            android:textColor="@color/black"
+                            android:inputType="textPersonName|textCapWords"                            android:textColor="@color/black"
                             android:textColorHint="@color/black"
                             android:textSize="@dimen/sp16" />
 
@@ -614,14 +613,14 @@
                             android:layout_width="@dimen/dp0"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:entries="@array/mr_relation_entries"></Spinner>
+                            android:entries="@array/mr_relation_entries"/>
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp1"
-                        android:background="@color/black"></View>
+                        android:background="@color/black"/>
 
 
                 </LinearLayout>
@@ -663,7 +662,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp1"
-                        android:background="@color/black"></View>
+                        android:background="@color/black"/>
 
 
                 </LinearLayout>
@@ -693,11 +692,11 @@
                             android:fontFamily="@font/roboto_regular"
                             android:gravity="center|left"
                             android:hint="@string/registeredFor"
-                            android:inputType="text"
                             android:maxLength="70"
-                            android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="@dimen/sp16" />
+                            android:textSize="@dimen/sp16"
+                            android:inputType="textPersonName|textCapWords"                            android:textColor="@color/black"
+                            />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -817,7 +816,9 @@
                             android:maxLength="50"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="@dimen/sp16" />
+                            android:textSize="@dimen/sp16"
+                            android:inputType="textPostalAddress|textCapSentences"
+                            />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -848,7 +849,9 @@
                             android:maxLength="50"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="@dimen/sp16" />
+                            android:textSize="@dimen/sp16"
+                            android:inputType="textPostalAddress|textCapSentences"
+                            />
 
                     </android.support.design.widget.TextInputLayout>
 
