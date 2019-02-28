@@ -32,6 +32,7 @@ import com.rescribe.doctor.interfaces.Connector;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.CommonBaseModelContainer;
+import com.rescribe.doctor.model.add_opd.OPDHeadersSearchDataBaseModel;
 import com.rescribe.doctor.model.case_details.CaseDetailsModel;
 import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
@@ -651,6 +652,11 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_UPDATE_PATIENT:
                         CommonBaseModelContainer patientUpdate = new Gson().fromJson(data, CommonBaseModelContainer.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, patientUpdate, mOldDataTag);
+                        break;
+
+                    case RescribeConstants.TASK_GET_OPD_HEADERS_LIST:
+                        OPDHeadersSearchDataBaseModel headersSearchDataBaseModel = new Gson().fromJson(data, OPDHeadersSearchDataBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, headersSearchDataBaseModel, mOldDataTag);
                         break;
 
 

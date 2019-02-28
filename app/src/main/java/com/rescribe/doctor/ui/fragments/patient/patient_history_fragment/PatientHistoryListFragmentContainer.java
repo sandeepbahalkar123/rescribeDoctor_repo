@@ -54,6 +54,7 @@ import com.rescribe.doctor.model.patient.patient_history.YearsMonthsData;
 import com.rescribe.doctor.preference.RescribePreferencesManager;
 import com.rescribe.doctor.singleton.RescribeApplication;
 import com.rescribe.doctor.smartpen.PenInfoActivity;
+import com.rescribe.doctor.ui.activities.add_opd.AddOpdActivity;
 import com.rescribe.doctor.ui.activities.add_records.SelectedRecordsActivity;
 import com.rescribe.doctor.ui.activities.my_patients.patient_history.PatientHistoryActivity;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
@@ -114,6 +115,10 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     @BindView(R.id.addNoteButton)
     Button addNoteButton;
+
+    @BindView(R.id.addOPDButton)
+    Button addOPDButton;
+
 
     @BindView(R.id.footer)
     LinearLayout footer;
@@ -201,7 +206,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
     }
 
-    @OnClick({R.id.backImageView, R.id.addRecordButton, R.id.addNoteButton})
+    @OnClick({R.id.backImageView, R.id.addRecordButton, R.id.addNoteButton,R.id.addOPDButton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
@@ -230,7 +235,32 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 );
             }
             break;
+            case R.id.addOPDButton:{
+                openOPDActivity();
+            }
+            break;
         }
+    }
+
+    private void openOPDActivity() {
+
+
+        Intent intent = new Intent(mContext, AddOpdActivity.class);
+      //  intent.putExtra(RescribeConstants.OPD_ID, "0");
+     //   intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+     //   intent.putExtra(RescribeConstants.LOCATION_ID, String.valueOf(mLocationId));
+      //  intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
+       // intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
+       // intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
+        intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
+        intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
+      //  intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
+      //  intent.putExtra(RescribeConstants.OPD_TIME, "");
+       // intent.putExtra(Keys.KEY_DEVICE_ADDRESS, address);
+
+        getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
+
+
     }
 
     private void openSmartPen(String dateSelected) {

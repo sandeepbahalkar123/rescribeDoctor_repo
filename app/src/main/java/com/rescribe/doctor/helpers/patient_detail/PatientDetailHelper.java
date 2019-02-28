@@ -166,11 +166,18 @@ public class PatientDetailHelper implements ConnectionListener {
             deleteNotesList.add(i);
         }
         delete.setNotesDetails(deleteNotesList);
-
         mConnectionFactory.setPostParams(delete);
         mConnectionFactory.setHeaderParams();
         mConnectionFactory.setUrl(Config.DELETE_PATIENT_OPD_NOTES);
         mConnectionFactory.createConnection(RescribeConstants.TASK_DELETE_PATIENT_OPD_NOTES);
+    }
+
+    public void getOpdHeadersList(String opdName, String s) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_OPD_HEADERS_LIST, Request.Method.GET, false);
+        mConnectionFactory.setHeaderParams();
+        String docId = (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
+        mConnectionFactory.setUrl(Config.GET_OPD_HEADERS_LIST + docId + "&type=" + opdName + "&searchText=" + s);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_OPD_HEADERS_LIST);
     }
 }
 

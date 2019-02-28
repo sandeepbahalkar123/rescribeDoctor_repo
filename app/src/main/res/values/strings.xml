@@ -419,5 +419,6 @@
     <string name="patient_no_more">Patient No More</string>
     <string name="patient_update">Update Patient</string>
     <string name="deceased_patient_dialog_text">If you click this checkbox then you cannot modify deceased patient\'s data.</string>
+    <string name="add_opd">ADD OPD</string>
 
 </resources>

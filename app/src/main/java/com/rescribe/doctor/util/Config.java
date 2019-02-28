@@ -42,6 +42,7 @@ public class Config {
     public static final String VALIDATE_PAN_AADHAR_CARD = "doctor/api/patient/validateField?fieldName=";
     public static final String GET_DOCTOR_SPECIALIST_LIST = "api/patient/getDoctorSpeciality";
     public static final String UPDATE_DOCTOR_PROFILE= "doctor/api/doctor/updateDoctorProfile";
+    public static final String GET_OPD_HEADERS_LIST= "doctor/api/doctor/getOpdHeadersList?docId=";
 
     //---------------LOCAL SERVER URL START-----------------------
     /*public static String BASE_URL = "http://172.16.100.219:3003/";
