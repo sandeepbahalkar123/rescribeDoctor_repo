@@ -30,7 +30,6 @@
     </style>
 
 
-
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -206,9 +205,9 @@
     </style>
 
     <style name="tabTextSize" parent="TextAppearance.Design.Tab">
-    <item name="android:textSize">@dimen/sp16</item>
-    <item name="android:fontFamily">@font/roboto_medium</item>
-</style>
+        <item name="android:textSize">@dimen/sp16</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
 
 
     <style name="tabTextSizeOPD" parent="TextAppearance.Design.Tab">
@@ -246,17 +245,34 @@
     </style>
 
     <style name="ToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">@dimen/sp15</item> //size desired.
-        <item name="android:textColor">@color/white</item> //font color
+        <item name="android:textSize">@dimen/sp15</item>
+        //size desired.
+        <item name="android:textColor">@color/white</item>
+        //font color
     </style>
 
     <style name="ToolbarSubtitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">@dimen/sp10</item> //size desired.
-        <item name="android:textColor">@color/white</item> //font color
+        <item name="android:textSize">@dimen/sp10</item>
+        //size desired.
+        <item name="android:textColor">@color/white</item>
+        //font color
     </style>
 
     <style name="MyMenu">
-        <item name="android:textSize">@dimen/sp15</item> //size desired.
-        <item name="android:textColor">@color/white</item> //font color
+        <item name="android:textSize">@dimen/sp15</item>
+        //size desired.
+        <item name="android:textColor">@color/white</item>
+        //font color
+    </style>
+
+    <style name="TextInputLayout" parent="Widget.Design.TextInputLayout">
+        <!-- reference our hint & error styles -->
+        <!--<item name="hintTextAppearance">@style/HintText</item>-->
+        <!--<item name="errorTextAppearance">@style/ErrorText</item>-->
+        <!--<item name="android:textColor">@color/user_input_color</item>-->
+        <!--<item name="android:textColorHint">@color/unfocused_color</item>-->
+        <item name="colorControlNormal">@color/tagColor</item>
+        <item name="colorControlActivated">@color/tagColor</item>
+        <item name="colorControlHighlight">@color/tagColor</item>
     </style>
 </resources>

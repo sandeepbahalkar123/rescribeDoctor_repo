@@ -47,7 +47,7 @@ public class Common implements Parcelable, CustomResponse{
     }
 
     public Integer getStatusCode() {
-        return statusCode;
+        return statusCode == null ? 200 : statusCode;
     }
 
     public void setStatusCode(Integer statusCode) {

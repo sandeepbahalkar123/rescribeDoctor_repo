@@ -36,6 +36,7 @@ import com.rescribe.doctor.model.add_opd.OPDHeadersSearchDataBaseModel;
 import com.rescribe.doctor.model.case_details.CaseDetailsModel;
 import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
+import com.rescribe.doctor.model.classify.ClassifyData;
 import com.rescribe.doctor.model.completed_opd.CompletedOpdBaseModel;
 import com.rescribe.doctor.model.dashboard.DashboardBaseModel;
 import com.rescribe.doctor.model.doctor_connect.DoctorConnectBaseModel;
@@ -429,8 +430,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
             try {
                 jsonObject = new JSONObject(data);
                 Common common = gson.fromJson(jsonObject.optString("common"), Common.class);
-                if (!common.getStatusCode().equals(SUCCESS)) {
-                    CommonMethods.showToast(mContext, common.getStatusMessage());
+                if(common != null) {
+                    if (!common.getStatusCode().equals(SUCCESS)) {
+                        CommonMethods.showToast(mContext, common.getStatusMessage());
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -659,6 +662,10 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, headersSearchDataBaseModel, mOldDataTag);
                         break;
 
+                    case RescribeConstants.TASK_GET_CLASSIFY:
+                        ClassifyData classifyData = new Gson().fromJson(data, ClassifyData.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, classifyData, mOldDataTag);
+                        break;
 
                     default:
 

@@ -28,12 +28,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activities.add_opd.AddOpdActivity"
+        <activity
+            android:name=".ui.activities.classify.PrescriptionActivity"
+            android:label="@string/title_activity_prescription"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.activities.add_opd.AddOpdActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustNothing"
-            />
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".ui.activities.UpdateProfileActivity"
             android:label="@string/app_name"

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.rescribe.doctor.R;
 import com.rescribe.doctor.ui.customesViews.CustomTextView;
+import com.rescribe.doctor.ui.fragments.add_opd.PrescriptionFragment;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class AddOpdActivity extends AppCompatActivity {
         mViewPagerAdapter.addFragment(AddOpdContainerFragment.getInstance("Complaints"), "Complaints");
         mViewPagerAdapter.addFragment(new Fragment(), "Vitals");
         mViewPagerAdapter.addFragment(AddOpdContainerFragment.getInstance("Diagnosis"), "Diagnosis");
-        mViewPagerAdapter.addFragment(new Fragment(), "Prescription");
+        mViewPagerAdapter.addFragment(PrescriptionFragment.newInstance(), "Prescription");
         mViewPagerAdapter.addFragment(AddOpdContainerFragment.getInstance("Radiology"), "Radiology");
         mViewPagerAdapter.addFragment(AddOpdContainerFragment.getInstance("Laboratory"), "Laboratory"); // pass title here
         mViewpager.setAdapter(mViewPagerAdapter);

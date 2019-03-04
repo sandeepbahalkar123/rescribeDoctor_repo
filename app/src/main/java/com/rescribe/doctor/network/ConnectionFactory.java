@@ -69,6 +69,11 @@ public class ConnectionFactory extends ConnectRequest {
         CommonMethods.Log(TAG, "mURL: " + this.mURL);
     }
 
+    public void setFullUrl(String url) {
+        this.mURL = url;
+        CommonMethods.Log(TAG, "full mURL: " + this.mURL);
+    }
+
     public Connector createConnection(String type) {
 
         connector = new RequestManager(mContext, mConnectionListener, type, mViewById, isProgressBarShown, mOldDataTag, reqPostOrGet, isOffline);

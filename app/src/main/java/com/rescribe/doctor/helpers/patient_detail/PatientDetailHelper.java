@@ -24,6 +24,7 @@ import com.rescribe.doctor.util.Config;
 import com.rescribe.doctor.util.RescribeConstants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
@@ -178,6 +179,23 @@ public class PatientDetailHelper implements ConnectionListener {
         String docId = (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
         mConnectionFactory.setUrl(Config.GET_OPD_HEADERS_LIST + docId + "&type=" + opdName + "&searchText=" + s);
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_OPD_HEADERS_LIST);
+    }
+
+    public void classifyAPI(String text){
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_GET_CLASSIFY, Request.Method.GET, false);
+        String docId = (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
+        HashMap<String, String> headerParams = new HashMap<>();
+        headerParams.put("SharedKey", "dobby");
+        headerParams.put(RescribeConstants.CONTENT_TYPE, RescribeConstants.APPLICATION_JSON);
+        mConnectionFactory.setHeaderParams(headerParams);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("docid", docId);
+        params.put("text", text);
+        mConnectionFactory.setPostParams(params);
+
+        mConnectionFactory.setFullUrl(Config.GET_CLASSIFY);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_CLASSIFY);
     }
 }
 
