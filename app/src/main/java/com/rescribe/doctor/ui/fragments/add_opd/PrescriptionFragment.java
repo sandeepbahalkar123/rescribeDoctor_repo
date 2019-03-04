@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +17,12 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.rescribe.doctor.R;
+import com.rescribe.doctor.adapters.prescription.PrescriptionAdapter;
 import com.rescribe.doctor.helpers.patient_detail.PatientDetailHelper;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
 import com.rescribe.doctor.model.classify.ClassifyData;
+import com.rescribe.doctor.model.new_opd.Prescription;
 import com.rescribe.doctor.ui.activities.classify.PrescriptionActivity;
 import com.rescribe.doctor.util.RescribeConstants;
 
@@ -31,15 +36,22 @@ import butterknife.Unbinder;
 
 import static android.app.Activity.RESULT_OK;
 import static com.rescribe.doctor.ui.activities.add_opd.AddOpdContainerFragment.REQ_CODE_SPEECH_INPUT;
+import static com.rescribe.doctor.util.RescribeConstants.PRESCRIPTION;
 
 public class PrescriptionFragment extends Fragment implements HelperResponse {
+
+    public static final int PRESCRIPTION_CODE = 292;
 
     @BindView(R.id.miceButton)
     ImageButton miceButton;
     @BindView(R.id.addButton)
     ImageButton addButton;
     Unbinder unbinder;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
     private PatientDetailHelper patientDetailHelper;
+    private ArrayList<Prescription> prescriptionList = new ArrayList<>();
+    private PrescriptionAdapter mAdapter;
 
     public PrescriptionFragment() {
         // Required empty public constructor
@@ -62,9 +74,12 @@ public class PrescriptionFragment extends Fragment implements HelperResponse {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_prescription, container, false);
         unbinder = ButterKnife.bind(this, view);
-
         patientDetailHelper = new PatientDetailHelper(getActivity(), this);
-
+        mAdapter = new PrescriptionAdapter(prescriptionList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
         return view;
     }
 
@@ -97,6 +112,25 @@ public class PrescriptionFragment extends Fragment implements HelperResponse {
                     Log.d("TEXT: ", result.get(0));
                     patientDetailHelper.classifyAPI(result.get(0));
                 }
+                break;
+            case PRESCRIPTION_CODE:
+                if (resultCode == RESULT_OK) {
+                    ClassifyData classifyData = data.getParcelableExtra(PRESCRIPTION);
+                    Prescription prescription = new Prescription();
+                    prescription.setDays(classifyData.getDuration());
+                    prescription.setQuantity("1");
+                    prescription.setDosage(classifyData.getCapacity());
+                    prescription.setFreqSchedule(classifyData.getDose());
+                    prescription.setFrequency(classifyData.getDose());
+                    prescription.setGenericName(classifyData.getDrugname());
+                    prescription.setMedicineId(1);
+                    prescription.setMedicineTypeId("1");
+                    prescription.setName(classifyData.getDrugname());
+                    prescription.setRemarks(classifyData.getWhentotake());
+                    prescriptionList.add(prescription);
+                    mAdapter.notifyDataSetChanged();
+                }
+                break;
         }
     }
 
@@ -114,8 +148,8 @@ public class PrescriptionFragment extends Fragment implements HelperResponse {
                 break;
             case R.id.addButton:
                 Intent intent = new Intent(getActivity(), PrescriptionActivity.class);
-                intent.putExtra(RescribeConstants.PRESCRIPTION, new ClassifyData());
-                startActivity(intent);
+                intent.putExtra(PRESCRIPTION, new ClassifyData());
+                startActivityForResult(intent, PRESCRIPTION_CODE);
                 break;
         }
     }
@@ -126,8 +160,8 @@ public class PrescriptionFragment extends Fragment implements HelperResponse {
             ClassifyData classifyData = (ClassifyData) customResponse;
             if (classifyData.getTrigger().equalsIgnoreCase("prescription")) {
                 Intent intent = new Intent(getActivity(), PrescriptionActivity.class);
-                intent.putExtra(RescribeConstants.PRESCRIPTION, classifyData);
-                startActivity(intent);
+                intent.putExtra(PRESCRIPTION, classifyData);
+                startActivityForResult(intent, PRESCRIPTION_CODE);
             }
         }
     }
