@@ -104,6 +104,8 @@ public class RescribeConstants {
     public static final String TASK_DOCTOR_PROFILE_UPDATE = "51";
     public static final String TASK_UPDATE_PATIENT = "52";
     public static final String TASK_GET_OPD_HEADERS_LIST = "53";
+    public static final String TASK_GET_OPD_TAB_HEADERS_LIST = "54";
+    public static final String TASK_SAVE_OPD = "55";
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;
@@ -188,6 +190,7 @@ public class RescribeConstants {
     public static final String PATIENT_ADDED = "patient_added";
     public static final String NOTES = "notes";
     public static final String OPD_NAME ="opd_name" ;
+    public static final String COMPLAINTS = "Complaints";
     public static String HEADER_COLOR = "#E4422C";
     public static String BUTTON_TEXT_COLOR = "#FFFFFF";
     public static String TEXT_COLOR = "#000000";

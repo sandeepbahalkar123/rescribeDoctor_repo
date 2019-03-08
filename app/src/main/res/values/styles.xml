@@ -259,4 +259,11 @@
         <item name="android:textSize">@dimen/sp15</item> //size desired.
         <item name="android:textColor">@color/white</item> //font color
     </style>
+
+
+    <style name="Spinner" parent="Widget.AppCompat.Light.DropDownItem.Spinner">
+
+        <item name="android:textSize">@dimen/sp13</item>
+    </style>
+
 </resources>

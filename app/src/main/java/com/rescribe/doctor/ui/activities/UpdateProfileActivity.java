@@ -459,6 +459,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
         });
 
         profilePhotoUploadRequest.setHeaders(mapHeaders);
+
         profilePhotoUploadRequest.addFile("docImage", filePath);
         RescribeApplication.getInstance().addToRequestQueue(profilePhotoUploadRequest);
 
@@ -482,7 +483,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements HelperRe
         } else {
             imageutils.onActivityResult(requestCode, resultCode, data);
         }
-
     }
 
     @Override

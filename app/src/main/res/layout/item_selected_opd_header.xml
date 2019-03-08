@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/layoutHeaderInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textOpdHeaderName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp5"
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+                android:textSize="@dimen/sp13"
+                tool:text="hiiiiiiiiiiiiiiiiiiiiiiiiii" />
+
+            <TextView
+                android:id="@+id/textOpdOtherInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp5"
+                android:layout_marginLeft="@dimen/dp5"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp11"
+                android:visibility="gone"
+                tool:text="hiiiiiiiiiiiiiiiiiiiiiiiiii" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/removeItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_toEndOf="@+id/layoutHeaderInfo"
+            android:layout_toRightOf="@+id/layoutHeaderInfo"
+            android:background="@color/transparent"
+            android:padding="@dimen/dp8"
+            android:src="@drawable/close_btn"
+            android:tint="@color/black" />
+
+
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp1"
+        android:layout_marginTop="@dimen/dp5"
+        android:background="@color/grey"/>
+</LinearLayout>

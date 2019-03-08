@@ -341,6 +341,13 @@
         <item>Other</item>
     </string-array>
 
+    <string-array name="complaints_period_entries">
+        <item>Select Period</item>
+        <item>Day</item>
+        <item>Week</item>
+        <item>Month</item>
+        <item>Year</item>
+    </string-array>
 
     <string-array name="mr_gender_entries">
         <item>Select Gender</item>
@@ -420,5 +427,9 @@
     <string name="patient_update">Update Patient</string>
     <string name="deceased_patient_dialog_text">If you click this checkbox then you cannot modify deceased patient\'s data.</string>
     <string name="add_opd">ADD OPD</string>
+    <string name="no_of_day">No Of Day</string>
+    <string name="number">Number</string>
+    <string name="do_you_want_to_print">Do u want to print Opd?</string>
+    <string name="enable_opd_settings">Please enable this section from your account\'s Application Settings.</string>
 
 </resources>
