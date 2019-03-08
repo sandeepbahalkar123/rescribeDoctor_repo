@@ -104,7 +104,9 @@ public class RescribeConstants {
     public static final String TASK_DOCTOR_PROFILE_UPDATE = "51";
     public static final String TASK_UPDATE_PATIENT = "52";
     public static final String TASK_GET_OPD_HEADERS_LIST = "53";
-    public static final String TASK_GET_CLASSIFY = "55";
+    public static final String TASK_GET_OPD_TAB_HEADERS_LIST = "54";
+    public static final String TASK_SAVE_OPD = "55";
+    public static final String TASK_GET_CLASSIFY = "56";
 
     public static final String DATA = "DATA";
     public static final Integer SUCCESS = 200;

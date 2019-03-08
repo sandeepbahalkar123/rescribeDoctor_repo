@@ -35,7 +35,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static android.app.Activity.RESULT_OK;
-import static com.rescribe.doctor.ui.activities.add_opd.AddOpdContainerFragment.REQ_CODE_SPEECH_INPUT;
+import static com.rescribe.doctor.ui.fragments.add_opd.DiagnosisFragment.REQ_CODE_SPEECH_INPUT;
 import static com.rescribe.doctor.util.RescribeConstants.PRESCRIPTION;
 
 public class PrescriptionFragment extends Fragment implements HelperResponse {

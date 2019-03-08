@@ -144,6 +144,8 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
 
     private ProgressDialog mProgressDialog;
 
+    int buttonPress = 0;
+
 
     public PatientHistoryListFragmentContainer() {
         // Required empty public constructor
@@ -181,7 +183,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         }
 
         if (getArguments().getString(RescribeConstants.PATIENT_NAME) != null) {
-            String patientName=CommonMethods.toCamelCase(getArguments().getString(RescribeConstants.PATIENT_NAME));
+            String patientName = CommonMethods.toCamelCase(getArguments().getString(RescribeConstants.PATIENT_NAME));
             titleTextView.setText(patientName);
             userInfoTextView.setVisibility(View.VISIBLE);
             userInfoTextView.setText(getArguments().getString(RescribeConstants.PATIENT_INFO));
@@ -206,13 +208,14 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
         mPatientDetailHelper.doGetPatientHistory(mPatientId, mCurrentSelectedTimePeriodTab.getYear(), getArguments().getString(RescribeConstants.PATIENT_NAME) == null, getArguments().getString(RescribeConstants.PATIENT_HOS_PAT_ID));
     }
 
-    @OnClick({R.id.backImageView, R.id.addRecordButton, R.id.addNoteButton,R.id.addOPDButton})
+    @OnClick({R.id.backImageView, R.id.addRecordButton, R.id.addNoteButton, R.id.addOPDButton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.backImageView:
                 mParentActivity.onBackPressed();
                 break;
             case R.id.addRecordButton: {
+                buttonPress = 1;
                 Calendar now = Calendar.getInstance();
                 DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
                         this,
@@ -235,32 +238,31 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                 );
             }
             break;
-            case R.id.addOPDButton:{
-                openOPDActivity();
+            case R.id.addOPDButton: {
+                buttonPress = 2;
+                ArrayList<DoctorLocationModel> mDoctorLocationModel = RescribeApplication.getDoctorLocationModels();
+                ArrayList<DoctorLocationModel> myDoctorLocations = CommonMethods.getMyDoctorLocations(mDoctorLocationModel, mHospitalId);
+                if (myDoctorLocations.size() == 1) {
+                    mLocationId = myDoctorLocations.get(0).getLocationId();
+                    mHospitalId = myDoctorLocations.get(0).getClinicId();
+                    openOPDActivity();
+                } else {
+                    showDialogToSelectLocation(CommonMethods.getMyDoctorLocations(mDoctorLocationModel, mHospitalId), 0, 0, 0, "");
+                }
             }
             break;
         }
     }
 
     private void openOPDActivity() {
-
-
         Intent intent = new Intent(mContext, AddOpdActivity.class);
-      //  intent.putExtra(RescribeConstants.OPD_ID, "0");
-     //   intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
-     //   intent.putExtra(RescribeConstants.LOCATION_ID, String.valueOf(mLocationId));
-      //  intent.putExtra(RescribeConstants.APPOINTMENT_ID, mAptId);
-       // intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
-       // intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
+        intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);
+        intent.putExtra(RescribeConstants.LOCATION_ID, String.valueOf(mLocationId));
+        intent.putExtra(RescribeConstants.PATIENT_ID, mPatientId);
+        intent.putExtra(RescribeConstants.CLINIC_ID, mHospitalId);
         intent.putExtra(RescribeConstants.PATIENT_NAME, titleTextView.getText().toString());
         intent.putExtra(RescribeConstants.PATIENT_INFO, userInfoTextView.getText().toString());
-      //  intent.putExtra(RescribeConstants.VISIT_DATE, dateSelected);
-      //  intent.putExtra(RescribeConstants.OPD_TIME, "");
-       // intent.putExtra(Keys.KEY_DEVICE_ADDRESS, address);
-
         getActivity().startActivityForResult(intent, SELECT_REQUEST_CODE);
-
-
     }
 
     private void openSmartPen(String dateSelected) {
@@ -540,8 +542,12 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
                     DoctorLocationModel clinicList = (DoctorLocationModel) radioButton.getTag();
                     mLocationId = clinicList.getLocationId();
                     mHospitalId = clinicList.getClinicId();
-
-                    callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth, fromString);
+                    if (buttonPress==1) {
+                        callAddRecordsActivity(mLocationId, mHospitalId, year, monthOfYear, dayOfMonth, fromString);
+                    }else if (buttonPress==2){
+                        openOPDActivity();
+                    }
+                    buttonPress =0;
                     dialog.cancel();
 
                 } else {
@@ -568,7 +574,7 @@ public class PatientHistoryListFragmentContainer extends Fragment implements Hel
     private void callAddRecordsActivity(int mLocationId, int mHospitalId, int year, int monthOfYear, int dayOfMonth, String fromString) {
         RescribePreferencesManager.putString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.SELECTED_LOCATION_ID, String.valueOf(mLocationId), getActivity());
         if (fromString.equals("AddRecords")) {
-            mCurrentTabPos=0;
+            mCurrentTabPos = 0;
             Intent intent = new Intent(getActivity(), SelectedRecordsActivity.class);
             intent.putExtra(RescribeConstants.OPD_ID, "0");
             intent.putExtra(RescribeConstants.PATIENT_HOS_PAT_ID, mHospitalPatId);

@@ -7,6 +7,7 @@ import com.rescribe.doctor.R;
 import com.rescribe.doctor.interfaces.ConnectionListener;
 import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.interfaces.HelperResponse;
+import com.rescribe.doctor.model.add_opd.SaveOPDRequestBaseModel;
 import com.rescribe.doctor.model.case_details.CaseDetailsModel;
 import com.rescribe.doctor.model.case_details.VisitCommonData;
 import com.rescribe.doctor.model.patient.delete_attachment_req_model.DeleteAttachmentReqModel;
@@ -179,6 +180,25 @@ public class PatientDetailHelper implements ConnectionListener {
         String docId = (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
         mConnectionFactory.setUrl(Config.GET_OPD_HEADERS_LIST + docId + "&type=" + opdName + "&searchText=" + s);
         mConnectionFactory.createConnection(RescribeConstants.TASK_GET_OPD_HEADERS_LIST);
+    }
+
+    public void getOpdTabHeadersList(String opdName) {
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, false, RescribeConstants.TASK_GET_OPD_TAB_HEADERS_LIST, Request.Method.GET, false);
+        mConnectionFactory.setHeaderParams();
+        String docId = (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
+        mConnectionFactory.setUrl(Config.GET_OPD_HEADERS_LIST + docId + "&type=" + opdName + "&searchText=");
+        mConnectionFactory.createConnection(RescribeConstants.TASK_GET_OPD_TAB_HEADERS_LIST);
+    }
+
+
+    public void saveNewOpd(SaveOPDRequestBaseModel saveOPDRequestBaseModel) {
+        String docId = (RescribePreferencesManager.getString(RescribePreferencesManager.RESCRIBE_PREFERENCES_KEY.DOC_ID, mContext));
+        saveOPDRequestBaseModel.setDocId(Integer.parseInt(docId));
+        ConnectionFactory mConnectionFactory = new ConnectionFactory(mContext, this, null, true, RescribeConstants.TASK_SAVE_OPD, Request.Method.POST, false);
+        mConnectionFactory.setPostParams(saveOPDRequestBaseModel);
+        mConnectionFactory.setHeaderParams();
+        mConnectionFactory.setUrl(Config.SAVE_NEW_OPD);
+        mConnectionFactory.createConnection(RescribeConstants.TASK_SAVE_OPD);
     }
 
     public void classifyAPI(String text){

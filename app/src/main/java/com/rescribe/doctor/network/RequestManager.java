@@ -33,6 +33,8 @@ import com.rescribe.doctor.interfaces.CustomResponse;
 import com.rescribe.doctor.model.Common;
 import com.rescribe.doctor.model.CommonBaseModelContainer;
 import com.rescribe.doctor.model.add_opd.OPDHeadersSearchDataBaseModel;
+import com.rescribe.doctor.model.add_opd.OpdTabHeadersBaseModel;
+import com.rescribe.doctor.model.add_opd.SaveNewOpdResponseBaseModel;
 import com.rescribe.doctor.model.case_details.CaseDetailsModel;
 import com.rescribe.doctor.model.chat.SendMessageModel;
 import com.rescribe.doctor.model.chat.history.ChatHistoryModel;
@@ -430,10 +432,8 @@ public class RequestManager extends ConnectRequest implements Connector, Request
             try {
                 jsonObject = new JSONObject(data);
                 Common common = gson.fromJson(jsonObject.optString("common"), Common.class);
-                if(common != null) {
-                    if (!common.getStatusCode().equals(SUCCESS)) {
-                        CommonMethods.showToast(mContext, common.getStatusMessage());
-                    }
+                if (!common.getStatusCode().equals(SUCCESS)) {
+                    CommonMethods.showToast(mContext, common.getStatusMessage());
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -660,6 +660,15 @@ public class RequestManager extends ConnectRequest implements Connector, Request
                     case RescribeConstants.TASK_GET_OPD_HEADERS_LIST:
                         OPDHeadersSearchDataBaseModel headersSearchDataBaseModel = new Gson().fromJson(data, OPDHeadersSearchDataBaseModel.class);
                         this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, headersSearchDataBaseModel, mOldDataTag);
+                        break;
+
+                    case RescribeConstants.TASK_SAVE_OPD:
+                        SaveNewOpdResponseBaseModel opdHeadersSearchDataBaseModel = new Gson().fromJson(data, SaveNewOpdResponseBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, opdHeadersSearchDataBaseModel, mOldDataTag);
+                        break;
+                    case RescribeConstants.TASK_GET_OPD_TAB_HEADERS_LIST:
+                        OpdTabHeadersBaseModel opdTabHeadersBaseModel = new Gson().fromJson(data, OpdTabHeadersBaseModel.class);
+                        this.mConnectionListener.onResponse(ConnectionListener.RESPONSE_OK, opdTabHeadersBaseModel, mOldDataTag);
                         break;
 
                     case RescribeConstants.TASK_GET_CLASSIFY:
